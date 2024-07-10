@@ -7,7 +7,8 @@
 #include "radioplayer.h"
 
 RadioPlayer::RadioPlayer(QObject *parent)
-    : QMediaPlayer(parent), m_mediaDevices(new QMediaDevices(this)) {
+    : QMediaPlayer(parent), m_mediaDevices(new QMediaDevices(this)),
+      m_icecastHint(false) {
   m_iceCastReader = std::make_unique<IcecastReader>();
 
   connect(this, &QMediaPlayer::mediaStatusChanged, this,
@@ -55,6 +56,12 @@ void RadioPlayer::playRadio() {
   }
 
   m_startTimer.start();
+  if (!m_icecastHint) {
+    setSource(m_radioUrl);
+    play();
+    return;
+  }
+
   setSourceDevice(nullptr);
   stop();
 
@@ -76,10 +83,6 @@ void RadioPlayer::icecastBufferReady() {
 
 void RadioPlayer::statusChanged(QMediaPlayer::MediaStatus status) {
   qInfo() << "RadioPlayer status:" << status;
-
-  if (status == LoadedMedia) {
-    qInfo() << "LOADED MEDIA";
-  }
 
   if (status == EndOfMedia) {
     connect(m_iceCastReader.get(), &IcecastReader::audioStreamBufferReady, this,
@@ -130,4 +133,16 @@ void RadioPlayer::toggleRadio() {
   } else {
     play();
   }
+}
+
+bool RadioPlayer::icecastHint() const {
+  return m_icecastHint;
+}
+
+void RadioPlayer::setIcecastHint(bool newIcecastHint) {
+  if (m_icecastHint == newIcecastHint) {
+    return;
+  }
+  m_icecastHint = newIcecastHint;
+  emit icecastHintChanged();
 }

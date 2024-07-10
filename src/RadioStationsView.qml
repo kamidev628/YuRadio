@@ -235,6 +235,7 @@ Item {
         property var currentItem: undefined
 
         radioUrl: currentItem ? currentItem.url_resolved : ""
+        icecastHint: currentItem ? /MP3|mp3|AAC/.test(currentItem.codec) : false
         audioOutput: AudioOutput {
             volume: 0.3
         }

@@ -11,9 +11,8 @@
 
 #include <QDir>
 
+#include <QLoggingCategory>
 #include <QSslSocket>
-
-#include <QtWebView/QtWebView>
 
 using namespace Qt::StringLiterals;
 
@@ -29,7 +28,6 @@ int main(int argc, char *argv[]) {
                    "false\nHotreloader.*.info=false"));
   QThread::currentThread()->setObjectName("Main Thread"_L1);
 
-  QtWebView::initialize();
   QGuiApplication app(argc, argv);
 
   QCoreApplication::setOrganizationName(QStringLiteral("YuRadio"));

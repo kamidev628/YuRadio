@@ -2,8 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
-import QtWebView
-
 import Main
 
 /*
@@ -30,16 +28,6 @@ ApplicationWindow {
         id: mainStackView
         initialItem: mainView
         anchors.fill: parent
-
-        Component {
-            id: webViewComponent
-
-            WebView {
-                id: webView
-                url: "https://google.com"
-                anchors.fill: parent
-            }
-        }
 
         Component {
             id: mainView

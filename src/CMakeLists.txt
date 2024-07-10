@@ -9,15 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set_target_properties(YuRadio PROPERTIES AUTOMOC ON AUTORCC ON)
 
-find_package(
-  Qt6 6.5 REQUIRED
-  COMPONENTS Core
-             Qml
-             Quick
-             QuickControls2
-             Multimedia
-             ShaderTools
-             WebView)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Qml Quick QuickControls2
+                                         Multimedia ShaderTools)
 
 qt_add_qml_module(
   YuRadio
@@ -136,7 +129,6 @@ target_link_libraries(
           Qt6::Quick
           Qt6::QuickControls2
           Qt6::Multimedia
-          Qt6::WebView
           HotReloader)
 
 target_set_warnings(YuRadio)

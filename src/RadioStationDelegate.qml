@@ -11,6 +11,8 @@ Rectangle {
     required property string tags
     required property string url_resolved
 
+    signal clicked()
+
     width: ListView.view.width
     color: "transparent"
 
@@ -18,6 +20,7 @@ Rectangle {
 
     Image {
         id: radioImage
+
         anchors {
             left: parent.left
             top: parent.top
@@ -26,6 +29,7 @@ Rectangle {
             topMargin: 5
             bottomMargin: 5
         }
+
         source: root.favicon ? root.favicon : "images/radio.png"
         smooth: true
         width: height
@@ -65,8 +69,6 @@ Rectangle {
     MouseArea {
         id: clickArea
         anchors.fill: parent
-        onClicked: {
-            root.ListView.view.currentIndex = root.index;
-        }
+        onClicked: root.clicked()
     }
 }

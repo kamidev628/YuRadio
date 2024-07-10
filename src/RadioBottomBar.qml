@@ -17,7 +17,7 @@ FocusScope {
     required property RadioPlayer player
 
     property MusicInfo musicInfo
-    property string streamTitle: player.icyMetaData["StreamTitle"]
+    property string streamTitle: player.icyMetaData["StreamTitle"] ? player.icyMetaData["StreamTitle"] : ''
 
     property alias playerButton: playerButton
 

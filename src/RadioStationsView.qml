@@ -99,6 +99,11 @@ Item {
             item.name = item.name.trim();
             item.tags = item.tags.trim().split(',').join(', ');
             item.language = item.language.trim().split(',').join(', ');
+
+            const iconExtension = item.favicon.split('.').pop()
+            if (iconExtension == 'ico') {
+              item.favicon = undefined
+            }
             return item;
         }
 
@@ -153,7 +158,20 @@ Item {
         highlight: HighlightBar {}
         highlightFollowsCurrentItem: false
         model: radioModel
-        delegate: RadioStationDelegate {}
+        delegate: RadioStationDelegate {
+          id: delegate
+          onClicked: {
+            if (radioListView.currentIndex == delegate.index) {
+              if (radioPlayer.playing) {
+                radioPlayer.pause()
+              } else {
+                radioPlayer.playRadio()
+              }
+            } else {
+              radioListView.currentIndex = index
+            }
+          }
+        }
     }
 
     RadioBottomBarDrawer {

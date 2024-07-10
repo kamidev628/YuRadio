@@ -22,12 +22,12 @@ FocusScope {
     property alias playerButton: playerButton
 
     property string stationName
-    property string stationTags
-    property string stationIcon
     property string stationUrl
-    property string stationHomepage
-    property string stationCountry
-    property string stationLanguage
+    property var stationTags
+    property var stationIcon
+    property var stationHomepage
+    property var stationCountry
+    property var stationLanguage
 
     Binding {
         when: mainFlickable.dragging
@@ -215,7 +215,7 @@ FocusScope {
                 }
 
                 RowLayout {
-                    visible: root.musicInfo
+                    visible: musicInfoProvider.state == ItunesMusicInfoProvider.Done && root.musicInfo
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     spacing: 8
@@ -270,7 +270,7 @@ FocusScope {
     }
 
     Timer {
-        id: icyMetaDataUpdateTimer
+        id: updateMusicInfoTimer
         interval: 500
         repeat: false
 
@@ -289,7 +289,7 @@ FocusScope {
 
         function onStateChanged() {
             if (Application.state == Qt.ApplicationActive) {
-                icyMetaDataUpdateTimer.start();
+                updateMusicInfoTimer.start();
             }
         }
     }
@@ -299,7 +299,7 @@ FocusScope {
 
         function onVisibleChanged() {
             if (secondaryColumnLayout.visible) {
-                icyMetaDataUpdateTimer.start();
+                updateMusicInfoTimer.start();
             }
         }
     }
@@ -313,7 +313,7 @@ FocusScope {
 
         function onIcyMetaDataChanged() {
             root.musicInfo = null;
-            icyMetaDataUpdateTimer.start();
+            updateMusicInfoTimer.start();
         }
     }
 }

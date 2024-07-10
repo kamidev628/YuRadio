@@ -17,6 +17,7 @@ FocusScope {
     required property RadioPlayer player
 
     property MusicInfo musicInfo
+    property string streamTitle: player.icyMetaData["StreamTitle"]
 
     property alias playerButton: playerButton
 
@@ -277,9 +278,32 @@ FocusScope {
         interval: 500
         repeat: false
 
+        property string lastStreamTitle
+
         onTriggered: {
-            if (root.player.icyMetaData["StreamTitle"]) {
-                musicInfoProvider.provide(root.player.icyMetaData["StreamTitle"]);
+            if (root.streamTitle && root.streamTitle !== lastStreamTitle && Application.state == Qt.ApplicationActive && secondaryColumnLayout.visible) {
+                lastStreamTitle = root.streamTitle;
+                musicInfoProvider.provide(root.streamTitle);
+            }
+        }
+    }
+
+    Connections {
+        target: Application
+
+        function onStateChanged() {
+            if (Application.state == Qt.ApplicationActive) {
+                icyMetaDataUpdateTimer.start();
+            }
+        }
+    }
+
+    Connections {
+        target: secondaryColumnLayout
+
+        function onVisibleChanged() {
+            if (secondaryColumnLayout.visible) {
+                icyMetaDataUpdateTimer.start();
             }
         }
     }

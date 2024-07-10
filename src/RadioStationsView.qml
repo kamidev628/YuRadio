@@ -111,11 +111,26 @@ Item {
         fetchMoreHandler: loadPageHandler
     }
 
+        component HighlightBar : Rectangle {
+                width: ListView.view.currentItem.width
+                height: ListView.view.currentItem.height
+                color: "lightsteelblue"
+                y: ListView.view.currentItem.y
+                opacity: 0.6
+                Behavior on y {
+                    SpringAnimation {
+                        spring: 4
+                        damping: 0.5
+                    }
+                }
+        }
+
     ListView {
         id: radioListView
 
         currentIndex: -1
         clip: true
+        focus: true
 
         anchors {
             top: parent.top
@@ -135,6 +150,8 @@ Item {
             }
         }
 
+        highlight: HighlightBar {}
+        highlightFollowsCurrentItem: false
         model: radioModel
         delegate: RadioStationDelegate {}
     }

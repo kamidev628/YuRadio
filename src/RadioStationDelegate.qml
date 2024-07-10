@@ -11,8 +11,8 @@ Rectangle {
     required property string tags
     required property string url_resolved
 
-    color: Material.color(Material.Grey, Material.Shade100)
     width: ListView.view.width
+    color: "transparent"
 
     implicitHeight: 100
 

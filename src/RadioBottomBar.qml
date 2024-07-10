@@ -16,6 +16,8 @@ FocusScope {
     required property DragHandler bottomBarDragHandler
     required property RadioPlayer player
 
+    property MusicInfo musicInfo
+
     property alias playerButton: playerButton
 
     property string stationName
@@ -199,7 +201,7 @@ FocusScope {
                 Layout.leftMargin: 10
 
                 Text {
-                    visible: musicInfoProvider.state == ItunesMusicInfoProvider.Failed || !root.player.icyMetaData["StreamTitle"]
+                    visible: musicInfoProvider.state == ItunesMusicInfoProvider.Failed || (!root.musicInfo && musicInfoProvider.state != ItunesMusicInfoProvider.Processing)
                     text: "Music Info not avaialble"
                     opacity: 0.5
                     font.pointSize: 16
@@ -216,13 +218,13 @@ FocusScope {
                 }
 
                 RowLayout {
-                    visible: musicInfoProvider.state == ItunesMusicInfoProvider.Done && musicInfoProvider.musicInfo && root.player.icyMetaData["StreamTitle"]
+                    visible: root.musicInfo
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     spacing: 8
 
                     Image {
-                        source: musicInfoProvider.musicInfo ? musicInfoProvider.musicInfo.album.albumImageUrl : ''
+                        source: root.musicInfo ? root.musicInfo.album.albumImageUrl : ''
 
                         Layout.minimumWidth: mainColumn.width * 4 / 9
                         Layout.minimumHeight: Layout.minimumWidth
@@ -240,19 +242,19 @@ FocusScope {
                         Layout.fillHeight: true
 
                         Label {
-                            text: qsTr(`<b>Album</b>: ${musicInfoProvider.musicInfo ? musicInfoProvider.musicInfo.album.albumName : ''}`)
+                            text: qsTr(`<b>Album</b>: ${root.musicInfo ? root.musicInfo.album.albumName : ''}`)
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
                         Label {
-                            text: qsTr(`<b>Song</b>: ${musicInfoProvider.musicInfo ? musicInfoProvider.musicInfo.songName : ''}`)
+                            text: qsTr(`<b>Song</b>: ${root.musicInfo ? root.musicInfo.songName : ''}`)
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
                         Label {
-                            text: qsTr(`<b>Artist</b>: ${musicInfoProvider.musicInfo ? musicInfoProvider.musicInfo.album.artists[0].artistName : ''}`)
+                            text: qsTr(`<b>Artist</b>: ${root.musicInfo ? root.musicInfo.album.artists[0].artistName : ''}`)
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
@@ -265,6 +267,9 @@ FocusScope {
 
     ItunesMusicInfoProvider {
         id: musicInfoProvider
+        onMusicInfoChanged: {
+            root.musicInfo = musicInfo;
+        }
     }
 
     Timer {
@@ -282,7 +287,12 @@ FocusScope {
     Connections {
         target: root.player
 
+        function onRadioUrlChanged() {
+            root.musicInfo = null;
+        }
+
         function onIcyMetaDataChanged() {
+            root.musicInfo = null;
             icyMetaDataUpdateTimer.start();
         }
     }

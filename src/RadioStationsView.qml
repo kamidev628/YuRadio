@@ -7,6 +7,8 @@ import QtMultimedia
 
 import Main
 
+import "radiobrowser.mjs" as RadioBrowser
+
 Item {
     id: root
 
@@ -77,7 +79,18 @@ Item {
 
     NetworkManager {
         id: apiManager
-        baseUrl: "http://de1.api.radio-browser.info"
+
+        Component.onCompleted: {
+          RadioBrowser.get_radiobrowser_base_url_random().then((url)=> {
+            console.log("RadioBrowser BaseUrl:", url)
+            baseUrl = url
+          });
+        }
+
+        onBaseUrlChanged: {
+          radioModel.reset()
+          radioModel.loadPageHandler()
+        }
     }
 
     JsonRestListModel {

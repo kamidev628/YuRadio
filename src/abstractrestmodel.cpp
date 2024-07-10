@@ -4,6 +4,10 @@
 #include "restpagination.h"
 
 void AbstractRestListModel::loadPage() {
+  if (m_networkManager->baseUrl().isEmpty()) {
+    qWarning() << "BaseUrl not set";
+  }
+
   QUrlQuery query;
 
   queryApplyFilters(query);

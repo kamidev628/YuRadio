@@ -35,6 +35,7 @@ qt_add_qml_module(
   IconButton.qml
   MomentumAnimation.qml
   FakeFlickable.qml
+  radiobrowser.mjs
   SOURCES
   restpagination.h
   restpagination.cpp

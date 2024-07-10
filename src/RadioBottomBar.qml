@@ -23,11 +23,11 @@ FocusScope {
 
     property string stationName
     property string stationUrl
-    property var stationTags
-    property var stationIcon
-    property var stationHomepage
-    property var stationCountry
-    property var stationLanguage
+    property string stationTags
+    property string stationIcon
+    property string stationHomepage
+    property string stationCountry
+    property string stationLanguage
 
     Binding {
         when: mainFlickable.dragging
@@ -218,6 +218,7 @@ FocusScope {
                     visible: musicInfoProvider.state == ItunesMusicInfoProvider.Done && root.musicInfo
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+
                     spacing: 8
 
                     Image {

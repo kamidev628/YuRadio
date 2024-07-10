@@ -10,6 +10,7 @@
 #endif /* Q_OS_ANDROID */
 
 #include <QDir>
+#include <QThread>
 
 #include <QLoggingCategory>
 #include <QSslSocket>

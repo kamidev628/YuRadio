@@ -182,11 +182,7 @@ FocusScope {
                     smooth: true
 
                     onClicked: {
-                        if (root.player.playing) {
-                            root.player.pause();
-                        } else {
-                            root.player.playRadio();
-                        }
+                      root.player.toggleRadio()
                     }
                 }
             }

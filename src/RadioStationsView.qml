@@ -133,6 +133,7 @@ Item {
     ListView {
         id: radioListView
 
+        cacheBuffer: 300
         currentIndex: -1
         clip: true
         focus: true
@@ -162,11 +163,7 @@ Item {
           id: delegate
           onClicked: {
             if (radioListView.currentIndex == delegate.index) {
-              if (radioPlayer.playing) {
-                radioPlayer.pause()
-              } else {
-                radioPlayer.playRadio()
-              }
+              radioPlayer.toggleRadio()
             } else {
               radioListView.currentIndex = index
             }
@@ -225,11 +222,7 @@ Item {
 
         visible: !bottomBar.playerButton.visible
         onClicked: {
-            if (radioPlayer.playing) {
-                radioPlayer.pause();
-            } else {
-                radioPlayer.playRadio();
-            }
+          radioPlayer.toggleRadio()
         }
 
         width: 60

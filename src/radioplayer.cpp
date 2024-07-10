@@ -123,3 +123,11 @@ void RadioPlayer::setIcyMetaData(const QVariantMap &metaData) {
   m_icyMetaData = metaData;
   emit icyMetaDataChanged();
 }
+
+void RadioPlayer::toggleRadio() {
+  if (isPlaying()) {
+    pause();
+  } else {
+    play();
+  }
+}

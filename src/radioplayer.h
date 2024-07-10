@@ -21,6 +21,7 @@ public:
   RadioPlayer(QObject *parent = nullptr);
 
   Q_INVOKABLE void playRadio();
+  Q_INVOKABLE void toggleRadio();
 
   QVariantMap icyMetaData() const;
 

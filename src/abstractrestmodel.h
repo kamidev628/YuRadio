@@ -50,6 +50,9 @@ public:
   QString path() const;
   void setPath(const QString &newPath);
 
+private:
+  QUrlQuery composeQuery() const;
+
 signals:
   void pageLoaded();
   void restManagerChanged();
@@ -58,9 +61,6 @@ signals:
   void orderByChanged();
   void orderByQueryChanged();
   void pathChanged();
-
-protected:
-  void queryApplyFilters(QUrlQuery &query);
 
 protected:
   NetworkManager *m_networkManager = nullptr;

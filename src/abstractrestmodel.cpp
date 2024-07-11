@@ -6,20 +6,10 @@
 void AbstractRestListModel::loadPage() {
   if (m_networkManager->baseUrl().isEmpty()) {
     qWarning() << "BaseUrl not set";
+    return;
   }
 
-  QUrlQuery query;
-
-  queryApplyFilters(query);
-
-  if (!m_orderBy.isNull()) {
-    query.addQueryItem(m_orderByQuery, m_orderBy);
-  }
-
-  for (const auto &[key, value] :
-       m_pagination->queryParams().asKeyValueRange()) {
-    query.addQueryItem(key, value);
-  }
+  QUrlQuery query = composeQuery();
 
   auto [future, reply] = m_networkManager->get(m_path, query);
 
@@ -92,7 +82,9 @@ void AbstractRestListModel::clearReplies() {
   m_reply.reset();
 }
 
-void AbstractRestListModel::queryApplyFilters(QUrlQuery &query) {
+QUrlQuery AbstractRestListModel::composeQuery() const {
+  QUrlQuery query;
+
   for (const auto &[filter, value] : m_filters.asKeyValueRange()) {
     if (value.userType() == QMetaType::QVariantList) {
       for (const auto &innerValue : value.toList()) {
@@ -102,4 +94,15 @@ void AbstractRestListModel::queryApplyFilters(QUrlQuery &query) {
       query.addQueryItem(filter, value.toString());
     }
   }
+
+  if (!m_orderBy.isNull()) {
+    query.addQueryItem(m_orderByQuery, m_orderBy);
+  }
+
+  for (const auto &[key, value] :
+       m_pagination->queryParams().asKeyValueRange()) {
+    query.addQueryItem(key, value);
+  }
+
+  return query;
 }

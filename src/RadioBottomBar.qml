@@ -182,7 +182,7 @@ FocusScope {
                     smooth: true
 
                     onClicked: {
-                      root.player.toggleRadio()
+                        root.player.toggleRadio();
                     }
                 }
             }
@@ -198,7 +198,7 @@ FocusScope {
                 Layout.leftMargin: 10
 
                 Text {
-                    visible: musicInfoProvider.state == ItunesMusicInfoProvider.Failed || (!root.musicInfo && musicInfoProvider.state != ItunesMusicInfoProvider.Processing)
+                    visible: !musicInfoRow.visible && !busyIndicator.visible
                     text: "Music Info is not avaialble"
                     opacity: 0.5
                     font.pointSize: 16
@@ -209,12 +209,14 @@ FocusScope {
                 }
 
                 BusyIndicator {
+                    id: busyIndicator
                     visible: musicInfoProvider.state == ItunesMusicInfoProvider.Processing
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                 }
 
                 RowLayout {
+                    id: musicInfoRow
                     visible: musicInfoProvider.state == ItunesMusicInfoProvider.Done && root.musicInfo
                     Layout.fillWidth: true
                     Layout.fillHeight: true

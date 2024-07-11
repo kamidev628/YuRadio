@@ -22,6 +22,12 @@ void JsonRestListModel::setDataPath(const QString &newDataPath) {
 }
 
 void JsonRestListModel::handleRequestData(const QByteArray &data) {
+  auto scopeGuard = qScopeGuard([this]() {
+    if (status() != Ready) {
+      setStatus(Error);
+    }
+  });
+
   std::optional<QJsonDocument> document = json::byteArrayToJson(data);
   if (!document) {
     return;
@@ -70,6 +76,8 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
   if (m_roleNames.isEmpty()) {
     generateRoleNames();
   }
+
+  setStatus(Ready);
 }
 
 QHash<int, QByteArray> JsonRestListModel::roleNames() const {
@@ -157,6 +165,7 @@ void JsonRestListModel::reset() {
   m_roleNames.clear();
 
   clearReplies();
+  setStatus(Null);
 
   endResetModel();
 }

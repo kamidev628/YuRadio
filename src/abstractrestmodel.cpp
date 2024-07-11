@@ -3,6 +3,9 @@
 #include "abstractrestmodel.h"
 #include "restpagination.h"
 
+AbstractRestListModel::AbstractRestListModel(QObject *parent)
+    : QAbstractListModel(parent), m_status(Null) {}
+
 void AbstractRestListModel::loadPage() {
   if (m_networkManager->baseUrl().isEmpty()) {
     qWarning() << "BaseUrl not set";
@@ -15,13 +18,11 @@ void AbstractRestListModel::loadPage() {
 
   m_reply = reply;
 
-  future
-    .then(this, [this](const QByteArray &data) {
+  setStatus(Loading);
+  future.then(this, [this](const QByteArray &data) {
     handleRequestData(data);
-
-    emit pageLoaded();
   }).onFailed(this, [this](const NetworkError &err) {
-    qWarning() << err.message();
+    setStatus(Error);
     m_errorString = err.message();
   });
 }
@@ -105,4 +106,16 @@ QUrlQuery AbstractRestListModel::composeQuery() const {
   }
 
   return query;
+}
+
+AbstractRestListModel::Status AbstractRestListModel::status() const {
+  return m_status;
+}
+
+void AbstractRestListModel::setStatus(Status newStatus) {
+  if (m_status == newStatus) {
+    return;
+  }
+  m_status = newStatus;
+  emit statusChanged();
 }

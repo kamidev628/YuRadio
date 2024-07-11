@@ -22,14 +22,19 @@ class AbstractRestListModel : public QAbstractListModel {
   Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged FINAL)
   Q_PROPERTY(NetworkManager *restManager READ restManager WRITE setRestManager
                NOTIFY restManagerChanged FINAL)
+  Q_PROPERTY(Status status READ status NOTIFY statusChanged FINAL)
 
 public:
+  AbstractRestListModel(QObject *parent = nullptr);
   using QAbstractListModel::QAbstractListModel;
+
+  enum Status { Null = 0, Ready, Loading, Error };
+  Q_ENUM(Status)
+
   Q_INVOKABLE void loadPage();
 
   virtual void handleRequestData(const QByteArray &data) = 0;
 
-  void clearReplies();
   QString errorString() const;
 
   NetworkManager *restManager() const;
@@ -50,17 +55,24 @@ public:
   QString path() const;
   void setPath(const QString &newPath);
 
+  Status status() const;
+
+protected:
+  void setStatus(Status newStatus);
+  void clearReplies();
+
 private:
   QUrlQuery composeQuery() const;
 
 signals:
-  void pageLoaded();
   void restManagerChanged();
   void filtersChanged();
   void paginationChanged();
   void orderByChanged();
   void orderByQueryChanged();
   void pathChanged();
+
+  void statusChanged();
 
 protected:
   NetworkManager *m_networkManager = nullptr;
@@ -74,6 +86,8 @@ protected:
 
   QString m_orderByQuery;
   QString m_path;
+
+  Status m_status;
 };
 
 #endif /* !RESTMODEL_H */

@@ -84,7 +84,7 @@ void RadioPlayer::icecastBufferReady() {
 void RadioPlayer::statusChanged(QMediaPlayer::MediaStatus status) {
   qInfo() << "RadioPlayer status:" << status;
 
-  if (status == EndOfMedia) {
+  if (status == EndOfMedia && sourceDevice()) {
     connect(m_iceCastReader.get(), &IcecastReader::audioStreamBufferReady, this,
             &RadioPlayer::icecastBufferReady,
             static_cast<Qt::ConnectionType>(Qt::SingleShotConnection |
@@ -131,7 +131,7 @@ void RadioPlayer::toggleRadio() {
   if (isPlaying()) {
     pause();
   } else {
-    play();
+    playRadio();
   }
 }
 

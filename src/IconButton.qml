@@ -4,6 +4,9 @@ import QtQuick.Controls
 Item {
     id: root
 
+    implicitHeight: icon.sourceSize.height
+    implicitWidth: icon.sourceSize.width
+
     property alias icon: searchIcon
 
     signal clicked

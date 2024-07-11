@@ -51,21 +51,15 @@ Item {
                 }
             }
 
-            IconImage {
+            IconButton {
                 id: filterIcon
-                source: 'images/filter.svg'
-                sourceSize: searchBar.searchIcon.sourceSize
+                icon.source: 'images/filter.svg'
+                icon.sourceSize: searchBar.searchIcon.sourceSize
 
-                color: Material.color(Material.Grey, Material.Shade100)
+                icon.color: Material.color(Material.Grey, Material.Shade100)
 
                 Layout.rightMargin: 10
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked:
-                    //searchInput.forceActiveFocus();
-                    {}
-                }
+                onClicked: {}
             }
         }
     }
@@ -74,22 +68,21 @@ Item {
         id: limitOffsetPagination
         limit: 10
         offset: 0
-        totalCount: 50
+        totalCount: 20
     }
 
     NetworkManager {
         id: apiManager
 
         Component.onCompleted: {
-          RadioBrowser.get_radiobrowser_base_url_random().then((url)=> {
-            console.log("RadioBrowser BaseUrl:", url)
-            baseUrl = url
-          });
+            RadioBrowser.get_radiobrowser_base_url_random().then(url => {
+                console.log("RadioBrowser BaseUrl:", url);
+                baseUrl = url;
+            });
         }
 
         onBaseUrlChanged: {
-          radioModel.reset()
-          radioModel.loadPageHandler()
+            radioModel.reset();
         }
     }
 
@@ -105,17 +98,19 @@ Item {
 
         function loadPageHandler() {
             loadPage();
-            limitOffsetPagination.nextPage();
+        }
+
+        onPageLoaded: {
+          limitOffsetPagination.nextPage();
         }
 
         preprocessItem: function (item) {
             item.name = item.name.trim();
             item.tags = item.tags.trim().split(',').join(', ');
             item.language = item.language.trim().split(',').join(', ');
-
-            const iconExtension = item.favicon.split('.').pop()
+            const iconExtension = item.favicon.split('.').pop();
             if (iconExtension == 'ico') {
-              item.favicon = undefined
+                item.favicon = undefined;
             }
             return item;
         }
@@ -129,19 +124,63 @@ Item {
         fetchMoreHandler: loadPageHandler
     }
 
-        component HighlightBar : Rectangle {
-                width: ListView.view.currentItem.width
-                height: ListView.view.currentItem.height
-                color: "lightsteelblue"
-                y: ListView.view.currentItem.y
-                opacity: 0.6
-                Behavior on y {
-                    SpringAnimation {
-                        spring: 4
-                        damping: 0.5
+    component HighlightBar: Rectangle {
+        width: ListView.view.currentItem.width ?? 0
+        height: ListView.view.currentItem.height ?? 0
+
+        color: "lightsteelblue"
+        y: ListView.view.currentItem.y ?? 0
+        opacity: 0.6
+        Behavior on y {
+            SpringAnimation {
+                spring: 4
+                damping: 0.5
+            }
+        }
+    }
+
+    component HeaderBar: ColumnLayout {
+        width: ListView.view.width
+        height: 40
+
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            RowLayout {
+                anchors.fill: parent
+
+                IconButton {
+                    id: orderByButton
+
+                    Layout.fillHeight: true
+                    Layout.leftMargin: 10
+
+                    icon.source: 'images/sort.svg'
+                    icon.sourceSize: Qt.size(height, height)
+
+                    //icon.color: Material.color(Material.Grey, Material.Shade100)
+
+                    onClicked: {}
+                }
+                ListView {
+                    id: rowList
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    orientation: Qt.Horizontal
+
+                    property list<string> dataArray: ["one", "two", "three", "four", "five", "six", "seven"]
+
+                    model: dataArray
+                    delegate: Text {
+                        required property int index
+                        required property var model
+                        text: rowList.dataArray[index]
                     }
                 }
+            }
         }
+    }
 
     ListView {
         id: radioListView
@@ -169,18 +208,21 @@ Item {
             }
         }
 
+        header: HeaderBar {}
+
         highlight: HighlightBar {}
         highlightFollowsCurrentItem: false
         model: radioModel
         delegate: RadioStationDelegate {
-          id: delegate
-          onClicked: {
-            if (radioListView.currentIndex == delegate.index) {
-              radioPlayer.toggleRadio()
-            } else {
-              radioListView.currentIndex = index
+            id: delegate
+
+            onClicked: {
+                if (ListView.view.currentIndex == delegate.index) {
+                    radioPlayer.toggleRadio();
+                } else {
+                    ListView.view.currentIndex = index;
+                }
             }
-          }
         }
     }
 
@@ -235,7 +277,7 @@ Item {
 
         visible: !bottomBar.playerButton.visible
         onClicked: {
-          radioPlayer.toggleRadio()
+            radioPlayer.toggleRadio();
         }
 
         width: 60

@@ -199,7 +199,7 @@ FocusScope {
 
                 Text {
                     visible: musicInfoProvider.state == ItunesMusicInfoProvider.Failed || (!root.musicInfo && musicInfoProvider.state != ItunesMusicInfoProvider.Processing)
-                    text: "Music Info not avaialble"
+                    text: "Music Info is not avaialble"
                     opacity: 0.5
                     font.pointSize: 16
                     Layout.topMargin: 15

@@ -47,7 +47,18 @@ Item {
                 Layout.bottomMargin: 8
 
                 searchInput.onAccepted: {
-                    radioModel.path = "/json/stations" + (searchInput.text ? `/byname/${searchInput.text}` : "");
+                    if (searchInput.text) {
+                        radioModel.path = "/json/stations/search";
+                        radioModel.filters = {
+                            "name": searchInput.text
+                        };
+                    } else {
+                        radioModel.path = "/json/stations";
+                        radioModel.filters = {};
+                    }
+                    limitOffsetPagination.offset = 0;
+                    radioListView.currentIndex = -1;
+                    radioModel.reset();
                 }
             }
 
@@ -110,12 +121,6 @@ Item {
                 item.favicon = undefined;
             }
             return item;
-        }
-
-        onPathChanged: {
-            limitOffsetPagination.offset = 0;
-            radioListView.currentIndex = -1;
-            reset();
         }
 
         fetchMoreHandler: loadPageHandler

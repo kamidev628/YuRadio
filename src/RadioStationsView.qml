@@ -98,10 +98,7 @@ Item {
 
         function loadPageHandler() {
             loadPage();
-        }
-
-        onPageLoaded: {
-          limitOffsetPagination.nextPage();
+            limitOffsetPagination.nextPage();
         }
 
         preprocessItem: function (item) {
@@ -125,11 +122,11 @@ Item {
     }
 
     component HighlightBar: Rectangle {
-        width: ListView.view.currentItem.width ?? 0
-        height: ListView.view.currentItem.height ?? 0
+        width: ListView.view.currentItem.width
+        height: ListView.view.currentItem.height
 
         color: "lightsteelblue"
-        y: ListView.view.currentItem.y ?? 0
+        y: ListView.view.currentItem.y
         opacity: 0.6
         Behavior on y {
             SpringAnimation {
@@ -290,7 +287,7 @@ Item {
         property var currentItem: undefined
 
         radioUrl: currentItem ? currentItem.url_resolved : ""
-        icecastHint: currentItem ? /MP3|mp3|AAC/.test(currentItem.codec) : false
+        icecastHint: currentItem ? /MP3|mp3|AAC|aac/.test(currentItem.codec) : false
         audioOutput: AudioOutput {
             volume: 0.3
         }

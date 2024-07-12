@@ -77,9 +77,9 @@ Item {
 
     LimitPagination {
         id: limitOffsetPagination
-        limit: 10
+        limit: 20
         offset: 0
-        totalCount: 20
+        totalCount: 60
     }
 
     NetworkManager {
@@ -109,7 +109,6 @@ Item {
 
         function loadPageHandler() {
             loadPage();
-            limitOffsetPagination.nextPage();
         }
 
         preprocessItem: function (item) {
@@ -121,6 +120,18 @@ Item {
                 item.favicon = undefined;
             }
             return item;
+        }
+
+        onStatusChanged: {
+          if (status == JsonRestListModel.Ready) {
+            limitOffsetPagination.nextPage()
+
+            if (radioModel.rowCount() % limitOffsetPagination.offset !== 0) {
+              limitOffsetPagination.totalCount = radioModel.rowCount()
+            } else {
+              limitOffsetPagination.totalCount = 60
+            }
+          }
         }
 
         fetchMoreHandler: loadPageHandler
@@ -184,6 +195,12 @@ Item {
         }
     }
 
+    component FooterBar: BusyIndicator {
+        width: ListView.view.width
+        height: visible ? 50 : 0
+        visible: radioModel.status == JsonRestListModel.Loading
+    }
+
     ListView {
         id: radioListView
 
@@ -211,6 +228,7 @@ Item {
         }
 
         header: HeaderBar {}
+        footer: FooterBar {}
 
         highlight: HighlightBar {}
         highlightFollowsCurrentItem: false

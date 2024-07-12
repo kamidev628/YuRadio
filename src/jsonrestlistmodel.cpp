@@ -145,6 +145,10 @@ QString AbstractRestListModel::errorString() const {
 bool JsonRestListModel::canFetchMore(const QModelIndex &parent) const {
   CHECK_CANFETCHMORE(parent);
 
+  if (m_reply) {
+    return m_pagination->canFetchMore() && m_reply->isFinished();
+  }
+
   return m_pagination->canFetchMore();
 }
 

@@ -23,7 +23,7 @@ public:
   QString dataPath() const;
   void setDataPath(const QString &newDataPath);
 
-  void generateRoleNames();
+  void generateRoleNames(const QVariantMap &item);
 
 signals:
   void dataPathChanged();

@@ -59,6 +59,12 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
     return;
   }
 
+  if (m_roleNames.isEmpty() && !dataArray.isEmpty()) {
+    QJsonObject firstObject = dataArray.first().toObject();
+
+    generateRoleNames(firstObject.toVariantMap());
+  }
+
   QQmlEngine *engine = qmlEngine(this);
   for (const auto &dataObj : std::as_const(dataArray)) {
     int last = rowCount({});
@@ -73,10 +79,6 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
     }
   }
 
-  if (m_roleNames.isEmpty()) {
-    generateRoleNames();
-  }
-
   setStatus(Ready);
 }
 
@@ -84,15 +86,9 @@ QHash<int, QByteArray> JsonRestListModel::roleNames() const {
   return m_roleNames;
 }
 
-void JsonRestListModel::generateRoleNames() {
+void JsonRestListModel::generateRoleNames(const QVariantMap &item) {
   m_roleNames.clear();
   m_roleNameIndex = Qt::UserRole + 1;
-
-  if (m_items.isEmpty()) {
-    return;
-  }
-
-  QVariantMap item = m_items.first();
 
   for (const auto &[key, value] : item.asKeyValueRange()) {
     m_roleNames[m_roleNameIndex++] = key.toUtf8();

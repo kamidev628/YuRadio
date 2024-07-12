@@ -1,3 +1,6 @@
+#include <QLoggingCategory>
+Q_LOGGING_CATEGORY(yuRestLog, "YuRest");
+
 #include <QJsonArray>
 
 #include "abstractrestmodel.h"
@@ -9,7 +12,7 @@ AbstractRestListModel::AbstractRestListModel(QObject *parent)
 
 void AbstractRestListModel::loadPage() {
   if (m_networkManager->baseUrl().isEmpty()) {
-    qWarning() << "BaseUrl not set";
+    qmlWarning(this) << "BaseUrl not set";
     return;
   }
 

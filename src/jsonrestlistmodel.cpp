@@ -1,3 +1,6 @@
+#include <QLoggingCategory>
+Q_DECLARE_LOGGING_CATEGORY(yuRestLog);
+
 #include "jsonrestlistmodel.h"
 
 #include "json.h"
@@ -36,14 +39,14 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
 
   if (document->isObject()) {
     if (m_dataPath.isNull()) {
-      qWarning()
+      qCWarning(yuRestLog)
         << "Received valid Json object, but `data` path is not specified";
       return;
     }
 
     rootObj = document->object();
     if (!rootObj[m_dataPath].isArray()) {
-      qWarning() << "Not valid array at:" << m_dataPath;
+      qCWarning(yuRestLog) << "Not valid array at:" << m_dataPath;
       return;
     }
 
@@ -52,7 +55,7 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
   } else if (document->isArray()) {
     dataArray = document->array();
   } else {
-    qWarning() << "Invalid Json";
+    qCWarning(yuRestLog) << "Invalid Json";
     return;
   }
 

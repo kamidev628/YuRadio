@@ -1,3 +1,7 @@
+#include <QLoggingCategory>
+Q_LOGGING_CATEGORY(itunesMusicInfoProviderLog,
+                   "YuRadio.ItunesMusicInfoProvider");
+
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
@@ -39,7 +43,8 @@ void ItunesMusicInfoProvider::handleReplyData(const QByteArray &data) {
   QJsonArray results = rootObject[u"results"].toArray();
 
   if (results.isEmpty()) {
-    qDebug() << "Itunes can't provide information about the song";
+    qInfo(itunesMusicInfoProviderLog)
+      << "Itunes can't provide information about the song";
     setState(Failed);
     return;
   }
@@ -66,10 +71,10 @@ void ItunesMusicInfoProvider::handleReplyData(const QByteArray &data) {
   QUrl albumImageUrl =
     earlisetRelease[u"artworkUrl60"].toString().replace("60x60", "600x600");
 
-  qDebug() << "Album Name" << albumName;
-  qDebug() << "Song Name" << songName;
-  qDebug() << "Artist Name" << artistName;
-  qDebug() << "albumImageUrl" << albumImageUrl;
+  qCInfo(itunesMusicInfoProviderLog) << "Album Name" << albumName;
+  qCInfo(itunesMusicInfoProviderLog) << "Song Name" << songName;
+  qCInfo(itunesMusicInfoProviderLog) << "Artist Name" << artistName;
+  qCInfo(itunesMusicInfoProviderLog) << "albumImageUrl" << albumImageUrl;
 
   auto *musicInfo = new MusicInfo;
   auto *album = new MusicAlbum(musicInfo);

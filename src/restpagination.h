@@ -2,11 +2,13 @@
 #define RESTPAGINATION_H
 
 #include <QObject>
+#include <QtQmlIntegration>
 
 class RestPagination : public QObject {
   Q_OBJECT
   Q_PROPERTY(
     int totalCount READ totalCount WRITE setTotalCount NOTIFY totalCountChanged)
+  QML_INTERFACE
 
 public:
   explicit RestPagination(QObject *parent = nullptr);

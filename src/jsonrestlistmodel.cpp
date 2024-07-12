@@ -110,36 +110,6 @@ int JsonRestListModel::rowCount(const QModelIndex &parent) const {
   return static_cast<int>(m_items.size());
 }
 
-QString AbstractRestListModel::orderByQuery() const {
-  return m_orderByQuery;
-}
-
-void AbstractRestListModel::setOrderByQuery(const QString &newOrderByQuery) {
-  if (m_orderByQuery == newOrderByQuery) {
-    return;
-  }
-
-  m_orderByQuery = newOrderByQuery;
-  emit orderByQueryChanged();
-}
-
-QString AbstractRestListModel::path() const {
-  return m_path;
-}
-
-void AbstractRestListModel::setPath(const QString &newPath) {
-  if (m_path == newPath) {
-    return;
-  }
-
-  m_path = newPath;
-  emit pathChanged();
-}
-
-QString AbstractRestListModel::errorString() const {
-  return m_errorString;
-}
-
 void JsonRestListModel::reset() {
   beginResetModel();
 

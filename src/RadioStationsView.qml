@@ -123,15 +123,14 @@ Item {
         }
 
         onStatusChanged: {
-          if (status == JsonRestListModel.Ready) {
-            limitOffsetPagination.nextPage()
-
-            if (radioModel.rowCount() % limitOffsetPagination.offset !== 0) {
-              limitOffsetPagination.totalCount = radioModel.rowCount()
-            } else {
-              limitOffsetPagination.totalCount = 60
+            if (status == JsonRestListModel.Ready) {
+                limitOffsetPagination.nextPage();
+                if (radioModel.rowCount() % limitOffsetPagination.offset !== 0) {
+                    limitOffsetPagination.totalCount = radioModel.rowCount();
+                } else {
+                    limitOffsetPagination.totalCount = 60;
+                }
             }
-          }
         }
 
         fetchMoreHandler: loadPageHandler

@@ -186,3 +186,33 @@ void AbstractRestListModel::resetRestModel() {
   setStatus(Null);
   m_reply = nullptr;
 }
+
+QString AbstractRestListModel::orderByQuery() const {
+  return m_orderByQuery;
+}
+
+void AbstractRestListModel::setOrderByQuery(const QString &newOrderByQuery) {
+  if (m_orderByQuery == newOrderByQuery) {
+    return;
+  }
+
+  m_orderByQuery = newOrderByQuery;
+  emit orderByQueryChanged();
+}
+
+QString AbstractRestListModel::path() const {
+  return m_path;
+}
+
+void AbstractRestListModel::setPath(const QString &newPath) {
+  if (m_path == newPath) {
+    return;
+  }
+
+  m_path = newPath;
+  emit pathChanged();
+}
+
+QString AbstractRestListModel::errorString() const {
+  return m_errorString;
+}

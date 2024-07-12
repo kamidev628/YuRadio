@@ -100,9 +100,11 @@ QUrlQuery AbstractRestListModel::composeQuery() const {
     query.addQueryItem(m_orderByQuery, m_orderBy);
   }
 
-  for (const auto &[key, value] :
-       m_pagination->queryParams().asKeyValueRange()) {
-    query.addQueryItem(key, value);
+  if (m_pagination) {
+    for (const auto &[key, value] :
+         m_pagination->queryParams().asKeyValueRange()) {
+      query.addQueryItem(key, value);
+    }
   }
 
   return query;
@@ -110,6 +112,10 @@ QUrlQuery AbstractRestListModel::composeQuery() const {
 
 bool AbstractRestListModel::canFetchMore(const QModelIndex &parent) const {
   CHECK_CANFETCHMORE(parent);
+
+  if (!m_pagination) {
+    return false;
+  }
 
   if (m_reply) {
     return m_pagination->canFetchMore() && m_reply->isFinished();
@@ -132,7 +138,7 @@ QJSValue AbstractRestListModel::fetchMoreHandler() const {
   if (!m_fetchMoreHandler.isCallable()) {
     QQmlEngine *engine = qmlEngine(this);
     if (engine) {
-      m_fetchMoreHandler = engine->evaluate(QStringLiteral("function() {}"));
+      m_fetchMoreHandler = engine->evaluate(QStringLiteral("(function() {})"));
     }
   }
 
@@ -155,7 +161,7 @@ QJSValue AbstractRestListModel::preprocessItem() const {
     QQmlEngine *engine = qmlEngine(this);
     if (engine) {
       m_preprocessItem =
-        engine->evaluate(QStringLiteral("function(obj) { return obj; }"));
+        engine->evaluate(QStringLiteral("(function(obj) { return obj; })"));
     }
   }
 

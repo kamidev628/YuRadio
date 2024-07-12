@@ -59,19 +59,18 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
     return;
   }
 
+  QQmlEngine *engine = qmlEngine(this);
   for (const auto &dataObj : std::as_const(dataArray)) {
     int last = rowCount({});
 
-    beginInsertRows({}, last, last);
+    QJSValue obj = engine->toScriptValue(dataObj.toObject());
+    QVariant maybeItem = preprocessItem().call({obj}).toVariant();
 
-    QQmlEngine *engine = qmlEngine(this);
-    QJSValue obj =
-      engine->toScriptValue<QVariantMap>(dataObj.toObject().toVariantMap());
-
-    QVariantMap item = preprocessItem().call({obj}).toVariant().toMap();
-    m_items.push_back(std::move(item));
-
-    endInsertRows();
+    if (!maybeItem.isNull()) {
+      beginInsertRows({}, last, last);
+      m_items.push_back(maybeItem.toMap());
+      endInsertRows();
+    }
   }
 
   if (m_roleNames.isEmpty()) {

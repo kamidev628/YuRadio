@@ -1,6 +1,7 @@
 #include <QJsonArray>
 
 #include "abstractrestmodel.h"
+#include "modelhelper.h"
 #include "restpagination.h"
 
 AbstractRestListModel::AbstractRestListModel(QObject *parent)
@@ -79,10 +80,6 @@ void AbstractRestListModel::setOrderBy(const QString &newOrderBy) {
   emit orderByChanged();
 }
 
-void AbstractRestListModel::clearReplies() {
-  m_reply.reset();
-}
-
 QUrlQuery AbstractRestListModel::composeQuery() const {
   QUrlQuery query;
 
@@ -108,6 +105,71 @@ QUrlQuery AbstractRestListModel::composeQuery() const {
   return query;
 }
 
+bool AbstractRestListModel::canFetchMore(const QModelIndex &parent) const {
+  CHECK_CANFETCHMORE(parent);
+
+  if (m_reply) {
+    return m_pagination->canFetchMore() && m_reply->isFinished();
+  }
+
+  return m_pagination->canFetchMore();
+}
+
+void AbstractRestListModel::fetchMore(const QModelIndex &parent) {
+  CHECK_FETCHMORE(parent);
+
+  if (!canFetchMore(parent)) {
+    return;
+  }
+
+  fetchMoreHandler().call();
+}
+
+QJSValue AbstractRestListModel::fetchMoreHandler() const {
+  if (!m_fetchMoreHandler.isCallable()) {
+    QQmlEngine *engine = qmlEngine(this);
+    if (engine) {
+      m_fetchMoreHandler = engine->evaluate(QStringLiteral("function() {}"));
+    }
+  }
+
+  return m_fetchMoreHandler;
+}
+
+void AbstractRestListModel::setFetchMoreHandler(
+  const QJSValue &newFetchMoreHandler) {
+  if (!newFetchMoreHandler.isCallable()) {
+    qmlInfo(this) << "fetchMoreHandler must be a callable function";
+    return;
+  }
+
+  m_fetchMoreHandler = newFetchMoreHandler;
+  emit fetchMoreHandlerChanged();
+}
+
+QJSValue AbstractRestListModel::preprocessItem() const {
+  if (!m_preprocessItem.isCallable()) {
+    QQmlEngine *engine = qmlEngine(this);
+    if (engine) {
+      m_preprocessItem =
+        engine->evaluate(QStringLiteral("function(obj) { return obj; }"));
+    }
+  }
+
+  return m_preprocessItem;
+}
+
+void AbstractRestListModel::setPreprocessItem(
+  const QJSValue &newPreprocessItem) {
+  if (!newPreprocessItem.isCallable()) {
+    qmlInfo(this) << "preprocessItem must be a callable function";
+    return;
+  }
+
+  m_preprocessItem = newPreprocessItem;
+  emit preprocessItemChanged();
+}
+
 AbstractRestListModel::Status AbstractRestListModel::status() const {
   return m_status;
 }
@@ -118,4 +180,9 @@ void AbstractRestListModel::setStatus(Status newStatus) {
   }
   m_status = newStatus;
   emit statusChanged();
+}
+
+void AbstractRestListModel::resetRestModel() {
+  setStatus(Null);
+  m_reply = nullptr;
 }

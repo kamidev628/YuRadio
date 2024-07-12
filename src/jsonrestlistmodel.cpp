@@ -1,7 +1,5 @@
 #include "jsonrestlistmodel.h"
 
-#include "restpagination.h"
-
 #include "json.h"
 #include "modelhelper.h"
 
@@ -142,80 +140,15 @@ QString AbstractRestListModel::errorString() const {
   return m_errorString;
 }
 
-bool JsonRestListModel::canFetchMore(const QModelIndex &parent) const {
-  CHECK_CANFETCHMORE(parent);
-
-  if (m_reply) {
-    return m_pagination->canFetchMore() && m_reply->isFinished();
-  }
-
-  return m_pagination->canFetchMore();
-}
-
-void JsonRestListModel::fetchMore(const QModelIndex &parent) {
-  CHECK_FETCHMORE(parent);
-
-  if (!canFetchMore(parent)) {
-    return;
-  }
-
-  fetchMoreHandler().call();
-}
-
 void JsonRestListModel::reset() {
   beginResetModel();
 
   m_items.clear();
   m_roleNames.clear();
 
-  clearReplies();
-  setStatus(Null);
+  resetRestModel();
 
   endResetModel();
-}
-
-QJSValue JsonRestListModel::preprocessItem() const {
-  if (!m_preprocessItem.isCallable()) {
-    QQmlEngine *engine = qmlEngine(this);
-    if (engine) {
-      m_preprocessItem =
-        engine->evaluate(QStringLiteral("function(obj) { return obj; }"));
-    }
-  }
-
-  return m_preprocessItem;
-}
-
-void JsonRestListModel::setPreprocessItem(const QJSValue &newPreprocessItem) {
-  if (!newPreprocessItem.isCallable()) {
-    qmlInfo(this) << "preprocessItem must be a callable function";
-    return;
-  }
-
-  m_preprocessItem = newPreprocessItem;
-  emit preprocessItemChanged();
-}
-
-QJSValue JsonRestListModel::fetchMoreHandler() const {
-  if (!m_fetchMoreHandler.isCallable()) {
-    QQmlEngine *engine = qmlEngine(this);
-    if (engine) {
-      m_fetchMoreHandler = engine->evaluate(QStringLiteral("function() {}"));
-    }
-  }
-
-  return m_fetchMoreHandler;
-}
-
-void JsonRestListModel::setFetchMoreHandler(
-  const QJSValue &newFetchMoreHandler) {
-  if (!newFetchMoreHandler.isCallable()) {
-    qmlInfo(this) << "fetchMoreHandler must be a callable function";
-    return;
-  }
-
-  m_fetchMoreHandler = newFetchMoreHandler;
-  emit fetchMoreHandlerChanged();
 }
 
 QVariantMap JsonRestListModel::get(int row) {

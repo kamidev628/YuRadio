@@ -25,7 +25,6 @@ public:
 
   void nextPage() override;
   void prevPage() override;
-  bool hasNextPage() override;
   QHash<QString, QString> queryParams() const override;
 
   bool canFetchMore() override;

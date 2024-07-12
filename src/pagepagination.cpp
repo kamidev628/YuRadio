@@ -69,10 +69,6 @@ void PagePagination::prevPage() {
   setCurrentPage(m_currentPage - 1);
 }
 
-bool PagePagination::hasNextPage() {
-  return m_perPage * (m_currentPage + 1) <= m_totalCount;
-}
-
 bool PagePagination::canFetchMore() {
   return m_perPage * m_currentPage < m_totalCount;
 }

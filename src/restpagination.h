@@ -19,8 +19,6 @@ public:
   Q_INVOKABLE virtual void nextPage() = 0;
   Q_INVOKABLE virtual void prevPage() = 0;
 
-  Q_INVOKABLE virtual bool hasNextPage() = 0;
-
   int totalCount() const;
 
 signals:

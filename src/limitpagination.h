@@ -21,7 +21,6 @@ public:
   QHash<QString, QString> queryParams() const override;
   void nextPage() override;
   void prevPage() override;
-  bool hasNextPage() override;
   bool canFetchMore() override;
 
   QString limitQuery() const;

@@ -71,10 +71,6 @@ void LimitPagination::prevPage() {
   setOffset(m_offset - m_limit);
 }
 
-bool LimitPagination::hasNextPage() {
-  return m_offset + m_limit <= m_totalCount;
-}
-
 bool LimitPagination::canFetchMore() {
   return m_offset < m_totalCount;
 }

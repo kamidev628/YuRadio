@@ -6,8 +6,6 @@
 #include "network.h"
 #include "restpagination.h"
 
-class NetworkManager;
-
 class AbstractRestListModel : public QAbstractListModel {
   Q_OBJECT
 
@@ -27,7 +25,6 @@ class AbstractRestListModel : public QAbstractListModel {
   Q_PROPERTY(QJSValue fetchMoreHandler READ fetchMoreHandler WRITE
                setFetchMoreHandler NOTIFY fetchMoreHandlerChanged FINAL)
   Q_PROPERTY(Status status READ status NOTIFY statusChanged FINAL)
-  QML_INTERFACE
 
 public:
   AbstractRestListModel(QObject *parent = nullptr);

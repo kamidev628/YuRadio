@@ -9,6 +9,7 @@ class RestPagination : public QObject {
   Q_PROPERTY(
     int totalCount READ totalCount WRITE setTotalCount NOTIFY totalCountChanged)
   QML_INTERFACE
+  QML_UNCREATABLE("")
 
 public:
   explicit RestPagination(QObject *parent = nullptr);

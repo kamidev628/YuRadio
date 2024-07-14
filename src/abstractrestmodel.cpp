@@ -11,7 +11,7 @@ AbstractRestListModel::AbstractRestListModel(QObject *parent)
     : QAbstractListModel(parent), m_status(Null) {}
 
 void AbstractRestListModel::loadPage() {
-  if (m_networkManager->baseUrl().isEmpty()) {
+  if (!m_networkManager->baseUrl().isValid()) {
     qmlWarning(this) << "BaseUrl not set";
     return;
   }
@@ -26,8 +26,8 @@ void AbstractRestListModel::loadPage() {
   future.then(this, [this](const QByteArray &data) {
     handleRequestData(data);
   }).onFailed(this, [this](const NetworkError &err) {
-    setStatus(Error);
     m_errorString = err.message();
+    setStatus(Error);
   });
 }
 
@@ -113,7 +113,7 @@ QUrlQuery AbstractRestListModel::composeQuery() const {
 bool AbstractRestListModel::canFetchMore(const QModelIndex &parent) const {
   CHECK_CANFETCHMORE(parent);
 
-  if (!m_pagination) {
+  if (!m_pagination || !m_networkManager->baseUrl().isValid()) {
     return false;
   }
 
@@ -192,8 +192,8 @@ void AbstractRestListModel::setStatus(Status newStatus) {
 }
 
 void AbstractRestListModel::resetRestModel() {
-  setStatus(Null);
   m_reply = nullptr;
+  setStatus(Null);
 }
 
 QString AbstractRestListModel::orderByQuery() const {

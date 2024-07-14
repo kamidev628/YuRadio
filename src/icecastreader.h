@@ -1,11 +1,7 @@
 #ifndef ICECASTREADER_H
 #define ICECASTREADER_H
 
-#include <QMediaDevices>
 #include <QNetworkReply>
-
-#include <QPointer>
-#include <QThread>
 
 #include "circularbuffer.h"
 #include "network.h"

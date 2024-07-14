@@ -10,6 +10,7 @@ ItemDelegate {
     required property string name
     required property string tags
     required property string url_resolved
+    required property string countrycode
 
     width: ListView.view.width
 
@@ -30,6 +31,19 @@ ItemDelegate {
         source: root.favicon ? root.favicon : "images/radio.png"
         smooth: true
         width: height
+
+        IconImage {
+            anchors {
+                left: parent.left
+                top: parent.top
+                leftMargin: 5
+                topMargin: 5
+            }
+
+            opacity: 0.8
+            source: root.countrycode ? `https://flagsapi.com/${root.countrycode}/flat/24.png` : ''
+            sourceSize: Qt.size(24, 24)
+        }
     }
 
     Item {

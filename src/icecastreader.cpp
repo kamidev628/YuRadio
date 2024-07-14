@@ -33,6 +33,7 @@ IcecastReader::IcecastReader(QObject *parent)
       m_buffer(kAudioBufferMaxSize), m_networkManager(new NetworkManager(this)),
       m_reply(nullptr), m_bytesRead(0) {
   m_networkManager->setRawHeader("Icy-MetaData", "1");
+  m_networkManager->setRawHeader("Connection", "keep-alive");
 
   m_thread = std::make_unique<QThread>();
   moveToThread(m_thread.get());
@@ -107,6 +108,16 @@ bool IcecastReader::writeBuffer(qint64 bytes) {
     return false;
   }
 
+  if (!m_loaded) {
+    qreal progress = qMin(static_cast<qreal>(m_buffer.bytesAvailable()) /
+                            static_cast<qreal>(m_minimumBufferSize),
+                          1.0);
+    emit progressChanged(progress);
+    if (qFuzzyCompare(progress, 1.0)) {
+      m_loaded = true;
+    }
+  }
+
   if (m_buffer.size() >= m_minimumBufferSize) {
     emit audioStreamBufferReady();
   }
@@ -165,10 +176,6 @@ void IcecastReader::readHeaders() {
 
   emit icecastStation(m_containsIcyHeaders);
 
-  if (!m_containsIcyHeaders) {
-    return;
-  }
-
   bool metaIntParsed;
   m_icyMetaInt = m_reply->hasRawHeader("icy-metaint"_L1)
                    ? m_reply->rawHeader("icy-metaint"_L1).toInt(&metaIntParsed)
@@ -211,8 +218,14 @@ void IcecastReader::readHeaders() {
   qCInfo(icecastReaderLog) << "Icy-metaint:" << m_icyMetaInt;
 
   m_downloadTimer.start();
-  connect(m_reply.get(), &QIODevice::readyRead, this,
-          &IcecastReader::replyReadyRead, Qt::QueuedConnection);
+  if (m_icyMetaInt) {
+    connect(m_reply.get(), &QIODevice::readyRead, this,
+            &IcecastReader::replyReadyRead, Qt::QueuedConnection);
+  } else {
+    connect(m_reply.get(), &QIODevice::readyRead, this, [this]() {
+      writeBuffer(m_reply->bytesAvailable());
+    }, Qt::QueuedConnection);
+  }
 }
 
 void IcecastReader::reset() {
@@ -227,6 +240,7 @@ void IcecastReader::reset() {
     m_reply = nullptr;
   }
 
+  m_loaded = false;
   m_bytesRead = 0;
   m_icyMetaLeft = 0;
   m_icyMetaInt = 0;

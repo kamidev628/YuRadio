@@ -17,6 +17,7 @@ class RadioPlayer : public QMediaPlayer {
     QUrl radioUrl READ radioUrl WRITE setRadioUrl NOTIFY radioUrlChanged FINAL)
   Q_PROPERTY(bool icecastHint READ icecastHint WRITE setIcecastHint NOTIFY
                icecastHintChanged FINAL)
+  Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged FINAL)
   QML_ELEMENT
 
 public:
@@ -33,14 +34,19 @@ public:
   bool icecastHint() const;
   void setIcecastHint(bool newIcecastHint);
 
+  qreal progress() const;
+
 signals:
   void icyMetaDataChanged();
   void radioUrlChanged();
 
   void icecastHintChanged();
 
-private:
+  void progressChanged();
+
+protected:
   void setIcyMetaData(const QVariantMap &metaData);
+  void setProgress(qreal newProgress);
 
 private slots:
   void icecastBufferReady();
@@ -58,6 +64,7 @@ private:
 
   QElapsedTimer m_startTimer;
   bool m_icecastHint;
+  qreal m_progress;
 };
 
 #endif /* !RADIOPLAYER_H */

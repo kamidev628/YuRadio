@@ -29,16 +29,21 @@ RadioPlayer::RadioPlayer(QObject *parent)
 
   connect(m_iceCastReader.get(), &IcecastReader::icyMetaDataFetched, this,
           &RadioPlayer::setIcyMetaData);
+  connect(m_iceCastReader.get(), &IcecastReader::progressChanged, this,
+          &RadioPlayer::setProgress);
 
   connect(m_mediaDevices, &QMediaDevices::audioOutputsChanged, this, [this]() {
     audioOutput()->setDevice(QMediaDevices::defaultAudioOutput());
   });
 
   connect(m_iceCastReader.get(), &IcecastReader::icecastStation, this,
-          [](bool isIcecast) {
+          [this](bool isIcecast) {
     if (isIcecast) {
       qInfo() << "Icecast/Shoutcast station";
     } else {
+      //m_iceCastReader->stop();
+      //setIcecastHint(false);
+      //playRadio();
       qInfo() << "NOT Icecast/Shoutcast station";
     }
   });
@@ -56,13 +61,13 @@ void RadioPlayer::playRadio() {
   }
 
   m_startTimer.start();
+  setSourceDevice(nullptr);
   if (!m_icecastHint) {
     setSource(m_radioUrl);
     play();
     return;
   }
 
-  setSourceDevice(nullptr);
   stop();
 
   connect(m_iceCastReader.get(), &IcecastReader::audioStreamBufferReady, this,
@@ -145,4 +150,17 @@ void RadioPlayer::setIcecastHint(bool newIcecastHint) {
   }
   m_icecastHint = newIcecastHint;
   emit icecastHintChanged();
+}
+
+qreal RadioPlayer::progress() const {
+  return m_progress;
+}
+
+void RadioPlayer::setProgress(qreal newProgress) {
+  if (qFuzzyCompare(m_progress, newProgress)) {
+    return;
+  }
+
+  m_progress = newProgress;
+  emit progressChanged();
 }

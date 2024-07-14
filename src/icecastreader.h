@@ -22,6 +22,7 @@ public:
 signals:
   void icecastStation(bool isIcecast);
   void icyMetaDataFetched(const QVariantMap &metaData);
+  void progressChanged(qreal progress);
   void audioStreamBufferReady();
   void stopped();
 
@@ -45,6 +46,8 @@ private:
 
 private:
   std::unique_ptr<QThread> m_thread;
+
+  bool m_loaded;
 
   QByteArray m_icyMetaDataBuffer;
   QVariantMap m_icyMetaData;

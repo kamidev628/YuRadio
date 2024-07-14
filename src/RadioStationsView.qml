@@ -39,6 +39,13 @@ Item {
         }
     }
 
+    function radioModelReset() {
+        radioListView.currentIndex = -1;
+        radioPagination.offset = 0;
+        root.radioModelFiltersChanged();
+        radioModel.reset();
+    }
+
     property ToolBar header: ToolBar {
         id: header
 
@@ -72,10 +79,7 @@ Item {
 
                 searchInput.onAccepted: {
                     root.radioModelAddFilter("name", searchInput.text);
-                    root.radioModelFiltersChanged();
-                    limitOffsetPagination.offset = 0;
-                    radioListView.currentIndex = -1;
-                    radioModel.reset();
+                    root.radioModelReset();
                 }
             }
 
@@ -113,10 +117,7 @@ Item {
                 root.radioModelAddFilter("state", searchFilterDialog.selectedState);
                 root.radioModelAddFilter("language", searchFilterDialog.selectedLanguage);
                 root.radioModelAddFilter("tagList", searchFilterDialog.selectedTags().join(','));
-                root.radioModelFiltersChanged();
-                limitOffsetPagination.offset = 0;
-                radioListView.currentIndex = -1;
-                radioModel.reset();
+                root.radioModelReset();
             }
         }
         onLoaded: item.open()
@@ -133,7 +134,7 @@ Item {
         }
 
         onBaseUrlChanged: {
-            radioModel.reset();
+            root.radioModelReset();
         }
     }
 
@@ -142,7 +143,7 @@ Item {
 
         restManager: apiManager
         pagination: LimitPagination {
-            id: limitOffsetPagination
+            id: radioPagination
             limit: 20
             offset: 0
             totalCount: 60
@@ -171,11 +172,11 @@ Item {
 
         onStatusChanged: {
             if (status == JsonRestListModel.Ready) {
-                limitOffsetPagination.nextPage();
-                if (radioModel.rowCount() % limitOffsetPagination.offset !== 0) {
-                    limitOffsetPagination.totalCount = radioModel.rowCount();
+                radioPagination.nextPage();
+                if (radioModel.rowCount() % radioPagination.offset !== 0) {
+                    radioPagination.totalCount = radioModel.rowCount();
                 } else {
-                    limitOffsetPagination.totalCount = 60;
+                    radioPagination.totalCount = 60;
                 }
             }
         }
@@ -202,40 +203,73 @@ Item {
         width: ListView.view.width
         height: 40
 
-        Rectangle {
+        RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            RowLayout {
-                anchors.fill: parent
+            IconButton {
+                id: orderByButton
 
-                IconButton {
-                    id: orderByButton
+                readonly property bool ascending: orderByButtonScale.yScale == -1
+                readonly property bool descending: !ascending
 
-                    Layout.fillHeight: true
-                    Layout.leftMargin: 10
-
-                    icon.source: 'images/sort.svg'
-                    icon.sourceSize: Qt.size(height, height)
-
-                    //icon.color: Material.color(Material.Grey, Material.Shade100)
-
-                    onClicked: {}
+                Layout.fillHeight: true
+                Layout.leftMargin: 10
+                transform: Scale {
+                    id: orderByButtonScale
+                    origin.x: orderByButton.width / 2
+                    origin.y: orderByButton.height / 2
                 }
-                ListView {
-                    id: rowList
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    orientation: Qt.Horizontal
 
-                    property list<string> dataArray: ["one", "two", "three", "four", "five", "six", "seven"]
+                icon.source: 'images/sort.svg'
+                icon.sourceSize: Qt.size(height, height)
 
-                    model: dataArray
-                    delegate: Text {
-                        required property int index
-                        required property var model
-                        text: rowList.dataArray[index]
+                icon.color: Material.primary
+
+                onClicked: {
+                    orderByButtonScale.yScale *= -1;
+                    radioModel.orderBy = buttonGroup.checkedButton.modelData;
+                    root.radioModelAddFilter("reverse", orderByButton.ascending);
+                    root.radioModelReset();
+                }
+            }
+            ListView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                orientation: Qt.Horizontal
+                spacing: 2
+
+                /* NOTE: We can use Flickable and Repeater but I think
+                 * ListView is better and cleaner
+                 */
+                cacheBuffer: 1000000
+                clip: true
+
+                model: ["name", "country", "state", "language", "votes", "bitrate", "tags"]
+
+                ButtonGroup {
+                    id: buttonGroup
+                    onCheckedButtonChanged: {
+                        radioModel.orderBy = checkedButton.modelData;
+                        root.radioModelAddFilter("reverse", orderByButton.ascending);
+                        root.radioModelReset();
                     }
+                }
+
+                delegate: OutlinedButton {
+                    required property int index
+                    required property string modelData
+
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: ListView.view.height - 6
+                    checked: modelData == "votes"
+
+                    focusPolicy: Qt.NoFocus
+                    autoExclusive: true
+                    checkable: true
+
+                    ButtonGroup.group: buttonGroup
+                    text: modelData
                 }
             }
         }

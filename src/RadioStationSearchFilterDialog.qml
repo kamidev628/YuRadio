@@ -93,9 +93,14 @@ Dialog {
                         id: countriesPagination
                         offset: 0
                         limit: totalCount
-                        totalCount: 200
+                        totalCount: 400
                     }
 
+                    orderByQuery: "order"
+                    orderBy: "stationcount"
+                    filters: {
+                      "reverse": true
+                    }
                     path: "/json/countries"
 
                     preprocessItem: item => item.name && item.iso_3166_1 ? item : undefined

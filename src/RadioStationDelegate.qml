@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-Rectangle {
+ItemDelegate {
     id: root
 
     required property int index
@@ -11,10 +11,7 @@ Rectangle {
     required property string tags
     required property string url_resolved
 
-    signal clicked()
-
     width: ListView.view.width
-    color: "transparent"
 
     implicitHeight: 100
 
@@ -64,11 +61,5 @@ Rectangle {
                 font.pointSize: 14
             }
         }
-    }
-
-    MouseArea {
-        id: clickArea
-        anchors.fill: parent
-        onClicked: root.clicked()
     }
 }

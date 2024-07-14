@@ -12,8 +12,32 @@ import "radiobrowser.mjs" as RadioBrowser
 Item {
     id: root
 
+    focus: true
+
     property alias bottomDrawer: bottomBarDrawer
     required property RadioDrawer mainDrawer
+
+    property var radioModelFilters: ({})
+
+    function openSearchFilterDialog() {
+        /* TODO: underlying drag handler steals drag events from
+         * search-filter-dialog
+         */
+        root.bottomDrawer.close();
+        if (searchFilterDialogLoader.active) {
+            searchFilterDialogLoader.item.open();
+        } else {
+            searchFilterDialogLoader.active = true;
+        }
+    }
+
+    function radioModelAddFilter(key, value) {
+        if (Utils.isEmpty(value)) {
+            delete root.radioModelFilters[key];
+        } else {
+            root.radioModelFilters[key] = value;
+        }
+    }
 
     property ToolBar header: ToolBar {
         id: header
@@ -47,15 +71,8 @@ Item {
                 Layout.bottomMargin: 8
 
                 searchInput.onAccepted: {
-                    if (searchInput.text) {
-                        radioModel.path = "/json/stations/search";
-                        radioModel.filters = {
-                            "name": searchInput.text
-                        };
-                    } else {
-                        radioModel.path = "/json/stations";
-                        radioModel.filters = {};
-                    }
+                    root.radioModelAddFilter("name", searchInput.text);
+                    root.radioModelFiltersChanged();
                     limitOffsetPagination.offset = 0;
                     radioListView.currentIndex = -1;
                     radioModel.reset();
@@ -70,16 +87,39 @@ Item {
                 icon.color: Material.color(Material.Grey, Material.Shade100)
 
                 Layout.rightMargin: 10
-                onClicked: {}
+                onClicked: {
+                    filterIcon.forceActiveFocus();
+                    root.openSearchFilterDialog();
+                }
             }
         }
     }
 
-    LimitPagination {
-        id: limitOffsetPagination
-        limit: 20
-        offset: 0
-        totalCount: 60
+    Loader {
+        id: searchFilterDialogLoader
+
+        active: false
+
+        anchors.fill: parent
+
+        sourceComponent: RadioStationSearchFilterDialog {
+            id: searchFilterDialog
+            implicitWidth: parent.width * 3 / 4
+            implicitHeight: parent.height * 3 / 4
+            anchors.centerIn: parent
+            networkManager: apiManager
+            onAccepted: {
+                root.radioModelAddFilter("country", searchFilterDialog.selectedCountry);
+                root.radioModelAddFilter("state", searchFilterDialog.selectedState);
+                root.radioModelAddFilter("language", searchFilterDialog.selectedLanguage);
+                root.radioModelAddFilter("tagList", searchFilterDialog.selectedTags().join(','));
+                root.radioModelFiltersChanged();
+                limitOffsetPagination.offset = 0;
+                radioListView.currentIndex = -1;
+                radioModel.reset();
+            }
+        }
+        onLoaded: item.open()
     }
 
     NetworkManager {
@@ -101,8 +141,15 @@ Item {
         id: radioModel
 
         restManager: apiManager
-        pagination: limitOffsetPagination
-        path: "/json/stations"
+        pagination: LimitPagination {
+            id: limitOffsetPagination
+            limit: 20
+            offset: 0
+            totalCount: 60
+        }
+
+        path: "/json/stations/search"
+        filters: root.radioModelFilters
 
         orderByQuery: "order"
         orderBy: "votes"
@@ -234,6 +281,9 @@ Item {
         model: radioModel
         delegate: RadioStationDelegate {
             id: delegate
+
+            focus: true
+            focusPolicy: Qt.StrongFocus
 
             onClicked: {
                 if (ListView.view.currentIndex == delegate.index) {

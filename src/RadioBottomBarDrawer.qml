@@ -15,7 +15,7 @@ Rectangle {
     property real progress: (root.height - root.minimumHeight) / (root.maximumHeight - root.minimumHeight)
 
     color: Material.background
-    height: maximumHeight
+    height: minimumHeight
 
     function open() {
         openCloseAnimation.to = maximumHeight;

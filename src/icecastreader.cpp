@@ -14,6 +14,7 @@ Q_LOGGING_CATEGORY(icecastReaderLog, "YuRadio.IcecastReader")
 #include "icecastreader.h"
 
 using namespace Qt::StringLiterals;
+using namespace std::chrono_literals;
 
 constexpr int ICY_MULTIPLIER = 16;
 
@@ -34,6 +35,7 @@ IcecastReader::IcecastReader(QObject *parent)
       m_reply(nullptr), m_bytesRead(0) {
   m_networkManager->setRawHeader("Icy-MetaData", "1");
   m_networkManager->setRawHeader("Connection", "keep-alive");
+  m_networkManager->setTransferTimeout(5s);
 
   m_thread = std::make_unique<QThread>();
   moveToThread(m_thread.get());
@@ -43,6 +45,44 @@ IcecastReader::IcecastReader(QObject *parent)
 IcecastReader::~IcecastReader() {
   QMetaObject::invokeMethod(this, &IcecastReader::cleanup);
   m_thread->wait();
+}
+
+void IcecastReader::startImpl(const QUrl &url) {
+  if (!url.isValid()) {
+    qCWarning(icecastReaderLog)
+      << "Failed to start IcecastReader. Invalid Url provided";
+    return;
+  }
+
+  stop();
+
+  m_buffer.open(QIODevice::ReadWrite | QIODevice::Unbuffered);
+
+  NetworkResponse response = m_networkManager->get(url);
+
+  response.replyFinished
+    .then([](const QByteArray &data) {
+    qCWarning(icecastReaderLog) << "Radio Station Finished:" << data;
+  }).onFailed(this, [this](const NetworkError &err) {
+    emit errorOccurred(err.message());
+
+    stop();
+  });
+
+  m_reply = response.reply;
+
+  connect(m_reply.get(), &QNetworkReply::readyRead, this,
+          &IcecastReader::readHeaders,
+          static_cast<Qt::ConnectionType>(Qt::SingleShotConnection |
+                                          Qt::QueuedConnection));
+}
+
+void IcecastReader::stopImpl() {
+  qCInfo(icecastReaderLog) << "IcecastReader stopped";
+
+  reset();
+
+  emit stopped();
 }
 
 void IcecastReader::replyReadyRead() {
@@ -249,40 +289,6 @@ void IcecastReader::reset() {
 void IcecastReader::cleanup() {
   stop();
   m_thread->quit();
-}
-
-void IcecastReader::startImpl(const QUrl &url) {
-  if (!url.isValid()) {
-    qCWarning(icecastReaderLog)
-      << "Failed to start IcecastReader. Invalid Url provided";
-    return;
-  }
-
-  stop();
-
-  m_buffer.open(QIODevice::ReadWrite | QIODevice::Unbuffered);
-
-  NetworkResponse response = m_networkManager->get(url);
-
-  response.replyFinished.then([](const QByteArray &data) {
-  }).onFailed(this, [this](const NetworkError &err) {
-    emit errorOccurred(err.message());
-  });
-
-  m_reply = response.reply;
-
-  connect(m_reply.get(), &QNetworkReply::readyRead, this,
-          &IcecastReader::readHeaders,
-          static_cast<Qt::ConnectionType>(Qt::SingleShotConnection |
-                                          Qt::QueuedConnection));
-}
-
-void IcecastReader::stopImpl() {
-  qCInfo(icecastReaderLog) << "IcecastReader stopped";
-
-  reset();
-
-  emit stopped();
 }
 
 void IcecastReader::measureDownloadTime() {

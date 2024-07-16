@@ -24,9 +24,9 @@ int main(int argc, char *argv[]) {
     "%{if-debug}D%{endif}%{if-info}I%{endif}%{if-warning}W%{endif}%{if-"
     "critical}C%{endif}%{if-fatal}F%{endif}] %{file}:%{line} - %{message}"));
 
-  QLoggingCategory::setFilterRules(
-    QStringLiteral("YuRadio.*.debug=true\nYuRadio.CircularBuffer.debug="
-                   "false\nHotreloader.*.info=false"));
+  QLoggingCategory::setFilterRules(QStringLiteral(
+    "YuRadio.*.debug=true\nYuRadio.CircularBuffer.debug="
+    "false\nHotreloader.*.info=false\nYuRadio.IcecastReader.info=false"));
   QThread::currentThread()->setObjectName("Main Thread"_L1);
 
   QGuiApplication app(argc, argv);

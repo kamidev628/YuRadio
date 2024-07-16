@@ -165,7 +165,7 @@ void IcecastReader::metaDataRead() {
 
   qCInfo(icecastReaderLog) << "Icy-MetaData:" << m_icyMetaData;
 
-  emit icyMetaDataFetched(m_icyMetaData);
+  emit icyMetaDataChanged(m_icyMetaData);
 }
 
 void IcecastReader::readHeaders() {
@@ -263,6 +263,11 @@ void IcecastReader::startImpl(const QUrl &url) {
   m_buffer.open(QIODevice::ReadWrite | QIODevice::Unbuffered);
 
   NetworkResponse response = m_networkManager->get(url);
+
+  response.replyFinished.then([](const QByteArray &data) {
+  }).onFailed(this, [this](const NetworkError &err) {
+    emit errorOccurred(err.message());
+  });
 
   m_reply = response.reply;
 

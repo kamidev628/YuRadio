@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
@@ -5,9 +7,9 @@ import QtQuick.Layouts
 
 import QtMultimedia
 
-import Main
-
 import "radiobrowser.mjs" as RadioBrowser
+
+import Main
 
 Item {
     id: root
@@ -17,7 +19,9 @@ Item {
     property alias bottomDrawer: bottomBarDrawer
     required property RadioDrawer mainDrawer
 
-    property var radioModelFilters: ({})
+    property var radioModelFilters: ({
+      reverse: true
+    })
 
     function openSearchFilterDialog() {
         /* TODO: underlying drag handler steals drag events from
@@ -127,7 +131,8 @@ Item {
         id: apiManager
 
         Component.onCompleted: {
-            RadioBrowser.get_radiobrowser_base_url_random().then(url => {
+            const radioBrowser = new RadioBrowser.RadioBrowser;
+            radioBrowser.baseUrlRandom().then(url => {
                 console.log("RadioBrowser BaseUrl:", url);
                 baseUrl = url;
             });
@@ -160,12 +165,14 @@ Item {
         }
 
         preprocessItem: function (item) {
+            if (!item.url_resolved && !item.url) {
+                return undefined;
+            }
             item.name = item.name.trim();
             item.tags = item.tags.trim().split(',').join(', ');
             item.language = item.language.trim().split(',').join(', ');
-            const iconExtension = item.favicon.split('.').pop();
-            if (iconExtension == 'ico') {
-                item.favicon = undefined;
+            if (!item.url_resolved) {
+                item.url_resolved = item.url;
             }
             return item;
         }
@@ -199,82 +206,6 @@ Item {
         }
     }
 
-    component HeaderBar: ColumnLayout {
-        width: ListView.view.width
-        height: 40
-
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            IconButton {
-                id: orderByButton
-
-                readonly property bool ascending: orderByButtonScale.yScale == -1
-                readonly property bool descending: !ascending
-
-                Layout.fillHeight: true
-                Layout.leftMargin: 10
-                transform: Scale {
-                    id: orderByButtonScale
-                    origin.x: orderByButton.width / 2
-                    origin.y: orderByButton.height / 2
-                }
-
-                icon.source: 'images/sort.svg'
-                icon.sourceSize: Qt.size(height, height)
-
-                icon.color: Material.primary
-
-                onClicked: {
-                    orderByButtonScale.yScale *= -1;
-                    radioModel.orderBy = buttonGroup.checkedButton.modelData;
-                    root.radioModelAddFilter("reverse", orderByButton.ascending);
-                    root.radioModelReset();
-                }
-            }
-            ListView {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                orientation: Qt.Horizontal
-                spacing: 2
-
-                /* NOTE: We can use Flickable and Repeater but I think
-                 * ListView is better and cleaner
-                 */
-                cacheBuffer: 1000000
-                clip: true
-
-                model: ["name", "country", "state", "language", "votes", "bitrate", "tags"]
-
-                ButtonGroup {
-                    id: buttonGroup
-                    onCheckedButtonChanged: {
-                        radioModel.orderBy = checkedButton.modelData;
-                        root.radioModelAddFilter("reverse", orderByButton.ascending);
-                        root.radioModelReset();
-                    }
-                }
-
-                delegate: OutlinedButton {
-                    required property int index
-                    required property string modelData
-
-                    anchors.verticalCenter: parent.verticalCenter
-                    height: ListView.view.height - 6
-                    checked: modelData == "votes"
-
-                    focusPolicy: Qt.NoFocus
-                    autoExclusive: true
-                    checkable: true
-
-                    ButtonGroup.group: buttonGroup
-                    text: modelData
-                }
-            }
-        }
-    }
-
     component FooterBar: BusyIndicator {
         width: ListView.view.width
         height: visible ? 50 : 0
@@ -296,18 +227,26 @@ Item {
             bottom: bottomBarDrawer.top
         }
 
-        onCurrentItemChanged: {
-            if (currentIndex != -1) {
-                Qt.callLater(radioPlayer.playRadio);
-            }
-        }
         onCurrentIndexChanged: {
             if (currentIndex != -1) {
                 radioPlayer.currentItem = model.get(currentIndex);
+                Qt.callLater(radioPlayer.playRadio);
             }
         }
 
-        header: HeaderBar {}
+        header: RadioStationsViewHeader {
+            id: radioListViewHeader
+
+            function orderChangedHandler() {
+                radioModel.orderBy = orderByField;
+                root.radioModelAddFilter("reverse", descending);
+                root.radioModelReset();
+            }
+
+            onDescendingChanged: orderChangedHandler()
+            onOrderByFieldChanged: orderChangedHandler()
+        }
+
         footer: FooterBar {}
 
         highlight: HighlightBar {}
@@ -323,6 +262,8 @@ Item {
                 if (ListView.view.currentIndex == delegate.index) {
                     radioPlayer.toggleRadio();
                 } else {
+                    const radioBrowser = new RadioBrowser.RadioBrowser;
+                    radioBrowser.click(apiManager.baseUrl, stationuuid);
                     ListView.view.currentIndex = index;
                 }
             }

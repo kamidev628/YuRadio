@@ -30,6 +30,7 @@ qt_add_qml_module(
   RadioBottomBar.qml
   RadioBottomBarDrawer.qml
   RadioStationsView.qml
+  RadioStationsViewHeader.qml
   RadioStationSearchFilterDialog.qml
   OutlinedButton.qml
   ClickableLink.qml

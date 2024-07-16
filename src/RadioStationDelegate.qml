@@ -11,6 +11,7 @@ ItemDelegate {
     required property string tags
     required property string url_resolved
     required property string countrycode
+    required property string stationuuid
 
     width: ListView.view.width
 
@@ -28,6 +29,7 @@ ItemDelegate {
             bottomMargin: 5
         }
 
+        fillMode: Image.PreserveAspectFit
         source: root.favicon ? root.favicon : "images/radio.png"
         smooth: true
         width: height

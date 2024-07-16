@@ -8,7 +8,7 @@
 
 RadioPlayer::RadioPlayer(QObject *parent)
     : QMediaPlayer(parent), m_mediaDevices(new QMediaDevices(this)),
-      m_icecastHint(false) {
+      m_icecastHint(false), m_progress(1) {
   m_iceCastReader = std::make_unique<IcecastReader>();
 
   connect(this, &QMediaPlayer::mediaStatusChanged, this,
@@ -19,6 +19,7 @@ RadioPlayer::RadioPlayer(QObject *parent)
     switch (state) {
       case QMediaPlayer::PlayingState:
         qDebug() << "Radio start time:" << m_startTimer.elapsed();
+        setProgress(1);
         break;
       case QMediaPlayer::StoppedState:
       case QMediaPlayer::PausedState:
@@ -27,7 +28,7 @@ RadioPlayer::RadioPlayer(QObject *parent)
     }
   });
 
-  connect(m_iceCastReader.get(), &IcecastReader::icyMetaDataFetched, this,
+  connect(m_iceCastReader.get(), &IcecastReader::icyMetaDataChanged, this,
           &RadioPlayer::setIcyMetaData);
   connect(m_iceCastReader.get(), &IcecastReader::progressChanged, this,
           &RadioPlayer::setProgress);
@@ -37,13 +38,10 @@ RadioPlayer::RadioPlayer(QObject *parent)
   });
 
   connect(m_iceCastReader.get(), &IcecastReader::icecastStation, this,
-          [this](bool isIcecast) {
+          [](bool isIcecast) {
     if (isIcecast) {
       qInfo() << "Icecast/Shoutcast station";
     } else {
-      //m_iceCastReader->stop();
-      //setIcecastHint(false);
-      //playRadio();
       qInfo() << "NOT Icecast/Shoutcast station";
     }
   });
@@ -61,14 +59,16 @@ void RadioPlayer::playRadio() {
   }
 
   m_startTimer.start();
+
+  setProgress(0);
   setSourceDevice(nullptr);
+  stop();
+
   if (!m_icecastHint) {
     setSource(m_radioUrl);
     play();
     return;
   }
-
-  stop();
 
   connect(m_iceCastReader.get(), &IcecastReader::audioStreamBufferReady, this,
           &RadioPlayer::icecastBufferReady,
@@ -113,7 +113,7 @@ void RadioPlayer::setRadioUrl(const QUrl &newRadioUrl) {
   }
 
   stop();
-  m_iceCastReader->stop();
+  setIcyMetaData({});
 
   m_radioUrl = newRadioUrl;
   emit radioUrlChanged();

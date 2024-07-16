@@ -17,7 +17,7 @@ FocusScope {
     required property RadioPlayer player
 
     property MusicInfo musicInfo
-    property string streamTitle: player.icyMetaData["StreamTitle"] ? player.icyMetaData["StreamTitle"] : ''
+    property string streamTitle: player.icyMetaData["StreamTitle"] && player.icyMetaData["StreamTitle"].trim().length > 4 ? player.icyMetaData["StreamTitle"] : ''
 
     property alias playerButton: playerButton
 
@@ -78,13 +78,17 @@ FocusScope {
                 Layout.fillWidth: true
 
                 Image {
-                    id: imagePlayer
+                    id: stationImage
 
                     smooth: true
                     source: root.stationIcon ? root.stationIcon : "images/radio.png"
 
-                    Layout.maximumHeight: Math.min(root.width / 3, root.height - 8)
-                    Layout.maximumWidth: Layout.maximumHeight
+                    fillMode: Image.PreserveAspectFit
+
+                    Layout.minimumHeight: Math.min(root.width / 3, root.height - 8)
+                    Layout.minimumWidth: Layout.minimumHeight
+                    Layout.maximumHeight: Layout.minimumHeight
+                    Layout.maximumWidth: Layout.minimumHeight
 
                     Layout.leftMargin: 10
                     Layout.fillHeight: true
@@ -111,12 +115,19 @@ FocusScope {
 
                         Label {
                             id: musicTags
-                            text: root.stationTags ? root.stationTags : '⸻'
+                            text: progressBar.visible ? '' : (root.stationTags ? root.stationTags : '⸻')
                             maximumLineCount: 3
 
                             width: parent.width
                             elide: Text.ElideRight
                             font.pointSize: 13
+
+                            ProgressBar {
+                                id: progressBar
+                                anchors.fill: parent
+                                visible: root.player.progress != 1.0
+                                value: root.player.progress
+                            }
                         }
 
                         ColumnLayout {

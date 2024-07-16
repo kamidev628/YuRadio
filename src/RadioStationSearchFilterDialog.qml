@@ -99,7 +99,7 @@ Dialog {
                     orderByQuery: "order"
                     orderBy: "stationcount"
                     filters: {
-                      "reverse": true
+                        "reverse": true
                     }
                     path: "/json/countries"
 
@@ -108,6 +108,21 @@ Dialog {
                     fetchMoreHandler: () => {
                         loadPage();
                         pagination.nextPage();
+                    }
+                }
+
+                Binding {
+                    target: countryCombo.popup.contentItem
+                    property: "header"
+                    value: Component {
+                        ItemDelegate {
+                            text: "SELECT ALL"
+                            width: ListView.view.width
+                            onClicked: {
+                                countryCombo.currentIndex = -1;
+                                countryCombo.popup.close();
+                            }
+                        }
                     }
                 }
 

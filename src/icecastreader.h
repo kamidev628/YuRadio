@@ -21,9 +21,10 @@ public:
 
 signals:
   void icecastStation(bool isIcecast);
-  void icyMetaDataFetched(const QVariantMap &metaData);
+  void icyMetaDataChanged(const QVariantMap &metaData);
   void progressChanged(qreal progress);
   void audioStreamBufferReady();
+  void errorOccurred(const QString &errorString);
   void stopped();
 
 public slots:

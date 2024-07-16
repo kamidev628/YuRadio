@@ -40,5 +40,5 @@ ApplicationWindow {
         }
     }
 
-    header: mainStackView.currentItem.header
+    header: mainStackView.currentItem?.header ?? null
 }

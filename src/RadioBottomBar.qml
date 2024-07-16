@@ -193,7 +193,7 @@ FocusScope {
                     smooth: true
 
                     onClicked: {
-                        root.player.toggleRadio();
+                        root.player.toggle();
                     }
                 }
             }
@@ -321,7 +321,7 @@ FocusScope {
     Connections {
         target: root.player
 
-        function onRadioUrlChanged() {
+        function onSourceChanged() {
             root.musicInfo = null;
         }
 

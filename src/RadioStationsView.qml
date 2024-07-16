@@ -20,8 +20,8 @@ Item {
     required property RadioDrawer mainDrawer
 
     property var radioModelFilters: ({
-      reverse: true
-    })
+            reverse: true
+        })
 
     function openSearchFilterDialog() {
         /* TODO: underlying drag handler steals drag events from
@@ -230,7 +230,7 @@ Item {
         onCurrentIndexChanged: {
             if (currentIndex != -1) {
                 radioPlayer.currentItem = model.get(currentIndex);
-                Qt.callLater(radioPlayer.playRadio);
+                Qt.callLater(radioPlayer.play);
             }
         }
 
@@ -260,7 +260,7 @@ Item {
 
             onClicked: {
                 if (ListView.view.currentIndex == delegate.index) {
-                    radioPlayer.toggleRadio();
+                    radioPlayer.toggle();
                 } else {
                     const radioBrowser = new RadioBrowser.RadioBrowser;
                     radioBrowser.click(apiManager.baseUrl, stationuuid);
@@ -321,7 +321,7 @@ Item {
 
         visible: !bottomBar.playerButton.visible
         onClicked: {
-            radioPlayer.toggleRadio();
+            radioPlayer.toggle();
         }
 
         width: 60
@@ -333,7 +333,7 @@ Item {
 
         property var currentItem: undefined
 
-        radioUrl: currentItem ? currentItem.url_resolved : ""
+        source: currentItem ? currentItem.url_resolved : ""
         icecastHint: currentItem ? /MP3|mp3|AAC|aac/.test(currentItem.codec) : false
         audioOutput: AudioOutput {
             volume: 0.3

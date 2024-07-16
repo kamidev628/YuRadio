@@ -1,3 +1,6 @@
+#include <QLoggingCategory>
+Q_LOGGING_CATEGORY(networkManagerLog, "YuRest.NetworkManager")
+
 #include <QJsonDocument>
 #include <QJsonObject>
 
@@ -58,13 +61,13 @@ NetworkError NetworkManager::checkNetworkErrors(QNetworkReply *reply) {
                            .arg(requestMethodToString(reply->operation()))
                            .arg(reply->request().url().toString());
 
-  qInfo().noquote() << debugMessage;
+  qCInfo(networkManagerLog).noquote() << debugMessage;
 
   QString errorMessage;
 
   if (isReplyError) {
     QString response;
-    QByteArray data = reply->readAll();
+    QByteArray data = reply->isReadable() ? reply->readAll() : "";
 
     if (reply->header(QNetworkRequest::ContentTypeHeader)
           .toString()
@@ -78,8 +81,8 @@ NetworkError NetworkManager::checkNetworkErrors(QNetworkReply *reply) {
 
     errorMessage = reply->errorString() + response;
 
-    qWarning().noquote() << QString("\t[NetworkError](%1): ").arg(httpCode)
-                         << errorMessage;
+    qCWarning(networkManagerLog).noquote()
+      << QString("\t[NetworkError](%1): ").arg(httpCode) << errorMessage;
   }
 
   return {reply->error(), errorMessage};
@@ -172,7 +175,7 @@ NetworkResponse NetworkManager::makeFutureReply(QNetworkReply *replyBase) {
       throw std::move(maybeError);
     }
 
-    return reply->readAll();
+    return reply->isReadable() ? reply->readAll() : "";
   });
 
   return {replyFinished, reply};

@@ -32,6 +32,8 @@ qt_add_qml_module(
   RadioStationsView.qml
   RadioStationsViewHeader.qml
   RadioStationSearchFilterDialog.qml
+  PullToRefreshHandler.qml
+  PullToRefreshIndicator.qml
   OutlinedButton.qml
   ClickableLink.qml
   SearchBar.qml

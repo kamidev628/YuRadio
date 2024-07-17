@@ -48,6 +48,7 @@ Item {
         radioPagination.offset = 0;
         root.radioModelFiltersChanged();
         radioModel.reset();
+        radioListView.flick(0, 1);
     }
 
     property ToolBar header: ToolBar {
@@ -151,7 +152,7 @@ Item {
             id: radioPagination
             limit: 20
             offset: 0
-            totalCount: 60
+            totalCount: 50
         }
 
         path: "/json/stations/search"
@@ -215,10 +216,12 @@ Item {
     ListView {
         id: radioListView
 
-        cacheBuffer: 300
         currentIndex: -1
         clip: true
         focus: true
+
+        boundsMovement: Flickable.StopAtBounds
+        boundsBehavior: Flickable.DragOverBounds
 
         anchors {
             top: parent.top
@@ -234,6 +237,10 @@ Item {
             }
         }
 
+        onCountChanged:
+        //flick(0, 1);
+        {}
+
         header: RadioStationsViewHeader {
             id: radioListViewHeader
 
@@ -246,10 +253,9 @@ Item {
             onDescendingChanged: orderChangedHandler()
             onOrderByFieldChanged: orderChangedHandler()
         }
-
         footer: FooterBar {}
-
         highlight: HighlightBar {}
+
         highlightFollowsCurrentItem: false
         model: radioModel
         delegate: RadioStationDelegate {
@@ -266,6 +272,40 @@ Item {
                     radioBrowser.click(apiManager.baseUrl, stationuuid);
                     ListView.view.currentIndex = index;
                 }
+            }
+        }
+
+        Timer {
+            id: apiTimeoutTimer
+
+            property bool apiBusy: false
+
+            interval: 2000
+            repeat: false
+
+            onRunningChanged: {
+                if (running) {
+                    apiBusy = true;
+                }
+            }
+
+            onTriggered: {
+                apiBusy = false;
+            }
+        }
+
+        PullToRefreshHandler {
+            id: pullToRefreshHandler
+            enabled: radioListView.atYBeginning && radioListView.dragging && radioModel.status !== JsonRestListModel.Loading && !apiTimeoutTimer.apiBusy || isPullingDown
+
+            onPullDownRelease: {
+                console.log("PullDownRelease");
+                root.radioModelReset();
+                apiTimeoutTimer.start();
+            }
+
+            onPullUpRelease: {
+                console.log("Pull Up release");
             }
         }
     }

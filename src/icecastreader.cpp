@@ -245,6 +245,10 @@ void IcecastReader::readHeaders() {
   if (!bitrateParsed) {
     m_bitrate = kRadioMaxBitrate;
   }
+  if (m_bitrate % 1000 == 0) {
+    /* Sometimes stations put bitrate in wrong units */
+    m_bitrate /= 1000;
+  }
 
   m_minimumBufferSize =
     qMax(kAudioBufferMinSizeMs * m_bitrate / 8, kAudioBufferMinSize);

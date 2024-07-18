@@ -90,3 +90,7 @@ Session.vim
 
 # Qml
 .qmlls.ini
+
+# Android
+.idea
+local.properties

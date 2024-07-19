@@ -277,35 +277,26 @@ Item {
 
         Timer {
             id: apiTimeoutTimer
+            interval: 3000
+        }
 
-            property bool apiBusy: false
-
-            interval: 2000
-            repeat: false
-
-            onRunningChanged: {
-                if (running) {
-                    apiBusy = true;
-                }
-            }
-
-            onTriggered: {
-                apiBusy = false;
-            }
+        Timer {
+            id: refreshTimer
+            interval: 1000
         }
 
         PullToRefreshHandler {
             id: pullToRefreshHandler
-            enabled: radioListView.atYBeginning && radioListView.dragging && radioModel.status !== JsonRestListModel.Loading && !apiTimeoutTimer.apiBusy || isPullingDown
+            enabled: isProcessing && !apiTimeoutTimer.running && radioListView.verticalOvershoot <= 0
+            refreshCondition: refreshTimer.running
 
             onPullDownRelease: {
-                console.log("PullDownRelease");
+                refreshTimer.start();
                 root.radioModelReset();
-                apiTimeoutTimer.start();
             }
 
-            onPullUpRelease: {
-                console.log("Pull Up release");
+            onRefreshed: {
+                apiTimeoutTimer.start();
             }
         }
     }

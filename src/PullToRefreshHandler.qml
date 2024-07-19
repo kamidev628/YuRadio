@@ -5,28 +5,30 @@ Item {
     anchors.fill: parent
 
     property Flickable target: parent as Flickable
-    property int threshold: 100
+    property int minimumThreshold: 100
+    property int maximumThreshold: 150
+    property bool refreshCondition: false
+
+    readonly property bool isPulling: isPullingDown || isPullingUp
+    readonly property bool isProcessing: isPulling || target?.verticalOvershoot
 
     readonly property alias isPullDown: internal.isPullDown
     readonly property alias isPullUp: internal.isPullUp
     readonly property alias isPullingDown: internal.isPullingDown
     readonly property alias isPullingUp: internal.isPullingUp
-    readonly property alias progress: internal.progress
+    readonly property alias minimumProgress: internal.minimumProgress
+    readonly property alias maximumProgress: internal.maximumProgress
 
     property alias refreshIndicator: refreshIndicatorLoader
-    property int dragDirection: PullToRefreshHandler.TopToBottom
 
     signal pullDown
     signal pullUp
     signal pullDownRelease
     signal pullUpRelease
 
-    property Component refreshIndicatorDelegate: PullToRefreshIndicator {}
+    signal refreshed
 
-    enum DragDirection {
-        TopToBottom,
-        BottomToTop
-    }
+    property Component refreshIndicatorDelegate: PullToRefreshIndicator {}
 
     QtObject {
         id: internal
@@ -34,45 +36,52 @@ Item {
         property bool isPullUp: false
         property bool isPullingDown: false
         property bool isPullingUp: false
-        property int threshold: root.threshold
 
-        property real progress: {
-            if (!root.enabled || !root.target || !threshold)
+        property real minimumProgress: {
+            if (!root.enabled || !root.target || !root.minimumThreshold)
                 return 0;
-            return Math.min(Math.abs(root.target.verticalOvershoot) / threshold, 1.0);
+            return Math.min(Math.abs(root.target.verticalOvershoot) / root.minimumThreshold, 1.0);
+        }
+        property real maximumProgress: {
+            if (!root.enabled || !root.target || !root.maximumThreshold)
+                return 0;
+            return Math.min(Math.abs(root.target.verticalOvershoot) / root.maximumThreshold, 1.0);
         }
     }
 
     Connections {
         target: root.target
-        enabled: root.enabled
+        enabled: root.enabled && !root.isPulling
 
-        function onVerticalOvershootChanged() {
-            console.log("verticalOvershoot", root.target.verticalOvershoot);
-            console.log("dragging", root.target.dragging);
-            if (!root.target.verticalOvershoot) {
-                internal.isPullingDown = false;
-                internal.isPullingUp = false;
+        function onDraggingChanged() {
+            if (!root.target.dragging) {
                 if (internal.isPullDown) {
+                    internal.isPullingDown = true;
                     internal.isPullDown = false;
                     root.pullDownRelease();
                 }
                 if (internal.isPullUp) {
+                    internal.isPullingUp = true;
                     internal.isPullUp = false;
                     root.pullUpRelease();
                 }
             }
-            if (root.target.verticalOvershoot < 0 && root.target.dragging) {
-                internal.isPullingDown = true;
-                if (-root.target.verticalOvershoot > internal.threshold) {
+        }
+
+        function onVerticalOvershootChanged() {
+            if (root.target.verticalOvershoot < 0) {
+                if (-root.target.verticalOvershoot > root.minimumThreshold) {
                     internal.isPullDown = true;
                     root.pullDown();
+                } else {
+                    internal.isPullDown = false;
                 }
-            } else if (root.target.verticalOvershoot > 0 && root.target.dragging) {
-                internal.isPullingUp = true;
-                if (root.target.verticalOvershoot > internal.threshold) {
+            } else if (root.target.verticalOvershoot > 0) {
+                if (root.target.verticalOvershoot > root.minimumThreshold) {
                     internal.isPullUp = true;
                     root.pullUp();
+                } else {
+                    internal.isPullUp = false;
                 }
             }
         }
@@ -81,11 +90,27 @@ Item {
     Loader {
         id: refreshIndicatorLoader
 
-        property real dragProgress: internal.progress
-        property int threshold: internal.threshold
-        property PullToRefreshHandler handler: root as PullToRefreshHandler
+        property alias minimumProgress: internal.minimumProgress
+        property alias maximumProgress: internal.maximumProgress
+        property alias minimumThreshold: root.minimumThreshold
+        property alias maximumThreshold: root.maximumThreshold
+        property alias isPullingDown: internal.isPullingDown
+        property alias isPullingUp: internal.isPullingUp
+        property alias isPulling: root.isPulling
+        property alias refreshCondition: root.refreshCondition
+        property alias handler: root
 
-        active: root.enabled && internal.progress > 0
+        Connections {
+            target: refreshIndicatorLoader.item
+
+            function onFullyRefreshedChanged() {
+                internal.isPullingDown = false;
+                internal.isPullingUp = false;
+                root.refreshed();
+            }
+        }
+
+        active: root.enabled && root.isProcessing
         sourceComponent: root.refreshIndicatorDelegate
     }
 }

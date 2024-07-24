@@ -38,6 +38,7 @@ IcecastReader::IcecastReader(QObject *parent)
   m_networkManager->setTransferTimeout(5s);
 
   m_thread = std::make_unique<QThread>();
+  m_thread->setObjectName("IcecastReader"_L1);
   moveToThread(m_thread.get());
   m_thread->start();
 }
@@ -209,6 +210,10 @@ void IcecastReader::metaDataRead() {
 }
 
 void IcecastReader::readHeaders() {
+  if (!m_reply) {
+    return;
+  }
+
   qCDebug(icecastReaderLog) << "Headers:" << m_reply->rawHeaderPairs();
 
   bool m_containsIcyHeaders = m_reply->hasRawHeader("icy-name"_L1) ||

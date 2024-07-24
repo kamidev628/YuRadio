@@ -11,24 +11,16 @@
 static const char virtualKeyboardListenerClassName[] =
   "org/yuradio/VirtualKeyboardListener";
 
-void AndroidKeyboard::virtualKeyboardStateChanged(JNIEnv * /*env*/,
-                                                  jobject /*thiz*/,
-                                                  jint VirtualKeyboardHeight) {
-  AndroidKeyboard *keyboard = AndroidKeyboard::instance();
-  keyboard->setHeight(VirtualKeyboardHeight);
-  qInfo() << "Keyboard height:" << VirtualKeyboardHeight;
+AndroidKeyboard::AndroidKeyboard(QObject *parent) : QObject{parent} {
+  QJniObject virtualKeyboardListener(virtualKeyboardListenerClassName);
+  QJniObject activity(QNativeInterface::QAndroidApplication::context());
+  virtualKeyboardListener.callMethod<void>(
+    "install", "(Landroid/app/Activity;)V", activity.object());
 }
 
-AndroidKeyboard::AndroidKeyboard(QObject *parent) : QObject{parent} {
-  std::initializer_list<JNINativeMethod> methods = {
-    {"VirtualKeyboardStateChanged", "(I)V",
-     reinterpret_cast<void *>(virtualKeyboardStateChanged)}};
-
-  QJniEnvironment env;
-  env.registerNativeMethods(virtualKeyboardListenerClassName, methods);
-
-  QJniObject::callStaticMethod<void>(virtualKeyboardListenerClassName,
-                                     "InstallKeyboardListener");
+AndroidKeyboard *AndroidKeyboard::instance() {
+  static AndroidKeyboard keyboard;
+  return &keyboard;
 }
 
 int AndroidKeyboard::height() const {
@@ -42,4 +34,21 @@ void AndroidKeyboard::setHeight(int newHeight) {
     m_height = newHeight;
     emit heightChanged();
   }
+}
+
+void AndroidKeyboard::virtualKeyboardStateChanged(JNIEnv * /*env*/,
+                                                  jobject /*thiz*/,
+                                                  jint VirtualKeyboardHeight) {
+  AndroidKeyboard *keyboard = AndroidKeyboard::instance();
+  keyboard->setHeight(VirtualKeyboardHeight);
+  qInfo() << "Keyboard height:" << VirtualKeyboardHeight;
+}
+
+void AndroidKeyboard::registerNativeMethods() {
+  std::initializer_list<JNINativeMethod> methods = {
+    {"VirtualKeyboardStateChanged", "(I)V",
+     reinterpret_cast<void *>(virtualKeyboardStateChanged)}};
+
+  QJniEnvironment env;
+  env.registerNativeMethods(virtualKeyboardListenerClassName, methods);
 }

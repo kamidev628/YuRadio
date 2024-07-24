@@ -19,12 +19,10 @@ class AndroidKeyboard : public QObject {
   Q_PROPERTY(int height READ height NOTIFY heightChanged FINAL)
 
 public:
-  static AndroidKeyboard *instance() {
-    static AndroidKeyboard keyboard;
-    return &keyboard;
-  }
+  static AndroidKeyboard *instance();
 
   int height() const;
+  static void registerNativeMethods();
 
 signals:
   void heightChanged();

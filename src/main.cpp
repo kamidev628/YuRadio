@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
   qDebug() << "Device supports OpenSSL:" << QSslSocket::supportsSsl();
 #ifdef Q_OS_ANDROID
   NativeMediaController::registerNativeMethods();
+  AndroidKeyboard::registerNativeMethods();
   /* Rename android UI thread*/
   QNativeInterface::QAndroidApplication::runOnAndroidMainThread([]() {
     QThread::currentThread()->setObjectName("Android Main Thread"_L1);

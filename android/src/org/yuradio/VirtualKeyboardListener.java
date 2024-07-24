@@ -6,42 +6,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-public class VirtualKeyboardListener
-{
-    private static Activity m_ActivityInstance;
+public class VirtualKeyboardListener {
+    private Activity activity;
 
-    public static void Init(Activity ActivityInstance)
-    {
-        m_ActivityInstance = ActivityInstance;
+    public void install(Activity activity) {
+        this.activity = activity;
+        InstallKeyboardListener();
     }
 
-    public static native void VirtualKeyboardStateChanged(int VirtualKeyboardHeight);
+    public native void VirtualKeyboardStateChanged(int VirtualKeyboardHeight);
 
-    public static void InstallKeyboardListener()
-    {
-        final View AppRootView = ((ViewGroup)m_ActivityInstance.findViewById(android.R.id.content)).getChildAt(0);
+    private void InstallKeyboardListener() {
+        final View AppRootView = ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
 
-        AppRootView.getViewTreeObserver().addOnGlobalLayoutListener(
-            new ViewTreeObserver.OnGlobalLayoutListener()
-            {
-                @Override
-                public void onGlobalLayout()
-                {
-                    int ScreenHeight, VirtualKeyboardHeight;
-                    Rect WindowFrameRect = new Rect();
-                    Rect ContentFrameRect = new Rect();
+        AppRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int ScreenHeight, VirtualKeyboardHeight;
+                Rect WindowFrameRect = new Rect();
+                Rect ContentFrameRect = new Rect();
 
-                    m_ActivityInstance.getWindow().getDecorView().getWindowVisibleDisplayFrame(WindowFrameRect);
-                    AppRootView.getWindowVisibleDisplayFrame(ContentFrameRect);
-                    ScreenHeight = AppRootView.getRootView().getHeight();
+                activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(WindowFrameRect);
+                AppRootView.getWindowVisibleDisplayFrame(ContentFrameRect);
+                ScreenHeight = AppRootView.getRootView().getHeight();
 
-                    VirtualKeyboardHeight = (ScreenHeight - (ContentFrameRect.bottom - ContentFrameRect.top) - WindowFrameRect.top);
+                VirtualKeyboardHeight = (ScreenHeight - (ContentFrameRect.bottom - ContentFrameRect.top) - WindowFrameRect.top);
 
-                    if(VirtualKeyboardHeight < 100) VirtualKeyboardHeight = 0;
+                if (VirtualKeyboardHeight < 100) VirtualKeyboardHeight = 0;
 
-                    VirtualKeyboardStateChanged(VirtualKeyboardHeight);
-                }
+                VirtualKeyboardStateChanged(VirtualKeyboardHeight);
             }
-        );
+        });
     }
 }

@@ -20,7 +20,8 @@ public class NativeMediaController {
         final static int Paused = 2;
     }
 
-    NativeMediaController() {}
+    NativeMediaController() {
+    }
 
     native public void onIsLoadingChangedNative(boolean isLoading);
 
@@ -72,7 +73,7 @@ public class NativeMediaController {
                     onMediaTitleChangedNative((String) mediaMetadata.title);
                 }
                 Listener.super.onMediaMetadataChanged(mediaMetadata);
-            } 
+            }
 
             @Override
             public void onIsLoadingChanged(boolean isLoading) {
@@ -124,7 +125,7 @@ public class NativeMediaController {
         if (controller == null) {
             return;
         }
-        
+
         new Handler(controller.getApplicationLooper()).post(new Runnable() {
             @Override
             public void run() {

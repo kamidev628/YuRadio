@@ -9,7 +9,6 @@ public class AppActivity extends MediaPlayerActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        VirtualKeyboardListener.Init(this);
         super.onCreate(savedInstanceState);
     }
 

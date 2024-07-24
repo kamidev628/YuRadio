@@ -365,9 +365,5 @@ Item {
         property var currentItem: undefined
 
         source: currentItem ? currentItem.url_resolved : ""
-        icecastHint: currentItem ? /MP3|mp3|AAC|aac/.test(currentItem.codec) : false
-        audioOutput: AudioOutput {
-            volume: 0.3
-        }
     }
 }

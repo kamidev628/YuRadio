@@ -6,7 +6,8 @@
 #include "hotreloaderclient.h"
 
 #ifdef Q_OS_ANDROID
-  #include "androidkeyboard.h"
+  #include "android/androidkeyboard.h"
+  #include "android/nativemediacontroller.h"
 #endif /* Q_OS_ANDROID */
 
 #include <QDir>
@@ -42,6 +43,12 @@ int main(int argc, char *argv[]) {
 
   qDebug() << "Device supports OpenSSL:" << QSslSocket::supportsSsl();
 #ifdef Q_OS_ANDROID
+  NativeMediaController::registerNativeMethods();
+  /* Rename android UI thread*/
+  QNativeInterface::QAndroidApplication::runOnAndroidMainThread([]() {
+    QThread::currentThread()->setObjectName("Android Main Thread"_L1);
+  });
+
   engine.rootContext()->setContextProperty("androidKeyboard",
                                            AndroidKeyboard::instance());
 #endif /* Q_OS_ANDROID */

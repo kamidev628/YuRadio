@@ -2,6 +2,7 @@
 #define ANDROIDKEYBOARD_H
 
 #include <QObject>
+#include <QReadWriteLock>
 
 #include <QJniEnvironment>
 #include <QJniObject>
@@ -37,6 +38,7 @@ private:
 
 private:
   int m_height;
+  mutable QReadWriteLock m_rwLock;
 };
 
 #endif  // ANDROIDKEYBOARD_H

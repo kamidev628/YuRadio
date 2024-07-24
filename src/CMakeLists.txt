@@ -71,6 +71,10 @@ qt_add_qml_module(
   abstractrestmodel.cpp
   jsonrestlistmodel.h
   jsonrestlistmodel.cpp
+  basicradiocontroller.cpp
+  basicradiocontroller.h
+  platformradiocontroller.cpp
+  platformradiocontroller.h
   RESOURCES
   images/search.svg
   images/trash.svg
@@ -110,7 +114,16 @@ if(ANDROID)
 endif()
 
 if(ANDROID)
-  target_sources(YuRadio PRIVATE androidkeyboard.h androidkeyboard.cpp)
+  target_sources(
+    YuRadio
+    PRIVATE android/androidkeyboard.h
+            android/androidkeyboard.cpp
+            android/androidradiocontroller.cpp
+            android/androidradiocontroller.h
+            android/nativemediacontroller.cpp
+            android/nativemediacontroller.h
+            android/notificationclient.cpp
+            android/notificationclient.h)
   add_android_openssl_libraries(YuRadio)
 endif()
 

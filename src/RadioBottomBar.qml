@@ -17,7 +17,7 @@ FocusScope {
     required property RadioPlayer player
 
     property MusicInfo musicInfo
-    property string streamTitle: player.icyMetaData["StreamTitle"] && player.icyMetaData["StreamTitle"].trim().length > 4 ? player.icyMetaData["StreamTitle"] : ''
+    property string streamTitle: player.streamTitle && player.streamTitle.trim().length > 4 ? player.streamTitle : ''
 
     property alias playerButton: playerButton
 
@@ -115,18 +115,26 @@ FocusScope {
 
                         Label {
                             id: musicTags
-                            text: progressBar.visible ? '' : (root.stationTags ? root.stationTags : '⸻')
+                            text: progressBar.visible || errorText.visible ? '' : (root.stationTags ? root.stationTags : '⸻')
                             maximumLineCount: 3
 
                             width: parent.width
                             elide: Text.ElideRight
                             font.pointSize: 13
 
+                            Label {
+                                id: errorText
+                                anchors.fill: parent
+                                Material.foreground: Material.Red
+                                text: visible ? root.player.errorString : ``
+                                elide: Text.ElideRight
+                                visible: root.player.error != RadioPlayer.NoError && !progressBar.visible
+                            }
                             ProgressBar {
                                 id: progressBar
+                                indeterminate: true
                                 anchors.fill: parent
-                                visible: root.player.progress != 1.0
-                                value: root.player.progress
+                                visible: root.player.loading && !root.player.playing
                             }
                         }
 
@@ -325,7 +333,7 @@ FocusScope {
             root.musicInfo = null;
         }
 
-        function onIcyMetaDataChanged() {
+        function onStreamTitleChanged() {
             root.musicInfo = null;
             updateMusicInfoTimer.start();
         }

@@ -1,6 +1,15 @@
 #include <QDebug>
+#include <QJniEnvironment>
+#include <QThread>
+
+#include <QtCore/private/qandroidextras_p.h>
+
+#include <QReadLocker>
 
 #include "androidkeyboard.h"
+
+static const char virtualKeyboardListenerClassName[] =
+  "org/yuradio/VirtualKeyboardListener";
 
 void AndroidKeyboard::virtualKeyboardStateChanged(JNIEnv * /*env*/,
                                                   jobject /*thiz*/,
@@ -11,28 +20,24 @@ void AndroidKeyboard::virtualKeyboardStateChanged(JNIEnv * /*env*/,
 }
 
 AndroidKeyboard::AndroidKeyboard(QObject *parent) : QObject{parent} {
-  JNINativeMethod methods[] = {
+  std::initializer_list<JNINativeMethod> methods = {
     {"VirtualKeyboardStateChanged", "(I)V",
      reinterpret_cast<void *>(virtualKeyboardStateChanged)}};
 
-  QJniObject javaClass("org/yuradio/VirtualKeyboardListener");
   QJniEnvironment env;
+  env.registerNativeMethods(virtualKeyboardListenerClassName, methods);
 
-  jclass objectClass = env->GetObjectClass(javaClass.object<jobject>());
-
-  env->RegisterNatives(objectClass, methods,
-                       sizeof(methods) / sizeof(methods[0]));
-  env->DeleteLocalRef(objectClass);
-
-  QJniObject::callStaticMethod<void>("org/yuradio/VirtualKeyboardListener",
+  QJniObject::callStaticMethod<void>(virtualKeyboardListenerClassName,
                                      "InstallKeyboardListener");
 }
 
 int AndroidKeyboard::height() const {
+  QReadLocker locker(&m_rwLock);
   return m_height;
 }
 
 void AndroidKeyboard::setHeight(int newHeight) {
+  QWriteLocker locker(&m_rwLock);
   if (m_height != newHeight) {
     m_height = newHeight;
     emit heightChanged();

@@ -1,11 +1,32 @@
 package org.yuradio;
 
-import android.app.Activity;
+import android.os.Bundle;
 
-public class AppActivity extends org.qtproject.qt.android.bindings.QtActivity
-{
-    public AppActivity()
-    {
+import androidx.media3.common.util.Log;
+
+public class AppActivity extends MediaPlayerActivity {
+    private static final String TAG = AppActivity.class.getSimpleName();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         VirtualKeyboardListener.Init(this);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        Log.i(TAG, "Stop");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.i(TAG, "Destroyed");
+        super.onDestroy();
     }
 }

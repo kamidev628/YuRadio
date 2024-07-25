@@ -18,6 +18,7 @@ FocusScope {
 
     property MusicInfo musicInfo
     property string streamTitle: player.streamTitle && player.streamTitle.trim().length > 4 ? player.streamTitle : ''
+    property string lastStreamTitle: ""
 
     property alias playerButton: playerButton
 
@@ -296,33 +297,11 @@ FocusScope {
         interval: 500
         repeat: false
 
-        property string lastStreamTitle
+        running: root.streamTitle && root.streamTitle !== root.lastStreamTitle && Application.state == Qt.ApplicationActive && secondaryColumnLayout.visible
 
         onTriggered: {
-            if (root.streamTitle && root.streamTitle !== lastStreamTitle && Application.state == Qt.ApplicationActive && secondaryColumnLayout.visible) {
-                lastStreamTitle = root.streamTitle;
-                musicInfoProvider.provide(root.streamTitle);
-            }
-        }
-    }
-
-    Connections {
-        target: Application
-
-        function onStateChanged() {
-            if (Application.state == Qt.ApplicationActive) {
-                updateMusicInfoTimer.start();
-            }
-        }
-    }
-
-    Connections {
-        target: secondaryColumnLayout
-
-        function onVisibleChanged() {
-            if (secondaryColumnLayout.visible) {
-                updateMusicInfoTimer.start();
-            }
+            root.lastStreamTitle = root.streamTitle;
+            musicInfoProvider.provide(root.streamTitle);
         }
     }
 
@@ -330,12 +309,12 @@ FocusScope {
         target: root.player
 
         function onSourceChanged() {
+            root.lastStreamTitle = root.streamTitle
             root.musicInfo = null;
         }
 
         function onStreamTitleChanged() {
             root.musicInfo = null;
-            updateMusicInfoTimer.start();
         }
     }
 }

@@ -29,13 +29,6 @@ IcecastReaderProxyServer::IcecastReaderProxyServer(QObject *parent)
 }
 
 void IcecastReaderProxyServer::setTargetSource(const QUrl &targetSource) {
-  if (m_client) {
-    m_client->disconnectFromHost();
-  }
-  if (m_reply) {
-    m_reply->abort();
-  }
-
   m_targetSource = targetSource;
 }
 
@@ -48,6 +41,10 @@ quint16 IcecastReaderProxyServer::serverPort() const {
 }
 
 void IcecastReaderProxyServer::clientConnected() {
+  if (m_reply) {
+    m_reply->abort();
+  }
+
   m_client = m_server->nextPendingConnection();
 
   QNetworkRequest request(m_targetSource);
@@ -62,29 +59,9 @@ void IcecastReaderProxyServer::clientConnected() {
   connect(m_reply, &QNetworkReply::readyRead, this,
           &IcecastReaderProxyServer::replyReadHeaders,
           Qt::SingleShotConnection);
-  connect(m_reply, &QNetworkReply::finished, m_reply, [this]() {
-    qCDebug(icecastReaderProxyServerLog) << "Reply finished";
-
-    m_reply->deleteLater();
-
-    int statusCode =
-      m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    QByteArray reasonPhrase =
-      m_reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute)
-        .toByteArray();
-    if (!statusCode || reasonPhrase.isEmpty()) {
-      statusCode = 500;
-      reasonPhrase = "Internal Server Error";
-    }
-
-    if (m_client) {
-      m_client->write(QString("HTTP/1.1 %1 %2\r\n\r\n")
-                        .arg(statusCode)
-                        .arg(reasonPhrase)
-                        .toLocal8Bit());
-      m_client->disconnectFromHost();
-    }
-  });
+  connect(m_reply, &QNetworkReply::finished, m_reply, &QObject::deleteLater);
+  connect(m_reply, &QNetworkReply::finished, m_client,
+          &QTcpSocket::disconnectFromHost);
 }
 
 void IcecastReaderProxyServer::replyReadHeaders() {
@@ -99,29 +76,39 @@ void IcecastReaderProxyServer::replyReadHeaders() {
   m_icyMetaLeft = 0;
   m_icyMetaDataBuffer.clear();
 
+  if (m_client) {
+    int statusCode =
+      m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    QByteArray reasonPhrase =
+      m_reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute)
+        .toByteArray();
+    if (!statusCode || reasonPhrase.isEmpty()) {
+      statusCode = 500;
+      reasonPhrase = "Internal Server Error";
+    }
+
+    /* We are ready to send data */
+    m_client->write(QString("HTTP/1.1 %1 %2\r\n\r\n")
+                      .arg(statusCode)
+                      .arg(reasonPhrase)
+                      .toLocal8Bit());
+  }
+
   if (m_icyMetaInt && metaIntParsed) {
     connect(m_reply, &QNetworkReply::readyRead, this,
             &IcecastReaderProxyServer::replyReadyRead);
   } else {
     connect(m_reply, &QNetworkReply::readyRead, this,
-            [this]() { writeToClient(m_reply->bytesAvailable()); });
+            [this]() { m_client->write(m_reply->readAll()); });
   }
 }
 
-void IcecastReaderProxyServer::writeToClient(qint64 nbytes) {
-  if (!nbytes || !m_client) {
-    return;
-  }
-
-  m_client->write(m_reply->read(nbytes));
-};
-
 void IcecastReaderProxyServer::replyReadyRead() {
   if (m_icyMetaLeft > 0) {
-    qint64 numRead = qMin(m_icyMetaLeft, m_reply->bytesAvailable());
+    QByteArray metaDataPart = m_reply->read(m_icyMetaLeft);
 
-    m_icyMetaLeft -= static_cast<int>(numRead);
-    m_icyMetaDataBuffer.append(m_reply->read(numRead));
+    m_icyMetaLeft -= static_cast<int>(metaDataPart.length());
+    m_icyMetaDataBuffer.append(metaDataPart);
     if (m_icyMetaLeft > 0) {
       return;
     }
@@ -129,11 +116,10 @@ void IcecastReaderProxyServer::replyReadyRead() {
     readIcyMetaData();
   }
 
-  qint64 bytesRead =
-    qMin(m_reply->bytesAvailable(), m_icyMetaInt - m_bytesRead);
-  m_bytesRead += bytesRead;
+  QByteArray songData = m_reply->read(m_icyMetaInt - m_bytesRead);
+  m_bytesRead += songData.length();
 
-  writeToClient(bytesRead);
+  m_client->write(songData);
 
   while (m_reply->bytesAvailable()) {
     QByteArray icyLengthByte = m_reply->read(1);
@@ -142,20 +128,19 @@ void IcecastReaderProxyServer::replyReadyRead() {
     if (icyLength) {
       int icyMetaDataLength = icyLength * ICY_MULTIPLIER;
 
-      qint64 icyNumRead = qMin(m_reply->bytesAvailable(), icyMetaDataLength);
+      m_icyMetaDataBuffer = m_reply->read(icyMetaDataLength);
+      int numRead = static_cast<int>(m_icyMetaDataBuffer.length());
 
-      m_icyMetaLeft = icyMetaDataLength - static_cast<int>(icyNumRead);
-      if (icyNumRead) {
-        m_icyMetaDataBuffer = m_reply->read(icyNumRead);
+      m_icyMetaLeft = icyMetaDataLength - numRead;
+      if (m_icyMetaLeft) {
+        return;
       }
-
-      if (!m_icyMetaLeft) {
-        readIcyMetaData();
-      }
+      readIcyMetaData();
     }
 
-    m_bytesRead = qMin(m_reply->bytesAvailable(), m_icyMetaInt);
-    writeToClient(m_bytesRead);
+    songData = m_reply->read(m_icyMetaInt);
+    m_bytesRead = songData.length();
+    m_client->write(songData);
   }
 }
 
@@ -163,7 +148,7 @@ void IcecastReaderProxyServer::readIcyMetaData() {
   m_icyMetaData.clear();
 
   /*
-   * NOTE: Icecast metadata structured in following way:
+   * NOTE: Icecast metadata structured in the following way:
    * StreamTitle='...';StreamUrl='...';\0\0\0
    *
    * NOTE: The regexp will fail in the following case:
@@ -180,7 +165,6 @@ void IcecastReaderProxyServer::readIcyMetaData() {
 
     m_icyMetaData[key] = value;
   }
-  m_icyMetaDataBuffer.clear();
 
   qCInfo(icecastReaderProxyServerLog) << "Icy-MetaData:" << m_icyMetaData;
 

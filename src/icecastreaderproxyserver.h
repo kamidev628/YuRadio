@@ -30,7 +30,6 @@ private:
   void replyReadHeaders();
   void replyReadyRead();
   void readIcyMetaData();
-  void writeToClient(qint64 nbytes);
 
 private:
   QTcpServer *m_server = nullptr;

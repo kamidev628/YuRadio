@@ -52,6 +52,8 @@ qt_add_qml_module(
   network.cpp
   icecastreader.h
   icecastreader.cpp
+  icecastreaderproxyserver.h
+  icecastreaderproxyserver.cpp
   circularbuffer.h
   circularbuffer.cpp
   radioplayer.h

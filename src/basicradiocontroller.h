@@ -7,6 +7,7 @@
 
 class QMediaDevices;
 class IcecastReader;
+class IcecastReaderProxyServer;
 
 class BasicRadioController : public PlatformRadioController {
   Q_OBJECT
@@ -21,11 +22,10 @@ public:
   void setSource(const QUrl &source) override;
 
 private slots:
-  void streamBufferReady();
   void statusChanged(QMediaPlayer::MediaStatus status);
 
 private:
-  std::unique_ptr<IcecastReader> m_iceCastReader;
+  IcecastReaderProxyServer *m_icecastProxy;
   QMediaPlayer *m_mediaPlayer;
   QMediaDevices *m_mediaDevices;
 };

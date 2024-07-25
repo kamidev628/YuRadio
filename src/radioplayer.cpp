@@ -30,10 +30,6 @@ RadioPlayer::RadioPlayer(QObject *parent) : QObject(parent) {
 }
 
 void RadioPlayer::play() {
-  if (!m_controller->source().isValid()) {
-    return;
-  }
-
   m_controller->setError(NoError, {});
   m_controller->play();
 }
@@ -59,7 +55,9 @@ QUrl RadioPlayer::source() const {
 }
 
 void RadioPlayer::setSource(const QUrl &newRadioUrl) {
-  m_controller->setSource(newRadioUrl);
+  if (newRadioUrl.isValid()) {
+    m_controller->setSource(newRadioUrl);
+  }
 }
 
 qreal RadioPlayer::progress() const {

@@ -13,6 +13,7 @@ import androidx.media3.session.MediaController;
 public class NativeMediaController {
     private static final String TAG = NativeMediaController.class.getSimpleName();
     MediaController controller = null;
+    String mediaSource = "";
 
     private static class PlaybackState {
         final static int Playing = 0;
@@ -125,10 +126,11 @@ public class NativeMediaController {
         if (controller == null) {
             return;
         }
-
         new Handler(controller.getApplicationLooper()).post(new Runnable() {
             @Override
             public void run() {
+                mediaSource = url;
+
                 MediaItem mediaItem = MediaItem.fromUri(url);
                 controller.setMediaItem(mediaItem);
                 controller.prepare();
@@ -144,6 +146,10 @@ public class NativeMediaController {
         new Handler(controller.getApplicationLooper()).post(new Runnable() {
             @Override
             public void run() {
+                if (controller.getCurrentMediaItem() == null && !mediaSource.isEmpty()) {
+                    MediaItem mediaItem = MediaItem.fromUri(mediaSource);
+                    controller.setMediaItem(mediaItem);
+                }
                 controller.prepare();
                 controller.setPlayWhenReady(true);
             }

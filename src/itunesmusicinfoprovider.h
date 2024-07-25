@@ -20,6 +20,7 @@ private slots:
 
 private:
   NetworkManager *m_apiManager;
+  QString m_searchTerm;
 };
 
 #endif /* !ITUNESMUSICINFOPROVIDER_H */

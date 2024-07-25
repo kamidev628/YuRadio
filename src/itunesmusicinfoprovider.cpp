@@ -18,6 +18,8 @@ ItunesMusicInfoProvider::ItunesMusicInfoProvider(QObject *parent)
 }
 
 void ItunesMusicInfoProvider::provide(const QString &searchString) {
+  m_searchTerm = searchString;
+
   QUrlQuery query;
   query.addQueryItem(QStringLiteral("term"), searchString);
   query.addQueryItem(QStringLiteral("media"), QStringLiteral("music"));
@@ -90,27 +92,48 @@ void ItunesMusicInfoProvider::handleReplyData(const QByteArray &data) {
     return;
   }
 
-  QDateTime firstReleaseDate;
-  QJsonObject earlisetRelease;
+  struct SortParameters {
+    qsizetype distance;
+    QDateTime releaseDate;
 
-  for (const auto &result : results) {
-    QJsonObject musicInfo = result.toObject();
+    bool operator==(const SortParameters &rhs) const {
+      return distance == rhs.distance && releaseDate == rhs.releaseDate;
+    }
+
+    bool operator<(const SortParameters &rhs) const {
+      return std::tie(distance, releaseDate) <
+             std::tie(rhs.distance, rhs.releaseDate);
+    }
+  };
+
+  QMap<SortParameters, qsizetype> similarityMap;
+
+  for (qsizetype i = 0; i < results.count(); ++i) {
+    QJsonObject musicInfo = results[i].toObject();
+
+    QString artistName = musicInfo[u"artistName"].toString();
+    QString songName = musicInfo[u"trackName"].toString();
+
+    QString fullSongName = artistName + songName;
 
     QString releaseDateString = musicInfo[u"releaseDate"].toString();
     QDateTime releaseDate =
       QDateTime::fromString(releaseDateString, Qt::ISODate);
 
-    if (firstReleaseDate.isNull() || firstReleaseDate > releaseDate) {
-      firstReleaseDate = releaseDate;
-      earlisetRelease = std::move(musicInfo);
-    }
+    SortParameters params{levenshteinDistance(fullSongName, m_searchTerm),
+                          releaseDate};
+    similarityMap[params] = i;
   }
 
-  QString albumName = earlisetRelease[u"collectionName"].toString();
-  QString songName = earlisetRelease[u"trackName"].toString();
-  QString artistName = earlisetRelease[u"artistName"].toString();
+  QJsonObject bestMatch = results[similarityMap.first()].toObject();
+
+  QString albumName = bestMatch[u"collectionName"].toString();
+  QString songName = bestMatch[u"trackName"].toString();
+  QString artistName = bestMatch[u"artistName"].toString();
   QUrl albumImageUrl =
-    earlisetRelease[u"artworkUrl60"].toString().replace("60x60", "600x600");
+    bestMatch[u"artworkUrl60"].toString().replace("60x60", "600x600");
+  QString releaseDateString = bestMatch[u"releaseDate"].toString();
+  QDateTime releaseDate = QDateTime::fromString(releaseDateString, Qt::ISODate);
 
   qCInfo(itunesMusicInfoProviderLog) << "Album Name" << albumName;
   qCInfo(itunesMusicInfoProviderLog) << "Song Name" << songName;
@@ -121,7 +144,7 @@ void ItunesMusicInfoProvider::handleReplyData(const QByteArray &data) {
   auto *album = new MusicAlbum(musicInfo);
   album->setAlbumName(albumName);
   album->setAlbumImageUrl(albumImageUrl);
-  album->setReleaseDate(firstReleaseDate.date());
+  album->setReleaseDate(releaseDate.date());
 
   auto *musicArtist = new MusicArtist(album);
   musicArtist->setArtistName(artistName);

@@ -309,7 +309,6 @@ FocusScope {
         target: root.player
 
         function onSourceChanged() {
-            root.lastStreamTitle = root.streamTitle
             root.musicInfo = null;
         }
 

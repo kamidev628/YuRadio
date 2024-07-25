@@ -56,6 +56,7 @@ QUrl RadioPlayer::source() const {
 
 void RadioPlayer::setSource(const QUrl &newRadioUrl) {
   if (newRadioUrl.isValid()) {
+    m_controller->setStreamTitle("");
     m_controller->setSource(newRadioUrl);
   }
 }

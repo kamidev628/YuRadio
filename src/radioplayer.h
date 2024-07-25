@@ -23,7 +23,11 @@ class RadioPlayer : public QObject {
 public:
   RadioPlayer(QObject *parent = nullptr);
 
-  enum PlaybackState { StoppedState, PlayingState, PausedState };
+  enum PlaybackState {
+    StoppedState,
+    PlayingState,
+    PausedState,
+  };
   Q_ENUM(PlaybackState)
 
   enum Error {
@@ -31,7 +35,7 @@ public:
     ResourceError,
     FormatError,
     NetworkError,
-    AccessDeniedError
+    AccessDeniedError,
   };
   Q_ENUM(Error)
 

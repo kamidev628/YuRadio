@@ -3,7 +3,6 @@
 #include <QMediaPlayer>
 
 #include "basicradiocontroller.h"
-#include "icecastreader.h"
 #include "icecastreaderproxyserver.h"
 
 static RadioPlayer::PlaybackState
@@ -66,7 +65,6 @@ void BasicRadioController::play() {
 }
 
 void BasicRadioController::statusChanged(QMediaPlayer::MediaStatus status) {
-  qDebug() << "Current Status:" << status;
   if (status == QMediaPlayer::LoadingMedia) {
     setIsLoading(true);
   }

@@ -50,12 +50,8 @@ qt_add_qml_module(
   pagepagination.cpp
   network.h
   network.cpp
-  icecastreader.h
-  icecastreader.cpp
   icecastreaderproxyserver.h
   icecastreaderproxyserver.cpp
-  circularbuffer.h
-  circularbuffer.cpp
   radioplayer.h
   radioplayer.cpp
   musicinfoprovider.h

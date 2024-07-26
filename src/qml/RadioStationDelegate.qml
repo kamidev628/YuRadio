@@ -29,8 +29,11 @@ ItemDelegate {
             bottomMargin: 5
         }
 
+        Material.foreground: Material.Red
+        Material.background: Material.Red
+
         fillMode: Image.PreserveAspectFit
-        source: root.favicon ? root.favicon : "images/radio.png"
+        source: root.favicon ? root.favicon : (AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png")
         smooth: true
         width: height
 
@@ -62,7 +65,7 @@ ItemDelegate {
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width
 
-            Text {
+            Label {
                 Layout.fillWidth: true
                 elide: Text.ElideRight
                 text: root.name ? root.name : "Unknown Station"
@@ -70,7 +73,7 @@ ItemDelegate {
                 font.pointSize: 15
             }
 
-            Text {
+            Label {
                 Layout.fillWidth: true
                 elide: Text.ElideRight
                 text: root.tags

@@ -1,3 +1,7 @@
+set_source_files_properties(AppSettings.qml PROPERTIES QT_QML_SINGLETON_TYPE
+                                                       true)
+set_source_files_properties(Utils.qml PROPERTIES QT_QML_SINGLETON_TYPE true)
+
 qt_add_library(YuRadioContents STATIC)
 qt_add_qml_module(
   YuRadioContents
@@ -33,6 +37,7 @@ qt_add_qml_module(
   images/github-mark-white.svg
   images/profile-picture.jpg
   images/radio.png
+  images/radio-white.png
   images/plus.svg
   images/play.svg
   images/pause.svg
@@ -50,4 +55,5 @@ qt_add_shaders(
   PREFIX
   /
   FILES
-  "shaders/RoundImage.frag")
+  "shaders/RoundImage.frag"
+  "shaders/Blur.frag")

@@ -31,6 +31,11 @@ Dialog {
 
     required property NetworkManager networkManager
 
+    Binding {
+      when: AppSettings.isDarkTheme
+      root.Material.background: root.Material.color(Material.Grey, Material.Shade900)
+    }
+
     Material.roundedScale: Material.NotRounded
     standardButtons: Dialog.Ok | Dialog.Cancel
 
@@ -289,32 +294,16 @@ Dialog {
                         }
                     }
 
-                    Button {
-                        id: tagsButton
-
-                        required property string name
+                    OutlinedButton {
                         required property int index
-                        property color buttonColor: Material.color(Material.Purple)
-
-                        Material.foreground: checked ? Material.color(Material.Grey, Material.Shade500) : buttonColor
-                        Material.accent: Material.color(Material.Grey, Material.Shade100)
+                        required property string name
 
                         focusPolicy: Qt.NoFocus
-                        opacity: 1.0
-                        checkable: true
 
+                        checkable: true
                         implicitHeight: 35
 
                         text: name
-
-                        background: Rectangle {
-                            anchors.fill: parent
-
-                            radius: height / 2
-                            color: tagsButton.checked ? buttonColor : "transparent"
-                            border.width: 1
-                            border.color: tagsButton.buttonColor
-                        }
                     }
                 }
             }

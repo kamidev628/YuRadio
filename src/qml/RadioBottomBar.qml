@@ -82,7 +82,7 @@ FocusScope {
                     id: stationImage
 
                     smooth: true
-                    source: root.stationIcon ? root.stationIcon : "images/radio.png"
+                    source: root.stationIcon ? root.stationIcon : (AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png")
 
                     fillMode: Image.PreserveAspectFit
 
@@ -197,7 +197,7 @@ FocusScope {
 
                     icon.source: root.player.playing ? "images/pause.svg" : "images/play.svg"
                     icon.sourceSize: Qt.size(height, height)
-                    icon.color: Material.color(Material.Grey, Material.Shade800)
+                    icon.color: Material.color(Material.Grey, AppSettings.isDarkTheme ? Material.Shade400 : Material.Shade800)
 
                     smooth: true
 
@@ -217,7 +217,7 @@ FocusScope {
                 Layout.topMargin: 10
                 Layout.leftMargin: 10
 
-                Text {
+                Label {
                     visible: !musicInfoRow.visible && !busyIndicator.visible
                     text: "Music Info is not avaialble"
                     opacity: 0.5

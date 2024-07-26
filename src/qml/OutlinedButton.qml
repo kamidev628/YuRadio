@@ -18,7 +18,7 @@ Button {
         anchors.fill: parent
 
         radius: height / 2
-        color: root.checked ? root.buttonColor : "transparent"
+        color: root.checked ? root.buttonColor : (AppSettings.isDarkTheme ? root.buttonColor.lighter(0.3) : "transparent")
         border.width: 1
         border.color: root.buttonColor
     }

@@ -237,10 +237,6 @@ Item {
             }
         }
 
-        onCountChanged:
-        //flick(0, 1);
-        {}
-
         header: RadioStationsViewHeader {
             id: radioListViewHeader
 
@@ -304,6 +300,7 @@ Item {
     RadioBottomBarDrawer {
         id: bottomBarDrawer
 
+        Material.background: AppSettings.isDarkTheme ? root.Material.background.lighter(1.5) : root.Material.background.darker(1.045)
         maximumHeight: parent.height * 2 / 3
         minimumHeight: Math.max(parent.height / 12, bottomBar.implicitHeight)
 

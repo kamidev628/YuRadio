@@ -2,8 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
-import Main
-
 /*
  * List of radio stations: https://dir.xiph.org/yp.xml
  *

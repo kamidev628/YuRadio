@@ -13,6 +13,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Core Qml Quick QuickControls2
                                          Multimedia ShaderTools)
 
 add_subdirectory(network)
+add_subdirectory(qml)
 
 qt_add_qml_module(
   YuRadio
@@ -23,26 +24,7 @@ qt_add_qml_module(
   NO_PLUGIN
   QML_FILES
   Main.qml
-  App.qml
-  RadioDrawer.qml
   ErrorPage.qml
-  AppSettings.qml
-  Utils.qml
-  RadioStationDelegate.qml
-  RadioBottomBar.qml
-  RadioBottomBarDrawer.qml
-  RadioStationsView.qml
-  RadioStationsViewHeader.qml
-  RadioStationSearchFilterDialog.qml
-  PullToRefreshHandler.qml
-  PullToRefreshIndicator.qml
-  OutlinedButton.qml
-  ClickableLink.qml
-  SearchBar.qml
-  IconButton.qml
-  MomentumAnimation.qml
-  FakeFlickable.qml
-  radiobrowser.mjs
   SOURCES
   icecastreaderproxyserver.h
   icecastreaderproxyserver.cpp
@@ -59,33 +41,7 @@ qt_add_qml_module(
   basicradiocontroller.cpp
   basicradiocontroller.h
   platformradiocontroller.cpp
-  platformradiocontroller.h
-  RESOURCES
-  images/search.svg
-  images/trash.svg
-  images/menu.svg
-  images/github-mark.svg
-  images/github-mark-white.svg
-  images/profile-picture.jpg
-  images/radio.png
-  images/plus.svg
-  images/play.svg
-  images/pause.svg
-  images/about.svg
-  images/todo.svg
-  images/filter.svg
-  images/sort.svg)
-
-qt_add_shaders(
-  YuRadio
-  "shaders"
-  BATCHABLE
-  PRECOMPILE
-  OPTIMIZED
-  PREFIX
-  /
-  FILES
-  "shaders/RoundImage.frag")
+  platformradiocontroller.h)
 
 # OpenSSL support for android
 if(ANDROID)
@@ -134,7 +90,8 @@ target_link_libraries(
           Qt6::QuickControls2
           Qt6::Multimedia
           HotReloader
-          YuRadioNetworkplugin)
+          YuRadioNetworkplugin
+          YuRadioContentsplugin)
 
 target_set_warnings(YuRadio)
 

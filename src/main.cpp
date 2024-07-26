@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
   HotReloaderClient client(&engine, "192.168.1.37");
   client.setMainPage("/src/Main/Main.qml");
   client.setErrorPage("/src/Main/ErrorPage.qml");
-  client.setModules({"Main"});
+  client.setModules({"Main", "YuRadio"});
   client.reloadQml();
 #else
   engine.loadFromModule("Main", "Main");

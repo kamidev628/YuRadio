@@ -1,3 +1,3 @@
-import QtQuick
+import YuRadio
 
 App {}

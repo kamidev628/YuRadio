@@ -7,8 +7,9 @@ import QtQuick.Layouts
 
 import "radiobrowser.mjs" as RadioBrowser
 
-import Main
+import YuRadio
 import YuRest
+import Main
 
 Item {
     id: root

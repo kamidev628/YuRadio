@@ -7,7 +7,7 @@ Q_LOGGING_CATEGORY(icecastReaderProxyServerLog,
 #include <QTcpSocket>
 
 #include "icecastreaderproxyserver.h"
-#include "network.h"
+#include "network/networkmanager.h"
 
 constexpr int ICY_MULTIPLIER = 16;
 

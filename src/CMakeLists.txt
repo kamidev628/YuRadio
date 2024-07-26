@@ -12,6 +12,8 @@ set_target_properties(YuRadio PROPERTIES AUTOMOC ON AUTORCC ON)
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Qml Quick QuickControls2
                                          Multimedia ShaderTools)
 
+add_subdirectory(network)
+
 qt_add_qml_module(
   YuRadio
   URI
@@ -42,14 +44,6 @@ qt_add_qml_module(
   FakeFlickable.qml
   radiobrowser.mjs
   SOURCES
-  restpagination.h
-  restpagination.cpp
-  limitpagination.h
-  limitpagination.cpp
-  pagepagination.h
-  pagepagination.cpp
-  network.h
-  network.cpp
   icecastreaderproxyserver.h
   icecastreaderproxyserver.cpp
   radioplayer.h
@@ -60,15 +54,8 @@ qt_add_qml_module(
   itunesmusicinfoprovider.cpp
   musicinfo.h
   musicinfo.cpp
-  json.h
-  json.cpp
-  networkerror.h
   imageloader.h
   imageloader.cpp
-  abstractrestmodel.h
-  abstractrestmodel.cpp
-  jsonrestlistmodel.h
-  jsonrestlistmodel.cpp
   basicradiocontroller.cpp
   basicradiocontroller.h
   platformradiocontroller.cpp
@@ -146,7 +133,8 @@ target_link_libraries(
           Qt6::Quick
           Qt6::QuickControls2
           Qt6::Multimedia
-          HotReloader)
+          HotReloader
+          YuRadioNetworkplugin)
 
 target_set_warnings(YuRadio)
 

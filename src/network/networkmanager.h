@@ -1,5 +1,5 @@
-#ifndef NETWORK_H
-#define NETWORK_H
+#ifndef NETWORKMANAGER_H
+#define NETWORKMANAGER_H
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -65,4 +65,4 @@ private:
   QUrl m_baseUrl;
 };
 
-#endif  // NETWORK_H
+#endif  // NETWORKMANAGER_H

@@ -1,6 +1,6 @@
 #include <QNetworkReply>
 
-#include "network.h"
+#include "network/networkmanager.h"
 
 #include "imageloader.h"
 

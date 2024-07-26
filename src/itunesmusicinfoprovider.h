@@ -2,7 +2,7 @@
 #define ITUNESMUSICINFOPROVIDER_H
 
 #include "musicinfoprovider.h"
-#include "network.h"
+#include "network/networkmanager.h"
 
 class QNetworkAccessManager;
 

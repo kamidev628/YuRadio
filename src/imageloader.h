@@ -6,7 +6,7 @@
 
 #include <QUrl>
 
-#include "network.h"
+#include "network/networkmanager.h"
 
 class ImageLoader {
 public:

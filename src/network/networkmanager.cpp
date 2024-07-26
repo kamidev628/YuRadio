@@ -8,7 +8,7 @@ Q_LOGGING_CATEGORY(networkManagerLog, "YuRest.NetworkManager")
 #include <QNetworkReply>
 
 #include "json.h"
-#include "network.h"
+#include "networkmanager.h"
 
 NetworkManager::NetworkManager(QObject *parent)
     : QNetworkAccessManager(parent) {

@@ -6,7 +6,7 @@ Q_LOGGING_CATEGORY(itunesMusicInfoProviderLog,
 #include <QNetworkReply>
 
 #include "itunesmusicinfoprovider.h"
-#include "json.h"
+#include "network/json.h"
 
 using namespace Qt::StringLiterals;
 

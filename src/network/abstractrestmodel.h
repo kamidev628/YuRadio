@@ -3,7 +3,7 @@
 
 #include <QAbstractListModel>
 
-#include "network.h"
+#include "networkmanager.h"
 #include "restpagination.h"
 
 class AbstractRestListModel : public QAbstractListModel {
@@ -30,7 +30,12 @@ public:
   AbstractRestListModel(QObject *parent = nullptr);
   using QAbstractListModel::QAbstractListModel;
 
-  enum Status { Null = 0, Ready, Loading, Error };
+  enum Status {
+    Null = 0,
+    Ready,
+    Loading,
+    Error,
+  };
   Q_ENUM(Status)
 
   virtual void handleRequestData(const QByteArray &data) = 0;

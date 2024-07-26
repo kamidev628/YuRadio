@@ -5,11 +5,10 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-import QtMultimedia
-
 import "radiobrowser.mjs" as RadioBrowser
 
 import Main
+import YuRest
 
 Item {
     id: root

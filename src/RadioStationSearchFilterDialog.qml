@@ -4,6 +4,7 @@ import QtQuick.Controls.Material
 import QtQuick.Layouts
 
 import Main
+import YuRest
 
 Dialog {
     id: root

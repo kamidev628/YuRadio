@@ -1,0 +1,22 @@
+qt_add_library(YuRadioNetwork STATIC)
+qt_add_qml_module(
+  YuRadioNetwork
+  URI
+  YuRest
+  SOURCES
+  abstractrestmodel.cpp
+  abstractrestmodel.h
+  jsonrestlistmodel.cpp
+  jsonrestlistmodel.h
+  limitpagination.cpp
+  limitpagination.h
+  networkerror.h
+  networkmanager.cpp
+  networkmanager.h
+  pagepagination.cpp
+  pagepagination.h
+  restpagination.cpp
+  restpagination.h
+  json.cpp
+  json.h
+  modelhelper.h)

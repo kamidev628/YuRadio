@@ -25,7 +25,7 @@ private:
   QStringList m_modules;
 
   QNetworkAccessManager *m_networkManager = nullptr;
-  QHash<QString, QString> m_cachedModulesPaths;
+  QHash<QString, QString> m_cachedFilePaths;
 };
 
 #endif /* !HOTRELOADERURLINTERCEPTOR */

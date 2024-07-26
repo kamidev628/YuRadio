@@ -3,6 +3,8 @@ qt_add_qml_module(
   YuRadioContents
   URI
   YuRadio
+  VERSION
+  1.0
   QML_FILES
   App.qml
   RadioDrawer.qml

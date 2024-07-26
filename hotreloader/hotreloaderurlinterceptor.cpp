@@ -3,6 +3,9 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
+#include <QJsonArray>
+#include <QJsonDocument>
+
 #include "hotreloaderurlinterceptor.h"
 
 HotReloaderUrlInterceptor::HotReloaderUrlInterceptor(QString host,
@@ -12,33 +15,31 @@ HotReloaderUrlInterceptor::HotReloaderUrlInterceptor(QString host,
 
 void HotReloaderUrlInterceptor::setModules(const QStringList &modules) {
   m_modules = modules;
-  m_cachedModulesPaths.clear();
+  m_cachedFilePaths.clear();
 
   QUrl hotreloaderServerUrl;
   hotreloaderServerUrl.setScheme("http");
   hotreloaderServerUrl.setHost(m_host);
 
-  for (const auto &module : m_modules) {
-    hotreloaderServerUrl.setPath(
-      QStringLiteral("/hotreloadermodule/%1").arg(module));
+  hotreloaderServerUrl.setPath(QStringLiteral("/hotreloader/watched/files"));
 
-    QNetworkRequest request(hotreloaderServerUrl);
-    QNetworkReply *reply = m_networkManager->get(request);
+  QNetworkRequest request(hotreloaderServerUrl);
+  QNetworkReply *reply = m_networkManager->get(request);
 
-    if (!reply) {
-      return;
-    }
-
-    connect(reply, &QNetworkReply::finished, this, [this, reply, module]() {
-      QString path = reply->readAll();
-      reply->deleteLater();
-
-      m_cachedModulesPaths[module] = path;
-      if (m_cachedModulesPaths.size() == m_modules.size()) {
-        emit readyIntercept();
-      }
-    });
+  if (!reply) {
+    return;
   }
+
+  connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+    QJsonArray files = QJsonDocument::fromJson(reply->readAll()).array();
+    reply->deleteLater();
+
+    for (const auto &file : files) {
+      QString fileName = file.toString().split("/").last();
+      m_cachedFilePaths[fileName] = file.toString();
+    }
+    emit readyIntercept();
+  });
 }
 
 QUrl HotReloaderUrlInterceptor::intercept(const QUrl &path, DataType /*type*/) {
@@ -48,14 +49,12 @@ QUrl HotReloaderUrlInterceptor::intercept(const QUrl &path, DataType /*type*/) {
     QString moduleWithPrefix = kResourcePrefix + "/" + module;
 
     if (path.toString().contains(moduleWithPrefix)) {
-      QDir executablePath(QCoreApplication::applicationDirPath());
-
-      QString modulePath = m_cachedModulesPaths[module];
+      QString fileName = path.toString().split("/").last();
 
       QUrl newPath;
       newPath.setScheme(QStringLiteral("http"));
       newPath.setHost(m_host);
-      newPath.setPath(modulePath + path.toString().remove(moduleWithPrefix));
+      newPath.setPath(m_cachedFilePaths[fileName]);
 
       return newPath;
     }

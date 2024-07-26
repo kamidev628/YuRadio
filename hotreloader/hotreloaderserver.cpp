@@ -12,6 +12,7 @@ Q_LOGGING_CATEGORY(hotreloaderServerLog, "Hotreloader.Server")
 #include <QCoreApplication>
 
 #include <QDirIterator>
+#include <QJsonArray>
 
 #include "hotreloaderserver.h"
 
@@ -25,28 +26,19 @@ HotReloaderServer::HotReloaderServer(quint16 webSocketPort, quint16 httpPort,
   m_server = new QWebSocketServer(QStringLiteral("Hotreloader Server"),
                                   QWebSocketServer::NonSecureMode, this);
 
-  m_httpServer->route(
-    "/hotreloadermodule/<arg>",
-    [&](const QString &moduleName, const QHttpServerRequest &req) -> QString {
-    QString modulePath;
-
-    QDirIterator it(QCoreApplication::applicationDirPath(), {moduleName},
-                    QDir::Dirs | QDir::NoDotAndDotDot,
-                    QDirIterator::Subdirectories);
-
-    if (it.hasNext()) {
-      modulePath = it.next();
-    } else {
-      return "";
-    }
-
-    if (it.hasNext()) {
-      qCWarning(hotreloaderServerLog)
-        << "Multiple Paths detected for module:" << moduleName;
-    }
-
+  m_httpServer->route("/hotreloader/watched/files",
+                      [&](const QHttpServerRequest &req) {
     QDir appDir(QCoreApplication::applicationDirPath());
-    return "/" + appDir.relativeFilePath(modulePath);
+
+    QStringList filePaths;
+
+    QDirIterator it(m_qmlSourceDir, {"qmldir", "*.qml"}, QDir::Files,
+                    QDirIterator::Subdirectories);
+                      while (it.hasNext()) {
+                        QString filePath = it.next();
+                        filePaths << ("/" + appDir.relativeFilePath(filePath));
+                      }
+    return QJsonArray::fromStringList(filePaths);
   });
 
   m_httpServer->route("/.*", [&](const QHttpServerRequest &req) {

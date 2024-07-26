@@ -17,9 +17,12 @@ Q_LOGGING_CATEGORY(hotreloaderClientLog, "Hotreloader.Client")
 using namespace Qt::StringLiterals;
 
 HotReloaderClient::HotReloaderClient(QQmlApplicationEngine *engine,
-                                     QString host, QObject *parent)
-    : QObject(parent), m_host(std::move(host)), m_modules({"Main"_L1}),
-      m_engine(engine) {
+                                     QString host, QString mainPage,
+                                     QString errorPage, QStringList modules,
+                                     QObject *parent)
+    : QObject(parent), m_host(std::move(host)), m_mainPage(std::move(mainPage)),
+      m_errorPage(std::move(errorPage)), m_currentPage(m_mainPage),
+      m_modules(std::move(modules)), m_engine(engine) {
   connect(&m_sock, &QWebSocket::connected, this,
           &HotReloaderClient::onConnected);
 
@@ -29,8 +32,6 @@ HotReloaderClient::HotReloaderClient(QQmlApplicationEngine *engine,
   webSocketUrl.setPort(3030);
 
   m_sock.open(webSocketUrl);
-
-  m_interceptor = new HotReloaderUrlInterceptor(m_host, this);
 
   connect(m_engine, &QQmlApplicationEngine::warnings, this,
           [this](auto warnings) { m_errors = warnings; }, Qt::QueuedConnection);
@@ -61,6 +62,13 @@ HotReloaderClient::HotReloaderClient(QQmlApplicationEngine *engine,
       }
     }
   }, Qt::QueuedConnection);
+
+  m_interceptor = new HotReloaderUrlInterceptor(m_host, this);
+  connect(m_interceptor, &HotReloaderUrlInterceptor::readyIntercept, this,
+          &HotReloaderClient::reloadQml);
+
+  m_engine->addUrlInterceptor(m_interceptor);
+  m_interceptor->setModules(m_modules);
 }
 
 void HotReloaderClient::onConnected() {
@@ -102,25 +110,4 @@ void HotReloaderClient::reloadQml() {
 
   m_engine->clearComponentCache();
   m_engine->load(pageAddress);
-}
-
-void HotReloaderClient::setErrorPage(const QString &errorPage) {
-  m_errorPage = errorPage;
-}
-
-void HotReloaderClient::setMainPage(const QString &mainPage) {
-  m_mainPage = mainPage;
-  m_currentPage = mainPage;
-}
-
-void HotReloaderClient::setModules(const QStringList &modules) {
-  m_modules = modules;
-
-  m_interceptor->setModules(modules);
-  connect(m_interceptor, &HotReloaderUrlInterceptor::readyIntercept, this,
-          [this]() {
-    if (!m_engine->urlInterceptors().contains(m_interceptor)) {
-      m_engine->addUrlInterceptor(m_interceptor);
-    }
-  });
 }

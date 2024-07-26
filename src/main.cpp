@@ -55,11 +55,8 @@ int main(int argc, char *argv[]) {
 #endif /* Q_OS_ANDROID */
 
 #ifdef QT_DEBUG
-  HotReloaderClient client(&engine, "192.168.1.37");
-  client.setMainPage("/src/Main/Main.qml");
-  client.setErrorPage("/src/Main/ErrorPage.qml");
-  client.setModules({"Main", "YuRadio"});
-  client.reloadQml();
+  HotReloaderClient client(&engine, "192.168.1.37", "/src/Main/Main.qml",
+                           "/src/Main/ErrorPage.qml", {"Main", "YuRadio"});
 #else
   engine.loadFromModule("Main", "Main");
 #endif

@@ -15,13 +15,11 @@ class HotReloaderClient : public QObject {
 
 public:
   explicit HotReloaderClient(QQmlApplicationEngine *engine, QString host,
+                             QString mainPage, QString errorPage,
+                             QStringList modules = {},
                              QObject *parent = nullptr);
 
   void reloadQml();
-
-  void setErrorPage(const QString &errorPage);
-  void setMainPage(const QString &mainPage);
-  void setModules(const QStringList &modules);
 
 private slots:
   void onConnected();
@@ -35,9 +33,9 @@ private:
 
   QWebSocket m_sock;
 
-  QString m_currentPage;
   QString m_mainPage;
   QString m_errorPage;
+  QString m_currentPage;
   QStringList m_modules;
 
   QQmlApplicationEngine *m_engine = nullptr;

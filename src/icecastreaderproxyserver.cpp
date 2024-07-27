@@ -79,12 +79,15 @@ void IcecastReaderProxyServer::replyReadHeaders() {
   if (m_client) {
     int statusCode =
       m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (!statusCode) {
+      statusCode = m_reply->error() ? 500 : 200;
+    }
+
     QByteArray reasonPhrase =
       m_reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute)
         .toByteArray();
-    if (!statusCode || reasonPhrase.isEmpty()) {
-      statusCode = 500;
-      reasonPhrase = "Internal Server Error";
+    if (reasonPhrase.isEmpty()) {
+      reasonPhrase = m_reply->error() ? "Internal Server Error" : "OK";
     }
 
     /* We are ready to send data */

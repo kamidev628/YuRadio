@@ -84,18 +84,17 @@ ItemDelegate {
             icon.source: "images/more-vert.svg"
             icon.sourceSize: Qt.size(32, 32)
             onClicked: {
-              moreOptionsMenu.popup(moreOptions)
+                moreOptionsMenu.popup(moreOptions);
             }
-
         }
     }
     Menu {
-      id: moreOptionsMenu
-      MenuItem {
-        text: "Add to Favorites"
-      }
-      MenuItem {
-        text: "Vote"
-      }
+        id: moreOptionsMenu
+        MenuItem {
+            text: "Add to Favorites"
+        }
+        MenuItem {
+            text: "Vote"
+        }
     }
 }

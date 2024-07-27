@@ -1,9 +1,10 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-import Main
 import network
 
 Dialog {
@@ -78,7 +79,7 @@ Dialog {
                 text: qsTr("Country")
             }
 
-            ComboBox {
+            HeaderComboBox {
                 id: countryCombo
 
                 Layout.fillWidth: true
@@ -116,27 +117,6 @@ Dialog {
                         pagination.nextPage();
                     }
                 }
-
-                Binding {
-                    target: countryCombo.popup.contentItem
-                    property: "header"
-                    value: Component {
-                        ItemDelegate {
-                            text: "SELECT ALL"
-                            width: ListView.view.width
-                            onClicked: {
-                                countryCombo.currentIndex = -1;
-                                countryCombo.popup.close();
-                            }
-                        }
-                    }
-                }
-
-                onAccepted: {
-                    if (find(editText) === -1) {
-                        editText = textAt(0);
-                    }
-                }
             }
 
             Label {
@@ -144,7 +124,7 @@ Dialog {
                 text: qsTr("State")
             }
 
-            ComboBox {
+            HeaderComboBox {
                 id: stateCombo
                 Layout.fillWidth: true
                 Layout.leftMargin: 10
@@ -185,19 +165,13 @@ Dialog {
                         stateModel.reset();
                     }
                 }
-
-                onAccepted: {
-                    if (find(editText) === -1) {
-                        editText = textAt(0);
-                    }
-                }
             }
 
             Label {
                 text: qsTr("Language")
             }
 
-            ComboBox {
+            HeaderComboBox {
                 id: languageCombo
                 Layout.fillWidth: true
                 Layout.leftMargin: 10
@@ -233,12 +207,6 @@ Dialog {
                     fetchMoreHandler: () => {
                         loadPage();
                         pagination.nextPage();
-                    }
-                }
-
-                onAccepted: {
-                    if (find(editText) === -1) {
-                        editText = textAt(0);
                     }
                 }
             }

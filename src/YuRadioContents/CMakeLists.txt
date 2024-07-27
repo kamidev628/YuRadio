@@ -29,6 +29,7 @@ qt_add_qml_module(
   IconButton.qml
   MomentumAnimation.qml
   FakeFlickable.qml
+  HeaderComboBox.qml
   radiobrowser.mjs
   RESOURCES
   images/more-vert.svg

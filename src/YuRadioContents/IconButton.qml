@@ -7,20 +7,19 @@ Item {
     implicitHeight: icon.implicitHeight
     implicitWidth: icon.implicitWidth
 
-    property alias icon: searchIcon
+    property alias icon: iconImage
 
     signal clicked
 
     IconImage {
-        id: searchIcon
+        id: iconImage
 
+        anchors.centerIn: parent
+    }
+    MouseArea {
         anchors.fill: parent
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                root.clicked();
-            }
+        onClicked: {
+            root.clicked();
         }
     }
 }

@@ -31,6 +31,7 @@ qt_add_qml_module(
   FakeFlickable.qml
   radiobrowser.mjs
   RESOURCES
+  images/more-vert.svg
   images/search.svg
   images/trash.svg
   images/menu.svg

@@ -17,53 +17,45 @@ ItemDelegate {
 
     implicitHeight: 100
 
-    Image {
-        id: radioImage
+    RowLayout {
+        anchors.fill: parent
 
-        anchors {
-            left: parent.left
-            top: parent.top
-            bottom: parent.bottom
-            leftMargin: 5
-            topMargin: 5
-            bottomMargin: 5
-        }
+        Image {
+            id: radioImage
 
-        Material.foreground: Material.Red
-        Material.background: Material.Red
+            Layout.fillHeight: true
+            Layout.leftMargin: 5
+            Layout.topMargin: 5
+            Layout.bottomMargin: 5
+            Layout.preferredWidth: height
 
-        fillMode: Image.PreserveAspectFit
-        source: root.favicon ? root.favicon : (AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png")
-        smooth: true
-        width: height
+            Material.foreground: Material.Red
+            Material.background: Material.Red
 
-        IconImage {
-            anchors {
-                left: parent.left
-                top: parent.top
-                leftMargin: 5
-                topMargin: 5
+            fillMode: Image.PreserveAspectFit
+            source: root.favicon ? root.favicon : (AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png")
+            smooth: true
+
+            IconImage {
+                anchors {
+                    left: parent.left
+                    top: parent.top
+                    leftMargin: 5
+                    topMargin: 5
+                }
+
+                opacity: 0.8
+                source: root.countrycode ? `https://flagsapi.com/${root.countrycode}/flat/24.png` : ''
+                sourceSize: Qt.size(24, 24)
             }
-
-            opacity: 0.8
-            source: root.countrycode ? `https://flagsapi.com/${root.countrycode}/flat/24.png` : ''
-            sourceSize: Qt.size(24, 24)
-        }
-    }
-
-    Item {
-        anchors {
-            top: radioImage.top
-            right: parent.right
-            bottom: radioImage.bottom
-            left: radioImage.right
-            leftMargin: 10
-            rightMargin: 20
         }
 
         ColumnLayout {
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
+            Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.leftMargin: 5
+            Layout.rightMargin: 5
 
             Label {
                 Layout.fillWidth: true
@@ -80,5 +72,30 @@ ItemDelegate {
                 font.pointSize: 14
             }
         }
+
+        IconButton {
+            id: moreOptions
+
+            Layout.alignment: Qt.AlignVCenter
+            Layout.fillHeight: true
+            implicitWidth: 64
+
+            icon.fillMode: Image.PreserveAspectFit
+            icon.source: "images/more-vert.svg"
+            icon.sourceSize: Qt.size(32, 32)
+            onClicked: {
+              moreOptionsMenu.popup(moreOptions)
+            }
+
+        }
+    }
+    Menu {
+      id: moreOptionsMenu
+      MenuItem {
+        text: "Add to Favorites"
+      }
+      MenuItem {
+        text: "Vote"
+      }
     }
 }

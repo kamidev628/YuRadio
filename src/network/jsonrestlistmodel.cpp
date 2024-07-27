@@ -123,8 +123,9 @@ void JsonRestListModel::reset() {
 }
 
 QVariantMap JsonRestListModel::get(int row) {
-  Q_ASSERT(row >= 0);
-  Q_ASSERT(row < rowCount({}));
+  if (row < 0 || row >= rowCount({})) {
+    return {};
+  }
 
   return m_items.at(row);
 }

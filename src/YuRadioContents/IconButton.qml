@@ -4,8 +4,8 @@ import QtQuick.Controls
 Item {
     id: root
 
-    implicitHeight: icon.sourceSize.height
-    implicitWidth: icon.sourceSize.width
+    implicitHeight: icon.implicitHeight
+    implicitWidth: icon.implicitWidth
 
     property alias icon: searchIcon
 

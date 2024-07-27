@@ -9,15 +9,16 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Core Qml Quick QuickControls2
                                          Multimedia ShaderTools)
 
 add_subdirectory(network)
-add_subdirectory(qml)
+add_subdirectory(YuRadioContents)
 
 qt_add_qml_module(
   YuRadio
   URI
-  Main
+  "Main"
   VERSION
   1.0
   NO_PLUGIN
+  NO_CACHEGEN
   QML_FILES
   Main.qml
   ErrorPage.qml
@@ -85,7 +86,6 @@ target_link_libraries(
           Qt6::Quick
           Qt6::QuickControls2
           Qt6::Multimedia
-          HotReloader
           YuRadioNetworkplugin
           YuRadioContentsplugin)
 

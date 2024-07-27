@@ -2,7 +2,7 @@ qt_add_library(YuRadioNetwork STATIC)
 qt_add_qml_module(
   YuRadioNetwork
   URI
-  YuRest
+  "network"
   SOURCES
   abstractrestmodel.cpp
   abstractrestmodel.h

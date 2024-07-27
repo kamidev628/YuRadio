@@ -1,3 +1,3 @@
-import YuRadio
+import YuRadioContents
 
 App {}

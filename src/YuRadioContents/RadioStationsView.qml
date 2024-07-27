@@ -4,11 +4,12 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
+import QtQuick.Effects
 
 import "radiobrowser.mjs" as RadioBrowser
 
-import YuRadio
-import YuRest
+import YuRadioContents
+import network
 import Main
 
 Item {
@@ -53,6 +54,12 @@ Item {
 
     property ToolBar header: ToolBar {
         id: header
+
+        Material.background: Material.primary
+        Binding {
+            when: AppSettings.isDarkTheme
+            header.Material.background: root.Material.background.lighter(1.5)
+        }
 
         RowLayout {
             anchors.fill: parent
@@ -216,6 +223,7 @@ Item {
     ListView {
         id: radioListView
 
+        displayMarginEnd: bottomBarDrawer.height
         currentIndex: -1
         clip: true
         focus: true
@@ -300,9 +308,26 @@ Item {
     RadioBottomBarDrawer {
         id: bottomBarDrawer
 
-        Material.background: AppSettings.isDarkTheme ? root.Material.background.lighter(1.5) : root.Material.background.darker(1.045)
+        //Material.background: AppSettings.isDarkTheme ? root.Material.background.lighter(1.5) : root.Material.background.darker(1.045)
         maximumHeight: parent.height * 2 / 3
         minimumHeight: Math.max(parent.height / 12, bottomBar.implicitHeight)
+
+        ShaderEffectSource {
+            id: effectSource
+            anchors.fill: parent
+            sourceItem: radioListView
+            sourceRect: Qt.rect(0, radioListView.height, bottomBarDrawer.width, bottomBarDrawer.height)
+            visible: false
+        }
+
+        background: MultiEffect {
+            source: effectSource
+            autoPaddingEnabled: false
+            blurEnabled: true
+            blurMax: 64
+            blur: 0.95
+            saturation: -0.3
+        }
 
         RadioBottomBar {
             id: bottomBar

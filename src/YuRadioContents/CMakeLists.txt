@@ -6,9 +6,10 @@ qt_add_library(YuRadioContents STATIC)
 qt_add_qml_module(
   YuRadioContents
   URI
-  YuRadio
+  "YuRadioContents"
   VERSION
   1.0
+  NO_CACHEGEN
   QML_FILES
   App.qml
   RadioDrawer.qml

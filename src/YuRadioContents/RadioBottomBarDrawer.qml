@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material
 import Qt.labs.animation
 
-Rectangle {
+Item {
     id: root
 
     default property alias data: contentItem.data
@@ -14,7 +14,8 @@ Rectangle {
 
     property real progress: (root.height - root.minimumHeight) / (root.maximumHeight - root.minimumHeight)
 
-    color: Material.background
+    property Component background: Rectangle {}
+
     height: minimumHeight
 
     function open() {
@@ -86,6 +87,11 @@ Rectangle {
             }
             root.returnToClosestBoundary();
         }
+    }
+
+    Loader {
+      anchors.fill: parent
+      sourceComponent: root.background
     }
 
     ColumnLayout {

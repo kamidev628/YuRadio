@@ -4,7 +4,7 @@ import QtQuick.Controls.Material
 import QtQuick.Layouts
 
 import Main
-import YuRest
+import network
 
 Dialog {
     id: root
@@ -32,8 +32,8 @@ Dialog {
     required property NetworkManager networkManager
 
     Binding {
-      when: AppSettings.isDarkTheme
-      root.Material.background: root.Material.color(Material.Grey, Material.Shade900)
+        when: AppSettings.isDarkTheme
+        root.Material.background: root.Material.color(Material.Grey, Material.Shade900)
     }
 
     Material.roundedScale: Material.NotRounded

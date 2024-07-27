@@ -3,8 +3,6 @@
 #include <QQmlContext>
 #include <QQuickStyle>
 
-#include "hotreloaderclient.h"
-
 #ifdef Q_OS_ANDROID
   #include "android/androidkeyboard.h"
   #include "android/nativemediacontroller.h"
@@ -54,12 +52,7 @@ int main(int argc, char *argv[]) {
                                            AndroidKeyboard::instance());
 #endif /* Q_OS_ANDROID */
 
-#ifdef QT_DEBUG
-  HotReloaderClient client(&engine, "192.168.1.37", "/src/Main/Main.qml",
-                           "/src/Main/ErrorPage.qml", {"Main", "YuRadio"});
-#else
   engine.loadFromModule("Main", "Main");
-#endif
 
   return app.exec();
 }

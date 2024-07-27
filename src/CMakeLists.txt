@@ -18,7 +18,6 @@ qt_add_qml_module(
   VERSION
   1.0
   NO_PLUGIN
-  NO_CACHEGEN
   QML_FILES
   Main.qml
   ErrorPage.qml
@@ -86,6 +85,7 @@ target_link_libraries(
           Qt6::Quick
           Qt6::QuickControls2
           Qt6::Multimedia
+          HotReloader
           YuRadioNetworkplugin
           YuRadioContentsplugin)
 

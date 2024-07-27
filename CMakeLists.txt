@@ -11,3 +11,4 @@ find_package(Qt6 REQUIRED COMPONENTS Core WebSockets HttpServer)
 qt_standard_project_setup(REQUIRES 6.5)
 
 add_subdirectory(src)
+add_subdirectory(hotreloader)

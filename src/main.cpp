@@ -8,6 +8,8 @@
   #include "android/nativemediacontroller.h"
 #endif /* Q_OS_ANDROID */
 
+#include "hotreloaderclient.h"
+
 #include <QDir>
 #include <QThread>
 
@@ -52,7 +54,13 @@ int main(int argc, char *argv[]) {
                                            AndroidKeyboard::instance());
 #endif /* Q_OS_ANDROID */
 
+#ifdef QT_DEBUG
+  HotReloaderClient client(&engine, "192.168.1.37", "/src/Main/Main.qml",
+                           "/src/Main/ErrorPage.qml",
+                           {"Main", "YuRadioContents"});
+#else
   engine.loadFromModule("Main", "Main");
+#endif /* QT_DEBUG */
 
   return app.exec();
 }

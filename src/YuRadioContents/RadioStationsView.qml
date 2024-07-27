@@ -200,11 +200,11 @@ Item {
     }
 
     component HighlightBar: Rectangle {
-        width: ListView.view.currentItem.width
-        height: ListView.view.currentItem.height
+        width: ListView.view.currentItem?.width ?? 0
+        height: ListView.view.currentItem?.height ?? 0
 
         color: "lightsteelblue"
-        y: ListView.view.currentItem.y
+        y: ListView.view.currentItem?.y ?? 0
         opacity: 0.6
         Behavior on y {
             SpringAnimation {
@@ -308,7 +308,6 @@ Item {
     RadioBottomBarDrawer {
         id: bottomBarDrawer
 
-        //Material.background: AppSettings.isDarkTheme ? root.Material.background.lighter(1.5) : root.Material.background.darker(1.045)
         maximumHeight: parent.height * 2 / 3
         minimumHeight: Math.max(parent.height / 12, bottomBar.implicitHeight)
 

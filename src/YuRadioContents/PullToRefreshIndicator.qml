@@ -12,7 +12,7 @@ Pane {
     height: 32
 
     x: (handler.width - width) / 2
-    y: maximumProgress * (maximumThreshold + height) - height
+    y: handler.maximumProgress * (handler.maximumThreshold + height) - height
 
     property bool fullyRefreshed: false
     onFullyRefreshedChanged: {
@@ -24,7 +24,7 @@ Pane {
             name: "refreshed"
             extend: "release"
 
-            when: isPulling && !refreshCondition
+            when: handler.isPulling && !handler.refreshCondition
 
             PropertyChanges {
                 root.opacity: 0
@@ -33,7 +33,7 @@ Pane {
         },
         State {
             name: "release"
-            when: isPulling
+            when: handler.isPulling
 
             PropertyChanges {
                 canvas.minimumProgressAngle: 0
@@ -90,11 +90,11 @@ Pane {
         id: canvas
         anchors.fill: parent
 
-        property real minimumProgressAngle: minimumProgress
-        property real maximumProgressAngle: maximumProgress
+        property real minimumProgressAngle: handler.minimumProgress
+        property real maximumProgressAngle: handler.maximumProgress
 
         NumberAnimation on minimumProgressAngle {
-            running: refreshCondition && isPulling
+            running: handler.refreshCondition && handler.isPulling
             loops: Animation.Infinite
 
             duration: 500
@@ -122,7 +122,7 @@ Pane {
 
             let progressAngle;
             let shift;
-            if (!isPulling) {
+            if (!handler.isPulling) {
                 progressAngle = startAngle + (endAngle - startAngle) * minimumProgressAngle;
                 shift = Math.PI * maximumProgressAngle;
             } else {

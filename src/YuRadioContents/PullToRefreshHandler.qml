@@ -90,14 +90,6 @@ Item {
     Loader {
         id: refreshIndicatorLoader
 
-        property alias minimumProgress: internal.minimumProgress
-        property alias maximumProgress: internal.maximumProgress
-        property alias minimumThreshold: root.minimumThreshold
-        property alias maximumThreshold: root.maximumThreshold
-        property alias isPullingDown: internal.isPullingDown
-        property alias isPullingUp: internal.isPullingUp
-        property alias isPulling: root.isPulling
-        property alias refreshCondition: root.refreshCondition
         property alias handler: root
 
         Connections {

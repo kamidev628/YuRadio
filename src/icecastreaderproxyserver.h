@@ -38,7 +38,7 @@ private:
   QPointer<QNetworkReply> m_reply = nullptr;
   QUrl m_targetSource;
 
-  qint64 m_bytesRead;
+  qint64 m_songBytesRead;
   QByteArray m_icyMetaDataBuffer;
   QVariantMap m_icyMetaData;
   int m_icyMetaInt;

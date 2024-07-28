@@ -72,7 +72,7 @@ void IcecastReaderProxyServer::replyReadHeaders() {
   m_icyMetaInt = m_reply->hasRawHeader("icy-metaint"_L1)
                    ? m_reply->rawHeader("icy-metaint"_L1).toInt(&metaIntParsed)
                    : 0;
-  m_bytesRead = 0;
+  m_songBytesRead = 0;
   m_icyMetaLeft = 0;
   m_icyMetaDataBuffer.clear();
 
@@ -119,12 +119,15 @@ void IcecastReaderProxyServer::replyReadyRead() {
     readIcyMetaData();
   }
 
-  QByteArray songData = m_reply->read(m_icyMetaInt - m_bytesRead);
-  m_bytesRead += songData.length();
+  Q_ASSERT(m_icyMetaInt - m_songBytesRead >= 0);
+  QByteArray songData = m_reply->read(m_icyMetaInt - m_songBytesRead);
+  m_songBytesRead += songData.length();
 
   m_client->write(songData);
 
   while (m_reply->bytesAvailable()) {
+    m_songBytesRead = 0;
+
     QByteArray icyLengthByte = m_reply->read(1);
     auto icyLength = static_cast<uint8_t>(*icyLengthByte);
 
@@ -142,7 +145,7 @@ void IcecastReaderProxyServer::replyReadyRead() {
     }
 
     songData = m_reply->read(m_icyMetaInt);
-    m_bytesRead = songData.length();
+    m_songBytesRead = songData.length();
     m_client->write(songData);
   }
 }

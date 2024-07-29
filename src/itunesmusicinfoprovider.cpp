@@ -27,7 +27,8 @@ void ItunesMusicInfoProvider::provide(const QString &searchString) {
   auto [future, reply] = m_apiManager->get(QStringLiteral("/search"), query);
 
   setState(Processing);
-  future.then(this, [this](const QByteArray &data) {
+  future
+    .then(this, [this, replyPtr = reply](const QByteArray &data) {
     handleReplyData(data);
   }).onFailed([this](const NetworkError & /*err*/) { setState(Failed); });
 }

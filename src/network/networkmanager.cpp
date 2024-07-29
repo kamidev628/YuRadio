@@ -63,29 +63,15 @@ NetworkError NetworkManager::checkNetworkErrors(QNetworkReply *reply) {
 
   qCInfo(networkManagerLog).noquote() << debugMessage;
 
-  QString errorMessage;
-
   if (isReplyError) {
-    QString response;
     QByteArray data = reply->isReadable() ? reply->readAll() : "";
-
-    if (reply->header(QNetworkRequest::ContentTypeHeader)
-          .toString()
-          .contains("application/json")) {
-      QJsonDocument json = *json::byteArrayToJson(data);
-
-      response = json["error"].toString();
-    } else {
-      response = data;
-    }
-
-    errorMessage = reply->errorString() + response;
+    QString errorMessage = reply->errorString() + data;
 
     qCWarning(networkManagerLog).noquote()
       << QString("\t[NetworkError](%1): ").arg(httpCode) << errorMessage;
   }
 
-  return {reply->error(), errorMessage};
+  return {reply->error(), reply->errorString()};
 }
 
 NetworkResponse NetworkManager::post(const QString &path,
@@ -168,14 +154,18 @@ NetworkResponse NetworkManager::makeFutureReply(QNetworkReply *replyBase) {
   reply->setParent(nullptr);
 
   auto replyFinished =
-    QtFuture::connect(reply.get(), &QNetworkReply::finished).then([reply]() {
-    auto maybeError = checkNetworkErrors(reply.get());
+    QtFuture::connect(replyBase, &QNetworkReply::finished)
+      .then(this, [reply = QPointer(replyBase)]() -> QByteArray {
+    Q_ASSERT(reply);
+
+    auto maybeError = checkNetworkErrors(reply);
 
     if (maybeError) {
       throw std::move(maybeError);
     }
+    Q_ASSERT(reply->isReadable());
 
-    return reply->isReadable() ? reply->readAll() : "";
+    return reply->readAll();
   });
 
   return {replyFinished, reply};

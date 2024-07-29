@@ -53,7 +53,7 @@ signals:
 
 private:
   static NetworkError checkNetworkErrors(QNetworkReply *reply);
-  static NetworkResponse makeFutureReply(QNetworkReply *reply);
+  NetworkResponse makeFutureReply(QNetworkReply *reply);
 
   QNetworkRequest prepareRequest(const QString &path,
                                  const QUrlQuery &query = {});

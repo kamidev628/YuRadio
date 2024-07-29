@@ -52,61 +52,41 @@ Item {
         radioListView.flick(0, 1);
     }
 
-    property ToolBar header: ToolBar {
-        id: header
+    property Component headerContent: RowLayout {
+        anchors.fill: parent
 
-        Material.background: Material.primary
-        Binding {
-            when: AppSettings.isDarkTheme
-            header.Material.background: root.Material.background.lighter(1.5)
+        Item {
+            Layout.fillWidth: true
         }
 
-        RowLayout {
-            anchors.fill: parent
+        SearchBar {
+            id: searchBar
 
-            ToolButton {
-                id: menuButton
-                icon.source: "images/menu.svg"
-                Material.foreground: Material.color(Material.Grey, Material.Shade100)
-                onClicked: {
-                    root.mainDrawer.open();
-                    bottomBarDrawer.close();
-                }
+            availableWidth: parent.width * 2 / 5
+
+            implicitWidth: height
+
+            Layout.fillHeight: true
+            Layout.topMargin: 8
+            Layout.bottomMargin: 8
+
+            searchInput.onAccepted: {
+                root.radioModelAddFilter("name", searchInput.text);
+                root.radioModelReset();
             }
+        }
 
-            Item {
-                Layout.fillWidth: true
-            }
+        IconButton {
+            id: filterIcon
+            icon.source: 'images/filter.svg'
+            icon.sourceSize: searchBar.searchIcon.sourceSize
 
-            SearchBar {
-                id: searchBar
+            icon.color: Material.color(Material.Grey, Material.Shade100)
 
-                availableWidth: parent.width * 2 / 5
-
-                implicitWidth: height
-
-                Layout.fillHeight: true
-                Layout.topMargin: 8
-                Layout.bottomMargin: 8
-
-                searchInput.onAccepted: {
-                    root.radioModelAddFilter("name", searchInput.text);
-                    root.radioModelReset();
-                }
-            }
-
-            IconButton {
-                id: filterIcon
-                icon.source: 'images/filter.svg'
-                icon.sourceSize: searchBar.searchIcon.sourceSize
-
-                icon.color: Material.color(Material.Grey, Material.Shade100)
-
-                Layout.rightMargin: 10
-                onClicked: {
-                    filterIcon.forceActiveFocus();
-                    root.openSearchFilterDialog();
-                }
+            Layout.rightMargin: 10
+            onClicked: {
+                filterIcon.forceActiveFocus();
+                root.openSearchFilterDialog();
             }
         }
     }
@@ -240,8 +220,8 @@ Item {
 
         onCurrentIndexChanged: {
             if (currentIndex != -1) {
-                radioPlayer.currentItem = model.get(currentIndex);
-                Qt.callLater(radioPlayer.play);
+                MainRadioPlayer.currentItem = model.get(currentIndex);
+                Qt.callLater(MainRadioPlayer.play);
             }
         }
 
@@ -270,7 +250,7 @@ Item {
 
             onClicked: {
                 if (ListView.view.currentIndex == delegate.index) {
-                    radioPlayer.toggle();
+                    MainRadioPlayer.toggle();
                 } else {
                     const radioBrowser = new RadioBrowser.RadioBrowser;
                     radioBrowser.click(apiManager.baseUrl, stationuuid);
@@ -330,24 +310,12 @@ Item {
 
         RadioBottomBar {
             id: bottomBar
-            player: radioPlayer
 
             anchors.fill: parent
 
             bottomBarDragHandler: bottomBarDrawer.dragHandler
             minimumHeight: bottomBarDrawer.minimumHeight
             maximumHeight: bottomBarDrawer.maximumHeight
-
-            Binding {
-                when: radioPlayer.currentItem !== undefined
-                bottomBar.stationName: radioPlayer.currentItem.name
-                bottomBar.stationTags: radioPlayer.currentItem.tags
-                bottomBar.stationUrl: radioPlayer.currentItem.url_resolved
-                bottomBar.stationIcon: radioPlayer.currentItem.favicon
-                bottomBar.stationHomepage: radioPlayer.currentItem.homepage
-                bottomBar.stationCountry: radioPlayer.currentItem.country
-                bottomBar.stationLanguage: radioPlayer.currentItem.language
-            }
         }
 
         anchors {
@@ -365,7 +333,7 @@ Item {
             bottomMargin: 8
         }
 
-        icon.source: radioPlayer.playing ? "images/pause.svg" : "images/play.svg"
+        icon.source: MainRadioPlayer.playing ? "images/pause.svg" : "images/play.svg"
         icon.width: width / 2
         icon.height: height / 2
 
@@ -373,18 +341,17 @@ Item {
 
         visible: !bottomBar.playerButton.visible
         onClicked: {
-            radioPlayer.toggle();
+            MainRadioPlayer.toggle();
         }
 
         width: 60
         height: 60
     }
 
-    RadioPlayer {
-        id: radioPlayer
-
-        property var currentItem: undefined
-
-        source: currentItem ? currentItem.url_resolved : ""
+    Connections {
+        target: root.mainDrawer
+        function onOpened() {
+            bottomBarDrawer.close();
+        }
     }
 }

@@ -35,6 +35,7 @@ ItemDelegate {
             fillMode: Image.PreserveAspectFit
             source: root.favicon ? root.favicon : (AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png")
             smooth: true
+            asynchronous: true
 
             IconImage {
                 anchors {

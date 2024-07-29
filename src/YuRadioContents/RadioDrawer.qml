@@ -4,12 +4,17 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 Drawer {
-    id: drawer
+    id: root
 
     width: Math.min(parent.width, parent.height) / 3 * 2
     height: parent.height
 
     Material.roundedScale: Material.NotRounded
+
+    signal showBookmarksRequested
+    signal showSearchRequested
+    signal showSettingsRequested
+    signal showAboutRequested
 
     Image {
         id: image
@@ -57,26 +62,47 @@ Drawer {
 
             model: ListModel {
                 ListElement {
-                    text: qsTr("About")
-                    iconName: "help-about"
+                    itemText: qsTr("Search")
+                    iconSource: "images/search.svg"
+                    triggered: () => {
+                      root.showSearchRequested();
+                    }
+                }
+                ListElement {
+                    itemText: qsTr("Bookmarks")
+                    iconSource: "images/bookmark.svg"
+                    triggered: () => {
+                        root.showBookmarksRequested();
+                    }
+                }
+                ListElement {
+                    itemText: qsTr("Settings")
+                    iconSource: "images/settings.svg"
+                    triggered: () => {
+                      root.showSettingsRequested()
+                    }
+                }
+                ListElement {
+                    itemText: qsTr("About")
                     iconSource: "images/about.svg"
-                    triggered: function () {
-                        aboutDialog.open();
+                    triggered: () => {
+                      root.showAboutRequested()
                     }
                 }
             }
 
             delegate: ItemDelegate {
-                required property ListModel model
+                required property string itemText
+                required property string iconSource
+                required property var triggered
 
                 width: parent.width
-                text: model.text
-                icon.source: model.iconSource
-                icon.name: model.iconName
+                text: itemText
+                icon.source: iconSource
                 highlighted: ListView.isCurrentItem
                 onClicked: {
-                    drawer.close();
-                    model.triggered();
+                    root.close();
+                    triggered();
                 }
             }
         }

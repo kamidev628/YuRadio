@@ -14,21 +14,20 @@ FocusScope {
     required property real maximumHeight
 
     required property DragHandler bottomBarDragHandler
-    required property RadioPlayer player
 
     property MusicInfo musicInfo
-    property string streamTitle: player.streamTitle && player.streamTitle.trim().length > 4 ? player.streamTitle : ''
+    property string streamTitle: MainRadioPlayer.streamTitle && MainRadioPlayer.streamTitle.trim().length > 4 ? MainRadioPlayer.streamTitle : ''
     property string lastStreamTitle: ""
 
     property alias playerButton: playerButton
 
-    property string stationName
-    property string stationUrl
-    property string stationTags
-    property string stationIcon
-    property string stationHomepage
-    property string stationCountry
-    property string stationLanguage
+    property string stationName: MainRadioPlayer.currentItem?.name ?? ""
+    property string stationTags: MainRadioPlayer.currentItem?.tags ?? ""
+    property string stationUrl: MainRadioPlayer.currentItem?.url_resolved ?? ""
+    property string stationIcon: MainRadioPlayer.currentItem?.favicon ?? ""
+    property string stationHomepage: MainRadioPlayer.currentItem?.homepage ?? ""
+    property string stationCountry: MainRadioPlayer.currentItem?.country ?? ""
+    property string stationLanguage: MainRadioPlayer.currentItem?.language ?? ""
 
     Binding {
         when: mainFlickable.dragging
@@ -127,15 +126,15 @@ FocusScope {
                                 id: errorText
                                 anchors.fill: parent
                                 Material.foreground: Material.Red
-                                text: visible ? root.player.errorString : ``
+                                text: visible ? MainRadioPlayer.errorString : ``
                                 elide: Text.ElideRight
-                                visible: root.player.error != RadioPlayer.NoError && !progressBar.visible
+                                visible: MainRadioPlayer.error != RadioPlayer.NoError && !progressBar.visible
                             }
                             ProgressBar {
                                 id: progressBar
                                 indeterminate: true
                                 anchors.fill: parent
-                                visible: root.player.loading && !root.player.playing
+                                visible: MainRadioPlayer.loading && !MainRadioPlayer.playing
                             }
                         }
 
@@ -195,14 +194,14 @@ FocusScope {
                     Layout.preferredWidth: 40
                     Layout.preferredHeight: Layout.preferredWidth
 
-                    icon.source: root.player.playing ? "images/pause.svg" : "images/play.svg"
+                    icon.source: MainRadioPlayer.playing ? "images/pause.svg" : "images/play.svg"
                     icon.sourceSize: Qt.size(height, height)
                     icon.color: Material.color(Material.Grey, AppSettings.isDarkTheme ? Material.Shade400 : Material.Shade800)
 
                     smooth: true
 
                     onClicked: {
-                        root.player.toggle();
+                        MainRadioPlayer.toggle();
                     }
                 }
             }
@@ -306,7 +305,7 @@ FocusScope {
     }
 
     Connections {
-        target: root.player
+        target: MainRadioPlayer
 
         function onSourceChanged() {
             root.musicInfo = null;

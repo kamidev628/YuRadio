@@ -42,6 +42,7 @@ public:
 
   Q_INVOKABLE virtual void reset() = 0;
   Q_INVOKABLE void loadPage();
+  Q_INVOKABLE void reload();
 
   QString errorString() const;
 

@@ -225,3 +225,8 @@ void AbstractRestListModel::setPath(const QString &newPath) {
 QString AbstractRestListModel::errorString() const {
   return m_errorString;
 }
+
+void AbstractRestListModel::reload() {
+  reset();
+  loadPage();
+}

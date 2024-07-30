@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
+import "radiobrowser.mjs" as RadioBrowser
+
 ItemDelegate {
     id: root
 
@@ -89,13 +91,38 @@ ItemDelegate {
             }
         }
     }
+
     Menu {
         id: moreOptionsMenu
-        MenuItem {
-            text: "Add to Favorites"
+
+        property bool bookmarkAdded
+
+        onAboutToShow: {
+            bookmarkAdded = Storage.existsBookmark(root.stationuuid);
         }
-        MenuItem {
+
+        EnhancedMenuItem {
+            text: moreOptionsMenu.bookmarkAdded ? "Delete bookmark" : "Add bookmark"
+            icon.source: moreOptionsMenu.bookmarkAdded ? "images/bookmark-added.svg" : "images/bookmark.svg"
+            onTriggered: {
+                if (moreOptionsMenu.bookmarkAdded) {
+                    Storage.deleteBookmark(root.stationuuid);
+                } else {
+                    Storage.addBookmark(root.ListView.view.model.get(root.index));
+                }
+            }
+        }
+
+        EnhancedMenuItem {
             text: "Vote"
+            icon.source: "images/thumb-up.svg"
+            onTriggered: {
+                RadioBrowser.vote(root.stationuuid);
+            }
         }
+    }
+
+    component EnhancedMenuItem: MenuItem {
+        focusPolicy: Qt.TabFocus
     }
 }

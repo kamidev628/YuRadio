@@ -10,7 +10,6 @@ import "radiobrowser.mjs" as RadioBrowser
 
 import YuRadioContents
 import network
-import Main
 
 Item {
     id: root
@@ -19,6 +18,7 @@ Item {
 
     property alias bottomDrawer: bottomBarDrawer
     required property RadioDrawer mainDrawer
+    required property NetworkManager mainNetworkManager
 
     property var radioModelFilters: ({
             reverse: true
@@ -103,7 +103,7 @@ Item {
             implicitWidth: parent.width * 3 / 4
             implicitHeight: parent.height * 3 / 4
             anchors.centerIn: parent
-            networkManager: apiManager
+            networkManager: root.mainNetworkManager
             onAccepted: {
                 root.radioModelAddFilter("country", searchFilterDialog.selectedCountry);
                 root.radioModelAddFilter("state", searchFilterDialog.selectedState);
@@ -115,26 +115,10 @@ Item {
         onLoaded: item.open()
     }
 
-    NetworkManager {
-        id: apiManager
-
-        Component.onCompleted: {
-            const radioBrowser = new RadioBrowser.RadioBrowser;
-            radioBrowser.baseUrlRandom().then(url => {
-                console.log("RadioBrowser BaseUrl:", url);
-                baseUrl = url;
-            });
-        }
-
-        onBaseUrlChanged: {
-            root.radioModelReset();
-        }
-    }
-
     JsonRestListModel {
         id: radioModel
 
-        restManager: apiManager
+        restManager: root.mainNetworkManager
         pagination: LimitPagination {
             id: radioPagination
             limit: 20
@@ -218,13 +202,6 @@ Item {
             bottom: bottomBarDrawer.top
         }
 
-        onCurrentIndexChanged: {
-            if (currentIndex != -1) {
-                MainRadioPlayer.currentItem = model.get(currentIndex);
-                Qt.callLater(MainRadioPlayer.play);
-            }
-        }
-
         header: RadioStationsViewHeader {
             id: radioListViewHeader
 
@@ -252,9 +229,10 @@ Item {
                 if (ListView.view.currentIndex == delegate.index) {
                     MainRadioPlayer.toggle();
                 } else {
-                    const radioBrowser = new RadioBrowser.RadioBrowser;
-                    radioBrowser.click(apiManager.baseUrl, stationuuid);
+                    RadioBrowser.click(root.mainNetworkManager.baseUrl, stationuuid);
                     ListView.view.currentIndex = index;
+                    MainRadioPlayer.currentItem = Object.assign({}, radioListView.model.get(delegate.index));
+                    Qt.callLater(MainRadioPlayer.play);
                 }
             }
         }
@@ -285,73 +263,22 @@ Item {
         }
     }
 
-    RadioBottomBarDrawer {
+    RadioBottomBar {
         id: bottomBarDrawer
-
-        maximumHeight: parent.height * 2 / 3
-        minimumHeight: Math.max(parent.height / 12, bottomBar.implicitHeight)
-
-        ShaderEffectSource {
-            id: effectSource
-            anchors.fill: parent
-            sourceItem: radioListView
-            sourceRect: Qt.rect(0, radioListView.height, bottomBarDrawer.width, bottomBarDrawer.height)
-            visible: false
-        }
-
-        background: MultiEffect {
-            source: effectSource
-            autoPaddingEnabled: false
-            blurEnabled: true
-            blurMax: 64
-            blur: 0.95
-            saturation: -0.3
-        }
-
-        RadioBottomBar {
-            id: bottomBar
-
-            anchors.fill: parent
-
-            bottomBarDragHandler: bottomBarDrawer.dragHandler
-            minimumHeight: bottomBarDrawer.minimumHeight
-            maximumHeight: bottomBarDrawer.maximumHeight
-        }
-
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
-    }
-
-    RoundButton {
-        anchors {
-            bottom: bottomBarDrawer.top
-            right: parent.right
-            rightMargin: 8
-            bottomMargin: 8
-        }
-
-        icon.source: MainRadioPlayer.playing ? "images/pause.svg" : "images/play.svg"
-        icon.width: width / 2
-        icon.height: height / 2
-
-        opacity: bottomBarDrawer.progress
-
-        visible: !bottomBar.playerButton.visible
-        onClicked: {
-            MainRadioPlayer.toggle();
-        }
-
-        width: 60
-        height: 60
+        listView: radioListView
     }
 
     Connections {
         target: root.mainDrawer
         function onOpened() {
             bottomBarDrawer.close();
+        }
+    }
+
+    Connections {
+        target: root.mainNetworkManager
+        function onBaseUrlChanged() {
+            root.radioModelReset();
         }
     }
 }

@@ -4,6 +4,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Material
 
+import "radiobrowser.mjs" as RadioBrowser
+import network
+
 /*
  * List of radio stations: https://dir.xiph.org/yp.xml
  *
@@ -19,12 +22,39 @@ ApplicationWindow {
 
     title: qsTr("YuRadio")
 
+    property var loadedPages: []
+
     function backButtonPressed(event) {
         if (mainStackView.depth > 1) {
-            mainStackView.pop();
+            mainStackView.popCurrentItem();
             event.accepted = true;
         } else {
             event.accepted = false;
+        }
+    }
+
+    function stackViewPushPage(component: Component, objectName: string) {
+        if (mainStackView.currentItem?.objectName == objectName) {
+            return;
+        }
+        let loadedPage = loadedPages.find(item => item.objectName == objectName);
+        if (loadedPage) {
+            mainStackView.replaceCurrentItem(loadedPage);
+        } else {
+            loadedPage = component.createObject(root);
+            loadedPages.push(loadedPage);
+            mainStackView.replaceCurrentItem(loadedPage);
+        }
+    }
+
+    NetworkManager {
+        id: networkManager
+
+        Component.onCompleted: {
+            RadioBrowser.baseUrlRandom().then(url => {
+                console.log("RadioBrowser BaseUrl:", url);
+                baseUrl = url;
+            });
         }
     }
 
@@ -32,36 +62,37 @@ ApplicationWindow {
         id: drawer
 
         onShowBookmarksRequested: {
-            if (mainStackView.currentItem.objectName != "favoriteView") {
-                mainStackView.push(favoriteView);
-            }
+            root.stackViewPushPage(bookmarkPage, "bookmarkPage");
         }
         onShowSearchRequested: {
-            if (mainStackView.currentItem.objectName != "mainView") {
-                mainStackView.push(mainView);
-            }
+            root.stackViewPushPage(searchPage, "searchPage");
         }
     }
 
     StackView {
         id: mainStackView
-        initialItem: favoriteView
         anchors.fill: parent
         focus: true
 
-        Component {
-            id: mainView
+        Component.onCompleted: {
+            root.stackViewPushPage(searchPage, "searchPage");
+        }
 
-            RadioStationsView {
-                objectName: "mainView"
+        Component {
+            id: searchPage
+
+            SearchPage {
+                objectName: "searchPage"
                 mainDrawer: drawer
+                mainNetworkManager: networkManager
             }
         }
 
         Component {
-            id: favoriteView
-            FavoriteRadioStationsView {
-                objectName: "favoriteView"
+            id: bookmarkPage
+            BookmarkPage {
+                objectName: "bookmarkPage"
+                mainNetworkManager: networkManager
             }
         }
 

@@ -1,8 +1,5 @@
-set_source_files_properties(AppSettings.qml PROPERTIES QT_QML_SINGLETON_TYPE
-                                                       true)
-set_source_files_properties(Utils.qml PROPERTIES QT_QML_SINGLETON_TYPE true)
-set_source_files_properties(MainRadioPlayer.qml PROPERTIES QT_QML_SINGLETON_TYPE
-                                                           true)
+set_source_files_properties(AppSettings.qml Utils.qml MainRadioPlayer.qml
+                            Storage.qml PROPERTIES QT_QML_SINGLETON_TYPE true)
 
 qt_add_library(YuRadioContents STATIC)
 qt_add_qml_module(
@@ -15,13 +12,14 @@ qt_add_qml_module(
   App.qml
   RadioDrawer.qml
   MainRadioPlayer.qml
-  FavoriteRadioStationsView.qml
+  BookmarkPage.qml
   AppSettings.qml
   Utils.qml
   RadioStationDelegate.qml
-  RadioBottomBar.qml
+  RadioBottomBarContents.qml
   RadioBottomBarDrawer.qml
-  RadioStationsView.qml
+  RadioBottomBar.qml
+  SearchPage.qml
   RadioStationsViewHeader.qml
   RadioStationSearchFilterDialog.qml
   PullToRefreshHandler.qml
@@ -29,6 +27,7 @@ qt_add_qml_module(
   OutlinedButton.qml
   ClickableLink.qml
   SearchBar.qml
+  Storage.qml
   IconButton.qml
   MomentumAnimation.qml
   FakeFlickable.qml
@@ -53,7 +52,8 @@ qt_add_qml_module(
   images/sort.svg
   images/bookmark.svg
   images/bookmark-added.svg
-  images/settings.svg)
+  images/settings.svg
+  images/thumb-up.svg)
 
 qt_add_shaders(
   YuRadioContents

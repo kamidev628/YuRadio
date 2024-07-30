@@ -41,6 +41,12 @@ Dialog {
     standardButtons: Dialog.Ok | Dialog.Cancel
 
     onOpened: {
+        let modelsToCheck = [languageModel, countryModel, stateModel, tagsModel];
+        modelsToCheck.forEach(model => {
+            if (model.status == JsonRestListModel.Error) {
+                model.reset();
+            }
+        });
         _prevSelectedCountry = countryCombo.currentIndex;
         _prevSelectedState = stateCombo.currentIndex;
         _prevSelectedLanguage = languageCombo.currentIndex;

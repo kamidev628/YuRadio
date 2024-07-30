@@ -19,13 +19,17 @@ Item {
     height: minimumHeight
 
     function open() {
-        openCloseAnimation.to = maximumHeight;
-        openCloseAnimation.start();
+        if (root.height != maximumHeight) {
+            openCloseAnimation.to = maximumHeight;
+            openCloseAnimation.start();
+        }
     }
 
     function close() {
-        openCloseAnimation.to = minimumHeight;
-        openCloseAnimation.start();
+        if (root.height != minimumHeight) {
+            openCloseAnimation.to = minimumHeight;
+            openCloseAnimation.start();
+        }
     }
 
     function returnToClosestBoundary() {
@@ -51,9 +55,9 @@ Item {
         id: openCloseAnimation
         duration: 200
         onFinished: {
-            if (root.height >= root.maximumHeight) {
+            if (root.height == root.maximumHeight) {
                 root.height = Qt.binding(() => root.maximumHeight);
-            } else if (root.height <= root.minimumHeight) {
+            } else if (root.height == root.minimumHeight) {
                 root.height = Qt.binding(() => root.minimumHeight);
             }
         }
@@ -90,8 +94,8 @@ Item {
     }
 
     Loader {
-      anchors.fill: parent
-      sourceComponent: root.background
+        anchors.fill: parent
+        sourceComponent: root.background
     }
 
     ColumnLayout {

@@ -5,78 +5,62 @@ to one of the providers out there. (google, quad9,...)
 So we have to fallback to ask a single server for a list.
 */
 
-export default class RadioBrowser {
-  constructor() {}
+function makeRequest(url, onSuccess) {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("GET", url, true);
+    request.onload = () => {
+      if (request.status >= 200 && request.status < 300) {
+        resolve(onSuccess(request.responseText));
+      } else {
+        reject(request.statusText);
+      }
+    };
+    request.send();
+  });
+}
 
-  click(baseUrl, stationUUID) {
-    return new Promise((resolve, reject) => {
-      const request = new XMLHttpRequest();
-      request.open("GET", baseUrl + "/json/url/" + stationUUID, true);
-      request.onload = () => {
-        if (request.status >= 200 && request.status < 300) {
-          resolve(JSON.parse(request.responseText));
-        } else {
-          reject(request.statusText);
-        }
-      };
-      request.send();
-    });
-  }
+export function click(baseUrl, stationUUID) {
+  return makeRequest(baseUrl + "/json/url/" + stationUUID, (data) => {
+    return JSON.parse(data);
+  });
+}
 
-  /**
-   * Ask a specified server for a list of all other server.
-   */
-  baseUrls() {
-    return new Promise((resolve, reject) => {
-      const request = new XMLHttpRequest();
-      // If you need https, you have to use fixed servers, at best a list for this request
-      request.open(
-        "GET",
-        "http://all.api.radio-browser.info/json/servers",
-        true,
-      );
-      request.onload = () => {
-        if (request.status >= 200 && request.status < 300) {
-          const items = JSON.parse(request.responseText).map(
-            (x) => "https://" + x.name,
-          );
-          resolve(items);
-        } else {
-          reject(request.statusText);
-        }
-      };
-      request.send();
-    });
-  }
+export function vote(baseUrl, stationUUID) {
+  return makeRequest(baseUrl + "/json/vote/" + stationUUID, (data) => {
+    return JSON.parse(data);
+  });
+}
 
-  /**
-   * Ask a server for its settings.
-   */
-  serverConfig(baseurl) {
-    return new Promise((resolve, reject) => {
-      const request = new XMLHttpRequest();
-      request.open("GET", baseurl + "/json/config", true);
-      request.onload = () => {
-        if (request.status >= 200 && request.status < 300) {
-          const items = JSON.parse(request.responseText);
-          resolve(items);
-        } else {
-          reject(request.statusText);
-        }
-      };
-      request.send();
-    });
-  }
+/**
+ * Ask a specified server for a list of all other server.
+ */
+export function baseUrls() {
+  return makeRequest(
+    "http://all.api.radio-browser.info/json/servers",
+    (data) => {
+      return JSON.parse(data).map((x) => "https://" + x.name);
+    },
+  );
+}
 
-  /**
-   * Get a random available radio-browser server.
-   * Returns: string - base url for radio-browser api
-   */
-  baseUrlRandom() {
-    return this.baseUrls().then((hosts) => {
-      return hosts[Math.floor(Math.random() * hosts.length)];
-    });
-  }
+/**
+ * Ask a server for its settings.
+ */
+export function serverConfig(baseurl) {
+  return makeRequest(baseurl + "/json/config", (data) => {
+    return JSON.parse(data);
+  });
+}
+
+/**
+ * Get a random available radio-browser server.
+ * Returns: string - base url for radio-browser api
+ */
+export function baseUrlRandom() {
+  return this.baseUrls().then((hosts) => {
+    return hosts[Math.floor(Math.random() * hosts.length)];
+  });
 }
 
 //

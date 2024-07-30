@@ -78,6 +78,7 @@ ItemDelegate {
 
         IconButton {
             id: moreOptions
+            focus: true
 
             Layout.alignment: Qt.AlignVCenter
             Layout.fillHeight: true
@@ -86,6 +87,8 @@ ItemDelegate {
             icon.fillMode: Image.PreserveAspectFit
             icon.source: "images/more-vert.svg"
             icon.sourceSize: Qt.size(32, 32)
+            focusPolicy: Qt.StrongFocus
+
             onClicked: {
                 moreOptionsMenu.popup(moreOptions);
             }

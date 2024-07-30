@@ -18,6 +18,7 @@ Item {
     }
     MouseArea {
         anchors.fill: parent
+        focusPolicy: root.focusPolicy
         onClicked: {
             root.clicked();
         }

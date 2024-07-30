@@ -1,41 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest android:installLocation="auto" android:versionCode="1" android:versionName="1.0" package="org.yuradio" xmlns:android="http://schemas.android.com/apk/res/android">
-  <!-- %%INSERT_PERMISSIONS -->
-  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"></uses-permission>
-  <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE"></uses-permission>
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"></uses-permission>
-  <!-- %%INSERT_FEATURES -->
-  <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:smallScreens="true"></supports-screens>
-  <application android:allowBackup="true" android:fullBackupOnly="false" android:hardwareAccelerated="true" android:icon="@drawable/icon" android:label="yuradio" android:name="org.qtproject.qt.android.bindings.QtApplication" android:requestLegacyExternalStorage="true" android:usesCleartextTraffic="true">
-    <service android:exported="true" android:foregroundServiceType="mediaPlayback" android:name=".MediaPlayerService" android:process=":qt_activity" android:stopWithTask="true">
-      <!-- Background running -->
-      <meta-data android:name="android.app.background_running" android:value="true"></meta-data>
-      <!-- Background running -->
-      <!-- Application arguments -->
-      <meta-data android:name="android.app.lib_name" android:value="-- %%INSERT_APP_LIB_NAME%% --"></meta-data>
-      <meta-data android:name="android.app.arguments" android:value="-service"></meta-data>
-      <!-- Application arguments -->
-      <intent-filter>
-        <action android:name="androidx.media3.session.MediaSessionService"></action>
-      </intent-filter>
-    </service>
-    <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density" android:exported="true" android:label="YuRadio" android:launchMode="singleTop" android:name="org.yuradio.AppActivity" android:screenOrientation="unspecified">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"></action>
-        <category android:name="android.intent.category.LAUNCHER"></category>
-      </intent-filter>
-      <meta-data android:name="android.app.background_running" android:value="true"></meta-data>
-      <meta-data android:name="android.app.lib_name" android:value="-- %%INSERT_APP_LIB_NAME%% --"></meta-data>
-      <meta-data android:name="android.app.arguments" android:value="-- %%INSERT_APP_ARGUMENTS%% --"></meta-data>
-    </activity>
-    <provider android:authorities="${applicationId}.qtprovider" android:exported="false" android:grantUriPermissions="true" android:name="androidx.core.content.FileProvider">
-      <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/qtprovider_paths"></meta-data>
-    </provider>
-    <receiver android:exported="false" android:name="androidx.media.session.MediaButtonReceiver">
-      <intent-filter>
-        <action android:name="android.intent.action.MEDIA_BUTTON"></action>
-      </intent-filter>
-    </receiver>
-  </application>
+<manifest android:installLocation="auto"
+    android:versionCode="1"
+    android:versionName="1.0"
+    package="org.yuradio"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- %%INSERT_PERMISSIONS -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"></uses-permission>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"></uses-permission>
+    <!-- %%INSERT_FEATURES -->
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"></supports-screens>
+    <application
+        android:allowBackup="true"
+        android:fullBackupOnly="false"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/shortwave"
+        android:label="yuradio"
+        android:name="org.qtproject.qt.android.bindings.QtApplication"
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true">
+        <service
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback"
+            android:name=".MediaPlayerService"
+            android:process=":qt_activity"
+            android:stopWithTask="true">
+            <!-- Background running -->
+            <meta-data
+                android:name="android.app.background_running"
+                android:value="true"></meta-data>
+            <!-- Background running -->
+            <!-- Application arguments -->
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="-- %%INSERT_APP_LIB_NAME%% --"></meta-data>
+            <meta-data
+                android:name="android.app.arguments"
+                android:value="-service"></meta-data>
+            <!-- Application arguments -->
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService"></action>
+            </intent-filter>
+        </service>
+        <activity
+            android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
+            android:exported="true"
+            android:label="YuRadio"
+            android:launchMode="singleTop"
+            android:name="org.yuradio.AppActivity"
+            android:screenOrientation="unspecified"
+            android:theme="@style/AppTheme.Starting">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+                <category android:name="android.intent.category.LAUNCHER"></category>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.background_running"
+                android:value="true"></meta-data>
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="-- %%INSERT_APP_LIB_NAME%% --"></meta-data>
+            <meta-data
+                android:name="android.app.arguments"
+                android:value="-- %%INSERT_APP_ARGUMENTS%% --"></meta-data>
+        </activity>
+        <provider
+            android:authorities="${applicationId}.qtprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:name="androidx.core.content.FileProvider">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/qtprovider_paths"></meta-data>
+        </provider>
+        <receiver
+            android:exported="false"
+            android:name="androidx.media.session.MediaButtonReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON"></action>
+            </intent-filter>
+        </receiver>
+    </application>
 </manifest>

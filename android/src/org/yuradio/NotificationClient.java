@@ -28,8 +28,8 @@ public class NotificationClient {
                 m_builder = new Notification.Builder(context);
             }
 
-            Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon);
-            m_builder.setSmallIcon(R.drawable.icon)
+            Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.shortwave);
+            m_builder.setSmallIcon(R.drawable.shortwave)
                     .setLargeIcon(icon)
                     .setContentTitle("A message from Qt!")
                     .setContentText(message)

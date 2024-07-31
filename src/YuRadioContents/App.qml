@@ -47,6 +47,10 @@ ApplicationWindow {
         }
     }
 
+    Component.onCompleted: {
+        Storage.databaseInstance();
+    }
+
     NetworkManager {
         id: networkManager
 

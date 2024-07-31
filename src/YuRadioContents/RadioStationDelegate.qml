@@ -3,6 +3,7 @@ import QtQuick.Controls.Material
 import QtQuick.Layouts
 
 import "radiobrowser.mjs" as RadioBrowser
+import network
 
 ItemDelegate {
     id: root
@@ -14,6 +15,7 @@ ItemDelegate {
     required property string url_resolved
     required property string countrycode
     required property string stationuuid
+    required property NetworkManager networkManager
 
     width: ListView.view.width
 
@@ -99,9 +101,11 @@ ItemDelegate {
         id: moreOptionsMenu
 
         property bool bookmarkAdded
+        property bool canVote
 
         onAboutToShow: {
             bookmarkAdded = Storage.existsBookmark(root.stationuuid);
+            canVote = !Storage.existsVote(root.stationuuid);
         }
 
         EnhancedMenuItem {
@@ -117,10 +121,14 @@ ItemDelegate {
         }
 
         EnhancedMenuItem {
-            text: "Vote"
-            icon.source: "images/thumb-up.svg"
+            text: moreOptionsMenu.canVote ? "Vote" : "Already Voted"
+            icon.source: moreOptionsMenu.canVote ? "images/thumb-up.svg" : "images/thumb-up-filled.svg"
+            enabled: moreOptionsMenu.canVote
             onTriggered: {
-                RadioBrowser.vote(root.stationuuid);
+                if (moreOptionsMenu.canVote) {
+                    Storage.addVote(root.stationuuid);
+                    RadioBrowser.vote(root.networkManager.baseUrl, root.stationuuid);
+                }
             }
         }
     }

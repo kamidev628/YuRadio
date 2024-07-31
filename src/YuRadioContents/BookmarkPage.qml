@@ -56,6 +56,7 @@ Item {
 
             focus: true
             focusPolicy: Qt.StrongFocus
+            networkManager: root.mainNetworkManager
 
             onClicked: {
                 if (ListView.view.currentIndex == delegate.index) {

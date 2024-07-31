@@ -9,9 +9,14 @@ QtObject {
 
     property var database: null
     property ListModel bookmarkModel: ListModel {}
-
-    Component.onCompleted: {
-        databaseInstance();
+    property Timer voteUpdateTimer: Timer {
+        interval: 10 * 60 * 1000 // 10 minutes
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
+            root.removeExpiredVotes(interval / 1000);
+        }
     }
 
     function databaseInstance() {
@@ -23,7 +28,13 @@ QtObject {
                 tx.executeSql(`CREATE TABLE IF NOT EXISTS bookmark (
                   stationuuid TEXT PRIMARY KEY,
                   object TEXT
-                  )`);
+                )`);
+            });
+            maybeDatabase.transaction(function (tx) {
+                tx.executeSql(`CREATE TABLE IF NOT EXISTS vote (
+                  stationuuid TEXT PRIMARY KEY,
+                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )`);
             });
             database = maybeDatabase;
             getBookmarks().forEach(item => {
@@ -72,6 +83,28 @@ QtObject {
                     bookmarkModel.remove(i);
                 }
             }
+        });
+    }
+
+    function addVote(stationUUID) {
+        databaseInstance().transaction(function (tx) {
+            tx.executeSql("INSERT INTO vote (stationuuid) VALUES (?)", [stationUUID]);
+        });
+    }
+
+    function existsVote(stationUUID) {
+        let exists = false;
+        databaseInstance().transaction(function (tx) {
+            let results = tx.executeSql("SELECT 1 FROM vote WHERE stationuuid = ?", [stationUUID]);
+            exists = !!results.rows.length;
+        });
+        return exists;
+    }
+
+    function removeExpiredVotes(timeoutSec) {
+        databaseInstance().transaction(function (tx) {
+            console.log("REMOVING EXPIRED VOTES", timeoutSec);
+            tx.executeSql("DELETE FROM vote WHERE strftime('%s', 'now') - strftime('%s', created_at) >= ?", [timeoutSec]);
         });
     }
 }

@@ -10,6 +10,7 @@ Q_LOGGING_CATEGORY(icecastReaderProxyServerLog,
 #include "network/networkmanager.h"
 
 constexpr int ICY_MULTIPLIER = 16;
+constexpr qint64 MAXIMUM_WRITE_BUFFER_SIZE = 200000;
 
 using namespace Qt::StringLiterals;
 using namespace std::chrono_literals;
@@ -107,6 +108,12 @@ void IcecastReaderProxyServer::replyReadHeaders() {
 }
 
 void IcecastReaderProxyServer::replyReadyRead() {
+  if (m_client->bytesToWrite() > MAXIMUM_WRITE_BUFFER_SIZE) {
+    m_reply->abort();
+    m_reply->deleteLater();
+    return;
+  }
+
   if (m_icyMetaLeft > 0) {
     QByteArray metaDataPart = m_reply->read(m_icyMetaLeft);
 

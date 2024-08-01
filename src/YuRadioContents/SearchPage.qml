@@ -16,8 +16,8 @@ Item {
     focus: true
 
     property alias bottomDrawer: bottomBarDrawer
-    required property RadioDrawer mainDrawer
-    required property NetworkManager mainNetworkManager
+    required property RadioDrawer drawer
+    required property NetworkManager networkManager
 
     property var radioModelFilters: ({
             reverse: true
@@ -102,7 +102,7 @@ Item {
             implicitWidth: parent.width * 3 / 4
             implicitHeight: parent.height * 3 / 4
             anchors.centerIn: parent
-            networkManager: root.mainNetworkManager
+            networkManager: root.networkManager
             onAccepted: {
                 root.radioModelAddFilter("country", searchFilterDialog.selectedCountry);
                 root.radioModelAddFilter("state", searchFilterDialog.selectedState);
@@ -117,7 +117,7 @@ Item {
     JsonRestListModel {
         id: radioModel
 
-        restManager: root.mainNetworkManager
+        restManager: root.networkManager
         pagination: LimitPagination {
             id: radioPagination
             limit: 20
@@ -223,13 +223,13 @@ Item {
 
             focus: true
             focusPolicy: Qt.StrongFocus
-            networkManager: root.mainNetworkManager
+            networkManager: root.networkManager
 
             onClicked: {
                 if (ListView.view.currentIndex == delegate.index) {
                     MainRadioPlayer.toggle();
                 } else {
-                    RadioBrowser.click(root.mainNetworkManager.baseUrl, stationuuid);
+                    RadioBrowser.click(root.networkManager.baseUrl, stationuuid);
                     ListView.view.currentIndex = index;
                     MainRadioPlayer.currentItem = Object.assign({}, radioListView.model.get(delegate.index));
                     Qt.callLater(MainRadioPlayer.play);
@@ -269,14 +269,14 @@ Item {
     }
 
     Connections {
-        target: root.mainDrawer
+        target: root.drawer
         function onOpened() {
             bottomBarDrawer.close();
         }
     }
 
     Connections {
-        target: root.mainNetworkManager
+        target: root.networkManager
         function onBaseUrlChanged() {
             root.radioModelReset();
         }

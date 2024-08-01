@@ -65,7 +65,7 @@ Drawer {
                     itemText: qsTr("Search")
                     iconSource: "images/search.svg"
                     triggered: () => {
-                      root.showSearchRequested();
+                        root.showSearchRequested();
                     }
                 }
                 ListElement {
@@ -79,14 +79,14 @@ Drawer {
                     itemText: qsTr("Settings")
                     iconSource: "images/settings.svg"
                     triggered: () => {
-                      root.showSettingsRequested()
+                        root.showSettingsRequested();
                     }
                 }
                 ListElement {
                     itemText: qsTr("About")
                     iconSource: "images/about.svg"
                     triggered: () => {
-                      root.showAboutRequested()
+                        root.showAboutRequested();
                     }
                 }
             }

@@ -87,6 +87,9 @@ ApplicationWindow {
         onShowSearchRequested: {
             root.stackViewPushPage(searchPage, "searchPage");
         }
+        onShowSettingsRequested: {
+            root.stackViewPushPage(settingsPage, "settingsPage");
+        }
     }
 
     StackView {
@@ -95,7 +98,7 @@ ApplicationWindow {
         focus: true
 
         Component.onCompleted: {
-            root.stackViewPushPage(searchPage, "searchPage");
+            root.stackViewPushPage(settingsPage, "settingsPage");
         }
 
         Component {
@@ -103,8 +106,8 @@ ApplicationWindow {
 
             SearchPage {
                 objectName: "searchPage"
-                mainDrawer: drawer
-                mainNetworkManager: networkManager
+                drawer: drawer
+                networkManager: networkManager
             }
         }
 
@@ -112,7 +115,16 @@ ApplicationWindow {
             id: bookmarkPage
             BookmarkPage {
                 objectName: "bookmarkPage"
-                mainNetworkManager: networkManager
+                drawer: drawer
+                networkManager: networkManager
+            }
+        }
+
+        Component {
+            id: settingsPage
+            SettingsPage {
+                objectName: "settingsPage"
+                networkManager: networkManager
             }
         }
 

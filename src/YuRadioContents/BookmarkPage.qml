@@ -11,7 +11,8 @@ Item {
 
     focus: true
 
-    required property NetworkManager mainNetworkManager
+    required property NetworkManager networkManager
+    required property RadioDrawer drawer
     property var stations: []
 
     component HighlightBar: Rectangle {
@@ -55,13 +56,13 @@ Item {
 
             focus: true
             focusPolicy: Qt.StrongFocus
-            networkManager: root.mainNetworkManager
+            networkManager: root.networkManager
 
             onClicked: {
                 if (ListView.view.currentIndex == delegate.index) {
                     MainRadioPlayer.toggle();
                 } else {
-                    RadioBrowser.click(root.mainNetworkManager.baseUrl, stationuuid);
+                    RadioBrowser.click(root.networkManager.baseUrl, stationuuid);
                     ListView.view.currentIndex = delegate.index;
                     MainRadioPlayer.currentItem = Object.assign({}, bookmarkListView.model.get(delegate.index));
                     Qt.callLater(MainRadioPlayer.play);
@@ -73,6 +74,13 @@ Item {
     RadioBottomBar {
         id: bottomBarDrawer
         listView: bookmarkListView
+    }
+
+    Connections {
+        target: root.drawer
+        function onOpened() {
+            bottomBarDrawer.close();
+        }
     }
 
     Connections {

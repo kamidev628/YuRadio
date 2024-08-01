@@ -20,6 +20,7 @@ qt_add_qml_module(
   RadioBottomBarDrawer.qml
   RadioBottomBar.qml
   SearchPage.qml
+  SettingsPage.qml
   RadioStationsViewHeader.qml
   RadioStationSearchFilterDialog.qml
   PullToRefreshHandler.qml

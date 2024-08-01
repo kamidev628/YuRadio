@@ -39,13 +39,10 @@ HotReloaderServer::HotReloaderServer(quint16 webSocketPort, quint16 httpPort,
   });
 
   m_httpServer->route("/.*", [&](const QHttpServerRequest &req) {
-    QString url = req.url().toString(QUrl::RemoveQuery);
-    QStringList splitted = url.split(QStringLiteral(":0/"));
-
-    QString filePath = splitted.count() > 1 ? splitted[1] : "";
+    QString filePath = req.url().path();
 
     qCInfo(hotreloaderServerLog) << "File requested:" << filePath;
-    return QHttpServerResponse::fromFile(filePath);
+    return QHttpServerResponse::fromFile(filePath.mid(1));
   });
 
   if (m_httpServer->listen(QHostAddress::Any, httpPort)) {

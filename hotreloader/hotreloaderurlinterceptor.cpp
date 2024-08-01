@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
+#include "hotreloader.h"
 #include "hotreloaderurlinterceptor.h"
 
 HotReloaderUrlInterceptor::HotReloaderUrlInterceptor(QString host,
@@ -20,8 +21,8 @@ void HotReloaderUrlInterceptor::setModules(const QStringList &modules) {
   QUrl hotreloaderServerUrl;
   hotreloaderServerUrl.setScheme("http");
   hotreloaderServerUrl.setHost(m_host);
-
   hotreloaderServerUrl.setPath(QStringLiteral("/hotreloader/watched/files"));
+  hotreloaderServerUrl.setPort(HOTRELOADER_HTTP_PORT);
 
   QNetworkRequest request(hotreloaderServerUrl);
   QNetworkReply *reply = m_networkManager->get(request);
@@ -68,6 +69,7 @@ QUrl HotReloaderUrlInterceptor::intercept(const QUrl &path, DataType type) {
       QUrl newPath;
       newPath.setScheme(QStringLiteral("http"));
       newPath.setHost(m_host);
+      newPath.setPort(HOTRELOADER_HTTP_PORT);
       newPath.setPath(m_cachedFilePaths[fileName + "_" + module]);
 
       return newPath;

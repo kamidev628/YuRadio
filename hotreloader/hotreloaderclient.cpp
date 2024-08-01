@@ -11,6 +11,7 @@ Q_LOGGING_CATEGORY(hotreloaderClientLog, "Hotreloader.Client")
 
 #include <QCoreApplication>
 
+#include "hotreloader.h"
 #include "hotreloaderclient.h"
 #include "hotreloaderurlinterceptor.h"
 
@@ -29,7 +30,7 @@ HotReloaderClient::HotReloaderClient(QQmlApplicationEngine *engine,
   QUrl webSocketUrl;
   webSocketUrl.setScheme(QStringLiteral("ws"));
   webSocketUrl.setHost(m_host);
-  webSocketUrl.setPort(3030);
+  webSocketUrl.setPort(HOTRELOADER_WEBSOCKET_PORT);
 
   m_sock.open(webSocketUrl);
 
@@ -107,6 +108,7 @@ void HotReloaderClient::reloadQml() {
   pageAddress.setScheme(QStringLiteral("http"));
   pageAddress.setHost(m_host);
   pageAddress.setPath(m_currentPage);
+  pageAddress.setPort(HOTRELOADER_HTTP_PORT);
 
   m_engine->clearComponentCache();
   m_engine->load(pageAddress);

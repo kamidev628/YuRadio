@@ -10,21 +10,24 @@ import network
 Dialog {
     id: root
 
-    readonly property var selectedCountry: countryCombo.currentIndex !== -1 ? countryModel.get(countryCombo.currentIndex).name : undefined
+    readonly property var selectedCountry: countryCombo.currentIndex !== -1 ? countryCombo.model[countryCombo.currentIndex] : undefined
     readonly property var selectedState: stateCombo.currentIndex !== -1 ? stateModel.get(stateCombo.currentIndex).name : undefined
-    readonly property var selectedLanguage: languageCombo.currentIndex !== -1 ? languageModel.get(languageCombo.currentIndex).name : undefined
+    readonly property var selectedLanguage: languageCombo.currentIndex !== -1 ? languageCombo.model[languageCombo.currentIndex] : undefined
 
     function selectedTags() {
         let selectedTags = [];
         for (let i = 0; i < tagsRepeater.count; i++) {
             let item = tagsRepeater.itemAt(i);
             if (item.checked) {
-                selectedTags.push(item.name);
+                selectedTags.push(item.modelData);
             }
         }
         return selectedTags;
     }
 
+    QtObject {
+        id: internal
+    }
     property int _prevSelectedCountry
     property int _prevSelectedState
     property int _prevSelectedLanguage
@@ -41,12 +44,9 @@ Dialog {
     standardButtons: Dialog.Ok | Dialog.Cancel
 
     onOpened: {
-        let modelsToCheck = [languageModel, countryModel, stateModel, tagsModel];
-        modelsToCheck.forEach(model => {
-            if (model.status == JsonRestListModel.Error) {
-                model.reset();
-            }
-        });
+        if (stateModel.status == JsonRestListModel.Error) {
+            stateModel.reset();
+        }
         _prevSelectedCountry = countryCombo.currentIndex;
         _prevSelectedState = stateCombo.currentIndex;
         _prevSelectedLanguage = languageCombo.currentIndex;
@@ -94,35 +94,12 @@ Dialog {
                 implicitHeight: 40
 
                 editable: true
+                currentIndex: -1
 
-                textRole: "name"
                 font.pointSize: 13
                 popup.font.pointSize: font.pointSize
 
-                model: JsonRestListModel {
-                    id: countryModel
-                    restManager: root.networkManager
-                    pagination: LimitPagination {
-                        id: countriesPagination
-                        offset: 0
-                        limit: totalCount
-                        totalCount: 400
-                    }
-
-                    orderByQuery: "order"
-                    orderBy: "stationcount"
-                    filters: {
-                        "reverse": true
-                    }
-                    path: "/json/countries"
-
-                    preprocessItem: item => item.name && item.iso_3166_1 ? item : undefined
-
-                    fetchMoreHandler: () => {
-                        loadPage();
-                        pagination.nextPage();
-                    }
-                }
+                model: Storage.getCountries()
             }
 
             Label {
@@ -142,6 +119,7 @@ Dialog {
 
                 font.pointSize: 13
                 popup.font.pointSize: font.pointSize
+                currentIndex: -1
 
                 model: JsonRestListModel {
                     id: stateModel
@@ -159,7 +137,7 @@ Dialog {
                         "reverse": true
                     }
 
-                    path: countryCombo.currentIndex !== -1 ? `/json/states/${countryModel.get(countryCombo.currentIndex).name}/` : '/json/states'
+                    path: root.selectedCountry ? `/json/states/${root.selectedCountry}/` : '/json/states'
 
                     fetchMoreHandler: () => {
                         loadPage();
@@ -182,39 +160,15 @@ Dialog {
                 Layout.fillWidth: true
                 Layout.leftMargin: 10
 
+                currentIndex: -1
                 displayText: currentIndex === -1 ? "Station Language" : currentText
                 implicitHeight: 40
                 font.pointSize: 13
                 popup.font.pointSize: font.pointSize
 
                 editable: true
-                textRole: "name"
 
-                model: JsonRestListModel {
-                    id: languageModel
-                    restManager: root.networkManager
-                    pagination: LimitPagination {
-                        id: languagesPagination
-                        offset: 0
-                        limit: totalCount
-                        totalCount: 300
-                    }
-
-                    orderByQuery: "order"
-                    orderBy: "stationcount"
-                    filters: {
-                        "reverse": true
-                    }
-
-                    path: "/json/languages"
-
-                    preprocessItem: item => item.name && item.iso_639 ? item : undefined
-
-                    fetchMoreHandler: () => {
-                        loadPage();
-                        pagination.nextPage();
-                    }
-                }
+                model: Storage.getLanguages()
             }
         }
 
@@ -244,40 +198,18 @@ Dialog {
 
                 Repeater {
                     id: tagsRepeater
-                    model: JsonRestListModel {
-                        id: tagsModel
-                        restManager: root.networkManager
-                        pagination: LimitPagination {
-                            id: tagsPagination
-                            offset: 0
-                            limit: totalCount
-                            totalCount: 50
-                        }
-
-                        orderByQuery: "order"
-                        orderBy: "stationcount"
-                        filters: {
-                            "reverse": true
-                        }
-
-                        path: "/json/tags"
-
-                        fetchMoreHandler: () => {
-                            loadPage();
-                            pagination.nextPage();
-                        }
-                    }
+                    model: Storage.getTags()
 
                     OutlinedButton {
                         required property int index
-                        required property string name
+                        required property string modelData
 
                         focusPolicy: Qt.NoFocus
 
                         checkable: true
                         implicitHeight: 35
 
-                        text: name
+                        text: modelData
                     }
                 }
             }
@@ -287,10 +219,7 @@ Dialog {
     Connections {
         target: root.networkManager
         function onBaseUrlChanged() {
-            languageModel.reset();
-            countryModel.reset();
             stateModel.reset();
-            tagsModel.reset();
         }
     }
 }

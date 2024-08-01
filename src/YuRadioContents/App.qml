@@ -7,10 +7,6 @@ import QtQuick.Controls.Material
 import "radiobrowser.mjs" as RadioBrowser
 import network
 
-/*
- * List of radio stations: https://dir.xiph.org/yp.xml
- *
- */
 ApplicationWindow {
     id: root
     visible: true
@@ -48,7 +44,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        Storage.databaseInstance();
+        Storage.init();
     }
 
     NetworkManager {
@@ -56,9 +52,29 @@ ApplicationWindow {
 
         Component.onCompleted: {
             RadioBrowser.baseUrlRandom().then(url => {
-                console.log("RadioBrowser BaseUrl:", url);
                 baseUrl = url;
             });
+        }
+
+        onBaseUrlChanged: {
+            if (baseUrl) {
+                console.log("RadioBrowser BaseUrl:", baseUrl);
+                if (!Storage.getCountries().length) {
+                    RadioBrowser.getCountries(baseUrl).then(countries => {
+                        Storage.addCountries(countries.filter(country => country.name && country.iso_3166_1).map(country => country.name));
+                    });
+                }
+                if (!Storage.getLanguages().length) {
+                    RadioBrowser.getLanguages(baseUrl).then(languages => {
+                        Storage.addLanguages(languages.filter(language => language.name && language.iso_639).map(language => language.name));
+                    });
+                }
+                if (!Storage.getTags().length) {
+                    RadioBrowser.getTopUsedTags(baseUrl, 100).then(tags => {
+                        Storage.addTags(tags.filter(tag => tag.name).map(tag => tag.name));
+                    });
+                }
+            }
         }
     }
 

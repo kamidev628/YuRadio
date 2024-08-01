@@ -13,7 +13,6 @@ Item {
 
     required property NetworkManager mainNetworkManager
     property var stations: []
-    property bool pageActive: StackView.status == StackView.Active
 
     component HighlightBar: Rectangle {
         width: ListView.view.currentItem?.width ?? 0

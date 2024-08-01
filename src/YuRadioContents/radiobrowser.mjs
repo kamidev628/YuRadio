@@ -20,6 +20,27 @@ function makeRequest(url, onSuccess) {
   });
 }
 
+export function getTopUsedTags(baseUrl, count) {
+  return makeRequest(
+    baseUrl + `/json/tags?order=stationcount&reverse=true&limit=${count}`,
+    (data) => {
+      return JSON.parse(data);
+    },
+  );
+}
+
+export function getLanguages(baseUrl) {
+  return makeRequest(baseUrl + "/json/languages", (data) => {
+    return JSON.parse(data);
+  });
+}
+
+export function getCountries(baseUrl) {
+  return makeRequest(baseUrl + "/json/countries", (data) => {
+    return JSON.parse(data);
+  });
+}
+
 export function click(baseUrl, stationUUID) {
   return makeRequest(baseUrl + "/json/url/" + stationUUID, (data) => {
     return JSON.parse(data);

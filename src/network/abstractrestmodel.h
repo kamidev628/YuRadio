@@ -13,6 +13,7 @@ class AbstractRestListModel : public QAbstractListModel {
                NOTIFY restManagerChanged REQUIRED)
   Q_PROPERTY(RestPagination *pagination READ pagination WRITE setPagination
                NOTIFY paginationChanged)
+  Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)
   Q_PROPERTY(QVariantMap filters READ filters WRITE setFilters NOTIFY
                filtersChanged FINAL)
   Q_PROPERTY(QString orderByQuery READ orderByQuery WRITE setOrderByQuery NOTIFY
@@ -43,6 +44,8 @@ public:
   Q_INVOKABLE virtual void reset() = 0;
   Q_INVOKABLE void loadPage();
   Q_INVOKABLE void reload();
+
+  int count() const;
 
   QString errorString() const;
 
@@ -84,6 +87,7 @@ private:
 
 signals:
   void restManagerChanged();
+  void countChanged();
   void filtersChanged();
   void paginationChanged();
   void orderByChanged();

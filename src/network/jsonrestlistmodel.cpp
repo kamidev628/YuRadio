@@ -59,6 +59,7 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
     return;
   }
 
+  qsizetype sizeBefore = m_items.size();
   QQmlEngine *engine = qmlEngine(this);
   for (const auto &dataObj : std::as_const(dataArray)) {
     int last = rowCount({});
@@ -75,6 +76,9 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
       m_items.push_back(maybeItem.toMap());
       endInsertRows();
     }
+  }
+  if (sizeBefore != m_items.size()) {
+    emit countChanged();
   }
 
   setStatus(Ready);

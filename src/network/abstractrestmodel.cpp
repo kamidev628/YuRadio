@@ -230,3 +230,7 @@ void AbstractRestListModel::reload() {
   reset();
   loadPage();
 }
+
+int AbstractRestListModel::count() const {
+  return rowCount();
+}

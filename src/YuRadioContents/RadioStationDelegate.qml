@@ -17,6 +17,8 @@ ItemDelegate {
     required property string stationuuid
     required property NetworkManager networkManager
 
+    property bool currentStation: MainRadioPlayer.currentItem?.stationuuid == stationuuid
+
     width: ListView.view.width
 
     implicitHeight: 100

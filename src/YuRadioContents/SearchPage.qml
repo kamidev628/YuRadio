@@ -44,7 +44,6 @@ Item {
     }
 
     function radioModelReset() {
-        radioListView.currentIndex = -1;
         radioPagination.offset = 0;
         root.radioModelFiltersChanged();
         radioModel.reset();
@@ -188,6 +187,7 @@ Item {
 
         displayMarginEnd: bottomBarDrawer.height
         currentIndex: -1
+
         clip: true
         focus: true
 
@@ -225,12 +225,20 @@ Item {
             focusPolicy: Qt.StrongFocus
             networkManager: root.networkManager
 
+            onCurrentStationChanged: {
+                if (currentStation) {
+                    Qt.callLater(() => {
+                        radioListView.currentIndex = Qt.binding(() => MainRadioPlayer.currentItem?.stationuuid == delegate.stationuuid ? index : -1);
+                    });
+                }
+            }
+
             onClicked: {
                 if (ListView.view.currentIndex == delegate.index) {
                     MainRadioPlayer.toggle();
                 } else {
                     RadioBrowser.click(root.networkManager.baseUrl, stationuuid);
-                    ListView.view.currentIndex = index;
+                    radioListView.currentIndex = delegate.index;
                     MainRadioPlayer.currentItem = Object.assign({}, radioListView.model.get(delegate.index));
                     Qt.callLater(MainRadioPlayer.play);
                 }

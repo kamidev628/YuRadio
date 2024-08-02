@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Controls
@@ -57,13 +59,20 @@ Item {
             focus: true
             focusPolicy: Qt.StrongFocus
             networkManager: root.networkManager
+            onCurrentStationChanged: {
+                if (currentStation) {
+                    Qt.callLater(() => {
+                      bookmarkListView.currentIndex = Qt.binding(() => delegate.currentStation ? index : -1);
+                    });
+                }
+            }
 
             onClicked: {
                 if (ListView.view.currentIndex == delegate.index) {
                     MainRadioPlayer.toggle();
                 } else {
                     RadioBrowser.click(root.networkManager.baseUrl, stationuuid);
-                    ListView.view.currentIndex = delegate.index;
+                    bookmarkListView.currentIndex = delegate.index;
                     MainRadioPlayer.currentItem = Object.assign({}, bookmarkListView.model.get(delegate.index));
                     Qt.callLater(MainRadioPlayer.play);
                 }
@@ -80,15 +89,6 @@ Item {
         target: root.drawer
         function onOpened() {
             bottomBarDrawer.close();
-        }
-    }
-
-    Connections {
-        target: bookmarkListView.model
-        function onRowsRemoved(parent, first, last) {
-            if (first <= bookmarkListView.currentIndex && bookmarkListView.currentIndex <= last) {
-                bookmarkListView.currentIndex = -1;
-            }
         }
     }
 }

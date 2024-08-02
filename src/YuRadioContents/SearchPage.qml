@@ -19,10 +19,6 @@ Item {
     required property RadioDrawer drawer
     required property NetworkManager networkManager
 
-    property var radioModelFilters: ({
-            reverse: true
-        })
-
     function openSearchFilterDialog() {
         /* TODO: underlying drag handler steals drag events from
          * search-filter-dialog
@@ -35,17 +31,8 @@ Item {
         }
     }
 
-    function radioModelAddFilter(key, value) {
-        if (Utils.isEmpty(value)) {
-            delete root.radioModelFilters[key];
-        } else {
-            root.radioModelFilters[key] = value;
-        }
-    }
-
     function radioModelReset() {
         radioPagination.offset = 0;
-        root.radioModelFiltersChanged();
         radioModel.reset();
         radioListView.flick(0, 1);
     }
@@ -69,7 +56,7 @@ Item {
             Layout.bottomMargin: 8
 
             searchInput.onAccepted: {
-                root.radioModelAddFilter("name", searchInput.text);
+                nameFilter.value = searchInput.text;
                 root.radioModelReset();
             }
         }
@@ -103,10 +90,10 @@ Item {
             anchors.centerIn: parent
             networkManager: root.networkManager
             onAccepted: {
-                root.radioModelAddFilter("country", searchFilterDialog.selectedCountry);
-                root.radioModelAddFilter("state", searchFilterDialog.selectedState);
-                root.radioModelAddFilter("language", searchFilterDialog.selectedLanguage);
-                root.radioModelAddFilter("tagList", searchFilterDialog.selectedTags().join(','));
+                countryFilter.value = searchFilterDialog.selectedCountry;
+                stateFilter.value = searchFilterDialog.selectedState;
+                languageFilter.value = searchFilterDialog.selectedLanguage;
+                tagListFilter.value = searchFilterDialog.selectedTags().join(',');
                 root.radioModelReset();
             }
         }
@@ -125,7 +112,33 @@ Item {
         }
 
         path: "/json/stations/search"
-        filters: root.radioModelFilters
+        filters: [
+            RestListModelFilter {
+                id: reverseFilter
+                key: "reverse"
+                value: true
+            },
+            RestListModelFilter {
+                id: nameFilter
+                key: "name"
+            },
+            RestListModelFilter {
+                id: countryFilter
+                key: "country"
+            },
+            RestListModelFilter {
+                id: stateFilter
+                key: "state"
+            },
+            RestListModelFilter {
+                id: languageFilter
+                key: "language"
+            },
+            RestListModelFilter {
+                id: tagListFilter
+                key: "tagList"
+            }
+        ]
 
         orderByQuery: "order"
         orderBy: "votes"
@@ -206,7 +219,7 @@ Item {
 
             function orderChangedHandler() {
                 radioModel.orderBy = orderByField;
-                root.radioModelAddFilter("reverse", descending);
+                reverseFilter.value = descending;
                 root.radioModelReset();
             }
 

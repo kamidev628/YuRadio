@@ -44,19 +44,6 @@ void AbstractRestListModel::setRestManager(NetworkManager *newRestManager) {
   emit restManagerChanged();
 }
 
-QVariantMap AbstractRestListModel::filters() const {
-  return m_filters;
-}
-
-void AbstractRestListModel::setFilters(const QVariantMap &newFilters) {
-  if (m_filters == newFilters) {
-    return;
-  }
-
-  m_filters = newFilters;
-  emit filtersChanged();
-}
-
 RestPagination *AbstractRestListModel::pagination() const {
   return m_pagination;
 }
@@ -86,13 +73,39 @@ void AbstractRestListModel::setOrderBy(const QString &newOrderBy) {
 QUrlQuery AbstractRestListModel::composeQuery() const {
   QUrlQuery query;
 
-  for (const auto &[filter, value] : m_filters.asKeyValueRange()) {
-    if (value.userType() == QMetaType::QVariantList) {
-      for (const auto &innerValue : value.toList()) {
-        query.addQueryItem(filter, innerValue.toString());
+  for (const auto *filter : m_filters) {
+    QString key = filter->key();
+    QVariant value = filter->value();
+    if (!value.isValid()) {
+      if (!filter->excludeWhenEmpty()) {
+        query.addQueryItem(key, "");
       }
+      continue;
+    }
+
+    if (value.userType() == QMetaType::QVariantList) {
+      QVariantList list = value.toList();
+      if (list.isEmpty()) {
+        if (!filter->excludeWhenEmpty()) {
+          query.addQueryItem(key, "");
+        }
+        continue;
+      }
+
+      for (const auto &innerValue : list) {
+        query.addQueryItem(key, innerValue.toString());
+      }
+
+    } else if (value.canConvert<QString>()) {
+      auto valueString = value.toString();
+
+      if (filter->excludeWhenEmpty() && valueString.isEmpty()) {
+        continue;
+      }
+
+      query.addQueryItem(key, valueString);
     } else {
-      query.addQueryItem(filter, value.toString());
+      qmlWarning(this) << "Could not convert value to query string:" << value;
     }
   }
 
@@ -233,4 +246,74 @@ void AbstractRestListModel::reload() {
 
 int AbstractRestListModel::count() const {
   return rowCount();
+}
+
+QString RestListModelFilter::key() const {
+  return m_key;
+}
+
+void RestListModelFilter::setKey(const QString &newKey) {
+  if (m_key == newKey) {
+    return;
+  }
+  m_key = newKey;
+  emit keyChanged();
+}
+
+QVariant RestListModelFilter::value() const {
+  return m_value;
+}
+
+void RestListModelFilter::setValue(const QVariant &newValue) {
+  if (m_value == newValue) {
+    return;
+  }
+  m_value = newValue;
+  emit valueChanged();
+}
+
+bool RestListModelFilter::excludeWhenEmpty() const {
+  return m_excludeWhenEmpty;
+}
+
+void RestListModelFilter::setExcludeWhenEmpty(bool newExcludeWhenEmpty) {
+  if (m_excludeWhenEmpty == newExcludeWhenEmpty) {
+    return;
+  }
+  m_excludeWhenEmpty = newExcludeWhenEmpty;
+  emit excludeWhenEmptyChanged();
+}
+
+QQmlListProperty<RestListModelFilter> AbstractRestListModel::filters() {
+  QQmlListProperty<RestListModelFilter> list(this, &m_filters);
+  list.append = &AbstractRestListModel::appendFilter;
+  list.clear = &AbstractRestListModel::clearFilter;
+  return list;
+}
+
+void AbstractRestListModel::appendFilter(RestListModelFilter *filter) {
+  if (filter) {
+    m_filters.append(filter);
+  }
+}
+
+void AbstractRestListModel::clearFilter() {
+  m_filters.clear();
+}
+
+void AbstractRestListModel::appendFilter(
+  QQmlListProperty<RestListModelFilter> *propertyList,
+  RestListModelFilter *filter) {
+  auto *object = qobject_cast<AbstractRestListModel *>(propertyList->object);
+  if (object) {
+    object->appendFilter(filter);
+  }
+}
+
+void AbstractRestListModel::clearFilter(
+  QQmlListProperty<RestListModelFilter> *propertyList) {
+  auto *object = qobject_cast<AbstractRestListModel *>(propertyList->object);
+  if (object) {
+    object->clearFilter();
+  }
 }

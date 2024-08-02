@@ -133,9 +133,12 @@ Dialog {
 
                     orderByQuery: "order"
                     orderBy: "stationcount"
-                    filters: {
-                        "reverse": true
-                    }
+                    filters: [
+                      RestListModelFilter {
+                        key: "reverse"
+                        value: true
+                      }
+                    ]
 
                     path: root.selectedCountry ? `/json/states/${root.selectedCountry}/` : '/json/states'
 

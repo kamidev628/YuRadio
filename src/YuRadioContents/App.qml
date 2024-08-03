@@ -50,15 +50,18 @@ ApplicationWindow {
     NetworkManager {
         id: networkManager
 
+        baseUrl: AppSettings.radioBrowserBaseUrl
+
         Component.onCompleted: {
-            RadioBrowser.baseUrlRandom().then(url => {
-                baseUrl = url;
-            });
+            if (!AppSettings.radioBrowserBaseUrl) {
+                RadioBrowser.baseUrlRandom().then(url => {
+                    AppSettings.radioBrowserBaseUrl = url;
+                });
+            }
         }
 
         onBaseUrlChanged: {
             if (baseUrl) {
-                console.log("RadioBrowser BaseUrl:", baseUrl);
                 if (!Storage.getCountries().length) {
                     RadioBrowser.getCountries(baseUrl).then(countries => {
                         Storage.addCountries(countries.filter(country => country.name && country.iso_3166_1).map(country => country.name));
@@ -90,6 +93,9 @@ ApplicationWindow {
         onShowSettingsRequested: {
             root.stackViewPushPage(settingsPage, "settingsPage");
         }
+        onShowAboutRequested: {
+          root.stackViewPushPage(aboutPage, "aboutPage")
+        }
     }
 
     StackView {
@@ -98,7 +104,12 @@ ApplicationWindow {
         focus: true
 
         Component.onCompleted: {
-            root.stackViewPushPage(settingsPage, "settingsPage");
+          root.stackViewPushPage(aboutPage, "aboutPage");
+          //if (AppSettings.initialPage == "Search") {
+          //  root.stackViewPushPage(searchPage, "searchPage")
+          //} else if (AppSettings.initialPage == "Bookmarks") {
+          //  root.stackViewPushPage(bookmarkPage, "bookmarkPage")
+          //}
         }
 
         Component {
@@ -126,6 +137,13 @@ ApplicationWindow {
                 objectName: "settingsPage"
                 networkManager: networkManager
             }
+        }
+
+        Component {
+          id: aboutPage
+          AboutPage {
+            objectName: "aboutPage"
+          }
         }
 
         Keys.onBackPressed: event => root.backButtonPressed(event)

@@ -24,11 +24,12 @@ Item {
         anchors.rightMargin: 5
 
         Label {
-            text: "Servers"
+            text: qsTr("Servers")
             font.pointSize: 16
         }
 
         Rectangle {
+            color: Material.foreground
             implicitWidth: parent.width * 2 / 3
             implicitHeight: 1
         }
@@ -36,15 +37,16 @@ Item {
         ListView {
             id: serversListView
             Layout.fillWidth: true
-            Layout.fillHeight: true
+            implicitHeight: contentHeight
             boundsBehavior: Flickable.StopAtBounds
 
             ButtonGroup {
                 id: buttonGroup
                 onCheckedButtonChanged: {
-                  if (root.networkManager.baseUrl != checkedButton.modelData) {
-                      root.networkManager.baseUrl = checkedButton.modelData;
-                  }
+                    if (root.networkManager.baseUrl != checkedButton.modelData) {
+                        AppSettings.radioBrowserBaseUrl = checkedButton.modelData;
+                        root.networkManager.baseUrl = checkedButton.modelData;
+                    }
                 }
             }
             delegate: ItemDelegate {
@@ -63,6 +65,31 @@ Item {
                 RadioBrowser.baseUrls().then(urls => {
                     model = [...new Set(urls)];
                 });
+            }
+        }
+
+        Label {
+            text: qsTr("Could not fetch available servers")
+            Material.foreground: Material.color(Material.Grey, Material.Shade500)
+            opacity: 0.5
+            visible: !serversListView.model || !serversListView.model.length
+        }
+
+        Label {
+            text: qsTr("Initial Page")
+            Layout.topMargin: 20
+            font.pointSize: 16
+        }
+
+        ComboBox {
+            implicitWidth: parent.width / 2
+            model: ["Search", "Bookmarks"]
+
+            Component.onCompleted: {
+                currentIndex = indexOfValue(AppSettings.initialPage);
+            }
+            onActivated: {
+                AppSettings.initialPage = currentValue;
             }
         }
 

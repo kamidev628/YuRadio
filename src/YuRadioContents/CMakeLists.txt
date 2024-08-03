@@ -21,6 +21,7 @@ qt_add_qml_module(
   RadioBottomBar.qml
   SearchPage.qml
   SettingsPage.qml
+  AboutPage.qml
   RadioStationsViewHeader.qml
   RadioStationSearchFilterDialog.qml
   PullToRefreshHandler.qml
@@ -35,12 +36,12 @@ qt_add_qml_module(
   HeaderComboBox.qml
   radiobrowser.mjs
   RESOURCES
+  images/shortwave.svg
   images/more-vert.svg
   images/search.svg
   images/trash.svg
   images/menu.svg
   images/github-mark.svg
-  images/github-mark-white.svg
   images/profile-picture.jpg
   images/radio.png
   images/radio-white.png

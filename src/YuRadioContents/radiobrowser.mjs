@@ -13,6 +13,7 @@ function makeRequest(url, onSuccess) {
       if (request.status >= 200 && request.status < 300) {
         resolve(onSuccess(request.responseText));
       } else {
+        console.log(`[RadioBrowser: ${url}][Error]: ${request.statusText}`);
         reject(request.statusText);
       }
     };

@@ -17,21 +17,6 @@ Item {
     required property RadioDrawer drawer
     property var stations: []
 
-    component HighlightBar: Rectangle {
-        width: ListView.view.currentItem?.width ?? 0
-        height: ListView.view.currentItem?.height ?? 0
-
-        color: "lightsteelblue"
-        y: ListView.view.currentItem?.y ?? 0
-        opacity: 0.6
-        Behavior on y {
-            SpringAnimation {
-                spring: 4
-                damping: 0.5
-            }
-        }
-    }
-
     ListView {
         id: bookmarkListView
 
@@ -42,7 +27,7 @@ Item {
 
         boundsMovement: Flickable.StopAtBounds
         boundsBehavior: Flickable.DragOverBounds
-        highlight: HighlightBar {}
+        highlight: ListViewHighlightBar {}
 
         anchors {
             top: parent.top

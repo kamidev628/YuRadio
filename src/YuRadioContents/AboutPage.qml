@@ -5,11 +5,6 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-import "radiobrowser.mjs" as RadioBrowser
-
-import YuRadioContents
-import network
-
 Item {
     id: root
 
@@ -19,7 +14,7 @@ Item {
         anchors.fill: parent
         anchors.topMargin: 10
         anchors.leftMargin: 15
-        anchors.rightMargin: 5
+        anchors.rightMargin: 15
 
         Image {
             Layout.fillWidth: true

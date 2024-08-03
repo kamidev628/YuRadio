@@ -112,7 +112,13 @@ FocusScope {
 
                         Label {
                             id: musicTags
-                            text: progressBar.visible || errorText.visible ? '' : (root.stationTags ? root.stationTags : '⸻')
+                            text: root.stationTags ? root.stationTags : '⸻'
+
+                            Binding {
+                              when: progressBar.visible || errorText.visible
+                              musicTags.text: ""
+                            }
+
                             maximumLineCount: 3
 
                             width: parent.width
@@ -122,6 +128,7 @@ FocusScope {
                             Label {
                                 id: errorText
                                 anchors.fill: parent
+
                                 Material.foreground: Material.Red
                                 text: visible ? MainRadioPlayer.errorString : ``
                                 elide: Text.ElideRight

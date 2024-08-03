@@ -94,7 +94,7 @@ ApplicationWindow {
             root.stackViewPushPage(settingsPage, "settingsPage");
         }
         onShowAboutRequested: {
-          root.stackViewPushPage(aboutPage, "aboutPage")
+            root.stackViewPushPage(aboutPage, "aboutPage")
         }
     }
 
@@ -104,12 +104,11 @@ ApplicationWindow {
         focus: true
 
         Component.onCompleted: {
-          root.stackViewPushPage(aboutPage, "aboutPage");
-          //if (AppSettings.initialPage == "Search") {
-          //  root.stackViewPushPage(searchPage, "searchPage")
-          //} else if (AppSettings.initialPage == "Bookmarks") {
-          //  root.stackViewPushPage(bookmarkPage, "bookmarkPage")
-          //}
+          if (AppSettings.initialPage == "Search") {
+            root.stackViewPushPage(searchPage, "searchPage")
+          } else if (AppSettings.initialPage == "Bookmarks") {
+            root.stackViewPushPage(bookmarkPage, "bookmarkPage")
+          }
         }
 
         Component {

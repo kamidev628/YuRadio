@@ -34,6 +34,7 @@ qt_add_qml_module(
   MomentumAnimation.qml
   FakeFlickable.qml
   HeaderComboBox.qml
+  ListViewHighlightBar.qml
   radiobrowser.mjs
   RESOURCES
   images/shortwave.svg

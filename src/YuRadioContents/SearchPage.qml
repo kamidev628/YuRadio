@@ -47,7 +47,7 @@ Item {
         SearchBar {
             id: searchBar
 
-            availableWidth: parent.width * 2 / 5
+            availableWidth: parent.width * 3 / 5
 
             implicitWidth: height
 
@@ -174,21 +174,6 @@ Item {
         fetchMoreHandler: loadPageHandler
     }
 
-    component HighlightBar: Rectangle {
-        width: ListView.view.currentItem?.width ?? 0
-        height: ListView.view.currentItem?.height ?? 0
-
-        color: "lightsteelblue"
-        y: ListView.view.currentItem?.y ?? 0
-        opacity: 0.6
-        Behavior on y {
-            SpringAnimation {
-                spring: 4
-                damping: 0.5
-            }
-        }
-    }
-
     component FooterBar: BusyIndicator {
         width: ListView.view.width
         height: visible ? 50 : 0
@@ -227,7 +212,7 @@ Item {
             onOrderByFieldChanged: orderChangedHandler()
         }
         footer: FooterBar {}
-        highlight: HighlightBar {}
+        highlight: ListViewHighlightBar {}
 
         highlightFollowsCurrentItem: false
         model: radioModel
@@ -241,7 +226,7 @@ Item {
             onCurrentStationChanged: {
                 if (currentStation) {
                     Qt.callLater(() => {
-                        radioListView.currentIndex = Qt.binding(() => MainRadioPlayer.currentItem?.stationuuid == delegate.stationuuid ? index : -1);
+                        radioListView.currentIndex = Qt.binding(() => currentStation ? index : -1);
                     });
                 }
             }

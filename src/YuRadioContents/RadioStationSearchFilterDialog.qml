@@ -14,6 +14,8 @@ Dialog {
     readonly property var selectedState: stateCombo.currentIndex !== -1 ? stateModel.get(stateCombo.currentIndex).name : undefined
     readonly property var selectedLanguage: languageCombo.currentIndex !== -1 ? languageCombo.model[languageCombo.currentIndex] : undefined
 
+    required property NetworkManager networkManager
+
     function selectedTags() {
         let selectedTags = [];
         for (let i = 0; i < tagsRepeater.count; i++) {
@@ -27,13 +29,11 @@ Dialog {
 
     QtObject {
         id: internal
+        property int prevSelectedCountry
+        property int prevSelectedState
+        property int prevSelectedLanguage
+        property list<int> prevSelectedTags
     }
-    property int _prevSelectedCountry
-    property int _prevSelectedState
-    property int _prevSelectedLanguage
-    property list<int> _prevSelectedTags
-
-    required property NetworkManager networkManager
 
     Binding {
         when: AppSettings.isDarkTheme
@@ -47,13 +47,13 @@ Dialog {
         if (stateModel.status == JsonRestListModel.Error) {
             stateModel.reset();
         }
-        _prevSelectedCountry = countryCombo.currentIndex;
-        _prevSelectedState = stateCombo.currentIndex;
-        _prevSelectedLanguage = languageCombo.currentIndex;
-        _prevSelectedTags = [];
+        internal.prevSelectedCountry = countryCombo.currentIndex;
+        internal.prevSelectedState = stateCombo.currentIndex;
+        internal.prevSelectedLanguage = languageCombo.currentIndex;
+        internal.prevSelectedTags = [];
         for (let i = 0; i < tagsRepeater.count; i++) {
             if (tagsRepeater.itemAt(i).checked) {
-                _prevSelectedTags.push(i);
+                internal.prevSelectedTags.push(i);
             }
         }
     }
@@ -61,11 +61,11 @@ Dialog {
     onRejected: {
         for (let i = 0; i < tagsRepeater.count; i++) {
             let item = tagsRepeater.itemAt(i);
-            item.checked = _prevSelectedTags.includes(i);
+            item.checked = internal.prevSelectedTags.includes(i);
         }
-        countryCombo.currentIndex = _prevSelectedCountry;
-        stateCombo.currentIndex = _prevSelectedState;
-        languageCombo.currentIndex = _prevSelectedLanguage;
+        countryCombo.currentIndex = internal.prevSelectedCountry;
+        stateCombo.currentIndex = internal.prevSelectedState;
+        languageCombo.currentIndex = internal.prevSelectedLanguage;
     }
 
     ColumnLayout {

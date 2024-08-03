@@ -116,6 +116,9 @@ protected:
 
 private:
   QUrlQuery composeQuery() const;
+  QUrlQuery queryWithFilters() const;
+  bool tryAddFilter(QUrlQuery &query, const QString &key,
+                    const QVariant &value) const;
 
   static void appendFilter(QQmlListProperty<RestListModelFilter> *propertyList,
                            RestListModelFilter *filter);

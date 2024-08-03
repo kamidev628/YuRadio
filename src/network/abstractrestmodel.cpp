@@ -70,44 +70,75 @@ void AbstractRestListModel::setOrderBy(const QString &newOrderBy) {
   emit orderByChanged();
 }
 
-QUrlQuery AbstractRestListModel::composeQuery() const {
+bool AbstractRestListModel::tryAddFilter(QUrlQuery &query, const QString &key,
+                                         const QVariant &value) const {
+  if (!value.isValid()) {
+    return false;
+  }
+
+  if (value.userType() == QMetaType::QVariantList) {
+    QVariantList list = value.toList();
+    if (list.isEmpty()) {
+      return false;
+    }
+
+    qsizetype errorCount = 0;
+    for (const auto &innerValue : list) {
+      if (!innerValue.isValid()) {
+        continue;
+      }
+
+      if (innerValue.canConvert<QString>()) {
+        query.addQueryItem(key, innerValue.toString());
+      } else {
+        errorCount++;
+        qmlWarning(this) << tr(
+                              "Could not convert array element to string at %1")
+                              .arg(list.indexOf(innerValue));
+      }
+    }
+    if (errorCount == list.size()) {
+      return false;
+    }
+
+  } else if (value.canConvert<QString>()) {
+    QString valueString = value.toString();
+
+    if (valueString.isEmpty()) {
+      return false;
+    }
+
+    query.addQueryItem(key, value.toString());
+  } else {
+    qmlWarning(this) << "Could not convert value to query string:" << value;
+  }
+
+  return true;
+};
+
+QUrlQuery AbstractRestListModel::queryWithFilters() const {
   QUrlQuery query;
 
   for (const auto *filter : m_filters) {
     QString key = filter->key();
     QVariant value = filter->value();
-    if (!value.isValid()) {
-      if (!filter->excludeWhenEmpty()) {
-        query.addQueryItem(key, "");
-      }
+
+    if (key.isEmpty()) {
+      qmlWarning(this)
+        << "Filter with empty key is not allowed. Filter will be ignored";
       continue;
     }
 
-    if (value.userType() == QMetaType::QVariantList) {
-      QVariantList list = value.toList();
-      if (list.isEmpty()) {
-        if (!filter->excludeWhenEmpty()) {
-          query.addQueryItem(key, "");
-        }
-        continue;
-      }
-
-      for (const auto &innerValue : list) {
-        query.addQueryItem(key, innerValue.toString());
-      }
-
-    } else if (value.canConvert<QString>()) {
-      auto valueString = value.toString();
-
-      if (filter->excludeWhenEmpty() && valueString.isEmpty()) {
-        continue;
-      }
-
-      query.addQueryItem(key, valueString);
-    } else {
-      qmlWarning(this) << "Could not convert value to query string:" << value;
+    if (!tryAddFilter(query, key, value) && !filter->excludeWhenEmpty()) {
+      query.addQueryItem(key, "");
     }
   }
+
+  return query;
+}
+
+QUrlQuery AbstractRestListModel::composeQuery() const {
+  QUrlQuery query = queryWithFilters();
 
   if (!m_orderBy.isNull()) {
     query.addQueryItem(m_orderByQuery, m_orderBy);

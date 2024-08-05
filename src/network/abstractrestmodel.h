@@ -7,7 +7,7 @@
 #include "networkmanager.h"
 #include "restpagination.h"
 
-class RestListModelFilter : public QObject {
+class RestListModelSortFilter : public QObject {
   Q_OBJECT
   Q_PROPERTY(QString key READ key WRITE setKey NOTIFY keyChanged FINAL)
   Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged FINAL)
@@ -15,7 +15,7 @@ class RestListModelFilter : public QObject {
                setExcludeWhenEmpty NOTIFY excludeWhenEmptyChanged FINAL)
   QML_ELEMENT
 public:
-  RestListModelFilter() = default;
+  RestListModelSortFilter() = default;
 
   QString key() const;
   void setKey(const QString &newKey);
@@ -46,11 +46,7 @@ class AbstractRestListModel : public QAbstractListModel {
   Q_PROPERTY(RestPagination *pagination READ pagination WRITE setPagination
                NOTIFY paginationChanged)
   Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)
-  Q_PROPERTY(QQmlListProperty<RestListModelFilter> filters READ filters)
-  Q_PROPERTY(QString orderByQuery READ orderByQuery WRITE setOrderByQuery NOTIFY
-               orderByQueryChanged FINAL)
-  Q_PROPERTY(
-    QString orderBy READ orderBy WRITE setOrderBy NOTIFY orderByChanged FINAL)
+  Q_PROPERTY(QQmlListProperty<RestListModelSortFilter> filters READ filters)
   Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged FINAL)
   Q_PROPERTY(QJSValue preprocessItem READ preprocessItem WRITE setPreprocessItem
                NOTIFY preprocessItemChanged FINAL)
@@ -83,18 +79,12 @@ public:
   NetworkManager *restManager() const;
   void setRestManager(NetworkManager *newRestManager);
 
-  QQmlListProperty<RestListModelFilter> filters();
-  void appendFilter(RestListModelFilter *filter);
+  QQmlListProperty<RestListModelSortFilter> filters();
+  void appendFilter(RestListModelSortFilter *filter);
   void clearFilter();
 
   RestPagination *pagination() const;
   void setPagination(RestPagination *newPagination);
-
-  QString orderBy() const;
-  void setOrderBy(const QString &newOrderBy);
-
-  QString orderByQuery() const;
-  void setOrderByQuery(const QString &newOrderByQuery);
 
   QString path() const;
   void setPath(const QString &newPath);
@@ -120,17 +110,17 @@ private:
   bool tryAddFilter(QUrlQuery &query, const QString &key,
                     const QVariant &value) const;
 
-  static void appendFilter(QQmlListProperty<RestListModelFilter> *propertyList,
-                           RestListModelFilter *filter);
-  static void clearFilter(QQmlListProperty<RestListModelFilter> *propertyList);
+  static void
+  appendFilter(QQmlListProperty<RestListModelSortFilter> *propertyList,
+               RestListModelSortFilter *filter);
+  static void
+  clearFilter(QQmlListProperty<RestListModelSortFilter> *propertyList);
 
 signals:
   void restManagerChanged();
   void countChanged();
   void filtersChanged();
   void paginationChanged();
-  void orderByChanged();
-  void orderByQueryChanged();
   void pathChanged();
   void statusChanged();
 
@@ -143,11 +133,8 @@ protected:
   ReplyPointer m_reply = nullptr;
 
   QUrlQuery m_baseQuery;
-  QList<RestListModelFilter *> m_filters;
-  QString m_orderBy;
+  QList<RestListModelSortFilter *> m_filters;
   QString m_errorString;
-
-  QString m_orderByQuery;
   QString m_path;
 
   mutable QJSValue m_fetchMoreHandler;

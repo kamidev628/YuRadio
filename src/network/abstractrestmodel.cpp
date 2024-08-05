@@ -12,13 +12,11 @@ AbstractRestListModel::AbstractRestListModel(QObject *parent)
 
 void AbstractRestListModel::loadPage() {
   if (!m_networkManager->baseUrl().isValid()) {
-    qmlWarning(this) << "BaseUrl not set";
+    qmlWarning(this) << tr("BaseUrl is not set");
     return;
   }
 
-  QUrlQuery query = composeQuery();
-
-  auto [future, reply] = m_networkManager->get(m_path, query);
+  auto [future, reply] = m_networkManager->get(m_path, composeQuery());
 
   m_reply = reply;
 
@@ -55,19 +53,6 @@ void AbstractRestListModel::setPagination(RestPagination *newPagination) {
 
   m_pagination = newPagination;
   emit paginationChanged();
-}
-
-QString AbstractRestListModel::orderBy() const {
-  return m_orderBy;
-}
-
-void AbstractRestListModel::setOrderBy(const QString &newOrderBy) {
-  if (m_orderBy == newOrderBy) {
-    return;
-  }
-
-  m_orderBy = newOrderBy;
-  emit orderByChanged();
 }
 
 bool AbstractRestListModel::tryAddFilter(QUrlQuery &query, const QString &key,
@@ -110,7 +95,7 @@ bool AbstractRestListModel::tryAddFilter(QUrlQuery &query, const QString &key,
 
     query.addQueryItem(key, value.toString());
   } else {
-    qmlWarning(this) << "Could not convert value to query string:" << value;
+    qmlWarning(this) << tr("Could not convert value to query string:") << value;
   }
 
   return true;
@@ -124,8 +109,8 @@ QUrlQuery AbstractRestListModel::queryWithFilters() const {
     QVariant value = filter->value();
 
     if (key.isEmpty()) {
-      qmlWarning(this)
-        << "Filter with empty key is not allowed. Filter will be ignored";
+      qmlWarning(this) << tr(
+        "Filter with empty key is not allowed. Filter will be ignored");
       continue;
     }
 
@@ -139,10 +124,6 @@ QUrlQuery AbstractRestListModel::queryWithFilters() const {
 
 QUrlQuery AbstractRestListModel::composeQuery() const {
   QUrlQuery query = queryWithFilters();
-
-  if (!m_orderBy.isNull()) {
-    query.addQueryItem(m_orderByQuery, m_orderBy);
-  }
 
   if (m_pagination) {
     for (const auto &[key, value] :
@@ -192,7 +173,7 @@ QJSValue AbstractRestListModel::fetchMoreHandler() const {
 void AbstractRestListModel::setFetchMoreHandler(
   const QJSValue &newFetchMoreHandler) {
   if (!newFetchMoreHandler.isCallable()) {
-    qmlInfo(this) << "fetchMoreHandler must be a callable function";
+    qmlInfo(this) << tr("fetchMoreHandler must be a callable function");
     return;
   }
 
@@ -215,7 +196,7 @@ QJSValue AbstractRestListModel::preprocessItem() const {
 void AbstractRestListModel::setPreprocessItem(
   const QJSValue &newPreprocessItem) {
   if (!newPreprocessItem.isCallable()) {
-    qmlInfo(this) << "preprocessItem must be a callable function";
+    qmlInfo(this) << tr("preprocessItem must be a callable function");
     return;
   }
 
@@ -238,19 +219,6 @@ void AbstractRestListModel::setStatus(Status newStatus) {
 void AbstractRestListModel::resetRestModel() {
   m_reply = nullptr;
   setStatus(Null);
-}
-
-QString AbstractRestListModel::orderByQuery() const {
-  return m_orderByQuery;
-}
-
-void AbstractRestListModel::setOrderByQuery(const QString &newOrderByQuery) {
-  if (m_orderByQuery == newOrderByQuery) {
-    return;
-  }
-
-  m_orderByQuery = newOrderByQuery;
-  emit orderByQueryChanged();
 }
 
 QString AbstractRestListModel::path() const {
@@ -279,11 +247,11 @@ int AbstractRestListModel::count() const {
   return rowCount();
 }
 
-QString RestListModelFilter::key() const {
+QString RestListModelSortFilter::key() const {
   return m_key;
 }
 
-void RestListModelFilter::setKey(const QString &newKey) {
+void RestListModelSortFilter::setKey(const QString &newKey) {
   if (m_key == newKey) {
     return;
   }
@@ -291,11 +259,11 @@ void RestListModelFilter::setKey(const QString &newKey) {
   emit keyChanged();
 }
 
-QVariant RestListModelFilter::value() const {
+QVariant RestListModelSortFilter::value() const {
   return m_value;
 }
 
-void RestListModelFilter::setValue(const QVariant &newValue) {
+void RestListModelSortFilter::setValue(const QVariant &newValue) {
   if (m_value == newValue) {
     return;
   }
@@ -303,11 +271,11 @@ void RestListModelFilter::setValue(const QVariant &newValue) {
   emit valueChanged();
 }
 
-bool RestListModelFilter::excludeWhenEmpty() const {
+bool RestListModelSortFilter::excludeWhenEmpty() const {
   return m_excludeWhenEmpty;
 }
 
-void RestListModelFilter::setExcludeWhenEmpty(bool newExcludeWhenEmpty) {
+void RestListModelSortFilter::setExcludeWhenEmpty(bool newExcludeWhenEmpty) {
   if (m_excludeWhenEmpty == newExcludeWhenEmpty) {
     return;
   }
@@ -315,14 +283,14 @@ void RestListModelFilter::setExcludeWhenEmpty(bool newExcludeWhenEmpty) {
   emit excludeWhenEmptyChanged();
 }
 
-QQmlListProperty<RestListModelFilter> AbstractRestListModel::filters() {
-  QQmlListProperty<RestListModelFilter> list(this, &m_filters);
+QQmlListProperty<RestListModelSortFilter> AbstractRestListModel::filters() {
+  QQmlListProperty<RestListModelSortFilter> list(this, &m_filters);
   list.append = &AbstractRestListModel::appendFilter;
   list.clear = &AbstractRestListModel::clearFilter;
   return list;
 }
 
-void AbstractRestListModel::appendFilter(RestListModelFilter *filter) {
+void AbstractRestListModel::appendFilter(RestListModelSortFilter *filter) {
   if (filter) {
     m_filters.append(filter);
   }
@@ -333,8 +301,8 @@ void AbstractRestListModel::clearFilter() {
 }
 
 void AbstractRestListModel::appendFilter(
-  QQmlListProperty<RestListModelFilter> *propertyList,
-  RestListModelFilter *filter) {
+  QQmlListProperty<RestListModelSortFilter> *propertyList,
+  RestListModelSortFilter *filter) {
   auto *object = qobject_cast<AbstractRestListModel *>(propertyList->object);
   if (object) {
     object->appendFilter(filter);
@@ -342,7 +310,7 @@ void AbstractRestListModel::appendFilter(
 }
 
 void AbstractRestListModel::clearFilter(
-  QQmlListProperty<RestListModelFilter> *propertyList) {
+  QQmlListProperty<RestListModelSortFilter> *propertyList) {
   auto *object = qobject_cast<AbstractRestListModel *>(propertyList->object);
   if (object) {
     object->clearFilter();

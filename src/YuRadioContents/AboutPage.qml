@@ -25,26 +25,22 @@ Item {
         }
 
         Label {
-            text: qsTr("About")
-            font.pointSize: 18
-        }
-
-        Rectangle {
-            color: Material.foreground
-            implicitWidth: parent.width * 2 / 3
-            implicitHeight: 1
-        }
-
-        Label {
             Layout.fillWidth: true
             Layout.topMargin: 5
 
             textFormat: Text.MarkdownText
-            text: qsTr(`**YuRadio** is a multiplatform application built with Qt.<br/>
-            <br/>
-            In Android, it uses built-in _**ExoPlayer**_ for audio playback.<br/>
-            All other platforms will use Qt's _**QMediaPlayer**_
-            `)
+            text: qsTr(`
+## About
+---
+**YuRadio** is a multiplatform application built with Qt.
+Application uses RadioBrowser API (see <a href="https://api.radio-browser.info/"><font color="${Material.color(Material.Blue)}">radiobrowser</font></a>)
+Since this is a public API, some radio stations may have inappropriate content, so be aware!
+<br/>
+#### MediaPlayer
+In Android, it uses built-in _**ExoPlayer**_ for audio playback.
+
+All other platforms will use Qt's _**QMediaPlayer**_
+`)
 
             wrapMode: Text.WordWrap
         }

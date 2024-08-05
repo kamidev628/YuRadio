@@ -34,7 +34,6 @@ Item {
     function radioModelReset() {
         radioPagination.offset = 0;
         radioModel.reset();
-        radioListView.flick(0, 1);
     }
 
     property Component headerContent: RowLayout {
@@ -47,7 +46,7 @@ Item {
         SearchBar {
             id: searchBar
 
-            availableWidth: parent.width * 3 / 5
+            availableWidth: parent.width * 5 / 9
 
             implicitWidth: height
 
@@ -119,7 +118,7 @@ Item {
                 value: "votes"
             },
             RestListModelSortFilter {
-                id: reverseFilter
+                id: reverseOrderBy
                 key: "reverse"
                 value: true
             },
@@ -190,9 +189,12 @@ Item {
 
         clip: true
         focus: true
+        highlightFollowsCurrentItem: false
 
         boundsMovement: Flickable.StopAtBounds
         boundsBehavior: Flickable.DragOverBounds
+        footer: FooterBar {}
+        highlight: ListViewHighlightBar {}
 
         anchors {
             top: parent.top
@@ -206,17 +208,14 @@ Item {
 
             function orderChangedHandler() {
                 radioModelOrderBy.value = orderByField;
-                reverseFilter.value = descending;
+                reverseOrderBy.value = descending;
                 root.radioModelReset();
             }
 
             onDescendingChanged: orderChangedHandler()
             onOrderByFieldChanged: orderChangedHandler()
         }
-        footer: FooterBar {}
-        highlight: ListViewHighlightBar {}
 
-        highlightFollowsCurrentItem: false
         model: radioModel
         delegate: RadioStationDelegate {
             id: delegate

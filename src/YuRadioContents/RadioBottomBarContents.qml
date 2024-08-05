@@ -40,6 +40,7 @@ FocusScope {
             PropertyChanges {
                 stationInfoColumn.visible: true
                 playerButton.visible: false
+                closeButton.visible: false
                 secondaryColumnLayout.visible: true
                 bottomBarRowLayout.spacing: 20
 
@@ -194,7 +195,6 @@ FocusScope {
                 IconButton {
                     id: playerButton
 
-                    Layout.rightMargin: 10
                     Layout.preferredWidth: 40
                     Layout.preferredHeight: Layout.preferredWidth
 
@@ -206,6 +206,25 @@ FocusScope {
 
                     onClicked: {
                         MainRadioPlayer.toggle();
+                    }
+                }
+
+                IconButton {
+                    id: closeButton
+
+                    Layout.rightMargin: 10
+                    Layout.preferredWidth: 40
+                    Layout.preferredHeight: Layout.preferredWidth
+
+                    icon.source: "images/close.svg"
+                    icon.sourceSize: Qt.size(height, height)
+                    icon.color: Material.color(Material.Grey, AppSettings.isDarkTheme ? Material.Shade400 : Material.Shade800)
+
+                    smooth: true
+
+                    onClicked: {
+                      MainRadioPlayer.stop()
+                      MainRadioPlayer.currentItem = undefined
                     }
                 }
             }

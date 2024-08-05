@@ -57,7 +57,8 @@ qt_add_qml_module(
   images/bookmark-added.svg
   images/settings.svg
   images/thumb-up.svg
-  images/thumb-up-filled.svg)
+  images/thumb-up-filled.svg
+  images/close.svg)
 
 qt_add_shaders(
   YuRadioContents

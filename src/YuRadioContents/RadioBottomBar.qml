@@ -34,7 +34,6 @@ RadioBottomBarDrawer {
     transitions: [
         Transition {
             to: "hasCurrentItem"
-            reversible: true
 
             PropertyAnimation {
                 target: root

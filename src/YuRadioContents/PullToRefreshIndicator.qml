@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Shapes
 import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Controls.Material.impl
@@ -13,6 +14,18 @@ Pane {
 
     x: (handler.width - width) / 2
     y: handler.maximumProgress * (handler.maximumThreshold + height) - height
+
+    padding: 0
+    Material.elevation: 4
+    background: Rectangle {
+        color: Material.background
+        radius: width / 2
+
+        layer.enabled: root.enabled && root.Material.elevation > 0
+        layer.effect: ElevationEffect {
+            elevation: root.Material.elevation
+        }
+    }
 
     property bool fullyRefreshed: false
     onFullyRefreshedChanged: {
@@ -36,8 +49,16 @@ Pane {
             when: handler.isPulling
 
             PropertyChanges {
-                canvas.minimumProgressAngle: 0
                 root.y: minimumThreshold
+                progressIndicatorPathAnimation.running: true
+                progressIndicatorPathArc.sweepAngle: 290
+                progressIndicatorPathArc.startAngle: progressIndicatorPathArc.lastStartAngle
+            }
+        },
+        State {
+            name: "updateFullyRefreshed"
+            PropertyChanges {
+                root.fullyRefreshed: !handler.target.verticalOvershoot
             }
         }
     ]
@@ -62,78 +83,53 @@ Pane {
                     properties: "opacity,scale"
                     duration: 200
                 }
-                ScriptAction {
-                    script: {
-                        root.fullyRefreshed = Qt.binding(() => {
-                            return !handler.target.verticalOvershoot;
-                        });
-                    }
+                PropertyAction {
+                    target: root
+                    property: "state"
+                    value: "updateFullyRefreshed"
                 }
             }
         }
     ]
 
-    padding: 0
+    Shape {
+        id: progressIndicator
 
-    Material.elevation: 4
-    background: Rectangle {
-        color: Material.background
-        radius: width / 2
-
-        layer.enabled: root.enabled && root.Material.elevation > 0
-        layer.effect: ElevationEffect {
-            elevation: root.Material.elevation
-        }
-    }
-
-    Canvas {
-        id: canvas
         anchors.fill: parent
 
-        property real minimumProgressAngle: handler.minimumProgress
-        property real maximumProgressAngle: handler.maximumProgress
+        preferredRendererType: Shape.CurveRenderer
 
-        NumberAnimation on minimumProgressAngle {
-            running: handler.refreshCondition && handler.isPulling
-            loops: Animation.Infinite
+        ShapePath {
+            id: progressIndicatorPath
+            strokeWidth: 3
+            strokeColor: root.Material.accent
+            fillColor: "transparent"
 
-            duration: 500
+            PathAngleArc {
+                id: progressIndicatorPathArc
+                centerX: progressIndicator.width / 2
+                centerY: progressIndicator.height / 2
+                radiusX: progressIndicator.width / 2 - 5
+                radiusY: progressIndicator.height / 2 - 5
+                startAngle: -90 + (360 * handler.maximumProgress / 2)
+                sweepAngle: 290 * handler.minimumProgress
 
-            from: 0
-            to: 1
-        }
+                property real lastStartAngle
+                onStartAngleChanged: {
+                    lastStartAngle = startAngle;
+                }
 
-        onMinimumProgressAngleChanged: {
-            canvas.requestPaint();
-        }
+                NumberAnimation on startAngle {
+                    id: progressIndicatorPathAnimation
+                    loops: Animation.Infinite
+                    running: false
 
-        onMaximumProgressAngleChanged: {
-            canvas.requestPaint();
-        }
+                    duration: 800
 
-        onPaint: {
-            let ctx = getContext("2d");
-            ctx.reset();
-            let x = width / 2;
-            let y = height / 2;
-            let radius = width / 2 - 5;
-            let startAngle = -Math.PI / 2; // top of circle
-            let endAngle = startAngle + 2 * Math.PI - Math.PI / 3; // left-top side of circle
-
-            let progressAngle;
-            let shift;
-            if (!handler.isPulling) {
-                progressAngle = startAngle + (endAngle - startAngle) * minimumProgressAngle;
-                shift = Math.PI * maximumProgressAngle;
-            } else {
-                progressAngle = endAngle;
-                shift = 2 * Math.PI * minimumProgressAngle;
+                    from: progressIndicatorPathArc.lastStartAngle
+                    to: from + 360
+                }
             }
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = Material.accent;
-            ctx.beginPath();
-            ctx.arc(x, y, radius, startAngle + shift, progressAngle + shift);
-            ctx.stroke();
         }
     }
 }

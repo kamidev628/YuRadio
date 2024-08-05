@@ -115,7 +115,7 @@ ApplicationWindow {
             } else if (AppSettings.initialPage == App.Page.Bookmark) {
                 root.stackViewPushPage(bookmarkPage, "bookmarkPage");
             } else {
-                root.stackViewPushPage(searchPage, "searchPage")
+                root.stackViewPushPage(searchPage, "searchPage");
             }
         }
 

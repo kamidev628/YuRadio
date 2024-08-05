@@ -252,7 +252,7 @@ Item {
 
         Timer {
             id: refreshTimer
-            interval: 1000
+            interval: 1500
         }
 
         PullToRefreshHandler {

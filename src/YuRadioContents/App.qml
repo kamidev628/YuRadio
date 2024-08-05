@@ -18,6 +18,11 @@ ApplicationWindow {
 
     title: qsTr("YuRadio")
 
+    enum Page {
+        Search,
+        Bookmark
+    }
+
     property var loadedPages: []
 
     function backButtonPressed(event) {
@@ -45,6 +50,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         Storage.init();
+        MainRadioPlayer.currentItem = AppSettings.lastStation;
     }
 
     NetworkManager {
@@ -94,7 +100,7 @@ ApplicationWindow {
             root.stackViewPushPage(settingsPage, "settingsPage");
         }
         onShowAboutRequested: {
-            root.stackViewPushPage(aboutPage, "aboutPage")
+            root.stackViewPushPage(aboutPage, "aboutPage");
         }
     }
 
@@ -104,11 +110,13 @@ ApplicationWindow {
         focus: true
 
         Component.onCompleted: {
-          if (AppSettings.initialPage == "Search") {
-            root.stackViewPushPage(searchPage, "searchPage")
-          } else if (AppSettings.initialPage == "Bookmarks") {
-            root.stackViewPushPage(bookmarkPage, "bookmarkPage")
-          }
+            if (AppSettings.initialPage == App.Page.Search) {
+                root.stackViewPushPage(searchPage, "searchPage");
+            } else if (AppSettings.initialPage == App.Page.Bookmark) {
+                root.stackViewPushPage(bookmarkPage, "bookmarkPage");
+            } else {
+                root.stackViewPushPage(searchPage, "searchPage")
+            }
         }
 
         Component {
@@ -139,10 +147,10 @@ ApplicationWindow {
         }
 
         Component {
-          id: aboutPage
-          AboutPage {
-            objectName: "aboutPage"
-          }
+            id: aboutPage
+            AboutPage {
+                objectName: "aboutPage"
+            }
         }
 
         Keys.onBackPressed: event => root.backButtonPressed(event)

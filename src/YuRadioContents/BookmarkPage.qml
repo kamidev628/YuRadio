@@ -1,8 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Effects
-import QtQuick.Controls
 
 import "radiobrowser.mjs" as RadioBrowser
 import network
@@ -47,7 +45,7 @@ Item {
             onCurrentStationChanged: {
                 if (currentStation) {
                     Qt.callLater(() => {
-                      bookmarkListView.currentIndex = Qt.binding(() => delegate.currentStation ? index : -1);
+                        bookmarkListView.currentIndex = Qt.binding(() => delegate.currentStation ? index : -1);
                     });
                 }
             }

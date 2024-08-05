@@ -131,13 +131,15 @@ Dialog {
                         totalCount: 300
                     }
 
-                    orderByQuery: "order"
-                    orderBy: "stationcount"
                     filters: [
-                      RestListModelFilter {
-                        key: "reverse"
-                        value: true
-                      }
+                        RestListModelSortFilter {
+                            key: "order"
+                            value: "stationcount"
+                        },
+                        RestListModelSortFilter {
+                            key: "reverse"
+                            value: true
+                        }
                     ]
 
                     path: root.selectedCountry ? `/json/states/${root.selectedCountry}/` : '/json/states'
@@ -164,7 +166,6 @@ Dialog {
                 Layout.leftMargin: 10
 
                 currentIndex: -1
-                displayText: currentIndex === -1 ? "Station Language" : currentText
                 implicitHeight: 40
                 font.pointSize: 13
                 popup.font.pointSize: font.pointSize

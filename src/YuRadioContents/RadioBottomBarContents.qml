@@ -115,8 +115,8 @@ FocusScope {
                             text: root.stationTags ? root.stationTags : '⸻'
 
                             Binding {
-                              when: progressBar.visible || errorText.visible
-                              musicTags.text: ""
+                                when: progressBar.visible || errorText.visible
+                                musicTags.text: ""
                             }
 
                             maximumLineCount: 3
@@ -222,7 +222,7 @@ FocusScope {
 
                 Label {
                     visible: !musicInfoRow.visible && !busyIndicator.visible
-                    text: "Music Info is not avaialble"
+                    text: qsTr("Music Info is not avaialble")
                     opacity: 0.5
                     font.pointSize: 16
                     Layout.topMargin: 15

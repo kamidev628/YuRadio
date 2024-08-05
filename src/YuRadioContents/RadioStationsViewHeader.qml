@@ -14,18 +14,22 @@ FocusScope {
     property string orderByField: "votes"
     property bool descending: true
 
-    function _getOrderByField() {
-        const field = buttonGroup.checkedButton?.text ?? "votes";
-        if (field == "popularity") {
-            return "clickcount";
+    QtObject {
+        id: internal
+
+        function getOrderByField() {
+            const field = buttonGroup.checkedButton?.text ?? "votes";
+            if (field == "popularity") {
+                return "clickcount";
+            }
+            return field;
         }
-        return field;
     }
 
     ButtonGroup {
         id: buttonGroup
         onCheckedButtonChanged: {
-            root.orderByField = root._getOrderByField();
+            root.orderByField = internal.getOrderByField();
         }
     }
 
@@ -68,7 +72,7 @@ FocusScope {
                 cacheBuffer: 1000000
                 clip: true
 
-                model: ["votes", "popularity", "bitrate", "name", "country", "state", "language", "tags"]
+                model: [qsTr("votes"), qsTr("popularity"), qsTr("bitrate"), qsTr("name"), qsTr("country"), qsTr("state"), qsTr("language"), qsTr("tags")]
 
                 delegate: OutlinedButton {
                     required property int index
@@ -80,7 +84,7 @@ FocusScope {
                     focusPolicy: Qt.NoFocus
                     autoExclusive: true
                     checkable: true
-                    checked: modelData == "votes"
+                    checked: index == 0
 
                     ButtonGroup.group: buttonGroup
                     text: modelData

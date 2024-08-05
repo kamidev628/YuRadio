@@ -83,13 +83,23 @@ Item {
 
         ComboBox {
             implicitWidth: parent.width / 2
-            model: ["Search", "Bookmarks"]
+            model: [
+                {
+                    text: qsTr("Search"),
+                    page: App.Page.Search
+                },
+                {
+                    text: qsTr("Bookmarks"),
+                    page: App.Page.Bookmark
+                }
+            ]
+            textRole: "text"
 
             Component.onCompleted: {
-                currentIndex = indexOfValue(AppSettings.initialPage);
+                currentIndex = model.findIndex(x => x.page == AppSettings.initialPage);
             }
             onActivated: {
-                AppSettings.initialPage = currentValue;
+                AppSettings.initialPage = currentValue.page;
             }
         }
 

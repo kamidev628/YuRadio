@@ -113,41 +113,43 @@ Item {
 
         path: "/json/stations/search"
         filters: [
-            RestListModelFilter {
+            RestListModelSortFilter {
+                id: radioModelOrderBy
+                key: "order"
+                value: "votes"
+            },
+            RestListModelSortFilter {
                 id: reverseFilter
                 key: "reverse"
                 value: true
             },
-            RestListModelFilter {
+            RestListModelSortFilter {
                 id: nameFilter
                 key: "name"
             },
-            RestListModelFilter {
+            RestListModelSortFilter {
                 id: countryFilter
                 key: "country"
             },
-            RestListModelFilter {
+            RestListModelSortFilter {
                 id: stateFilter
                 key: "state"
             },
-            RestListModelFilter {
+            RestListModelSortFilter {
                 id: languageFilter
                 key: "language"
             },
-            RestListModelFilter {
+            RestListModelSortFilter {
                 id: tagListFilter
                 key: "tagList"
             }
         ]
 
-        orderByQuery: "order"
-        orderBy: "votes"
-
         function loadPageHandler() {
             loadPage();
         }
 
-        preprocessItem: function (item) {
+        preprocessItem: item => {
             if (!item.url_resolved && !item.url) {
                 return undefined;
             }
@@ -203,7 +205,7 @@ Item {
             id: radioListViewHeader
 
             function orderChangedHandler() {
-                radioModel.orderBy = orderByField;
+                radioModelOrderBy.value = orderByField;
                 reverseFilter.value = descending;
                 root.radioModelReset();
             }

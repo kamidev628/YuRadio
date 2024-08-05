@@ -111,7 +111,7 @@ ItemDelegate {
         }
 
         EnhancedMenuItem {
-            text: moreOptionsMenu.bookmarkAdded ? "Delete bookmark" : "Add bookmark"
+            text: moreOptionsMenu.bookmarkAdded ? qsTr("Delete bookmark") : qsTr("Add bookmark")
             icon.source: moreOptionsMenu.bookmarkAdded ? "images/bookmark-added.svg" : "images/bookmark.svg"
             onTriggered: {
                 if (moreOptionsMenu.bookmarkAdded) {
@@ -123,7 +123,7 @@ ItemDelegate {
         }
 
         EnhancedMenuItem {
-            text: moreOptionsMenu.canVote ? "Vote" : "Already Voted"
+            text: moreOptionsMenu.canVote ? qsTr("Vote") : qsTr("Already Voted")
             icon.source: moreOptionsMenu.canVote ? "images/thumb-up.svg" : "images/thumb-up-filled.svg"
             enabled: moreOptionsMenu.canVote
             onTriggered: {

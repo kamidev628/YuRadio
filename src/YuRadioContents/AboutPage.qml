@@ -32,7 +32,7 @@ Item {
             text: qsTr(`
 ## About
 ---
-**YuRadio** is a multiplatform application built with Qt.
+**YuRadio** is a cross-platform application built with Qt.
 Application uses RadioBrowser API (see <a href="https://api.radio-browser.info/"><font color="${Material.color(Material.Blue)}">radiobrowser</font></a>)
 Since this is a public API, some radio stations may have inappropriate content, so be aware!
 <br/>

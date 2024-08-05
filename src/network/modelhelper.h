@@ -31,11 +31,11 @@
   return
 
 #define CHECK_HEADERDATA(section, orientation)                                 \
-  if (section < 0)                                                             \
+  if ((section) < 0)                                                           \
     return {};                                                                 \
-  if (orientation == Qt::Horizontal && section >= columnCount({}))             \
+  if ((orientation) == Qt::Horizontal && (section) >= columnCount({}))         \
     return {};                                                                 \
-  if (orientation == Qt::Vertical && section >= rowCount({}))                  \
+  if ((orientation) == Qt::Vertical && (section) >= rowCount({}))              \
     return {}
 
 #define CHECK_SETHEADERDATA(section, orientation)                              \
@@ -51,12 +51,13 @@
     return {}
 
 #define CHECK_INSERTROWS(row, count, parent)                                   \
-  if (!checkIndex(parent) || row < 0 || row >= rowCount(parent) || !count)     \
+  if (!checkIndex(parent) || (row) < 0 || (row) >= rowCount(parent) ||         \
+      !(count))                                                                \
   return
 
 #define CHECK_REMOVEROWS(row, count, parent)                                   \
-  if (!checkIndex(parent) || row < 0 || (row + count) > rowCount(parent) ||    \
-      !count)                                                                  \
+  if (!checkIndex(parent) || (row) < 0 ||                                      \
+      ((row) + (count)) > rowCount(parent) || !(count))                        \
   return false
 
 #endif /* !MODELHELPER_H */

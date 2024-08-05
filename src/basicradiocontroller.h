@@ -21,8 +21,8 @@ public:
 
   void setSource(const QUrl &source) override;
 
-private slots:
-  void statusChanged(QMediaPlayer::MediaStatus status);
+private:
+  QUrl icecastProxyServerUrl();
 
 private:
   IcecastReaderProxyServer *m_icecastProxy;

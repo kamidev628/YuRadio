@@ -63,12 +63,15 @@ void IcecastReaderProxyServer::clientConnected() {
   connect(m_reply, &QNetworkReply::finished, m_reply, &QObject::deleteLater);
   connect(m_reply, &QNetworkReply::finished, m_client,
           &QTcpSocket::disconnectFromHost);
+  connect(m_reply, &QNetworkReply::finished, this,
+          [this]() { loadingChanged(false); });
 }
 
 void IcecastReaderProxyServer::replyReadHeaders() {
   qCDebug(icecastReaderProxyServerLog)
     << "Headers:" << m_reply->rawHeaderPairs();
 
+  loadingChanged(true);
   bool metaIntParsed;
   m_icyMetaInt = m_reply->hasRawHeader("icy-metaint"_L1)
                    ? m_reply->rawHeader("icy-metaint"_L1).toInt(&metaIntParsed)
@@ -103,14 +106,22 @@ void IcecastReaderProxyServer::replyReadHeaders() {
             &IcecastReaderProxyServer::replyReadyRead);
   } else {
     connect(m_reply, &QNetworkReply::readyRead, this,
-            [this]() { m_client->write(m_reply->readAll()); });
+            &IcecastReaderProxyServer::replyReadyReadForward);
   }
+}
+
+void IcecastReaderProxyServer::replyReadyReadForward() {
+  if (m_client->bytesToWrite() > MAXIMUM_WRITE_BUFFER_SIZE) {
+    m_reply->abort();
+    return;
+  }
+
+  m_client->write(m_reply->readAll());
 }
 
 void IcecastReaderProxyServer::replyReadyRead() {
   if (m_client->bytesToWrite() > MAXIMUM_WRITE_BUFFER_SIZE) {
     m_reply->abort();
-    m_reply->deleteLater();
     return;
   }
 

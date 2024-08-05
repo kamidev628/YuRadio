@@ -44,8 +44,8 @@ BasicRadioController::BasicRadioController(QObject *parent)
           [this](const QVariantMap &icyMetaData) {
     setStreamTitle(icyMetaData["StreamTitle"].toString());
   });
-  connect(m_mediaPlayer, &QMediaPlayer::mediaStatusChanged, this,
-          &BasicRadioController::statusChanged);
+  connect(m_icecastProxy, &IcecastReaderProxyServer::loadingChanged, this,
+          [this](bool loading) { setIsLoading(loading); });
   connect(m_mediaDevices, &QMediaDevices::audioOutputsChanged, this, [this]() {
     m_mediaPlayer->audioOutput()->setDevice(
       QMediaDevices::defaultAudioOutput());
@@ -60,20 +60,20 @@ BasicRadioController::BasicRadioController(QObject *parent)
   });
 }
 
-void BasicRadioController::play() {
-  m_mediaPlayer->play();
+QUrl BasicRadioController::icecastProxyServerUrl() {
+  QUrl icecastProxyServerUrl;
+  icecastProxyServerUrl.setScheme("http");
+  icecastProxyServerUrl.setHost("127.0.0.1");
+  icecastProxyServerUrl.setPort(m_icecastProxy->serverPort());
+  return icecastProxyServerUrl;
 }
 
-void BasicRadioController::statusChanged(QMediaPlayer::MediaStatus status) {
-  if (status == QMediaPlayer::LoadingMedia) {
-    setIsLoading(true);
+void BasicRadioController::play() {
+  if (m_mediaPlayer->playbackState() == QMediaPlayer::StoppedState) {
+    m_mediaPlayer->setSource({});
+    m_mediaPlayer->setSource(icecastProxyServerUrl());
   }
-
-  if (status == QMediaPlayer::LoadedMedia ||
-      status == QMediaPlayer::InvalidMedia ||
-      status == QMediaPlayer::EndOfMedia) {
-    setIsLoading(false);
-  }
+  m_mediaPlayer->play();
 }
 
 void BasicRadioController::stop() {
@@ -86,15 +86,10 @@ void BasicRadioController::pause() {
 
 void BasicRadioController::setSource(const QUrl &source) {
   if (source.isValid()) {
-    QUrl icecastProxyServerUrl;
-    icecastProxyServerUrl.setScheme("http");
-    icecastProxyServerUrl.setHost("127.0.0.1");
-    icecastProxyServerUrl.setPort(m_icecastProxy->serverPort());
-
     m_icecastProxy->setTargetSource(source);
 
     m_mediaPlayer->setSource({});
-    m_mediaPlayer->setSource(icecastProxyServerUrl);
+    m_mediaPlayer->setSource(icecastProxyServerUrl());
   }
 
   PlatformRadioController::setSource(source);

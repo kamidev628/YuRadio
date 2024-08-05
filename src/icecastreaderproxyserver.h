@@ -24,12 +24,14 @@ public:
 
 signals:
   void icyMetaDataChanged(const QVariantMap &icyMetaData);
+  void loadingChanged(bool loading);
 
-private:
+private slots:
   void clientConnected();
   void replyReadHeaders();
   void replyReadyRead();
   void readIcyMetaData();
+  void replyReadyReadForward();
 
 private:
   QTcpServer *m_server = nullptr;
@@ -41,6 +43,7 @@ private:
   qint64 m_songBytesRead;
   QByteArray m_icyMetaDataBuffer;
   QVariantMap m_icyMetaData;
+
   int m_icyMetaInt;
   int m_icyMetaLeft;
 };

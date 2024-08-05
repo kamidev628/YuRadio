@@ -52,7 +52,9 @@ Pane {
                 root.y: minimumThreshold
                 progressIndicatorPathAnimation.running: true
                 progressIndicatorPathArc.sweepAngle: 290
-                progressIndicatorPathArc.startAngle: progressIndicatorPathArc.lastStartAngle
+                progressIndicatorPathArc.startAngle: {
+                    progressIndicatorPathArc.startAngle = progressIndicatorPathArc.startAngle;
+                }
             }
         },
         State {
@@ -114,11 +116,6 @@ Pane {
                 startAngle: -90 + (360 * handler.maximumProgress / 2)
                 sweepAngle: 290 * handler.minimumProgress
 
-                property real lastStartAngle
-                onStartAngleChanged: {
-                    lastStartAngle = startAngle;
-                }
-
                 NumberAnimation on startAngle {
                     id: progressIndicatorPathAnimation
                     loops: Animation.Infinite
@@ -126,7 +123,7 @@ Pane {
 
                     duration: 800
 
-                    from: progressIndicatorPathArc.lastStartAngle
+                    from: progressIndicatorPathArc.startAngle
                     to: from + 360
                 }
             }

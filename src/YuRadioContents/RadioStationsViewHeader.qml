@@ -14,15 +14,41 @@ FocusScope {
     property string orderByField: "votes"
     property bool descending: true
 
+    enum SortField {
+        Votes,
+        Popularity,
+        Bitrate,
+        Name,
+        Country,
+        State,
+        Language,
+        Tags
+    }
+
     QtObject {
         id: internal
 
         function getOrderByField() {
-            const field = buttonGroup.checkedButton?.text ?? "votes";
-            if (field == "popularity") {
+            const field = buttonGroup.checkedButton?.modelData.field ?? RadioStationsViewHeader.SortField.Votes;
+            switch (field) {
+            case RadioStationsViewHeader.SortField.Votes:
+                return "votes";
+            case RadioStationsViewHeader.SortField.Popularity:
                 return "clickcount";
+            case RadioStationsViewHeader.SortField.Bitrate:
+                return "bitrate";
+            case RadioStationsViewHeader.SortField.Name:
+                return "name";
+            case RadioStationsViewHeader.SortField.Country:
+                return "country";
+            case RadioStationsViewHeader.SortField.State:
+                return "state";
+            case RadioStationsViewHeader.SortField.Language:
+                return "language";
+            case RadioStationsViewHeader.SortField.Tags:
+                return "tags";
             }
-            return field;
+            return "votes";
         }
     }
 
@@ -72,11 +98,44 @@ FocusScope {
                 cacheBuffer: 1000000
                 clip: true
 
-                model: [qsTr("votes"), qsTr("popularity"), qsTr("bitrate"), qsTr("name"), qsTr("country"), qsTr("state"), qsTr("language"), qsTr("tags")]
+                model: [
+                    {
+                        text: qsTr("votes"),
+                        field: RadioStationsViewHeader.SortField.Votes
+                    },
+                    {
+                        text: qsTr("popularity"),
+                        field: RadioStationsViewHeader.SortField.Popularity
+                    },
+                    {
+                        text: qsTr("bitrate"),
+                        field: RadioStationsViewHeader.SortField.Bitrate
+                    },
+                    {
+                        text: qsTr("name"),
+                        field: RadioStationsViewHeader.SortField.Name
+                    },
+                    {
+                        text: qsTr("country"),
+                        field: RadioStationsViewHeader.SortField.Country
+                    },
+                    {
+                        text: qsTr("state"),
+                        field: RadioStationsViewHeader.SortField.State
+                    },
+                    {
+                        text: qsTr("language"),
+                        field: RadioStationsViewHeader.SortField.Language
+                    },
+                    {
+                        text: qsTr("tags"),
+                        field: RadioStationsViewHeader.SortField.Tags
+                    }
+                ]
 
                 delegate: OutlinedButton {
                     required property int index
-                    required property string modelData
+                    required property var modelData
 
                     anchors.verticalCenter: parent.verticalCenter
                     height: ListView.view.height - 6
@@ -87,7 +146,7 @@ FocusScope {
                     checked: index == 0
 
                     ButtonGroup.group: buttonGroup
-                    text: modelData
+                    text: modelData.text
                 }
             }
         }

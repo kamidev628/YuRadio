@@ -16,6 +16,11 @@ using ReplyPointer = QSharedPointer<QNetworkReply>;
 struct NetworkResponse {
   QFuture<QByteArray> replyFinished;
   ReplyPointer reply;
+
+  template <typename... Args>
+  auto then(Args &&...args) {
+    return replyFinished.then(std::forward<Args>(args)...);
+  }
 };
 
 class NetworkManager : public QNetworkAccessManager {

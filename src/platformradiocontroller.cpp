@@ -1,8 +1,8 @@
 #include "platformradiocontroller.h"
 
 PlatformRadioController::PlatformRadioController(QObject *parent)
-    : QObject(parent), m_isLoading(false), m_error(RadioPlayer::NoError),
-      m_playbackState(RadioPlayer::StoppedState) {}
+    : QObject(parent), m_playbackState(RadioPlayer::StoppedState),
+      m_error(RadioPlayer::NoError), m_isLoading(false) {}
 
 PlatformRadioController::~PlatformRadioController() = default;
 

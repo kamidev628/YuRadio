@@ -8,7 +8,9 @@
   #include "android/nativemediacontroller.h"
 #endif /* Q_OS_ANDROID */
 
-#include "hotreloaderclient.h"
+#ifdef QT_DEBUG
+  #include "hotreloaderclient.h"
+#endif /* QT_DEBUG */
 
 #include <QDir>
 #include <QThread>

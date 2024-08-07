@@ -6,6 +6,7 @@ import QtQuick.Controls.Material
 
 import "radiobrowser.mjs" as RadioBrowser
 import network
+import Main
 
 ApplicationWindow {
     id: root
@@ -104,6 +105,23 @@ ApplicationWindow {
         }
     }
 
+    LanguageTranslator {
+        id: languageTranslator
+
+        Component.onCompleted: {
+            if (!AppSettings.language) {
+                if (loadSystemLanguage()) {
+                    AppSettings.language = Qt.locale().name;
+                } else {
+                    load("en_US");
+                    AppSettings.language = "en_US";
+                }
+            } else {
+                load(AppSettings.language);
+            }
+        }
+    }
+
     StackView {
         id: mainStackView
         anchors.fill: parent
@@ -143,6 +161,7 @@ ApplicationWindow {
             SettingsPage {
                 objectName: "settingsPage"
                 networkManager: networkManager
+                languageTranslator: languageTranslator
             }
         }
 

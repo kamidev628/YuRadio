@@ -137,7 +137,7 @@ FocusScope {
                     required property int index
                     required property var modelData
 
-                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.verticalCenter: parent?.verticalCenter
                     height: ListView.view.height - 6
 
                     focusPolicy: Qt.NoFocus

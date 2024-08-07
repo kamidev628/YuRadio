@@ -9,11 +9,13 @@ import "radiobrowser.mjs" as RadioBrowser
 
 import YuRadioContents
 import network
+import Main
 
 Item {
     id: root
 
     required property NetworkManager networkManager
+    required property LanguageTranslator languageTranslator
 
     focus: true
 
@@ -82,7 +84,7 @@ Item {
         }
 
         ComboBox {
-            implicitWidth: parent.width / 2
+            implicitWidth: parent.width * 2 / 3
             model: [
                 {
                     text: qsTr("Search"),
@@ -100,6 +102,32 @@ Item {
             }
             onActivated: {
                 AppSettings.initialPage = currentValue.page;
+            }
+        }
+
+        Label {
+            text: qsTr("Language")
+            Layout.topMargin: 20
+            font.pointSize: 16
+        }
+
+        ComboBox {
+            implicitWidth: parent.width * 2 / 3
+            textRole: "text"
+
+            Component.onCompleted: {
+                model = root.languageTranslator.locales().map(locale => ({
+                            text: Qt.locale(locale).nativeLanguageName + (locale.includes("_") ? Qt.locale(locale).nativeTerritoryName : ""),
+                            code: locale
+                        }));
+                currentIndex = model.findIndex(x => x.code == AppSettings.language);
+                if (currentIndex == -1) {
+                    currentIndex = model.findIndex(x => x.code.includes(AppSettings.language) || AppSettings.language.includes(x.code));
+                }
+            }
+            onActivated: {
+                AppSettings.language = currentValue.code;
+                root.languageTranslator.load(currentValue.code);
             }
         }
 

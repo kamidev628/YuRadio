@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Controls
@@ -111,9 +113,9 @@ Drawer {
             Layout.alignment: Qt.AlignHCenter
 
             Text {
-                text: "Dark"
+                text: qsTr("Dark")
                 anchors.verticalCenter: parent.verticalCenter
-                color: Material.primaryTextColor
+                color: root.Material.primaryTextColor
             }
             Switch {
                 id: themeSwitch
@@ -125,9 +127,9 @@ Drawer {
                 }
             }
             Text {
-                text: "Light"
+                text: qsTr("Light")
                 anchors.verticalCenter: parent.verticalCenter
-                color: Material.primaryTextColor
+                color: root.Material.primaryTextColor
             }
         }
     }

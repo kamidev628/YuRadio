@@ -1,7 +1,7 @@
-qt_add_executable(YuRadio main.cpp)
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+qt_add_executable(YuRadio main.cpp)
 
 set_target_properties(YuRadio PROPERTIES AUTOMOC ON AUTORCC ON)
 
@@ -13,7 +13,8 @@ find_package(
              QuickControls2
              Multimedia
              ShaderTools
-             Sql)
+             Sql
+             LinguistTools)
 
 add_subdirectory(network)
 add_subdirectory(YuRadioContents)
@@ -44,7 +45,9 @@ qt_add_qml_module(
   basicradiocontroller.cpp
   basicradiocontroller.h
   platformradiocontroller.cpp
-  platformradiocontroller.h)
+  platformradiocontroller.h
+  languagetranslator.h
+  languagetranslator.cpp)
 
 # OpenSSL support for android
 if(ANDROID)
@@ -93,15 +96,8 @@ target_link_libraries(
           Qt6::QuickControls2
           Qt6::Multimedia
           Qt6::Sql
-          HotReloader
           YuRadioNetworkplugin
-          YuRadioContentsplugin)
+          YuRadioContentsplugin
+          "$<$<CONFIG:Debug>:HotReloader>")
 
 target_set_warnings(YuRadio)
-
-include(GNUInstallDirs)
-install(
-  TARGETS YuRadio
-  BUNDLE DESTINATION .
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

@@ -103,7 +103,7 @@ FocusScope {
 
                         Label {
                             id: stationName
-                            text: root.stationName ? root.stationName : "Station"
+                            text: root.stationName ? root.stationName : qsTr("Station")
 
                             width: parent.width
                             elide: Text.ElideRight
@@ -158,7 +158,7 @@ FocusScope {
 
                                 visible: root.stationCountry
 
-                                text: qsTr(`Country: ${root.stationCountry}`)
+                                text: qsTr("Country: %1").arg(root.stationCountry)
                                 font.pointSize: 14
                                 wrapMode: Text.WordWrap
                             }
@@ -170,7 +170,7 @@ FocusScope {
 
                                 visible: root.stationLanguage
 
-                                text: qsTr(`Language: ${root.stationLanguage}`)
+                                text: qsTr("Language: %1").arg(root.stationLanguage)
                                 font.pointSize: 14
                                 wrapMode: Text.Wrap
                             }
@@ -284,19 +284,19 @@ FocusScope {
                         Layout.fillHeight: true
 
                         Label {
-                            text: qsTr(`<b>Album</b>: ${root.musicInfo ? root.musicInfo.album.albumName : ''}`)
+                            text: qsTr("<b>Album</b>: %1").arg(root.musicInfo ? root.musicInfo.album.albumName : '')
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
                         Label {
-                            text: qsTr(`<b>Song</b>: ${root.musicInfo ? root.musicInfo.songName : ''}`)
+                            text: qsTr("<b>Song</b>: %1").arg( root.musicInfo ? root.musicInfo.songName : '')
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
                         Label {
-                            text: qsTr(`<b>Artist</b>: ${root.musicInfo ? root.musicInfo.album.artists[0].artistName : ''}`)
+                            text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo ? root.musicInfo.album.artists[0].artistName : '')
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest android:installLocation="auto"
-    android:versionCode="1"
-    android:versionName="1.0"
+    android:versionCode="-- %%INSERT_VERSION_CODE%% --"
+    android:versionName="-- %%INSERT_VERSION_NAME%% --"
     package="org.yuradio"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- %%INSERT_PERMISSIONS -->

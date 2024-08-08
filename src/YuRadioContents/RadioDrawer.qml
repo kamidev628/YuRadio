@@ -8,7 +8,7 @@ import QtQuick.Layouts
 Drawer {
     id: root
 
-    width: Math.min(parent.width, parent.height) / 3 * 2
+    width: Math.min(Math.min(parent.width, parent.height) / 3 * 2, implicitWidth)
     height: parent.height
 
     Material.roundedScale: Material.NotRounded
@@ -18,20 +18,15 @@ Drawer {
     signal showSettingsRequested
     signal showAboutRequested
 
-    Image {
-        id: image
-        anchors.fill: parent
-        fillMode: Image.PreserveAspectFit
-        asynchronous: true
-    }
-
     ColumnLayout {
+        id: columnLayout
         anchors.fill: parent
         anchors.margins: 20
         spacing: 20
 
         Image {
             id: profileImage
+
             source: "images/profile-picture.jpg"
             asynchronous: true
             smooth: true
@@ -44,8 +39,9 @@ Drawer {
         }
 
         ShaderEffect {
-            Layout.preferredWidth: parent.width * 2 / 3
-            Layout.preferredHeight: parent.width * 2 / 3
+            Layout.preferredWidth: parent.width * 2 / 5
+            Layout.preferredHeight: parent.width * 2 / 5
+            Layout.alignment: Qt.AlignHCenter
 
             property variant source: shaderEffectSource
 

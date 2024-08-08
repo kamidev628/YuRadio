@@ -19,9 +19,8 @@ ItemDelegate {
 
     property bool currentStation: MainRadioPlayer.currentItem?.stationuuid == stationuuid
 
-    width: ListView.view.width
-
     implicitHeight: 100
+    implicitWidth: 400
 
     RowLayout {
         anchors.fill: parent

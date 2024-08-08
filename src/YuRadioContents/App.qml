@@ -19,6 +19,26 @@ ApplicationWindow {
 
     title: qsTr("YuRadio")
 
+    StateGroup {
+        states: [
+            State {
+                name: "desktopLayout"
+                when: root.width > 1000
+
+                PropertyChanges {
+                    mainStackView.width: mainStackView.parent.width - drawer.width * drawer.position
+                    headerSpacer.implicitWidth: drawer.width * drawer.position
+
+                    drawer.closePolicy: Popup.NoAutoClose
+                    drawer.modal: false
+                }
+                StateChangeScript {
+                    script: drawer.open()
+                }
+            }
+        ]
+    }
+
     enum Page {
         Search,
         Bookmark
@@ -124,7 +144,13 @@ ApplicationWindow {
 
     StackView {
         id: mainStackView
-        anchors.fill: parent
+
+        anchors {
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
+        }
+        width: parent.width
         focus: true
 
         Component.onCompleted: {
@@ -187,12 +213,20 @@ ApplicationWindow {
         RowLayout {
             anchors.fill: parent
 
+            Item {
+                id: headerSpacer
+            }
+
             ToolButton {
                 id: menuButton
                 icon.source: "images/menu.svg"
                 Material.foreground: Material.color(Material.Grey, Material.Shade100)
                 onClicked: {
-                    drawer.open();
+                    if (drawer.opened) {
+                        drawer.close();
+                    } else {
+                        drawer.open();
+                    }
                 }
             }
 

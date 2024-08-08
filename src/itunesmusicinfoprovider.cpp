@@ -107,6 +107,7 @@ void ItunesMusicInfoProvider::handleReplyData(const QByteArray &data) {
     }
   };
 
+  /* NOTE: I would like to use std::sort here but `QJsonValueRef` doesn't support `swap` operator */
   QMap<SortParameters, qsizetype> similarityMap;
 
   for (qsizetype i = 0; i < results.count(); ++i) {

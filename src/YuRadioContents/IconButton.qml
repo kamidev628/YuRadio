@@ -14,6 +14,8 @@ Item {
     IconImage {
         id: iconImage
 
+        antialiasing: false
+        smooth: false
         anchors.centerIn: parent
     }
     MouseArea {

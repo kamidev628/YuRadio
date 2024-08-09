@@ -5,6 +5,8 @@ import QtQml
 QtObject {
     id: utils
 
+    readonly property int maxInteger: 2147483646
+
     function clamp(number, min, max) {
         return Math.max(min, Math.min(number, max));
     }
@@ -24,7 +26,7 @@ QtObject {
             // is an Object and has no keys
             (value.constructor === Object && Object.keys(value).length === 0));
     }
-    
+
     /* Maximum and minimum is inclusive */
     function getRandomInt(min, max) {
         const minCeiled = Math.ceil(min);

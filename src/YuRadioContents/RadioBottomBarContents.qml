@@ -83,7 +83,7 @@ FocusScope {
 
                     fillMode: Image.PreserveAspectFit
 
-                    Layout.minimumHeight: Math.min(root.width / 3, root.height - 8)
+                    Layout.minimumHeight: Math.min(root.width / 3, root.height - 8, 400, mainColumn.implicitHeight)
                     Layout.minimumWidth: Layout.minimumHeight
                     Layout.maximumHeight: Layout.minimumHeight
                     Layout.maximumWidth: Layout.minimumHeight
@@ -223,8 +223,8 @@ FocusScope {
                     smooth: true
 
                     onClicked: {
-                      MainRadioPlayer.stop()
-                      MainRadioPlayer.currentItem = undefined
+                        MainRadioPlayer.stop();
+                        MainRadioPlayer.currentItem = undefined;
                     }
                 }
             }
@@ -263,12 +263,12 @@ FocusScope {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    spacing: 8
+                    spacing: 20
 
                     Image {
                         source: root.musicInfo ? root.musicInfo.album.albumImageUrl : ''
 
-                        Layout.minimumWidth: mainColumn.width * 4 / 9
+                        Layout.minimumWidth: Math.min(mainColumn.width * 4 / 9, implicitWidth, implicitHeight, 400)
                         Layout.minimumHeight: Layout.minimumWidth
 
                         Layout.maximumWidth: Layout.minimumWidth
@@ -285,18 +285,21 @@ FocusScope {
 
                         Label {
                             text: qsTr("<b>Album</b>: %1").arg(root.musicInfo ? root.musicInfo.album.albumName : '')
+                            font.pointSize: 14
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
                         Label {
-                            text: qsTr("<b>Song</b>: %1").arg( root.musicInfo ? root.musicInfo.songName : '')
+                            text: qsTr("<b>Song</b>: %1").arg(root.musicInfo ? root.musicInfo.songName : '')
+                            font.pointSize: 14
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
                         Label {
                             text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo ? root.musicInfo.album.artists[0].artistName : '')
+                            font.pointSize: 14
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText

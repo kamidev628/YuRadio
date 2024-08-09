@@ -10,11 +10,21 @@ Item {
 
     focus: true
 
+    states: [
+        State {
+            name: "desktopLayout"
+            when: root.width > 600
+            PropertyChanges {
+                columnLayout.width: columnLayout.parent.width / 2
+            }
+        }
+    ]
+
     ColumnLayout {
-        anchors.fill: parent
-        anchors.topMargin: 10
-        anchors.leftMargin: 15
-        anchors.rightMargin: 15
+        id: columnLayout
+        anchors.centerIn: parent
+        width: parent.width - 30
+        height: parent.height
 
         Image {
             Layout.fillWidth: true

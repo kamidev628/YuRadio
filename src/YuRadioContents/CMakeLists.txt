@@ -22,6 +22,8 @@ qt_add_qml_module(
   SearchPage.qml
   SettingsPage.qml
   AboutPage.qml
+  FilledGridView.qml
+  RadioStationView.qml
   RadioStationsViewHeader.qml
   RadioStationSearchFilterDialog.qml
   PullToRefreshHandler.qml

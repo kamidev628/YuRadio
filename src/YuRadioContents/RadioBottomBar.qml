@@ -9,7 +9,7 @@ import YuRadioContents
 RadioBottomBarDrawer {
     id: root
 
-    required property ListView listView
+    required property GridView gridView
 
     maximumHeight: parent.height * 2 / 3
     minimumHeight: 0
@@ -47,8 +47,8 @@ RadioBottomBarDrawer {
     ShaderEffectSource {
         id: effectSource
         anchors.fill: parent
-        sourceItem: root.listView
-        sourceRect: Qt.rect(0, root.listView.height, root.width, root.height)
+        sourceItem: root.gridView
+        sourceRect: Qt.rect(0, root.gridView.height, root.width, root.height)
         visible: false
     }
 

@@ -108,7 +108,7 @@ Item {
             Layout.topMargin: 5
 
             Layout.preferredHeight: 4
-            Layout.preferredWidth: parent.width / 10
+            Layout.preferredWidth: Math.min(parent.width / 10, 100)
             radius: height / 2
 
             color: Material.color(Material.Grey, Material.Shade800)

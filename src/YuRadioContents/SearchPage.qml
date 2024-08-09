@@ -5,8 +5,6 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-import "radiobrowser.mjs" as RadioBrowser
-
 import YuRadioContents
 import network
 
@@ -15,7 +13,6 @@ Item {
 
     focus: true
 
-    property alias bottomDrawer: bottomBarDrawer
     required property RadioDrawer drawer
     required property NetworkManager networkManager
 
@@ -23,7 +20,7 @@ Item {
         /* TODO: underlying drag handler steals drag events from
          * search-filter-dialog
          */
-        root.bottomDrawer.close();
+        bottomBarDrawer.close();
         if (searchFilterDialogLoader.active) {
             searchFilterDialogLoader.item.open();
         } else {
@@ -46,7 +43,7 @@ Item {
         SearchBar {
             id: searchBar
 
-            availableWidth: parent.width * 5 / 9
+            availableWidth: Math.min(parent.width * 5 / 9, 300)
 
             implicitWidth: height
 
@@ -176,32 +173,16 @@ Item {
     }
 
     component FooterBar: BusyIndicator {
-        width: ListView.view.width
+        width: GridView.view.width
         height: visible ? 50 : 0
         visible: radioModel.status == JsonRestListModel.Loading
     }
 
-    ListView {
-        id: radioListView
+    RadioStationView {
+        id: radioGridView
 
-        displayMarginEnd: bottomBarDrawer.height
-        currentIndex: -1
-
-        clip: true
-        focus: true
-        highlightFollowsCurrentItem: false
-
-        boundsMovement: Flickable.StopAtBounds
-        boundsBehavior: Flickable.DragOverBounds
-        footer: FooterBar {}
-        highlight: ListViewHighlightBar {}
-
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-            bottom: bottomBarDrawer.top
-        }
+        bottomBar: bottomBarDrawer
+        networkManager: root.networkManager
 
         header: RadioStationsViewHeader {
             id: radioListViewHeader
@@ -216,33 +197,8 @@ Item {
             onOrderByFieldChanged: orderChangedHandler()
         }
 
+        footer: FooterBar {}
         model: radioModel
-        delegate: RadioStationDelegate {
-            id: delegate
-
-            focus: true
-            focusPolicy: Qt.StrongFocus
-            networkManager: root.networkManager
-
-            onCurrentStationChanged: {
-                if (currentStation) {
-                    Qt.callLater(() => {
-                        radioListView.currentIndex = Qt.binding(() => currentStation ? index : -1);
-                    });
-                }
-            }
-
-            onClicked: {
-                if (ListView.view.currentIndex == delegate.index) {
-                    MainRadioPlayer.toggle();
-                } else {
-                    RadioBrowser.click(root.networkManager.baseUrl, stationuuid);
-                    radioListView.currentIndex = delegate.index;
-                    MainRadioPlayer.currentItem = Object.assign({}, radioListView.model.get(delegate.index));
-                    Qt.callLater(MainRadioPlayer.play);
-                }
-            }
-        }
 
         Timer {
             id: apiTimeoutTimer
@@ -256,7 +212,7 @@ Item {
 
         PullToRefreshHandler {
             id: pullToRefreshHandler
-            enabled: isProcessing && !apiTimeoutTimer.running && radioListView.verticalOvershoot <= 0
+            enabled: isProcessing && !apiTimeoutTimer.running && radioGridView.verticalOvershoot <= 0
             refreshCondition: refreshTimer.running
 
             onPullDownRelease: {
@@ -272,7 +228,7 @@ Item {
 
     RadioBottomBar {
         id: bottomBarDrawer
-        listView: radioListView
+        gridView: radioGridView
     }
 
     Connections {

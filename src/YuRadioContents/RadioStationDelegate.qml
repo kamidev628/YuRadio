@@ -19,8 +19,8 @@ ItemDelegate {
 
     property bool currentStation: MainRadioPlayer.currentItem?.stationuuid == stationuuid
 
-    implicitHeight: 100
-    implicitWidth: 400
+    height: GridView.view.cellHeight
+    width: GridView.view.cellWidth 
 
     RowLayout {
         anchors.fill: parent
@@ -116,7 +116,7 @@ ItemDelegate {
                 if (moreOptionsMenu.bookmarkAdded) {
                     Storage.deleteBookmark(root.stationuuid);
                 } else {
-                    Storage.addBookmark(root.ListView.view.model.get(root.index));
+                    Storage.addBookmark(root.GridView.view.model.get(root.index));
                 }
             }
         }

@@ -6,6 +6,7 @@ import QtCore
 Settings {
     id: settings
 
+    property int desktopLayoutWidth: 1000
     property var lastStation
     property var initialPage: App.Page.Search
     property string language

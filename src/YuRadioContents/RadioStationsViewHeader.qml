@@ -9,7 +9,7 @@ FocusScope {
     id: root
 
     height: 40
-    width: ListView.view.width
+    width: GridView.view.width
 
     property string orderByField: "votes"
     property bool descending: true
@@ -66,11 +66,16 @@ FocusScope {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
+            Item {
+              Layout.fillWidth: true
+              Layout.horizontalStretchFactor: 1
+            }
+
             IconButton {
                 id: orderByButton
 
                 Layout.fillHeight: true
-                Layout.leftMargin: 10
+
                 transform: Scale {
                     id: orderByButtonScale
                     yScale: root.descending ? 1 : -1
@@ -90,8 +95,10 @@ FocusScope {
 
             ListView {
                 id: listView
-                Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.maximumWidth: contentWidth
+                Layout.horizontalStretchFactor: Utils.maxInteger
                 orientation: Qt.Horizontal
                 spacing: 2
 
@@ -149,6 +156,10 @@ FocusScope {
                     text: modelData.text
                 }
             }
+        Item {
+          Layout.fillWidth: true
+          Layout.horizontalStretchFactor: 1
+        }
         }
     }
 }

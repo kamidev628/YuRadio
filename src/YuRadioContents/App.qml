@@ -23,7 +23,7 @@ ApplicationWindow {
         states: [
             State {
                 name: "desktopLayout"
-                when: root.width > 1000
+                when: root.width > AppSettings.desktopLayoutWidth
 
                 PropertyChanges {
                     mainStackView.width: mainStackView.parent.width - drawer.width * drawer.position

@@ -15,31 +15,38 @@ Item {
             name: "desktopLayout"
             when: root.width > 600
             PropertyChanges {
-                columnLayout.width: columnLayout.parent.width / 2
+                scrollView.width: scrollView.parent.width / 2
             }
         }
     ]
 
-    ColumnLayout {
-        id: columnLayout
+    ScrollView {
+        id: scrollView
         anchors.centerIn: parent
         width: parent.width - 30
         height: parent.height
 
-        Image {
-            Layout.fillWidth: true
-            Layout.topMargin: 10
-            Layout.bottomMargin: 10
-            fillMode: Image.PreserveAspectFit
-            source: "images/shortwave.svg"
-        }
+        contentWidth: -1
+        contentHeight: columnLayout.implicitHeight
 
-        Label {
-            Layout.fillWidth: true
-            Layout.topMargin: 5
+        ColumnLayout {
+            id: columnLayout
+            width: parent.width
 
-            textFormat: Text.MarkdownText
-            text: qsTr(`
+            Image {
+                Layout.fillWidth: true
+                Layout.topMargin: 10
+                Layout.bottomMargin: 10
+                fillMode: Image.PreserveAspectFit
+                source: "images/shortwave.svg"
+            }
+
+            Label {
+                Layout.fillWidth: true
+                Layout.topMargin: 5
+
+                textFormat: Text.MarkdownText
+                text: qsTr(`
 ## About
 ---
 **YuRadio** is a cross-platform application built with Qt.
@@ -52,27 +59,28 @@ In Android, it uses built-in _**ExoPlayer**_ for audio playback.
 All other platforms will use Qt's _**QMediaPlayer**_
 `)
 
-            wrapMode: Text.WordWrap
-        }
-
-        Button {
-            Layout.fillWidth: true
-            Layout.topMargin: 20
-            Material.background: Material.color(Material.Grey, Material.ShadeA200)
-            Material.foreground: Material.color(Material.Grey, Material.Shade100)
-
-            text: "Github"
-
-            onClicked: {
-                Qt.openUrlExternally("https://github.com/yunag/YuRadio");
+                wrapMode: Text.WordWrap
             }
 
-            icon.source: "images/github-mark.svg"
-        }
+            Button {
+                Layout.fillWidth: true
+                Layout.topMargin: 20
+                Material.background: Material.color(Material.Grey, Material.ShadeA200)
+                Material.foreground: Material.color(Material.Grey, Material.Shade100)
 
-        Item {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+                text: "Github"
+
+                onClicked: {
+                    Qt.openUrlExternally("https://github.com/yunag/YuRadio");
+                }
+
+                icon.source: "images/github-mark.svg"
+            }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
         }
     }
 }

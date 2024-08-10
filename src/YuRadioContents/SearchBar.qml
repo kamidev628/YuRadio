@@ -1,17 +1,27 @@
 import QtQuick
 import QtQuick.Controls.Material
 
-Rectangle {
+Item {
     id: root
-    radius: height / 2
-
-    color: "transparent"
 
     readonly property bool isSearching: searchInput.activeFocus
     required property real availableWidth
 
     property alias searchInput: searchInput
     property alias searchIcon: searchButton.icon
+    property alias searchButton: searchButton
+
+    Rectangle {
+        id: background
+        anchors {
+            fill: parent
+            bottomMargin: 6
+            topMargin: 6
+        }
+
+        color: "transparent"
+        radius: height / 2
+    }
 
     states: [
         State {
@@ -19,7 +29,7 @@ Rectangle {
             when: root.isSearching
 
             PropertyChanges {
-                root.color: root.Material.color(Material.Grey, Material.Shade100)
+                background.color: root.Material.color(Material.Grey, Material.Shade100)
             }
             PropertyChanges {
                 root.implicitWidth: root.availableWidth
@@ -45,13 +55,13 @@ Rectangle {
                 easing.type: Easing.InOutQuad
             }
             PropertyAnimation {
-                target: root
+                target: background
                 properties: "color"
                 duration: 200
             }
             PropertyAnimation {
-                target: searchButton.icon
-                properties: "color"
+                target: searchButton
+                properties: "icon.color"
                 duration: 200
             }
             PropertyAnimation {
@@ -62,35 +72,32 @@ Rectangle {
         }
     ]
 
-    IconButton {
+    ToolButton {
         id: searchButton
 
         icon.source: 'images/search.svg'
-        icon.sourceSize: Qt.size(height, height)
-        icon.color: Material.color(Material.Grey, Material.Shade50)
+        focusPolicy: Qt.NoFocus
 
         anchors {
-            top: parent.top
+            verticalCenter: parent.verticalCenter
             left: parent.left
-            bottom: parent.bottom
-
-            leftMargin: 3
-            topMargin: 1
-            bottomMargin: 1
         }
 
-        width: height
-
-        onClicked: searchInput.forceActiveFocus()
+        onClicked: {
+            if (!searchInput.activeFocus) {
+                searchInput.forceActiveFocus();
+            }
+        }
     }
 
     TextInput {
         id: searchInput
-        clip: true
         opacity: 0
+        clip: true
 
         anchors {
             verticalCenter: parent.verticalCenter
+            leftMargin: -10
             left: searchButton.right
             right: parent.right
         }

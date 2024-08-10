@@ -32,9 +32,6 @@ ApplicationWindow {
                     drawer.closePolicy: Popup.NoAutoClose
                     drawer.modal: false
                 }
-                StateChangeScript {
-                    script: drawer.open()
-                }
             }
         ]
     }

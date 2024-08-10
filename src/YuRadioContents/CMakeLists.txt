@@ -19,6 +19,7 @@ qt_add_qml_module(
   RadioBottomBarContents.qml
   RadioBottomBarDrawer.qml
   RadioBottomBar.qml
+  ScrollableFlickable.qml
   SearchPage.qml
   SettingsPage.qml
   AboutPage.qml
@@ -39,6 +40,7 @@ qt_add_qml_module(
   ListViewHighlightBar.qml
   radiobrowser.mjs
   RESOURCES
+  images/refresh.svg
   images/shortwave.svg
   images/more-vert.svg
   images/search.svg

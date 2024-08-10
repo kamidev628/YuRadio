@@ -10,6 +10,7 @@ Rectangle {
     opacity: 0.6
 
     Behavior on x {
+        enabled: AppSettings.enableSelectionAnimation
         SpringAnimation {
             id: xAnim
             spring: 4
@@ -18,6 +19,7 @@ Rectangle {
         }
     }
     Behavior on y {
+        enabled: AppSettings.enableSelectionAnimation
         SequentialAnimation {
             PauseAnimation {
                 duration: xAnim.running ? xAnim.duration + 200 : 0

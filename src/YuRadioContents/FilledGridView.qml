@@ -6,7 +6,7 @@ GridView {
     id: root
 
     required property real minimumItemWidth
-    property int numItemsInRow: root.width / internal.itemWidth
+    property int numItemsInRow: Math.min(count, root.width / internal.itemWidth)
 
     QtObject {
         id: internal

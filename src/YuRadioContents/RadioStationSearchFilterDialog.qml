@@ -68,152 +68,180 @@ Dialog {
         languageCombo.currentIndex = internal.prevSelectedLanguage;
     }
 
-    ColumnLayout {
+    StateGroup {
+        states: [
+            State {
+                name: "scrollView"
+                when: columnLayout.implicitHeight > scrollView.height
+                PropertyChanges {
+                    tagsFlickable.Layout.preferredHeight: 300
+                    scrollView.contentHeight: columnLayout.implicitHeight
+                    columnLayout.height: undefined
+                }
+            }
+        ]
+    }
+
+    ScrollView {
+        id: scrollView
         anchors.fill: parent
 
-        Label {
-            text: qsTr("Search Filters")
-            font.bold: true
-            font.pointSize: 18
-        }
+        contentWidth: -1
+        contentHeight: -1
 
-        GridLayout {
-            Layout.topMargin: 20
-            columns: 2
+        ColumnLayout {
+            id: columnLayout
+            width: scrollView.width
+            height: scrollView.height
 
             Label {
-                text: qsTr("Country")
-            }
-
-            HeaderComboBox {
-                id: countryCombo
-
+                text: qsTr("Search Filters")
+                font.bold: true
+                font.pointSize: 18
                 Layout.fillWidth: true
-                Layout.leftMargin: 10
-
-                implicitHeight: 40
-
-                editable: true
-                currentIndex: -1
-
-                font.pointSize: 13
-                popup.font.pointSize: font.pointSize
-
-                model: Storage.getCountries()
             }
 
-            Label {
-                id: stateText
-                text: qsTr("State")
-            }
+            GridLayout {
+                Layout.topMargin: 20
+                columns: 2
 
-            HeaderComboBox {
-                id: stateCombo
-                Layout.fillWidth: true
-                Layout.leftMargin: 10
-                implicitHeight: 40
+                Label {
+                    Layout.fillWidth: true
+                    text: qsTr("Country")
+                }
 
-                implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
-                editable: true
-                textRole: "name"
+                HeaderComboBox {
+                    id: countryCombo
 
-                font.pointSize: 13
-                popup.font.pointSize: font.pointSize
-                currentIndex: -1
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 10
 
-                model: JsonRestListModel {
-                    id: stateModel
-                    restManager: root.networkManager
-                    pagination: LimitPagination {
-                        id: statesPagination
-                        offset: 0
-                        limit: totalCount
-                        totalCount: 300
-                    }
+                    implicitHeight: 40
 
-                    filters: [
-                        RestListModelSortFilter {
-                            key: "order"
-                            value: "stationcount"
-                        },
-                        RestListModelSortFilter {
-                            key: "reverse"
-                            value: true
+                    editable: true
+                    currentIndex: -1
+
+                    font.pointSize: 13
+                    popup.font.pointSize: font.pointSize
+
+                    model: Storage.getCountries()
+                }
+
+                Label {
+                    id: stateText
+                    Layout.fillWidth: true
+                    text: qsTr("State")
+                }
+
+                HeaderComboBox {
+                    id: stateCombo
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 10
+                    implicitHeight: 40
+
+                    implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
+                    editable: true
+                    textRole: "name"
+
+                    font.pointSize: 13
+                    popup.font.pointSize: font.pointSize
+                    currentIndex: -1
+
+                    model: JsonRestListModel {
+                        id: stateModel
+                        restManager: root.networkManager
+                        pagination: LimitPagination {
+                            id: statesPagination
+                            offset: 0
+                            limit: totalCount
+                            totalCount: 300
                         }
-                    ]
 
-                    path: root.selectedCountry ? `/json/states/${root.selectedCountry}/` : '/json/states'
+                        filters: [
+                            RestListModelSortFilter {
+                                key: "order"
+                                value: "stationcount"
+                            },
+                            RestListModelSortFilter {
+                                key: "reverse"
+                                value: true
+                            }
+                        ]
 
-                    fetchMoreHandler: () => {
-                        loadPage();
-                        pagination.nextPage();
+                        path: root.selectedCountry ? `/json/states/${root.selectedCountry}/` : '/json/states'
+
+                        fetchMoreHandler: () => {
+                            loadPage();
+                            pagination.nextPage();
+                        }
+
+                        onPathChanged: {
+                            statesPagination.offset = 0;
+                            stateModel.reset();
+                        }
                     }
+                }
 
-                    onPathChanged: {
-                        statesPagination.offset = 0;
-                        stateModel.reset();
-                    }
+                Label {
+                    Layout.fillWidth: true
+                    text: qsTr("Language")
+                }
+
+                HeaderComboBox {
+                    id: languageCombo
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 10
+
+                    currentIndex: -1
+                    implicitHeight: 40
+                    font.pointSize: 13
+                    popup.font.pointSize: font.pointSize
+
+                    editable: true
+
+                    model: Storage.getLanguages()
                 }
             }
 
             Label {
-                text: qsTr("Language")
-            }
-
-            HeaderComboBox {
-                id: languageCombo
+                Layout.topMargin: 10
                 Layout.fillWidth: true
-                Layout.leftMargin: 10
-
-                currentIndex: -1
-                implicitHeight: 40
-                font.pointSize: 13
-                popup.font.pointSize: font.pointSize
-
-                editable: true
-
-                model: Storage.getLanguages()
+                text: qsTr("Tags")
             }
-        }
 
-        Label {
-            Layout.topMargin: 10
-            text: qsTr("Tags")
-        }
+            ScrollableFlickable {
+                id: tagsFlickable
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
-        Flickable {
-            id: tagsFlickable
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Layout.topMargin: 10
+                clip: true
 
-            clip: true
+                boundsBehavior: Flickable.StopAtBounds
 
-            boundsBehavior: Flickable.StopAtBounds
+                contentHeight: tagsFlow.implicitHeight
+                contentWidth: tagsFlow.implicitWidth
 
-            contentHeight: tagsFlow.implicitHeight
-            contentWidth: tagsFlow.implicitWidth
+                Flow {
+                    id: tagsFlow
+                    width: tagsFlickable.width
 
-            Flow {
-                id: tagsFlow
-                width: tagsFlickable.width
+                    spacing: 4
 
-                spacing: 4
+                    Repeater {
+                        id: tagsRepeater
+                        model: Storage.getTags()
 
-                Repeater {
-                    id: tagsRepeater
-                    model: Storage.getTags()
+                        OutlinedButton {
+                            required property int index
+                            required property string modelData
 
-                    OutlinedButton {
-                        required property int index
-                        required property string modelData
+                            focusPolicy: Qt.NoFocus
 
-                        focusPolicy: Qt.NoFocus
+                            checkable: true
+                            implicitHeight: 35
 
-                        checkable: true
-                        implicitHeight: 35
-
-                        text: modelData
+                            text: modelData
+                        }
                     }
                 }
             }

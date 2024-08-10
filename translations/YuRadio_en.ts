@@ -4,8 +4,8 @@
 <context>
     <name>AboutPage</name>
     <message>
-        <location filename="../src/YuRadioContents/AboutPage.qml" line="42"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/AboutPage.qml" line="42"/>
+        <location filename="../src/YuRadioContents/AboutPage.qml" line="49"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/AboutPage.qml" line="49"/>
         <source>
 ## About
 ---
@@ -176,32 +176,32 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>RadioStationSearchFilterDialog</name>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="75"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="75"/>
+        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="98"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="98"/>
         <source>Search Filters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="85"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="85"/>
+        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="110"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="110"/>
         <source>Country</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="107"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="107"/>
+        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="133"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="133"/>
         <source>State</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="160"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="160"/>
+        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="187"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="187"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="181"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="181"/>
+        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="209"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="209"/>
         <source>Tags</source>
         <translation type="unfinished"></translation>
     </message>
@@ -209,50 +209,50 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>RadioStationsViewHeader</name>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="111"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="111"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="110"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="110"/>
         <source>votes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="115"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="115"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="114"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="114"/>
         <source>popularity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="119"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="119"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="118"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="118"/>
         <source>bitrate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="123"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="123"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="122"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="122"/>
         <source>name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="127"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="127"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="126"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="126"/>
         <source>country</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="131"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="131"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="130"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="130"/>
         <source>state</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="135"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="135"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="134"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="134"/>
         <source>language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="139"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="139"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="138"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioStationsViewHeader.qml" line="138"/>
         <source>tags</source>
         <translation type="unfinished"></translation>
     </message>
@@ -260,39 +260,45 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>SettingsPage</name>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="29"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="29"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="36"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="36"/>
         <source>Servers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="74"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="74"/>
-        <source>Could not fetch available servers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/SettingsPage.qml" line="81"/>
         <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="81"/>
+        <source>Could not fetch available servers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="88"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="88"/>
         <source>Initial Page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="90"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="90"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="97"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="97"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="94"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="94"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="101"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="101"/>
         <source>Bookmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="109"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="109"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="116"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="116"/>
         <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="144"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="144"/>
+        <source>Enable Selection Animations</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

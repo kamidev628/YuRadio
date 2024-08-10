@@ -34,7 +34,10 @@ Item {
     }
 
     property Component headerContent: RowLayout {
+        id: headerLayout
+
         anchors.fill: parent
+        spacing: 0
 
         Item {
             Layout.fillWidth: true
@@ -46,10 +49,9 @@ Item {
             availableWidth: Math.min(parent.width * 5 / 9, 300)
 
             implicitWidth: height
+            searchIcon.color: Material.color(Material.Grey, Material.Shade100)
 
             Layout.fillHeight: true
-            Layout.topMargin: 8
-            Layout.bottomMargin: 8
 
             searchInput.onAccepted: {
                 nameFilter.value = searchInput.text;
@@ -57,14 +59,23 @@ Item {
             }
         }
 
-        IconButton {
-            id: filterIcon
-            icon.source: 'images/filter.svg'
-            icon.sourceSize: searchBar.searchIcon.sourceSize
-
+        ToolButton {
+            icon.source: "images/refresh.svg"
             icon.color: Material.color(Material.Grey, Material.Shade100)
 
-            Layout.rightMargin: 10
+            enabled: !apiTimeoutTimer.running
+            onClicked: {
+                root.radioModelReset();
+                apiTimeoutTimer.start();
+            }
+        }
+
+        ToolButton {
+            id: filterIcon
+
+            icon.source: 'images/filter.svg'
+            icon.color: Material.color(Material.Grey, Material.Shade100)
+
             onClicked: {
                 filterIcon.forceActiveFocus();
                 root.openSearchFilterDialog();
@@ -81,9 +92,12 @@ Item {
 
         sourceComponent: RadioStationSearchFilterDialog {
             id: searchFilterDialog
-            implicitWidth: parent.width * 3 / 4
-            implicitHeight: parent.height * 3 / 4
-            anchors.centerIn: parent
+
+            implicitWidth: Math.min(Overlay.overlay.width * 3 / 4, 500)
+            implicitHeight: Overlay.overlay.height * 3 / 4
+
+            anchors.centerIn: Overlay.overlay
+
             networkManager: root.networkManager
             onAccepted: {
                 countryFilter.value = searchFilterDialog.selectedCountry;
@@ -212,7 +226,7 @@ Item {
 
         PullToRefreshHandler {
             id: pullToRefreshHandler
-            enabled: isProcessing && !apiTimeoutTimer.running && radioGridView.verticalOvershoot <= 0
+            enabled: AppSettings.isMobile && isProcessing && !apiTimeoutTimer.running && radioGridView.verticalOvershoot <= 0
             refreshCondition: refreshTimer.running
 
             onPullDownRelease: {

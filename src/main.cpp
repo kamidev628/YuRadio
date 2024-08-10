@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setApplicationVersion(QStringLiteral("1.0"));
 
   QQmlApplicationEngine engine;
-
+  QQuickStyle::setStyle(QStringLiteral("Material"));
   qDebug() << "Version:" << QCoreApplication::applicationVersion();
 
   qDebug() << "Device supports OpenSSL:" << QSslSocket::supportsSsl();

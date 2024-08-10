@@ -19,6 +19,8 @@ FocusScope {
 
     property alias playerButton: playerButton
 
+    property real stationLatitude:MainRadioPlayer.currentItem?.geo_lat ?? 0 
+    property real stationLongitude:MainRadioPlayer.currentItem?.geo_long ?? 0 
     property string stationName: MainRadioPlayer.currentItem?.name ?? ""
     property string stationTags: MainRadioPlayer.currentItem?.tags ?? ""
     property string stationUrl: MainRadioPlayer.currentItem?.url_resolved ?? ""
@@ -26,6 +28,8 @@ FocusScope {
     property string stationHomepage: MainRadioPlayer.currentItem?.homepage ?? ""
     property string stationCountry: MainRadioPlayer.currentItem?.country ?? ""
     property string stationLanguage: MainRadioPlayer.currentItem?.language ?? ""
+
+    signal showRadioStationLocationRequested(staitonLat: real, stationLong: real)
 
     Binding {
         when: mainFlickable.dragging
@@ -178,8 +182,6 @@ FocusScope {
                             ClickableLink {
                                 id: homePage
 
-                                Layout.fillWidth: true
-
                                 visible: root.stationHomepage
 
                                 linkText: qsTr('Homepage')
@@ -187,6 +189,20 @@ FocusScope {
 
                                 font.pointSize: 14
                                 wrapMode: Text.Wrap
+                            }
+
+                            Button {
+                                id: mapButton
+
+                                flat: true
+                                visible: root.stationLatitude && root.stationLongitude
+
+                                text: qsTr('Show on the map')
+                                icon.source: "images/map.svg"
+
+                                onClicked: {
+                                  root.showRadioStationLocationRequested(root.stationLatitude, root.stationLongitude)
+                                }
                             }
                         }
                     }

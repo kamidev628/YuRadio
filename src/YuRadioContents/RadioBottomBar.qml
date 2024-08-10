@@ -10,6 +10,7 @@ RadioBottomBarDrawer {
     id: root
 
     required property GridView gridView
+    required property StackView stackView
 
     maximumHeight: parent.height * 2 / 3
     minimumHeight: 0
@@ -61,12 +62,27 @@ RadioBottomBarDrawer {
         saturation: -0.3
     }
 
+    Component {
+        id: locationPage
+        RadioStationLocationPage {
+            stationLatitude: bottomBarContents.stationLatitude
+            stationLongitude: bottomBarContents.stationLongitude
+        }
+    }
+
     RadioBottomBarContents {
         id: bottomBarContents
 
         anchors.fill: parent
+        property real stationLatitude
+        property real stationLongitude
 
         bottomBarDrawer: root
+        onShowRadioStationLocationRequested: (stationLat, stationLong) => {
+            stationLatitude = stationLat;
+            stationLongitude = stationLong;
+            root.stackView.push(locationPage);
+        }
     }
 
     RoundButton {

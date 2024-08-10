@@ -25,6 +25,7 @@ Item {
     RadioBottomBar {
         id: bottomBarDrawer
         gridView: bookmarkGridView
+        stackView: root.StackView.view
     }
 
     Connections {

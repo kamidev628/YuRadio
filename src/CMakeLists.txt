@@ -8,12 +8,14 @@ set_target_properties(YuRadio PROPERTIES AUTOMOC ON AUTORCC ON)
 find_package(
   Qt6 6.5 REQUIRED
   COMPONENTS Core
+             Sql
              Qml
              Quick
              QuickControls2
              Multimedia
              ShaderTools
-             Sql
+             Positioning
+             Location
              LinguistTools)
 
 add_subdirectory(network)
@@ -96,6 +98,8 @@ target_link_libraries(
           Qt6::QuickControls2
           Qt6::Multimedia
           Qt6::Sql
+          Qt6::Positioning
+          Qt6::Location
           YuRadioNetworkplugin
           YuRadioContentsplugin
           "$<$<CONFIG:Debug>:HotReloader>")

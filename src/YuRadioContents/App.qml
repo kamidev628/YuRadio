@@ -46,9 +46,11 @@ ApplicationWindow {
     function backButtonPressed(event) {
         if (mainStackView.depth > 1) {
             mainStackView.popCurrentItem();
-            event.accepted = true;
+            if (event)
+                event.accepted = true;
         } else {
-            event.accepted = false;
+            if (event)
+                event.accepted = false;
         }
     }
 
@@ -126,15 +128,15 @@ ApplicationWindow {
         id: languageTranslator
 
         Component.onCompleted: {
-            if (!AppSettings.language) {
+            if (!AppSettings.locale) {
                 if (loadSystemLanguage()) {
-                    AppSettings.language = Qt.locale().name;
+                    AppSettings.locale = Qt.locale().name;
                 } else {
                     load("en_US");
-                    AppSettings.language = "en_US";
+                    AppSettings.locale = "en_US";
                 }
             } else {
-                load(AppSettings.language);
+                load(AppSettings.locale);
             }
         }
     }
@@ -216,6 +218,7 @@ ApplicationWindow {
 
             ToolButton {
                 id: menuButton
+                visible: !backButton.visible
                 icon.source: "images/menu.svg"
                 Material.foreground: Material.color(Material.Grey, Material.Shade100)
                 onClicked: {
@@ -225,6 +228,14 @@ ApplicationWindow {
                         drawer.open();
                     }
                 }
+            }
+
+            ToolButton {
+                id: backButton
+                visible: mainStackView.currentItem?.displayBackButton ?? false
+                icon.source: "images/arrow-back.svg"
+                Material.foreground: Material.color(Material.Grey, Material.Shade100)
+                onClicked: root.backButtonPressed()
             }
 
             Loader {

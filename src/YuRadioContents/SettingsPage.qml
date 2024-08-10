@@ -129,13 +129,13 @@ Item {
                                 text: Qt.locale(locale).nativeLanguageName + (locale.includes("_") ? Qt.locale(locale).nativeTerritoryName : ""),
                                 code: locale
                             }));
-                    currentIndex = model.findIndex(x => x.code == AppSettings.language);
+                    currentIndex = model.findIndex(x => x.code == AppSettings.locale);
                     if (currentIndex == -1) {
-                        currentIndex = model.findIndex(x => x.code.includes(AppSettings.language) || AppSettings.language.includes(x.code));
+                        currentIndex = model.findIndex(x => x.code.includes(AppSettings.locale) || AppSettings.locale.includes(x.code));
                     }
                 }
                 onActivated: {
-                    AppSettings.language = currentValue.code;
+                    AppSettings.locale = currentValue.code;
                     root.languageTranslator.load(currentValue.code);
                 }
             }

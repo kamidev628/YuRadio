@@ -11,7 +11,7 @@ Settings {
     property int desktopLayoutWidth: 1000
     property var lastStation
     property var initialPage: App.Page.Search
-    property string language
+    property string locale
     property string radioBrowserBaseUrl
     property string theme: Qt.styleHints.colorScheme === Qt.Dark ? "Dark" : "Light"
     readonly property bool isDarkTheme: theme === "Dark"

@@ -243,6 +243,7 @@ Item {
     RadioBottomBar {
         id: bottomBarDrawer
         gridView: radioGridView
+        stackView: root.StackView.view
     }
 
     Connections {

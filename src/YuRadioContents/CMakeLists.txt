@@ -24,6 +24,7 @@ qt_add_qml_module(
   SettingsPage.qml
   AboutPage.qml
   FilledGridView.qml
+  RadioStationLocationPage.qml
   RadioStationView.qml
   RadioStationsViewHeader.qml
   RadioStationSearchFilterDialog.qml
@@ -40,6 +41,9 @@ qt_add_qml_module(
   ListViewHighlightBar.qml
   radiobrowser.mjs
   RESOURCES
+  images/map.svg
+  images/location.svg
+  images/arrow-back.svg
   images/refresh.svg
   images/shortwave.svg
   images/more-vert.svg

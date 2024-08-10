@@ -71,50 +71,56 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation type="vanished">Язык: </translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="106"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="106"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="110"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="110"/>
         <source>Station</source>
         <translation>Радио станция</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="161"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="161"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="165"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="165"/>
         <source>Country: %1</source>
         <translation>Страна: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="173"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="173"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="177"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="177"/>
         <source>Language: %1</source>
         <translation>Язык: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="185"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="185"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="187"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="187"/>
         <source>Homepage</source>
         <translation>Домашняя страница</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="244"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="244"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="200"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="200"/>
+        <source>Show on the map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="260"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="260"/>
         <source>Music Info is not avaialble</source>
         <translation>Информация о песне недоступна</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="287"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="287"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="303"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="303"/>
         <source>&lt;b&gt;Album&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Альбом&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="294"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="294"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="310"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="310"/>
         <source>&lt;b&gt;Song&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Песня&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="301"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="301"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="317"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="317"/>
         <source>&lt;b&gt;Artist&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Исполнитель&lt;/b&gt;: %1</translation>
     </message>
@@ -290,38 +296,38 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>Сервера</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="81"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="81"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="47"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="47"/>
         <source>Could not fetch available servers</source>
         <translation>Не получается получить список доступных серверов</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="88"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="88"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="90"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="90"/>
         <source>Initial Page</source>
         <translation>Начальная Страница</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="97"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="97"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="99"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="99"/>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="101"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="101"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="103"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="103"/>
         <source>Bookmarks</source>
         <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="116"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="116"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="118"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="118"/>
         <source>Language</source>
         <translation>Язык</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="144"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="144"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="146"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/SettingsPage.qml" line="146"/>
         <source>Enable Selection Animations</source>
         <translation type="unfinished"></translation>
     </message>

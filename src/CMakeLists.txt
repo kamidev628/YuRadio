@@ -36,12 +36,12 @@ qt_add_qml_module(
   icecastreaderproxyserver.cpp
   radioplayer.h
   radioplayer.cpp
-  musicinfoprovider.h
-  musicinfoprovider.cpp
-  itunesmusicinfoprovider.h
-  itunesmusicinfoprovider.cpp
-  musicinfo.h
-  musicinfo.cpp
+  musicinfomodel.h
+  musicinfomodel.cpp
+  musicinfoproviderbackend.h
+  musicinfoproviderbackend.cpp
+  itunesmusicinfoproviderbackend.h
+  itunesmusicinfoproviderbackend.cpp
   imageloader.h
   imageloader.cpp
   basicradiocontroller.cpp

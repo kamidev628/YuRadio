@@ -13,8 +13,8 @@ FocusScope {
     required property RadioBottomBarDrawer bottomBarDrawer
     readonly property DragHandler bottomBarDragHandler: bottomBarDrawer.dragHandler
 
-    property MusicInfo musicInfo
-    property string streamTitle: MainRadioPlayer.streamTitle && MainRadioPlayer.streamTitle.trim().length > 4 ? MainRadioPlayer.streamTitle : ''
+    property alias musicInfo: musicInfoModel.musicInfo
+    property string streamTitle: MainRadioPlayer.streamTitle
     property string lastStreamTitle: ""
 
     property alias playerButton: playerButton
@@ -269,21 +269,21 @@ FocusScope {
 
                 BusyIndicator {
                     id: busyIndicator
-                    visible: musicInfoProvider.state == ItunesMusicInfoProvider.Processing
+                    visible: musicInfoModel.status == MusicInfoModel.Loading
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                 }
 
                 RowLayout {
                     id: musicInfoRow
-                    visible: musicInfoProvider.state == ItunesMusicInfoProvider.Done && root.musicInfo
+                    visible: musicInfoModel.status == MusicInfoModel.Ready && root.musicInfo
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
                     spacing: 20
 
                     Image {
-                        source: root.musicInfo ? root.musicInfo.album.albumImageUrl : ''
+                        source: root.musicInfo?.coverUrls[0] ?? ''
 
                         Layout.minimumWidth: Math.min(mainColumn.width * 4 / 9, 400)
                         Layout.minimumHeight: Layout.minimumWidth
@@ -301,21 +301,21 @@ FocusScope {
                         Layout.fillHeight: true
 
                         Label {
-                            text: qsTr("<b>Album</b>: %1").arg(root.musicInfo ? root.musicInfo.album.albumName : '')
+                            text: qsTr("<b>Album</b>: %1").arg(root.musicInfo.albumName)
                             font.pointSize: 14
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
                         Label {
-                            text: qsTr("<b>Song</b>: %1").arg(root.musicInfo ? root.musicInfo.songName : '')
+                            text: qsTr("<b>Song</b>: %1").arg(root.musicInfo.songName)
                             font.pointSize: 14
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
                         Label {
-                            text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo ? root.musicInfo.album.artists[0].artistName : '')
+                            text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo.artistNames)
                             font.pointSize: 14
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
@@ -327,11 +327,10 @@ FocusScope {
         }
     }
 
-    ItunesMusicInfoProvider {
-        id: musicInfoProvider
-        onMusicInfoChanged: {
-            root.musicInfo = musicInfo;
-        }
+    MusicInfoModel {
+        id: musicInfoModel
+
+        searchTerm: root.streamTitle
     }
 
     Timer {
@@ -343,7 +342,7 @@ FocusScope {
 
         onTriggered: {
             root.lastStreamTitle = root.streamTitle;
-            musicInfoProvider.provide(root.streamTitle);
+            musicInfoModel.refresh();
         }
     }
 
@@ -351,11 +350,11 @@ FocusScope {
         target: MainRadioPlayer
 
         function onSourceChanged() {
-            root.musicInfo = null;
+        //root.musicInfo = null;
         }
 
         function onStreamTitleChanged() {
-            root.musicInfo = null;
+        //root.musicInfo = null;
         }
     }
 }

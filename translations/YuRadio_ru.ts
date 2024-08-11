@@ -95,38 +95,38 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>Языки: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="187"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="187"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="188"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="188"/>
         <source>Homepage</source>
         <translation>Домашняя страница</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="200"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="200"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="201"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="201"/>
         <source>Show on the map</source>
         <translation>Показать на карте</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="260"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="260"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="261"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="261"/>
         <source>Music Info is not avaialble</source>
         <translation>Информация о песне недоступна</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="303"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="303"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="304"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="304"/>
         <source>&lt;b&gt;Album&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Альбом&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="310"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="310"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="311"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="311"/>
         <source>&lt;b&gt;Song&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Песня&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="317"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="317"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="318"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/RadioBottomBarContents.qml" line="318"/>
         <source>&lt;b&gt;Artist&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Исполнитель&lt;/b&gt;: %1</translation>
     </message>

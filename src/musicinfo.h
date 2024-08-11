@@ -68,30 +68,4 @@ private:
   QList<MusicArtist *> m_artists;
 };
 
-class MusicInfo : public QObject {
-  Q_OBJECT
-  Q_PROPERTY(
-    MusicAlbum *album READ album WRITE setAlbum NOTIFY albumChanged FINAL)
-  Q_PROPERTY(QString songName READ songName WRITE setSongName NOTIFY
-               songNameChanged FINAL)
-  QML_ELEMENT
-
-public:
-  MusicInfo(QObject *parent = nullptr);
-
-  MusicAlbum *album() const;
-  void setAlbum(MusicAlbum *newAlbum);
-
-  QString songName() const;
-  void setSongName(const QString &newSongName);
-
-signals:
-  void albumChanged();
-  void songNameChanged();
-
-private:
-  MusicAlbum *m_album = nullptr;
-  QString m_songName;
-};
-
 #endif /* !MUSICALBUM_H */

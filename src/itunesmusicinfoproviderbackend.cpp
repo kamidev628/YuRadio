@@ -1,23 +1,23 @@
 #include <QLoggingCategory>
 Q_LOGGING_CATEGORY(itunesMusicInfoProviderLog,
-                   "YuRadio.ItunesMusicInfoProvider");
+                   "YuRadio.ItunesMusicInfoProviderBackend");
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
-#include "itunesmusicinfoprovider.h"
+#include "itunesmusicinfoproviderbackend.h"
 #include "network/json.h"
 
 using namespace Qt::StringLiterals;
 
-ItunesMusicInfoProvider::ItunesMusicInfoProvider(QObject *parent)
-    : MusicInfoProvider(parent), m_apiManager(new NetworkManager(this)) {
+ItunesMusicInfoProviderBackend::ItunesMusicInfoProviderBackend(QObject *parent)
+    : MusicInfoProviderBackend(parent), m_apiManager(new NetworkManager(this)) {
   QUrl itunesUrl("https://itunes.apple.com");
 
   m_apiManager->setBaseUrl(itunesUrl);
 }
 
-void ItunesMusicInfoProvider::provide(const QString &searchString) {
+void ItunesMusicInfoProviderBackend::provide(const QString &searchString) {
   m_searchTerm = searchString;
 
   QUrlQuery query;
@@ -26,11 +26,10 @@ void ItunesMusicInfoProvider::provide(const QString &searchString) {
 
   auto [future, reply] = m_apiManager->get(QStringLiteral("/search"), query);
 
-  setState(Processing);
   future
     .then(this, [this, replyPtr = reply](const QByteArray &data) {
     handleReplyData(data);
-  }).onFailed([this](const NetworkError & /*err*/) { setState(Failed); });
+  }).onFailed([this](const NetworkError & /*err*/) { emit errorOccurred(); });
 }
 
 qsizetype levenshteinDistance(const QString &source, const QString &target) {
@@ -74,10 +73,10 @@ qsizetype levenshteinDistance(const QString &source, const QString &target) {
   return previousColumn.at(targetCount);
 }
 
-void ItunesMusicInfoProvider::handleReplyData(const QByteArray &data) {
+void ItunesMusicInfoProviderBackend::handleReplyData(const QByteArray &data) {
   auto document = json::byteArrayToJson(data);
   if (!document) {
-    setState(Failed);
+    emit errorOccurred();
     return;
   }
 
@@ -87,9 +86,9 @@ void ItunesMusicInfoProvider::handleReplyData(const QByteArray &data) {
   QJsonArray results = rootObject[u"results"].toArray();
 
   if (results.isEmpty()) {
-    qInfo(itunesMusicInfoProviderLog)
+    qCInfo(itunesMusicInfoProviderLog)
       << "Itunes can't provide information about the song";
-    setState(Failed);
+    emit errorOccurred();
     return;
   }
 
@@ -129,32 +128,21 @@ void ItunesMusicInfoProvider::handleReplyData(const QByteArray &data) {
 
   QJsonObject bestMatch = results[similarityMap.first()].toObject();
 
-  QString albumName = bestMatch[u"collectionName"].toString();
-  QString songName = bestMatch[u"trackName"].toString();
-  QString artistName = bestMatch[u"artistName"].toString();
-  QUrl albumImageUrl =
-    bestMatch[u"artworkUrl60"].toString().replace("60x60", "600x600");
+  MusicInfoDetails info;
+
+  info.albumName = bestMatch[u"collectionName"].toString();
+  info.songName = bestMatch[u"trackName"].toString();
+  info.artistNames.append(bestMatch[u"artistName"].toString());
+  info.coverUrls.append(
+    bestMatch[u"artworkUrl60"].toString().replace("60x60", "600x600"));
   QString releaseDateString = bestMatch[u"releaseDate"].toString();
-  QDateTime releaseDate = QDateTime::fromString(releaseDateString, Qt::ISODate);
+  info.releaseDate =
+    QDateTime::fromString(releaseDateString, Qt::ISODate).date();
 
-  qCInfo(itunesMusicInfoProviderLog) << "Album Name" << albumName;
-  qCInfo(itunesMusicInfoProviderLog) << "Song Name" << songName;
-  qCInfo(itunesMusicInfoProviderLog) << "Artist Name" << artistName;
-  qCInfo(itunesMusicInfoProviderLog) << "albumImageUrl" << albumImageUrl;
+  qCInfo(itunesMusicInfoProviderLog) << "Album Name" << info.albumName;
+  qCInfo(itunesMusicInfoProviderLog) << "Song Name" << info.songName;
+  qCInfo(itunesMusicInfoProviderLog) << "Artist Name" << info.artistNames[0];
+  qCInfo(itunesMusicInfoProviderLog) << "albumImageUrl" << info.coverUrls[0];
 
-  auto *musicInfo = new MusicInfo;
-  auto *album = new MusicAlbum(musicInfo);
-  album->setAlbumName(albumName);
-  album->setAlbumImageUrl(albumImageUrl);
-  album->setReleaseDate(releaseDate.date());
-
-  auto *musicArtist = new MusicArtist(album);
-  musicArtist->setArtistName(artistName);
-  album->addArtist(musicArtist);
-
-  musicInfo->setAlbum(album);
-  musicInfo->setSongName(songName);
-
-  setMusicInfo(musicInfo);
-  setState(Done);
+  emit musicInformation(info);
 }

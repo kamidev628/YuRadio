@@ -19,8 +19,8 @@ FocusScope {
 
     property alias playerButton: playerButton
 
-    property real stationLatitude:MainRadioPlayer.currentItem?.geo_lat ?? 0 
-    property real stationLongitude:MainRadioPlayer.currentItem?.geo_long ?? 0 
+    property real stationLatitude: MainRadioPlayer.currentItem?.geo_lat ?? 0
+    property real stationLongitude: MainRadioPlayer.currentItem?.geo_long ?? 0
     property string stationName: MainRadioPlayer.currentItem?.name ?? ""
     property string stationTags: MainRadioPlayer.currentItem?.tags ?? ""
     property string stationUrl: MainRadioPlayer.currentItem?.url_resolved ?? ""
@@ -29,7 +29,7 @@ FocusScope {
     property string stationCountry: MainRadioPlayer.currentItem?.country ?? ""
     property string stationLanguage: MainRadioPlayer.currentItem?.language ?? ""
 
-    signal showRadioStationLocationRequested(staitonLat: real, stationLong: real)
+    signal showRadioStationLocationRequested(real staitonLat, real stationLong)
 
     Binding {
         when: mainFlickable.dragging
@@ -174,21 +174,22 @@ FocusScope {
 
                                 visible: root.stationLanguage
 
-                                text: qsTr("Language: %1").arg(root.stationLanguage)
+                                text: root.stationLanguage.includes(",") ? qsTr("Languages: %1").arg(root.stationLanguage) : qsTr("Language: %1").arg(root.stationLanguage)
                                 font.pointSize: 14
-                                wrapMode: Text.Wrap
+                                wrapMode: Text.WordWrap
                             }
 
                             ClickableLink {
                                 id: homePage
 
-                                visible: root.stationHomepage
+                                Layout.fillWidth: true
 
+                                visible: root.stationHomepage
                                 linkText: qsTr('Homepage')
                                 link: root.stationHomepage
 
                                 font.pointSize: 14
-                                wrapMode: Text.Wrap
+                                wrapMode: Text.WordWrap
                             }
 
                             Button {
@@ -201,7 +202,7 @@ FocusScope {
                                 icon.source: "images/map.svg"
 
                                 onClicked: {
-                                  root.showRadioStationLocationRequested(root.stationLatitude, root.stationLongitude)
+                                    root.showRadioStationLocationRequested(root.stationLatitude, root.stationLongitude);
                                 }
                             }
                         }
@@ -284,7 +285,7 @@ FocusScope {
                     Image {
                         source: root.musicInfo ? root.musicInfo.album.albumImageUrl : ''
 
-                        Layout.minimumWidth: Math.min(mainColumn.width * 4 / 9, implicitWidth, implicitHeight, 400)
+                        Layout.minimumWidth: Math.min(mainColumn.width * 4 / 9, 400)
                         Layout.minimumHeight: Layout.minimumWidth
 
                         Layout.maximumWidth: Layout.minimumWidth

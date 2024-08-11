@@ -60,10 +60,15 @@ Item {
         }
 
         ToolButton {
+            id: refreshButton
             icon.source: "images/refresh.svg"
-            icon.color: Material.color(Material.Grey, Material.Shade100)
 
-            enabled: !apiTimeoutTimer.running
+            Binding on icon.color {
+                when: refreshButton.enabled
+                value: Material.color(Material.Grey, Material.Shade100)
+            }
+
+            enabled: !pullToRefreshHandler.isProcessing && !apiTimeoutTimer.running
             onClicked: {
                 root.radioModelReset();
                 apiTimeoutTimer.start();
@@ -216,7 +221,7 @@ Item {
 
         Timer {
             id: apiTimeoutTimer
-            interval: 3000
+            interval: 4500
         }
 
         Timer {

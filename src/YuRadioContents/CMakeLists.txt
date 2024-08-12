@@ -34,6 +34,8 @@ qt_add_qml_module(
   ClickableLink.qml
   SearchBar.qml
   Storage.qml
+  SpotifyButton.qml
+  ItunesButton.qml
   IconButton.qml
   MomentumAnimation.qml
   FakeFlickable.qml
@@ -41,6 +43,8 @@ qt_add_qml_module(
   ListViewHighlightBar.qml
   radiobrowser.mjs
   RESOURCES
+  images/spotify-logo.svg
+  images/itunes-logo.svg
   images/map.svg
   images/location.svg
   images/arrow-back.svg
@@ -58,7 +62,6 @@ qt_add_qml_module(
   images/play.svg
   images/pause.svg
   images/about.svg
-  images/todo.svg
   images/filter.svg
   images/sort.svg
   images/bookmark.svg

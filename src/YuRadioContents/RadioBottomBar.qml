@@ -5,12 +5,14 @@ import QtQuick.Effects
 import QtQuick.Controls
 
 import YuRadioContents
+import Main
 
 RadioBottomBarDrawer {
     id: root
 
     required property GridView gridView
     required property StackView stackView
+    required property MusicInfoModel musicInfoModel
 
     maximumHeight: parent.height * 2 / 3
     minimumHeight: 0

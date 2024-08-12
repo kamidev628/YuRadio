@@ -141,6 +141,10 @@ ApplicationWindow {
         }
     }
 
+    MusicInfoModel {
+        id: musicInfoModel
+    }
+
     StackView {
         id: mainStackView
 
@@ -169,6 +173,7 @@ ApplicationWindow {
                 objectName: "searchPage"
                 drawer: drawer
                 networkManager: networkManager
+                musicInfoModel: musicInfoModel
             }
         }
 
@@ -178,6 +183,7 @@ ApplicationWindow {
                 objectName: "bookmarkPage"
                 drawer: drawer
                 networkManager: networkManager
+                musicInfoModel: musicInfoModel
             }
         }
 
@@ -187,6 +193,7 @@ ApplicationWindow {
                 objectName: "settingsPage"
                 networkManager: networkManager
                 languageTranslator: languageTranslator
+                musicInfoModel: musicInfoModel
             }
         }
 

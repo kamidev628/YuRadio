@@ -1,17 +1,12 @@
+#include <QLoggingCategory>
+Q_LOGGING_CATEGORY(musicInfoModelLog, "YuRadio.MusicInfoModel");
+
 #include "musicinfomodel.h"
-#include "itunesmusicinfoproviderbackend.h"
+
+#include "itunesbackend.h"
+#include "spotifybackend.h"
 
 MusicInfo::MusicInfo(QObject *parent) : QObject(parent) {}
-
-MusicInfo::MusicInfo(const MusicInfo &other)
-    : QObject(nullptr), m_artistNames(other.m_artistNames),
-      m_coverUrls(other.m_coverUrls), m_songName(other.m_songName),
-      m_albumName(other.m_albumName), m_releaseDate(other.m_releaseDate) {}
-
-MusicInfo::MusicInfo(const MusicInfoDetails &other)
-    : QObject(nullptr), m_artistNames(other.artistNames),
-      m_coverUrls(other.coverUrls), m_songName(other.songName),
-      m_albumName(other.albumName), m_releaseDate(other.releaseDate) {}
 
 QString MusicInfo::songName() const {
   return m_songName;
@@ -19,6 +14,15 @@ QString MusicInfo::songName() const {
 
 void MusicInfo::setSongName(const QString &newSongName) {
   m_songName = newSongName;
+  emit dataChanged();
+}
+
+QUrl MusicInfo::trackUrl() const {
+  return m_trackUrl;
+}
+
+void MusicInfo::setTrackUrl(const QUrl &newTrackUrl) {
+  m_trackUrl = newTrackUrl;
   emit dataChanged();
 }
 
@@ -59,23 +63,28 @@ void MusicInfo::setAlbumName(const QString &newAlbumName) {
 }
 
 MusicInfoModel::MusicInfoModel(QObject *parent)
-    : QObject(parent), m_musicInfo(new MusicInfo(this)), m_status(Null) {
-  m_supportedBackends.append(new ItunesMusicInfoProviderBackend(this));
+    : QObject(parent), m_spotify(new SpotifyBackend(this)),
+      m_musicInfo(new MusicInfo(this)), m_status(Null) {
+  m_supportedBackends.append(new ItunesBackend(this));
+  m_supportedBackends.append(m_spotify);
+
+  if (SpotifyBackend::refreshAuthenticationSupported()) {
+    grantSpotifyAccess();
+  }
 
   registerBackend(0);
 }
 
 void MusicInfoModel::registerBackend(qsizetype index) {
-  if (index >= 0 && index < m_supportedBackends.size() &&
-      m_currentBackendIndex != index) {
-    deregisterCurrentBackend();
-
+  if (index >= 0 && index < m_supportedBackends.size()) {
     m_currentBackend = m_supportedBackends.at(index);
     m_currentBackendIndex = index;
     connect(m_currentBackend, &MusicInfoProviderBackend::musicInformation, this,
             &MusicInfoModel::handleMusicInformationDetails);
     connect(m_currentBackend, &MusicInfoProviderBackend::errorOccurred, this,
             &MusicInfoModel::switchToNextBackend);
+
+    emit backendNameChanged();
   }
 }
 
@@ -90,6 +99,7 @@ void MusicInfoModel::deregisterCurrentBackend() {
 }
 
 void MusicInfoModel::switchToNextBackend() {
+  deregisterCurrentBackend();
   registerBackend(m_currentBackendIndex + 1);
   if (m_currentBackend) {
     requestMusicInfo();
@@ -116,6 +126,7 @@ void MusicInfoModel::handleMusicInformationDetails(
   m_musicInfo->setSongName(details.songName);
   m_musicInfo->setAlbumName(details.albumName);
   m_musicInfo->setReleaseDate(details.releaseDate);
+  m_musicInfo->setTrackUrl(details.trackUrl);
 
   emit musicInfoChanged();
   setStatus(Ready);
@@ -123,10 +134,11 @@ void MusicInfoModel::handleMusicInformationDetails(
 
 bool MusicInfoModel::hasValidSearchTerm() const {
   return !m_searchTerm.isNull() && !m_searchTerm.isEmpty() &&
-         m_searchTerm.size() >= 4;
+         m_searchTerm.trimmed().size() >= 4;
 }
 
 void MusicInfoModel::refresh() {
+  deregisterCurrentBackend();
   registerBackend(0);
 
   if (hasValidSearchTerm() && m_currentBackend) {
@@ -136,7 +148,15 @@ void MusicInfoModel::refresh() {
 
 void MusicInfoModel::requestMusicInfo() {
   setStatus(Loading);
-  m_currentBackend->provide(m_searchTerm);
+  m_currentBackend->requestMusicInfo(m_searchTerm);
+}
+
+QString MusicInfoModel::backendName() const {
+  return m_currentBackend->backendName();
+}
+
+void MusicInfoModel::grantSpotifyAccess() {
+  m_spotify->grant();
 }
 
 MusicInfo *MusicInfoModel::musicInfo() const {

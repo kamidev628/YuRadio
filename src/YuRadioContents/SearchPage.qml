@@ -7,6 +7,7 @@ import QtQuick.Layouts
 
 import YuRadioContents
 import network
+import Main
 
 Item {
     id: root
@@ -15,6 +16,7 @@ Item {
 
     required property RadioDrawer drawer
     required property NetworkManager networkManager
+    required property MusicInfoModel musicInfoModel
 
     function openSearchFilterDialog() {
         /* TODO: underlying drag handler steals drag events from
@@ -249,6 +251,7 @@ Item {
         id: bottomBarDrawer
         gridView: radioGridView
         stackView: root.StackView.view
+        musicInfoModel: root.musicInfoModel
     }
 
     Connections {

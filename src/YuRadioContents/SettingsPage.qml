@@ -16,6 +16,7 @@ Item {
 
     required property NetworkManager networkManager
     required property LanguageTranslator languageTranslator
+    required property MusicInfoModel musicInfoModel
 
     focus: true
 
@@ -147,6 +148,15 @@ Item {
                 checked: AppSettings.enableSelectionAnimation
                 onCheckedChanged: {
                     AppSettings.enableSelectionAnimation = checked;
+                }
+            }
+
+            SpotifyButton {
+                Layout.topMargin: 10
+
+                text: qsTr("Spotify integration")
+                onClicked: {
+                    root.musicInfoModel.grantSpotifyAccess();
                 }
             }
 

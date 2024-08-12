@@ -12,17 +12,7 @@ Q_LOGGING_CATEGORY(networkManagerLog, "YuRest.NetworkManager")
 
 NetworkManager::NetworkManager(QObject *parent)
     : QNetworkAccessManager(parent) {
-  QString applicationVersion = QCoreApplication::applicationVersion();
-  if (applicationVersion.isNull()) {
-    applicationVersion = "1.0";
-  }
-
-  QString applicationName = QCoreApplication::applicationName();
-  if (applicationName.isNull()) {
-    applicationName = "YuRest";
-  }
-
-  QString userAgent = applicationName + "/" + applicationVersion;
+  QString userAgent = applicationUserAgent();
 
   setRawHeader("User-Agent", userAgent.toLatin1());
   setRawHeader("Accept", "*/*");
@@ -217,4 +207,18 @@ void NetworkManager::setRawHeader(const QByteArray &header,
 
 void NetworkManager::removeRawHeader(const QByteArray &header) {
   m_headers.remove(header);
+}
+
+QString NetworkManager::applicationUserAgent() {
+  QString applicationVersion = QCoreApplication::applicationVersion();
+  if (applicationVersion.isNull()) {
+    applicationVersion = "1.0";
+  }
+
+  QString applicationName = QCoreApplication::applicationName();
+  if (applicationName.isNull()) {
+    applicationName = "YuRest";
+  }
+
+  return applicationName + "/" + applicationVersion;
 }

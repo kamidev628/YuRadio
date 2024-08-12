@@ -1,23 +1,23 @@
 #include <QLoggingCategory>
-Q_LOGGING_CATEGORY(itunesMusicInfoProviderLog,
-                   "YuRadio.ItunesMusicInfoProviderBackend");
+Q_LOGGING_CATEGORY(itunesBackendLog, "YuRadio.ItunesBackend");
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
-#include "itunesmusicinfoproviderbackend.h"
+#include "algorithm.h"
+#include "itunesbackend.h"
 #include "network/json.h"
 
 using namespace Qt::StringLiterals;
 
-ItunesMusicInfoProviderBackend::ItunesMusicInfoProviderBackend(QObject *parent)
+ItunesBackend::ItunesBackend(QObject *parent)
     : MusicInfoProviderBackend(parent), m_apiManager(new NetworkManager(this)) {
   QUrl itunesUrl("https://itunes.apple.com");
 
   m_apiManager->setBaseUrl(itunesUrl);
 }
 
-void ItunesMusicInfoProviderBackend::provide(const QString &searchString) {
+void ItunesBackend::requestMusicInfo(const QString &searchString) {
   m_searchTerm = searchString;
 
   QUrlQuery query;
@@ -25,55 +25,18 @@ void ItunesMusicInfoProviderBackend::provide(const QString &searchString) {
   query.addQueryItem(QStringLiteral("media"), QStringLiteral("music"));
 
   auto [future, reply] = m_apiManager->get(QStringLiteral("/search"), query);
+  m_reply = reply;
 
-  future
-    .then(this, [this, replyPtr = reply](const QByteArray &data) {
+  future.then(this, [this](const QByteArray &data) {
     handleReplyData(data);
-  }).onFailed([this](const NetworkError & /*err*/) { emit errorOccurred(); });
-}
-
-qsizetype levenshteinDistance(const QString &source, const QString &target) {
-  if (source == target) {
-    return 0;
-  }
-
-  const qsizetype sourceCount = source.size();
-  const qsizetype targetCount = target.size();
-
-  if (source.isEmpty()) {
-    return targetCount;
-  }
-
-  if (target.isEmpty()) {
-    return sourceCount;
-  }
-
-  if (sourceCount > targetCount) {
-    return levenshteinDistance(target, source);
-  }
-
-  QList<int> column;
-  column.fill(0, targetCount + 1);
-  QList<int> previousColumn;
-  previousColumn.reserve(targetCount + 1);
-  for (int i = 0; i < targetCount + 1; i++) {
-    previousColumn.append(i);
-  }
-
-  for (int i = 0; i < sourceCount; i++) {
-    column[0] = i + 1;
-    for (int j = 0; j < targetCount; j++) {
-      column[j + 1] =
-        std::min({1 + column.at(j), 1 + previousColumn.at(1 + j),
-                  previousColumn.at(j) + (source.at(i) != target.at(j))});
+  }).onFailed([this](const NetworkError &err) {
+    if (err.type() != QNetworkReply::OperationCanceledError) {
+      emit errorOccurred();
     }
-    column.swap(previousColumn);
-  }
-
-  return previousColumn.at(targetCount);
+  });
 }
 
-void ItunesMusicInfoProviderBackend::handleReplyData(const QByteArray &data) {
+void ItunesBackend::handleReplyData(const QByteArray &data) {
   auto document = json::byteArrayToJson(data);
   if (!document) {
     emit errorOccurred();
@@ -86,7 +49,7 @@ void ItunesMusicInfoProviderBackend::handleReplyData(const QByteArray &data) {
   QJsonArray results = rootObject[u"results"].toArray();
 
   if (results.isEmpty()) {
-    qCInfo(itunesMusicInfoProviderLog)
+    qCInfo(itunesBackendLog)
       << "Itunes can't provide information about the song";
     emit errorOccurred();
     return;
@@ -121,9 +84,9 @@ void ItunesMusicInfoProviderBackend::handleReplyData(const QByteArray &data) {
     QDateTime releaseDate =
       QDateTime::fromString(releaseDateString, Qt::ISODate);
 
-    SortParameters params{levenshteinDistance(fullSongName, m_searchTerm),
-                          releaseDate};
-    similarityMap[params] = i;
+    qsizetype levenshteinDistance =
+      algorithm::levenshteinDistance(fullSongName, m_searchTerm);
+    similarityMap.insert({levenshteinDistance, releaseDate}, i);
   }
 
   QJsonObject bestMatch = results[similarityMap.first()].toObject();
@@ -138,11 +101,17 @@ void ItunesMusicInfoProviderBackend::handleReplyData(const QByteArray &data) {
   QString releaseDateString = bestMatch[u"releaseDate"].toString();
   info.releaseDate =
     QDateTime::fromString(releaseDateString, Qt::ISODate).date();
+  info.trackUrl = bestMatch[u"trackViewUrl"].toString();
 
-  qCInfo(itunesMusicInfoProviderLog) << "Album Name" << info.albumName;
-  qCInfo(itunesMusicInfoProviderLog) << "Song Name" << info.songName;
-  qCInfo(itunesMusicInfoProviderLog) << "Artist Name" << info.artistNames[0];
-  qCInfo(itunesMusicInfoProviderLog) << "albumImageUrl" << info.coverUrls[0];
+  qCInfo(itunesBackendLog) << "Album Name" << info.albumName;
+  qCInfo(itunesBackendLog) << "Song Name" << info.songName;
+  qCInfo(itunesBackendLog) << "Artist Name" << info.artistNames[0];
+  qCInfo(itunesBackendLog) << "Image Url" << info.coverUrls[0];
+  qCInfo(itunesBackendLog) << "Track Url" << info.trackUrl;
 
   emit musicInformation(info);
+}
+
+QString ItunesBackend::backendName() const {
+  return "itunes";
 }

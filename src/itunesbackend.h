@@ -6,19 +6,21 @@
 
 class QNetworkAccessManager;
 
-class ItunesMusicInfoProviderBackend : public MusicInfoProviderBackend {
+class ItunesBackend : public MusicInfoProviderBackend {
   Q_OBJECT
 
 public:
-  ItunesMusicInfoProviderBackend(QObject *parent = nullptr);
+  ItunesBackend(QObject *parent = nullptr);
 
-  void provide(const QString &searchString) override;
+  void requestMusicInfo(const QString &searchString) override;
+  QString backendName() const override;
 
 private slots:
   void handleReplyData(const QByteArray &data);
 
 private:
   NetworkManager *m_apiManager;
+  QSharedPointer<QNetworkReply> m_reply;
   QString m_searchTerm;
 };
 

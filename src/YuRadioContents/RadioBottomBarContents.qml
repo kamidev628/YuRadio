@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
@@ -11,9 +12,11 @@ FocusScope {
     implicitHeight: 70
 
     required property RadioBottomBarDrawer bottomBarDrawer
+    property MusicInfoModel musicInfoModel: bottomBarDrawer.musicInfoModel
+
     readonly property DragHandler bottomBarDragHandler: bottomBarDrawer.dragHandler
 
-    property alias musicInfo: musicInfoModel.musicInfo
+    property var musicInfo
     property string streamTitle: MainRadioPlayer.streamTitle
     property string lastStreamTitle: ""
 
@@ -87,7 +90,7 @@ FocusScope {
 
                     fillMode: Image.PreserveAspectFit
 
-                    Layout.minimumHeight: Math.min(root.width / 3, root.height - 8, 400, mainColumn.implicitHeight)
+                    Layout.minimumHeight: Math.min(root.width / 3, root.height - 8, 300, mainColumn.implicitHeight)
                     Layout.minimumWidth: Layout.minimumHeight
                     Layout.maximumHeight: Layout.minimumHeight
                     Layout.maximumWidth: Layout.minimumHeight
@@ -269,14 +272,15 @@ FocusScope {
 
                 BusyIndicator {
                     id: busyIndicator
-                    visible: musicInfoModel.status == MusicInfoModel.Loading
+                    visible: root.musicInfoModel.status == MusicInfoModel.Loading
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                 }
 
                 RowLayout {
                     id: musicInfoRow
-                    visible: musicInfoModel.status == MusicInfoModel.Ready && root.musicInfo
+                    visible: root.musicInfoModel.status == MusicInfoModel.Ready && root.musicInfo
+
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
@@ -285,7 +289,7 @@ FocusScope {
                     Image {
                         source: root.musicInfo?.coverUrls[0] ?? ''
 
-                        Layout.minimumWidth: Math.min(mainColumn.width * 4 / 9, 400)
+                        Layout.minimumWidth: Math.min(mainColumn.width * 4 / 9, 300)
                         Layout.minimumHeight: Layout.minimumWidth
 
                         Layout.maximumWidth: Layout.minimumWidth
@@ -315,22 +319,46 @@ FocusScope {
                             textFormat: Text.RichText
                         }
                         Label {
-                            text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo.artistNames)
+                            text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo.artistNames.join(", "))
                             font.pointSize: 14
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
+
+                        Component {
+                            id: itunesButton
+                            ItunesButton {
+                                text: showTrackButtonLoader.buttonText
+                                link: root.musicInfo.trackUrl
+                            }
+                        }
+
+                        Component {
+                            id: spotifyButton
+                            SpotifyButton {
+                                text: showTrackButtonLoader.buttonText
+                                link: root.musicInfo.trackUrl
+                            }
+                        }
+
+                        Loader {
+                            id: showTrackButtonLoader
+
+                            property string buttonText: qsTr("Show track")
+                            sourceComponent: {
+                                if (root.musicInfoModel.backendName == "itunes") {
+                                    return itunesButton;
+                                }
+                                if (root.musicInfoModel.backendName == "spotify") {
+                                    return spotifyButton;
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-    }
-
-    MusicInfoModel {
-        id: musicInfoModel
-
-        searchTerm: root.streamTitle
     }
 
     Timer {
@@ -342,7 +370,14 @@ FocusScope {
 
         onTriggered: {
             root.lastStreamTitle = root.streamTitle;
-            musicInfoModel.refresh();
+            root.musicInfoModel.refresh();
+        }
+    }
+
+    Connections {
+        target: root.musicInfoModel
+        function onMusicInfoChanged() {
+            root.musicInfo = root.musicInfoModel.musicInfo;
         }
     }
 
@@ -350,11 +385,11 @@ FocusScope {
         target: MainRadioPlayer
 
         function onSourceChanged() {
-        //root.musicInfo = null;
+            root.musicInfo = null;
         }
 
         function onStreamTitleChanged() {
-        //root.musicInfo = null;
+            root.musicInfoModel.searchTerm = root.streamTitle;
         }
     }
 }

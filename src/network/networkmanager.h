@@ -52,6 +52,7 @@ public:
   void setRawHeader(const QByteArray &header, const QByteArray &value);
   QByteArray rawHeader(const QByteArray &header) const;
   void removeRawHeader(const QByteArray &header);
+  static QString applicationUserAgent();
 
 signals:
   void baseUrlChanged();

@@ -5,6 +5,8 @@
 
 #include "musicinfoproviderbackend.h"
 
+class SpotifyBackend;
+
 class MusicInfo : public QObject {
   Q_OBJECT
   Q_PROPERTY(
@@ -17,12 +19,11 @@ class MusicInfo : public QObject {
     QDate releaseDate READ releaseDate WRITE setReleaseDate NOTIFY dataChanged)
   Q_PROPERTY(
     QString albumName READ albumName WRITE setAlbumName NOTIFY dataChanged)
+  Q_PROPERTY(QUrl trackUrl READ trackUrl WRITE setTrackUrl NOTIFY dataChanged)
   QML_ANONYMOUS
 
 public:
   explicit MusicInfo(QObject *parent = nullptr);
-  MusicInfo(const MusicInfo &other);
-  MusicInfo(const MusicInfoDetails &other);
 
   QString songName() const;
   void setSongName(const QString &newSongName);
@@ -39,6 +40,9 @@ public:
   QString albumName() const;
   void setAlbumName(const QString &newAlbumName);
 
+  QUrl trackUrl() const;
+  void setTrackUrl(const QUrl &newTrackUrl);
+
 signals:
   void dataChanged();
 
@@ -47,6 +51,7 @@ private:
   QList<QUrl> m_coverUrls;
   QString m_songName;
   QString m_albumName;
+  QUrl m_trackUrl;
   QDate m_releaseDate;
 };
 
@@ -55,6 +60,7 @@ class MusicInfoModel : public QObject {
   Q_PROPERTY(QString searchTerm READ searchTerm WRITE setSearchTerm NOTIFY
                searchTermChanged)
   Q_PROPERTY(Status status READ status NOTIFY statusChanged)
+  Q_PROPERTY(QString backendName READ backendName NOTIFY backendNameChanged)
   Q_PROPERTY(MusicInfo *musicInfo READ musicInfo NOTIFY musicInfoChanged)
   QML_ELEMENT
 
@@ -69,19 +75,24 @@ public:
   };
   Q_ENUM(Status)
 
+public slots:
+  void refresh();
+  bool hasValidSearchTerm() const;
+  void grantSpotifyAccess();
+
   QString searchTerm() const;
   void setSearchTerm(const QString &newSearchTerm);
 
-  Q_INVOKABLE void refresh();
-  Q_INVOKABLE bool hasValidSearchTerm() const;
-
   Status status() const;
   MusicInfo *musicInfo() const;
+
+  QString backendName() const;
 
 signals:
   void searchTermChanged();
   void musicInfoChanged();
   void statusChanged();
+  void backendNameChanged();
 
 protected:
   void registerBackend(qsizetype index);
@@ -98,6 +109,7 @@ private:
   QList<MusicInfoProviderBackend *> m_supportedBackends;
   qsizetype m_currentBackendIndex;
 
+  SpotifyBackend *m_spotify;
   MusicInfo *m_musicInfo = nullptr;
   QString m_searchTerm;
   Status m_status;

@@ -8,6 +8,7 @@ set_target_properties(YuRadio PROPERTIES AUTOMOC ON AUTORCC ON)
 find_package(
   Qt6 6.5 REQUIRED
   COMPONENTS Core
+             Svg
              Sql
              Qml
              Quick
@@ -16,10 +17,25 @@ find_package(
              ShaderTools
              Positioning
              Location
-             LinguistTools)
+             LinguistTools
+             NetworkAuth)
 
 add_subdirectory(network)
 add_subdirectory(YuRadioContents)
+
+if(SPOTIFY_CLIENTID
+   AND SPOTIFY_SECRET
+   AND SPOTIFY_CLIENTID_HASH MATCHES "^(0|[a-fA-F0-9]+)$"
+   AND SPOTIFY_SECRET_HASH MATCHES "^(0|[a-fA-F0-9]+)$")
+  message("Spotify support - NO")
+else()
+  set(SPOTIFY_SECRET_HASH 0)
+  set(SPOTIFY_CLIENTID_HASH 0)
+  message("Spotify support - OK")
+endif()
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/applicationconfig.h.in"
+               "${CMAKE_CURRENT_SOURCE_DIR}/applicationconfig.h")
 
 qt_add_qml_module(
   YuRadio
@@ -32,6 +48,8 @@ qt_add_qml_module(
   Main.qml
   ErrorPage.qml
   SOURCES
+  algorithm.h
+  algorithm.cpp
   icecastreaderproxyserver.h
   icecastreaderproxyserver.cpp
   radioplayer.h
@@ -40,8 +58,10 @@ qt_add_qml_module(
   musicinfomodel.cpp
   musicinfoproviderbackend.h
   musicinfoproviderbackend.cpp
-  itunesmusicinfoproviderbackend.h
-  itunesmusicinfoproviderbackend.cpp
+  itunesbackend.h
+  itunesbackend.cpp
+  spotifybackend.h
+  spotifybackend.cpp
   imageloader.h
   imageloader.cpp
   basicradiocontroller.cpp
@@ -49,7 +69,10 @@ qt_add_qml_module(
   platformradiocontroller.cpp
   platformradiocontroller.h
   languagetranslator.h
-  languagetranslator.cpp)
+  languagetranslator.cpp
+  obf.h
+  obf.cpp
+  applicationconfig.h)
 
 # OpenSSL support for android
 if(ANDROID)
@@ -100,6 +123,8 @@ target_link_libraries(
           Qt6::Sql
           Qt6::Positioning
           Qt6::Location
+          Qt6::NetworkAuth
+          Qt6::Svg
           YuRadioNetworkplugin
           YuRadioContentsplugin
           "$<$<CONFIG:Debug>:HotReloader>")

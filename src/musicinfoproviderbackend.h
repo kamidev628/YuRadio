@@ -7,6 +7,7 @@ struct MusicInfoDetails {
   QStringList artistNames;
   QList<QUrl> coverUrls;
   QDate releaseDate;
+  QUrl trackUrl;
   QString albumName;
   QString songName;
 };
@@ -18,7 +19,8 @@ public:
   MusicInfoProviderBackend(QObject *parent = nullptr);
   ~MusicInfoProviderBackend() override = default;
 
-  virtual void provide(const QString &searchString) = 0;
+  virtual void requestMusicInfo(const QString &searchString) = 0;
+  virtual QString backendName() const = 0;
 
 signals:
   void musicInformation(const MusicInfoDetails &musicInfoDetails);

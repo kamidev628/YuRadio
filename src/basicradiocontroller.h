@@ -19,6 +19,7 @@ public:
   void stop() override;
   void pause() override;
 
+  void setVolume(qreal volume) override;
   void setSource(const QUrl &source) override;
 
 private:

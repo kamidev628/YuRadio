@@ -174,3 +174,8 @@ void AndroidRadioController::handleStreamTitleChange(
 void AndroidRadioController::handleIsLoadingChange(bool isLoading) {
   setIsLoading(isLoading);
 }
+
+void AndroidRadioController::setVolume(qreal volume) {
+  m_nativeController->setVolume(static_cast<float>(volume));
+  PlatformRadioController::setVolume(volume);
+}

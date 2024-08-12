@@ -110,6 +110,9 @@ ApplicationWindow {
     RadioDrawer {
         id: drawer
 
+        onVolumeSliderValueChanged: (volume) => {
+          MainRadioPlayer.setVolume(volume)
+        }
         onShowBookmarksRequested: {
             root.stackViewPushPage(bookmarkPage, "bookmarkPage");
         }

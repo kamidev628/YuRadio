@@ -21,6 +21,9 @@ public:
   virtual void pause() = 0;
   virtual void stop() = 0;
 
+  virtual void setVolume(qreal volume);
+  virtual qreal volume() const;
+
   virtual bool isPlaying() const;
   virtual bool isLoading() const;
 
@@ -31,6 +34,7 @@ signals:
   void isPlayingChanged();
   void isLoadingChanged();
   void streamTitleChanged();
+  void volumeChanged();
 
 protected:
   void setError(RadioPlayer::Error error, const QString &errorString);
@@ -44,6 +48,7 @@ private:
   RadioPlayer::Error m_error;
   QString m_errorString;
   QString m_streamTitle;
+  qreal m_volume;
   QUrl m_source;
   bool m_isLoading;
 };

@@ -152,38 +152,38 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>RadioDrawer</name>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="63"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="63"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="64"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="64"/>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="70"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="70"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="71"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="71"/>
         <source>Bookmarks</source>
         <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="77"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="77"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="78"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="78"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="84"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="84"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="85"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="85"/>
         <source>About</source>
         <translation>О приложении</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="114"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="114"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="122"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="122"/>
         <source>Dark</source>
         <translation>Темная</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="128"/>
-        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="128"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="136"/>
+        <location filename="../build/Android_Qt_6_7_2_Clang_arm64_v8a-Debug/src/YuRadioContents/RadioDrawer.qml" line="136"/>
         <source>Light</source>
         <translation>Светлая</translation>
     </message>

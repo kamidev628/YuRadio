@@ -146,6 +146,7 @@ public class NativeMediaController {
         new Handler(controller.getApplicationLooper()).post(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG, "Controller Play");
                 if (controller.getCurrentMediaItem() == null && !mediaSource.isEmpty()) {
                     MediaItem mediaItem = MediaItem.fromUri(mediaSource);
                     controller.setMediaItem(mediaItem);
@@ -164,6 +165,7 @@ public class NativeMediaController {
         new Handler(controller.getApplicationLooper()).post(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG, "Controller Stop");
                 controller.stop();
             }
         });
@@ -177,7 +179,22 @@ public class NativeMediaController {
         new Handler(controller.getApplicationLooper()).post(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG, "Controller Pause");
                 controller.pause();
+            }
+        });
+    }
+
+    public void setVolume(float volume) {
+        if (controller == null) {
+            return;
+        }
+
+        new Handler(controller.getApplicationLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "Controller setVolume: " + volume);
+                controller.setVolume(volume);
             }
         });
     }

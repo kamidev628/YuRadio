@@ -37,12 +37,15 @@ qt_add_qml_module(
   SpotifyButton.qml
   ItunesButton.qml
   IconButton.qml
+  VolumeController.qml
   MomentumAnimation.qml
   FakeFlickable.qml
   HeaderComboBox.qml
   ListViewHighlightBar.qml
   radiobrowser.mjs
   RESOURCES
+  images/volume.svg
+  images/volume-mute.svg
   images/spotify-logo.svg
   images/itunes-logo.svg
   images/map.svg

@@ -77,3 +77,14 @@ void PlatformRadioController::setIsLoading(bool isLoading) {
 bool PlatformRadioController::isLoading() const {
   return m_isLoading;
 }
+
+void PlatformRadioController::setVolume(qreal volume) {
+  if (!qFuzzyCompare(m_volume, volume)) {
+    m_volume = volume;
+    volumeChanged();
+  }
+}
+
+qreal PlatformRadioController::volume() const {
+  return m_volume;
+}

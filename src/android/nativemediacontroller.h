@@ -58,6 +58,7 @@ public:
   void stop();
   void pause();
   void setSource(const QUrl &url);
+  void setVolume(float volume);
 
 signals:
   void playbackStateChanged(int playbackStateCode);

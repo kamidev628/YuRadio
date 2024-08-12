@@ -84,6 +84,7 @@ build
 # Eclipse
 android/.project
 android/.settings
+android/.classpath
 
 # Vim 
 Session.vim

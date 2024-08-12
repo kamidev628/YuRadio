@@ -61,14 +61,6 @@ void RadioPlayer::setSource(const QUrl &newRadioUrl) {
   }
 }
 
-qreal RadioPlayer::progress() const {
-  return 0;
-}
-
-void RadioPlayer::setProgress(qreal newProgress) {
-  emit progressChanged();
-}
-
 RadioPlayer::PlaybackState RadioPlayer::playbackState() const {
   return m_controller->playbackState();
 }
@@ -91,4 +83,12 @@ QString RadioPlayer::streamTitle() const {
 
 bool RadioPlayer::isLoading() const {
   return m_controller->isLoading();
+}
+
+qreal RadioPlayer::volume() const {
+  return m_controller->volume();
+}
+
+void RadioPlayer::setVolume(qreal newVolume) {
+  m_controller->setVolume(newVolume);
 }

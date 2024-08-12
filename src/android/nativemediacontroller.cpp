@@ -31,6 +31,10 @@ void NativeMediaController::pause() {
   m_controller.callMethod<void>("pause");
 }
 
+void NativeMediaController::setVolume(float volume) {
+  m_controller.callMethod<void>("setVolume", volume);
+}
+
 NativeMediaController *NativeMediaController::instance() {
   static NativeMediaController mediaController;
   return &mediaController;
@@ -69,7 +73,7 @@ static void onPlayerErrorChangedNative(JNIEnv *env, jobject /*thiz*/,
 
 Q_DECLARE_JNI_NATIVE_METHOD(onPlayerErrorChangedNative);
 
-static void onIsLoadingChangedNative(JNIEnv *env, jobject /*thiz*/,
+static void onIsLoadingChangedNative(JNIEnv * /*env*/, jobject /*thiz*/,
                                      jboolean isLoading) {
   NativeMediaController *controller = NativeMediaController::instance();
   emit controller->isLoadingChanged(isLoading);

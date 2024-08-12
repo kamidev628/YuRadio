@@ -83,6 +83,8 @@ void SpotifyBackend::handleStatusChange(
 
 void SpotifyBackend::requestMusicInfo(const QString &searchString) {
   if (m_oauth2.status() != QAbstractOAuth::Status::Granted) {
+    qCDebug(spotifyBackendLog) << "Access is not granted";
+    emit errorOccurred();
     return;
   }
 

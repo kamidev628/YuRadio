@@ -17,6 +17,7 @@ Drawer {
     signal showSearchRequested
     signal showSettingsRequested
     signal showAboutRequested
+    signal volumeSliderValueChanged(real value)
 
     ColumnLayout {
         id: columnLayout
@@ -105,6 +106,15 @@ Drawer {
                     triggered();
                 }
             }
+        }
+
+        VolumeController {
+          id: volumeController
+
+          Layout.fillWidth: true
+          onVolumeChanged: {
+              root.volumeSliderValueChanged(volume)
+          }
         }
 
         Row {

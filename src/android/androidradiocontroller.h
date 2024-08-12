@@ -13,6 +13,7 @@ class AndroidRadioController : public PlatformRadioController {
 public:
   AndroidRadioController(QObject *parent = nullptr);
 
+  void setVolume(qreal volume) override;
   void setSource(const QUrl &source) override;
   void play() override;
   void stop() override;

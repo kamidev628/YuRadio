@@ -11,7 +11,8 @@ class RadioPlayer : public QObject {
   Q_PROPERTY(
     QString streamTitle READ streamTitle NOTIFY streamTitleChanged FINAL)
   Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged FINAL)
-  Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged FINAL)
+  Q_PROPERTY(
+    qreal volume READ volume WRITE setVolume NOTIFY volumeChanged FINAL)
   Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged FINAL)
   Q_PROPERTY(bool playing READ isPlaying NOTIFY playingChanged)
   Q_PROPERTY(
@@ -39,17 +40,17 @@ public:
   };
   Q_ENUM(Error)
 
-  Q_INVOKABLE void play();
-  Q_INVOKABLE void toggle();
-  Q_INVOKABLE void pause();
-  Q_INVOKABLE void stop();
+public slots:
+  void play();
+  void toggle();
+  void pause();
+  void stop();
 
   QString streamTitle() const;
 
   QUrl source() const;
   void setSource(const QUrl &newRadioUrl);
 
-  qreal progress() const;
   bool isLoading() const;
 
   PlaybackState playbackState() const;
@@ -57,19 +58,19 @@ public:
   QString errorString() const;
   bool isPlaying() const;
 
+  qreal volume() const;
+  void setVolume(qreal newVolume);
+
 signals:
   void streamTitleChanged();
   void sourceChanged();
   void icecastHintChanged();
-  void progressChanged();
   void loadingChanged();
   void playbackStateChanged();
   void errorChanged();
   void playingChanged();
   void audioOutputChanged();
-
-protected:
-  void setProgress(qreal newProgress);
+  void volumeChanged();
 
 private:
   PlatformRadioController *m_controller;

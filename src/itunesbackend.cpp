@@ -11,29 +11,27 @@ Q_LOGGING_CATEGORY(itunesBackendLog, "YuRadio.ItunesBackend");
 using namespace Qt::StringLiterals;
 
 ItunesBackend::ItunesBackend(QObject *parent)
-    : MusicInfoProviderBackend(parent), m_apiManager(new NetworkManager(this)) {
+    : MusicInfoProviderBackend(parent),
+      m_networkManager(new NetworkManager(this)) {
   QUrl itunesUrl("https://itunes.apple.com");
 
-  m_apiManager->setBaseUrl(itunesUrl);
+  m_networkManager->setBaseUrl(itunesUrl);
 }
 
 void ItunesBackend::requestMusicInfo(const QString &searchString) {
+  m_response.cancel();
   m_searchTerm = searchString;
 
   QUrlQuery query;
   query.addQueryItem(QStringLiteral("term"), searchString);
   query.addQueryItem(QStringLiteral("media"), QStringLiteral("music"));
 
-  auto [future, reply] = m_apiManager->get(QStringLiteral("/search"), query);
-  m_reply = reply;
+  m_response = m_networkManager->get(QStringLiteral("/search"), query);
 
-  future.then(this, [this](const QByteArray &data) {
+  m_response
+    .then(this, [this](const QByteArray &data) {
     handleReplyData(data);
-  }).onFailed([this](const NetworkError &err) {
-    if (err.type() != QNetworkReply::OperationCanceledError) {
-      emit errorOccurred();
-    }
-  });
+  }).onFailed([this](const NetworkError & /*err*/) { emit errorOccurred(); });
 }
 
 void ItunesBackend::handleReplyData(const QByteArray &data) {

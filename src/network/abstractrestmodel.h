@@ -130,7 +130,7 @@ signals:
 protected:
   NetworkManager *m_networkManager = nullptr;
   RestPagination *m_pagination = nullptr;
-  ReplyPointer m_reply = nullptr;
+  NetworkResponse m_response;
 
   QUrlQuery m_baseQuery;
   QList<RestListModelSortFilter *> m_filters;

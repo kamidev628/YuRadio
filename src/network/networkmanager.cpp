@@ -71,7 +71,7 @@ NetworkResponse NetworkManager::post(const QString &path,
   QNetworkReply *reply = QNetworkAccessManager::post(request, multiPart);
   multiPart->setParent(reply);
 
-  return makeFutureReply(reply);
+  return makeNetworkResponse(reply);
 }
 
 NetworkResponse NetworkManager::post(const QString &path,
@@ -84,7 +84,7 @@ NetworkResponse NetworkManager::post(const QString &path,
   QNetworkReply *reply = QNetworkAccessManager::post(
     request, QJsonDocument::fromVariant(value).toJson(QJsonDocument::Compact));
 
-  return makeFutureReply(reply);
+  return makeNetworkResponse(reply);
 }
 
 NetworkResponse NetworkManager::get(const QString &path,
@@ -93,7 +93,7 @@ NetworkResponse NetworkManager::get(const QString &path,
 
   QNetworkReply *reply = QNetworkAccessManager::get(request);
 
-  return makeFutureReply(reply);
+  return makeNetworkResponse(reply);
 }
 
 NetworkResponse NetworkManager::get(const QUrl &url) {
@@ -101,7 +101,7 @@ NetworkResponse NetworkManager::get(const QUrl &url) {
 
   QNetworkReply *reply = QNetworkAccessManager::get(request);
 
-  return makeFutureReply(reply);
+  return makeNetworkResponse(reply);
 }
 
 NetworkResponse NetworkManager::put(const QString &path,
@@ -114,7 +114,7 @@ NetworkResponse NetworkManager::put(const QString &path,
   QNetworkReply *reply = QNetworkAccessManager::put(
     request, QJsonDocument::fromVariant(value).toJson(QJsonDocument::Compact));
 
-  return makeFutureReply(reply);
+  return makeNetworkResponse(reply);
 }
 
 NetworkResponse NetworkManager::put(const QString &path,
@@ -124,7 +124,7 @@ NetworkResponse NetworkManager::put(const QString &path,
   QNetworkReply *reply = QNetworkAccessManager::put(request, multiPart);
   multiPart->setParent(reply);
 
-  return makeFutureReply(reply);
+  return makeNetworkResponse(reply);
 }
 
 NetworkResponse NetworkManager::deleteResource(const QString &path) {
@@ -132,22 +132,15 @@ NetworkResponse NetworkManager::deleteResource(const QString &path) {
 
   QNetworkReply *reply = QNetworkAccessManager::deleteResource(request);
 
-  return makeFutureReply(reply);
+  return makeNetworkResponse(reply);
 }
 
-NetworkResponse NetworkManager::makeFutureReply(QNetworkReply *replyBase) {
-  auto reply = QSharedPointer<QNetworkReply>(replyBase, [replyBase](auto) {
-    replyBase->abort();
-    replyBase->deleteLater();
-  });
-  /* NOTE: We don't want to mix parent-child relationships and smart pointers */
-  reply->setParent(nullptr);
+NetworkResponse NetworkManager::makeNetworkResponse(QNetworkReply *reply) {
+  auto *watcher = new QFutureWatcher<QByteArray>(reply);
 
-  auto replyFinished =
-    QtFuture::connect(replyBase, &QNetworkReply::finished)
-      .then(this, [reply = QPointer(replyBase)]() -> QByteArray {
-    Q_ASSERT(reply);
-
+  auto replyFinished = QtFuture::connect(reply, &QNetworkReply::finished)
+                         .then(reply, [reply]() -> QByteArray {
+    reply->deleteLater();
     auto maybeError = checkNetworkErrors(reply);
 
     if (maybeError) {
@@ -158,7 +151,11 @@ NetworkResponse NetworkManager::makeFutureReply(QNetworkReply *replyBase) {
     return reply->readAll();
   });
 
-  return {replyFinished, reply};
+  watcher->setFuture(replyFinished);
+  connect(watcher, &QFutureWatcher<QByteArray>::canceled, reply,
+          &QNetworkReply::abort);
+
+  return replyFinished;
 }
 
 QNetworkRequest NetworkManager::prepareRequest(const QString &path,

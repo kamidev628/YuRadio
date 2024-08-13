@@ -16,12 +16,11 @@ void AbstractRestListModel::loadPage() {
     return;
   }
 
-  auto [future, reply] = m_networkManager->get(m_path, composeQuery());
-
-  m_reply = reply;
+  m_response = m_networkManager->get(m_path, composeQuery());
 
   setStatus(Loading);
-  future.then(this, [this](const QByteArray &data) {
+  m_response
+    .then(this, [this](const QByteArray &data) {
     handleRequestData(data);
   }).onFailed(this, [this](const NetworkError &err) {
     m_errorString = err.message();
@@ -142,11 +141,7 @@ bool AbstractRestListModel::canFetchMore(const QModelIndex &parent) const {
     return false;
   }
 
-  if (m_reply) {
-    return m_pagination->canFetchMore() && m_reply->isFinished();
-  }
-
-  return m_pagination->canFetchMore();
+  return m_pagination->canFetchMore() && !m_response.isRunning();
 }
 
 void AbstractRestListModel::fetchMore(const QModelIndex &parent) {
@@ -217,7 +212,7 @@ void AbstractRestListModel::setStatus(Status newStatus) {
 }
 
 void AbstractRestListModel::resetRestModel() {
-  m_reply = nullptr;
+  m_response.cancel();
   setStatus(Null);
 }
 

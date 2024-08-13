@@ -10,12 +10,7 @@
 
 class ImageLoader {
 public:
-  struct ImageReply {
-    QFuture<QPixmap> future;
-    ReplyPointer reply;
-  };
-
-  using FutureImage = ImageReply;
+  using FutureImage = QFuture<QPixmap>;
 
 public:
   ImageLoader(NetworkManager *manager);

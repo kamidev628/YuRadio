@@ -19,8 +19,8 @@ private slots:
   void handleReplyData(const QByteArray &data);
 
 private:
-  NetworkManager *m_apiManager;
-  QSharedPointer<QNetworkReply> m_reply;
+  NetworkManager *m_networkManager;
+  NetworkResponse m_response;
   QString m_searchTerm;
 };
 

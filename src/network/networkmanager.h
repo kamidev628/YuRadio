@@ -12,16 +12,7 @@
 #include "networkerror.h"
 
 using ReplyPointer = QSharedPointer<QNetworkReply>;
-
-struct NetworkResponse {
-  QFuture<QByteArray> replyFinished;
-  ReplyPointer reply;
-
-  template <typename... Args>
-  auto then(Args &&...args) {
-    return replyFinished.then(std::forward<Args>(args)...);
-  }
-};
+using NetworkResponse = QFuture<QByteArray>;
 
 class NetworkManager : public QNetworkAccessManager {
   Q_OBJECT
@@ -59,7 +50,7 @@ signals:
 
 private:
   static NetworkError checkNetworkErrors(QNetworkReply *reply);
-  NetworkResponse makeFutureReply(QNetworkReply *reply);
+  static NetworkResponse makeNetworkResponse(QNetworkReply *reply);
 
   QNetworkRequest prepareRequest(const QString &path,
                                  const QUrlQuery &query = {});

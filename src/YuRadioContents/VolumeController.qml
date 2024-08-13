@@ -28,7 +28,11 @@ FocusScope {
             onClicked: {
                 volumeController.muted = !volumeController.muted;
                 if (!volumeController.muted) {
-                    volumeSlider.value = volumeController.lastVolume;
+                    if (volumeController.lastVolume) {
+                      volumeSlider.value = volumeController.lastVolume;
+                    } else {
+                      volumeSlider.value = 1
+                    }
                 } else {
                     volumeSlider.value = 0;
                 }

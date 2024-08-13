@@ -32,6 +32,7 @@ private slots:
 
 private:
   QOAuth2AuthorizationCodeFlow m_oauth2;
+  QTimer m_refreshTokenTimer;
 };
 
 #endif /* !SPOTIFYBACKEND_H */

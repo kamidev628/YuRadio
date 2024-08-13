@@ -15,6 +15,7 @@ Q_LOGGING_CATEGORY(spotifyBackendLog, "YuRadio.SpotifyBackend");
 #include "spotifybackend.h"
 
 using namespace Qt::StringLiterals;
+using namespace std::chrono_literals;
 
 SpotifyBackend::SpotifyBackend(QObject *parent)
     : MusicInfoProviderBackend(parent) {
@@ -36,11 +37,31 @@ SpotifyBackend::SpotifyBackend(QObject *parent)
   m_oauth2.setClientIdentifierSharedKey(QString::fromStdString(secret));
   m_oauth2.setUserAgent(NetworkManager::applicationUserAgent());
 
+  m_refreshTokenTimer.setSingleShot(true);
+
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::refreshTokenChanged, this,
           [](const QString &refreshToken) {
     QSettings settings;
     settings.setValue("SpotifyRefreshToken", refreshToken);
   });
+  connect(
+    &m_oauth2, &QOAuth2AuthorizationCodeFlow::error, this,
+    [](const QString &error, const QString &errorDescription, const QUrl &uri) {
+    qCDebug(spotifyBackendLog) << "Error:" << error << errorDescription << uri;
+  });
+  connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::expirationAtChanged, this,
+          [this](const QDateTime &expiration) {
+    qCDebug(spotifyBackendLog) << "Token Expiration:" << expiration;
+    QDateTime currentDate = QDateTime::currentDateTime();
+    auto refreshInterval =
+      std::chrono::milliseconds(currentDate.msecsTo(expiration)) - 2min;
+    Q_ASSERT(refreshInterval > 0ms);
+
+    m_refreshTokenTimer.setInterval(refreshInterval);
+    m_refreshTokenTimer.start();
+  });
+  connect(&m_refreshTokenTimer, &QTimer::timeout, &m_oauth2,
+          &QOAuth2AuthorizationCodeFlow::refreshAccessToken);
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::statusChanged, this,
           &SpotifyBackend::handleStatusChange);
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::error, this,

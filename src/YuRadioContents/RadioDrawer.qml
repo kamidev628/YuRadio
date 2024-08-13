@@ -109,12 +109,15 @@ Drawer {
         }
 
         VolumeController {
-          id: volumeController
+            id: volumeController
 
-          Layout.fillWidth: true
-          onVolumeChanged: {
-              root.volumeSliderValueChanged(volume)
-          }
+            volume: AppSettings.volume
+
+            Layout.fillWidth: true
+            onVolumeChanged: {
+                AppSettings.volume = volume;
+                root.volumeSliderValueChanged(volume);
+            }
         }
 
         Row {

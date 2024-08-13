@@ -33,6 +33,7 @@ Item {
     function radioModelReset() {
         radioPagination.offset = 0;
         radioModel.reset();
+        radioGridView.currentIndex = -1;
     }
 
     property Component headerContent: RowLayout {
@@ -64,11 +65,7 @@ Item {
         ToolButton {
             id: refreshButton
             icon.source: "images/refresh.svg"
-
-            Binding on icon.color {
-                when: refreshButton.enabled
-                value: Material.color(Material.Grey, Material.Shade100)
-            }
+            icon.color: enabled ? Material.color(Material.Grey, Material.Shade100) : ApplicationWindow.header.Material.background.darker(1.2)
 
             enabled: !pullToRefreshHandler.isProcessing && !apiTimeoutTimer.running
             onClicked: {

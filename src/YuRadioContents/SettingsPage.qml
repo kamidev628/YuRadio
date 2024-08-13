@@ -56,7 +56,7 @@ Item {
             ListView {
                 id: serversListView
                 Layout.fillWidth: true
-                implicitHeight: 200
+                implicitHeight: 150
                 boundsBehavior: Flickable.StopAtBounds
 
                 ButtonGroup {

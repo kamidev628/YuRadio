@@ -8,8 +8,7 @@ FocusScope {
     implicitWidth: volumeController.implicitWidth
     implicitHeight: volumeController.implicitHeight
 
-    readonly property real volume: volumeSlider.value
-    readonly property bool muted: !volume 
+    property alias volume: volumeSlider.value
 
     RowLayout {
         id: volumeController
@@ -18,7 +17,7 @@ FocusScope {
         spacing: 0
 
         property bool muted: false
-        property real lastVolume: 1.0
+        property real lastVolume: volumeSlider.value
 
         Button {
             id: volumeButton
@@ -29,9 +28,9 @@ FocusScope {
                 volumeController.muted = !volumeController.muted;
                 if (!volumeController.muted) {
                     if (volumeController.lastVolume) {
-                      volumeSlider.value = volumeController.lastVolume;
+                        volumeSlider.value = volumeController.lastVolume;
                     } else {
-                      volumeSlider.value = 1
+                        volumeSlider.value = 1;
                     }
                 } else {
                     volumeSlider.value = 0;
@@ -51,6 +50,8 @@ FocusScope {
 
             onMoved: {
                 volumeController.lastVolume = value;
+            }
+            onValueChanged: {
                 volumeController.muted = !value;
             }
         }

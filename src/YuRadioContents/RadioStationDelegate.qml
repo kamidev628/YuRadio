@@ -19,8 +19,15 @@ ItemDelegate {
 
     property bool currentStation: MainRadioPlayer.currentItem?.stationuuid == stationuuid
 
+    Binding {
+      when: root.currentStation
+      target: root.background
+      property: "color"
+      value: Qt.color("lightsteelblue").darker(AppSettings.isDarkTheme ? 1.8 : 1.05)
+    }
+
     height: GridView.view.cellHeight
-    width: GridView.view.cellWidth 
+    width: GridView.view.cellWidth
 
     RowLayout {
         anchors.fill: parent

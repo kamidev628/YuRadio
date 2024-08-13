@@ -15,20 +15,15 @@ Rectangle {
             id: xAnim
             spring: 4
             damping: 0.5
-            duration: 100
+            duration: 80
         }
     }
     Behavior on y {
         enabled: AppSettings.enableSelectionAnimation
-        SequentialAnimation {
-            PauseAnimation {
-                duration: xAnim.running ? xAnim.duration + 200 : 0
-            }
-            SpringAnimation {
-                id: yAnim
-                spring: 4
-                damping: 0.5
-            }
+        SpringAnimation {
+            id: yAnim
+            spring: 4
+            damping: 0.5
         }
     }
 }

@@ -185,14 +185,11 @@ FocusScope {
                             ClickableLink {
                                 id: homePage
 
-                                Layout.fillWidth: true
-
                                 visible: root.stationHomepage
                                 linkText: qsTr('Homepage')
                                 link: root.stationHomepage
 
                                 font.pointSize: 14
-                                wrapMode: Text.WordWrap
                             }
 
                             Button {
@@ -305,21 +302,21 @@ FocusScope {
                         Layout.fillHeight: true
 
                         Label {
-                            text: qsTr("<b>Album</b>: %1").arg(root.musicInfo.albumName)
+                            text: qsTr("<b>Album</b>: %1").arg(root.musicInfo?.albumName)
                             font.pointSize: 14
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
                         Label {
-                            text: qsTr("<b>Song</b>: %1").arg(root.musicInfo.songName)
+                            text: qsTr("<b>Song</b>: %1").arg(root.musicInfo?.songName)
                             font.pointSize: 14
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             textFormat: Text.RichText
                         }
                         Label {
-                            text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo.artistNames.join(", "))
+                            text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo?.artistNames.join(", "))
                             font.pointSize: 14
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
@@ -330,7 +327,7 @@ FocusScope {
                             id: itunesButton
                             ItunesButton {
                                 text: showTrackButtonLoader.buttonText
-                                link: root.musicInfo.trackUrl
+                                link: root.musicInfo?.trackUrl ?? ''
                             }
                         }
 
@@ -338,7 +335,7 @@ FocusScope {
                             id: spotifyButton
                             SpotifyButton {
                                 text: showTrackButtonLoader.buttonText
-                                link: root.musicInfo.trackUrl
+                                link: root.musicInfo?.trackUrl ?? ''
                             }
                         }
 

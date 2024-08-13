@@ -21,10 +21,10 @@ FilledGridView {
 
     clip: true
     focus: true
-    highlightFollowsCurrentItem: false
+    highlightFollowsCurrentItem: true
 
     boundsMovement: Flickable.StopAtBounds
-    boundsBehavior: Flickable.DragOverBounds
+    boundsBehavior: AppSettings.isMobile ? Flickable.DragOverBounds : Flickable.StopAtBounds
     highlight: ListViewHighlightBar {}
 
     anchors {
@@ -41,16 +41,8 @@ FilledGridView {
         focusPolicy: Qt.StrongFocus
         networkManager: root.networkManager
 
-        onCurrentStationChanged: {
-            if (currentStation) {
-                Qt.callLater(() => {
-                    root.currentIndex = Qt.binding(() => currentStation ? index : -1);
-                });
-            }
-        }
-
         onClicked: {
-            if (GridView.view.currentIndex == delegate.index) {
+            if (currentStation) {
                 MainRadioPlayer.toggle();
             } else {
                 RadioBrowser.click(root.networkManager.baseUrl, stationuuid);

@@ -21,11 +21,12 @@ public:
   virtual void pause() = 0;
   virtual void stop() = 0;
 
-  virtual void setVolume(qreal volume);
-  virtual qreal volume() const;
+  virtual void setVolume(float volume);
+  virtual float volume() const;
 
   virtual bool isPlaying() const;
   virtual bool isLoading() const;
+  void clearErrors();
 
 signals:
   void sourceChanged();
@@ -43,12 +44,11 @@ protected:
   void setIsLoading(bool isLoading);
 
 private:
-  friend class RadioPlayer;
   RadioPlayer::PlaybackState m_playbackState;
   RadioPlayer::Error m_error;
   QString m_errorString;
   QString m_streamTitle;
-  qreal m_volume;
+  float m_volume;
   QUrl m_source;
   bool m_isLoading;
 };

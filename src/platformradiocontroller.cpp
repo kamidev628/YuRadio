@@ -18,6 +18,8 @@ void PlatformRadioController::setSource(const QUrl &source) {
   if (m_source != source) {
     m_source = source;
     emit sourceChanged();
+
+    setStreamTitle({});
   }
 }
 
@@ -78,13 +80,18 @@ bool PlatformRadioController::isLoading() const {
   return m_isLoading;
 }
 
-void PlatformRadioController::setVolume(qreal volume) {
+void PlatformRadioController::setVolume(float volume) {
   if (!qFuzzyCompare(m_volume, volume)) {
     m_volume = volume;
     volumeChanged();
   }
 }
 
-qreal PlatformRadioController::volume() const {
+float PlatformRadioController::volume() const {
   return m_volume;
+}
+
+void PlatformRadioController::clearErrors() {
+  m_error = RadioPlayer::NoError;
+  m_errorString = {};
 }

@@ -5,16 +5,15 @@
 AndroidRadioController::AndroidRadioController(QObject *parent)
     : PlatformRadioController(parent),
       m_nativeController(NativeMediaController::instance()) {
+  connect(m_nativeController, &NativeMediaController::isLoadingChanged, this,
+          [this](bool loading) { setIsLoading(loading); });
+  connect(m_nativeController, &NativeMediaController::streamTitleChanged, this,
+          [this](const QString &streamTitle) { setStreamTitle(streamTitle); });
+
   connect(m_nativeController, &NativeMediaController::playbackStateChanged,
           this, &AndroidRadioController::handlePlaybackStateChange);
-  connect(m_nativeController, &NativeMediaController::isPlayingChanged, this,
-          &AndroidRadioController::handleIsPlayingChange);
-  connect(m_nativeController, &NativeMediaController::isLoadingChanged, this,
-          &AndroidRadioController::handleIsLoadingChange);
   connect(m_nativeController, &NativeMediaController::playerErrorChanged, this,
           &AndroidRadioController::handlePlayerError);
-  connect(m_nativeController, &NativeMediaController::streamTitleChanged, this,
-          &AndroidRadioController::handleStreamTitleChange);
 }
 
 void AndroidRadioController::play() {
@@ -162,20 +161,7 @@ void AndroidRadioController::handlePlayerError(int errorCode,
   setError(playerError, errorMessage);
 }
 
-void AndroidRadioController::handleIsPlayingChange(bool isPlaying) {
-  Q_UNUSED(isPlaying);
-}
-
-void AndroidRadioController::handleStreamTitleChange(
-  const QString &streamTitle) {
-  setStreamTitle(streamTitle);
-}
-
-void AndroidRadioController::handleIsLoadingChange(bool isLoading) {
-  setIsLoading(isLoading);
-}
-
-void AndroidRadioController::setVolume(qreal volume) {
-  m_nativeController->setVolume(static_cast<float>(volume));
+void AndroidRadioController::setVolume(float volume) {
+  m_nativeController->setVolume(volume);
   PlatformRadioController::setVolume(volume);
 }

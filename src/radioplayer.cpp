@@ -30,7 +30,7 @@ RadioPlayer::RadioPlayer(QObject *parent) : QObject(parent) {
 }
 
 void RadioPlayer::play() {
-  m_controller->setError(NoError, {});
+  m_controller->clearErrors();
   m_controller->play();
 }
 
@@ -56,7 +56,6 @@ QUrl RadioPlayer::source() const {
 
 void RadioPlayer::setSource(const QUrl &newRadioUrl) {
   if (newRadioUrl.isValid()) {
-    m_controller->setStreamTitle("");
     m_controller->setSource(newRadioUrl);
   }
 }
@@ -85,10 +84,10 @@ bool RadioPlayer::isLoading() const {
   return m_controller->isLoading();
 }
 
-qreal RadioPlayer::volume() const {
+float RadioPlayer::volume() const {
   return m_controller->volume();
 }
 
-void RadioPlayer::setVolume(qreal newVolume) {
-  m_controller->setVolume(newVolume);
+void RadioPlayer::setVolume(float volume) {
+  m_controller->setVolume(volume);
 }

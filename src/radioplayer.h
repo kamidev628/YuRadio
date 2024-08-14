@@ -12,7 +12,7 @@ class RadioPlayer : public QObject {
     QString streamTitle READ streamTitle NOTIFY streamTitleChanged FINAL)
   Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged FINAL)
   Q_PROPERTY(
-    qreal volume READ volume WRITE setVolume NOTIFY volumeChanged FINAL)
+    float volume READ volume WRITE setVolume NOTIFY volumeChanged FINAL)
   Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged FINAL)
   Q_PROPERTY(bool playing READ isPlaying NOTIFY playingChanged)
   Q_PROPERTY(
@@ -58,8 +58,8 @@ public slots:
   QString errorString() const;
   bool isPlaying() const;
 
-  qreal volume() const;
-  void setVolume(qreal newVolume);
+  float volume() const;
+  void setVolume(float newVolume);
 
 signals:
   void streamTitleChanged();

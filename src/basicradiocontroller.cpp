@@ -95,7 +95,7 @@ void BasicRadioController::setSource(const QUrl &source) {
   PlatformRadioController::setSource(source);
 }
 
-void BasicRadioController::setVolume(qreal volume) {
-  m_mediaPlayer->audioOutput()->setVolume(static_cast<float>(volume));
+void BasicRadioController::setVolume(float volume) {
+  m_mediaPlayer->audioOutput()->setVolume(volume);
   PlatformRadioController::setVolume(volume);
 }

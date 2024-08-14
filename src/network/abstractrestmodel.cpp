@@ -17,8 +17,8 @@ void AbstractRestListModel::loadPage() {
   }
 
   m_response = m_networkManager->get(m_path, composeQuery());
-
   setStatus(Loading);
+
   m_response
     .then(this, [this](const QByteArray &data) {
     handleRequestData(data);
@@ -141,7 +141,8 @@ bool AbstractRestListModel::canFetchMore(const QModelIndex &parent) const {
     return false;
   }
 
-  return m_pagination->canFetchMore() && !m_response.isRunning();
+  return m_pagination->canFetchMore() &&
+         (m_response.isFinished() || m_response.isCanceled());
 }
 
 void AbstractRestListModel::fetchMore(const QModelIndex &parent) {

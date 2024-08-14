@@ -120,9 +120,9 @@ Item {
         restManager: root.networkManager
         pagination: LimitPagination {
             id: radioPagination
-            limit: 20
+            limit: 40
             offset: 0
-            totalCount: 50
+            totalCount: (radioModel.count + 1) % (radioPagination.offset + 1) == 0 ? 500 : radioModel.count
         }
 
         path: "/json/stations/search"
@@ -179,11 +179,6 @@ Item {
         onStatusChanged: {
             if (status == JsonRestListModel.Ready) {
                 radioPagination.nextPage();
-                if (radioModel.rowCount() % radioPagination.offset !== 0) {
-                    radioPagination.totalCount = radioModel.rowCount();
-                } else {
-                    radioPagination.totalCount = 60;
-                }
             }
         }
 

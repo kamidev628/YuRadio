@@ -253,7 +253,7 @@ FocusScope {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                Layout.topMargin: 10
+                Layout.topMargin: 20
                 Layout.leftMargin: 10
 
                 Label {
@@ -353,6 +353,14 @@ FocusScope {
                             }
                         }
                     }
+                }
+
+                Label {
+                    text: qsTr("Provided for: %1").arg(root.streamTitle)
+                    visible: musicInfoRow.visible
+                    opacity: 0.6
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
                 }
             }
         }

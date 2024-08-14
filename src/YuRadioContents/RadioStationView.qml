@@ -46,7 +46,6 @@ FilledGridView {
                 MainRadioPlayer.toggle();
             } else {
                 RadioBrowser.click(root.networkManager.baseUrl, stationuuid);
-                root.currentIndex = delegate.index;
                 MainRadioPlayer.currentItem = Object.assign({}, root.model.get(delegate.index));
                 Qt.callLater(MainRadioPlayer.play);
             }

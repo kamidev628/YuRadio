@@ -15,6 +15,8 @@ RadioPlayer::RadioPlayer(QObject *parent) : QObject(parent) {
   m_controller = new BasicRadioController(this);
 #endif
 
+  connect(m_controller, &PlatformRadioController::mediaItemChanged, this,
+          &RadioPlayer::mediaItemChanged);
   connect(m_controller, &PlatformRadioController::playbackStateChanged, this,
           &RadioPlayer::playbackStateChanged);
   connect(m_controller, &PlatformRadioController::isPlayingChanged, this,
@@ -23,8 +25,6 @@ RadioPlayer::RadioPlayer(QObject *parent) : QObject(parent) {
           &RadioPlayer::loadingChanged);
   connect(m_controller, &PlatformRadioController::errorChanged, this,
           &RadioPlayer::errorChanged);
-  connect(m_controller, &PlatformRadioController::sourceChanged, this,
-          &RadioPlayer::sourceChanged);
   connect(m_controller, &PlatformRadioController::streamTitleChanged, this,
           &RadioPlayer::streamTitleChanged);
 }
@@ -47,16 +47,6 @@ void RadioPlayer::toggle() {
     pause();
   } else {
     play();
-  }
-}
-
-QUrl RadioPlayer::source() const {
-  return m_controller->source();
-}
-
-void RadioPlayer::setSource(const QUrl &newRadioUrl) {
-  if (newRadioUrl.isValid()) {
-    m_controller->setSource(newRadioUrl);
   }
 }
 
@@ -90,4 +80,47 @@ float RadioPlayer::volume() const {
 
 void RadioPlayer::setVolume(float volume) {
   m_controller->setVolume(volume);
+}
+
+MediaItem::MediaItem(QObject *parent) : QObject(parent) {}
+
+QUrl MediaItem::source() const {
+  return m_source;
+}
+
+void MediaItem::setSource(const QUrl &source) {
+  if (m_source != source) {
+    m_source = source;
+    emit sourceChanged();
+  }
+}
+
+QString MediaItem::author() const {
+  return m_author;
+}
+
+void MediaItem::setAuthor(const QString &author) {
+  if (m_author != author) {
+    m_author = author;
+    emit authorChanged();
+  }
+}
+
+QUrl MediaItem::artworkUri() const {
+  return m_artworkUri;
+}
+
+void MediaItem::setArtworkUri(const QUrl &artworkUri) {
+  if (m_artworkUri != artworkUri) {
+    m_artworkUri = artworkUri;
+    emit artworkUriChanged();
+  }
+}
+
+MediaItem *RadioPlayer::mediaItem() const {
+  return m_controller->mediaItem();
+}
+
+void RadioPlayer::setMediaItem(MediaItem *mediaItem) {
+  m_controller->setMediaItem(mediaItem);
 }

@@ -20,10 +20,11 @@ public:
   void pause() override;
 
   void setVolume(float volume) override;
-  void setSource(const QUrl &source) override;
+  void setMediaItem(MediaItem *mediaItem) override;
 
 private:
   QUrl icecastProxyServerUrl();
+  void processMediaItem(MediaItem *mediaItem);
 
 private:
   IcecastReaderProxyServer *m_icecastProxy;

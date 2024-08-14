@@ -84,18 +84,24 @@ void BasicRadioController::pause() {
   m_mediaPlayer->pause();
 }
 
-void BasicRadioController::setSource(const QUrl &source) {
-  if (source.isValid()) {
-    m_icecastProxy->setTargetSource(source);
-
-    m_mediaPlayer->setSource({});
-    m_mediaPlayer->setSource(icecastProxyServerUrl());
+void BasicRadioController::setMediaItem(MediaItem *mediaItem) {
+  if (mediaItem) {
+    connect(mediaItem, &MediaItem::sourceChanged, this,
+            [this, mediaItem]() { processMediaItem(mediaItem); });
+    processMediaItem(mediaItem);
   }
 
-  PlatformRadioController::setSource(source);
+  PlatformRadioController::setMediaItem(mediaItem);
 }
 
 void BasicRadioController::setVolume(float volume) {
   m_mediaPlayer->audioOutput()->setVolume(volume);
   PlatformRadioController::setVolume(volume);
+}
+
+void BasicRadioController::processMediaItem(MediaItem *mediaItem) {
+  m_icecastProxy->setTargetSource(mediaItem->source());
+
+  m_mediaPlayer->setSource({});
+  m_mediaPlayer->setSource(icecastProxyServerUrl());
 }

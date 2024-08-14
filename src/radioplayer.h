@@ -6,11 +6,42 @@
 
 class PlatformRadioController;
 
+class MediaItem : public QObject {
+  Q_OBJECT
+  Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+  Q_PROPERTY(QString author READ author WRITE setAuthor NOTIFY authorChanged)
+  Q_PROPERTY(QUrl artworkUri READ artworkUri WRITE setArtworkUri NOTIFY
+               artworkUriChanged)
+  QML_ELEMENT
+
+public:
+  explicit MediaItem(QObject *parent = nullptr);
+
+  QUrl source() const;
+  void setSource(const QUrl &newSource);
+  QString author() const;
+  void setAuthor(const QString &newAuthor);
+
+  QUrl artworkUri() const;
+  void setArtworkUri(const QUrl &newArtworkUri);
+
+signals:
+  void sourceChanged();
+  void authorChanged();
+  void artworkUriChanged();
+
+private:
+  QUrl m_source;
+  QString m_author;
+  QUrl m_artworkUri;
+};
+
 class RadioPlayer : public QObject {
   Q_OBJECT
   Q_PROPERTY(
     QString streamTitle READ streamTitle NOTIFY streamTitleChanged FINAL)
-  Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged FINAL)
+  Q_PROPERTY(MediaItem *mediaItem READ mediaItem WRITE setMediaItem NOTIFY
+               mediaItemChanged FINAL)
   Q_PROPERTY(
     float volume READ volume WRITE setVolume NOTIFY volumeChanged FINAL)
   Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged FINAL)
@@ -46,10 +77,10 @@ public slots:
   void pause();
   void stop();
 
-  QString streamTitle() const;
+  MediaItem *mediaItem() const;
+  void setMediaItem(MediaItem *mediaItem);
 
-  QUrl source() const;
-  void setSource(const QUrl &newRadioUrl);
+  QString streamTitle() const;
 
   bool isLoading() const;
 
@@ -63,7 +94,6 @@ public slots:
 
 signals:
   void streamTitleChanged();
-  void sourceChanged();
   void icecastHintChanged();
   void loadingChanged();
   void playbackStateChanged();
@@ -71,6 +101,7 @@ signals:
   void playingChanged();
   void audioOutputChanged();
   void volumeChanged();
+  void mediaItemChanged();
 
 private:
   PlatformRadioController *m_controller;

@@ -35,6 +35,14 @@ void NativeMediaController::setVolume(float volume) {
   m_controller.callMethod<void>("setVolume", volume);
 }
 
+void NativeMediaController::setAuthor(const QString &author) {
+  m_controller.callMethod<void>("setAuthor", author);
+}
+
+void NativeMediaController::setArtworkUri(const QUrl &url) {
+  m_controller.callMethod<void>("setArtworkUri", url.toString());
+}
+
 NativeMediaController *NativeMediaController::instance() {
   static NativeMediaController mediaController;
   return &mediaController;

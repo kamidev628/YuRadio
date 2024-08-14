@@ -58,6 +58,10 @@ public:
   void stop();
   void pause();
   void setSource(const QUrl &url);
+
+  void setAuthor(const QString &author);
+  void setArtworkUri(const QUrl &url);
+
   void setVolume(float volume);
 
 signals:

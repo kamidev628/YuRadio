@@ -28,11 +28,13 @@ void AndroidRadioController::pause() {
   m_nativeController->pause();
 }
 
-void AndroidRadioController::setSource(const QUrl &source) {
-  if (source.isValid()) {
-    m_nativeController->setSource(source);
+void AndroidRadioController::setMediaItem(MediaItem *mediaItem) {
+  if (mediaItem) {
+    connect(mediaItem, &MediaItem::sourceChanged, this,
+            [this, mediaItem]() { processMediaItem(mediaItem); });
+    processMediaItem(mediaItem);
   }
-  PlatformRadioController::setSource(source);
+  PlatformRadioController::setMediaItem(mediaItem);
 }
 
 void AndroidRadioController::handlePlaybackStateChange(int playbackStateCode) {
@@ -105,7 +107,7 @@ static QString errorMessageForCode(int errorCode) {
 }
 
 void AndroidRadioController::handlePlayerError(int errorCode,
-                                               const QString &message) {
+                                               const QString & /*message*/) {
   RadioPlayer::Error playerError = RadioPlayer::ResourceError;
   QString errorMessage = errorMessageForCode(errorCode);
 
@@ -164,4 +166,10 @@ void AndroidRadioController::handlePlayerError(int errorCode,
 void AndroidRadioController::setVolume(float volume) {
   m_nativeController->setVolume(volume);
   PlatformRadioController::setVolume(volume);
+}
+
+void AndroidRadioController::processMediaItem(MediaItem *mediaItem) {
+  m_nativeController->setSource(mediaItem->source());
+  m_nativeController->setAuthor(mediaItem->author());
+  m_nativeController->setArtworkUri(mediaItem->artworkUri());
 }

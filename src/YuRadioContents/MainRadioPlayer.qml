@@ -9,8 +9,13 @@ RadioPlayer {
     property var currentItem
 
     onCurrentItemChanged: {
-        AppSettings.lastStation = currentItem;
+      AppSettings.lastStation = currentItem;
+      if (currentItem) {
+        mediaItem.artworkUri = currentItem.favicon
+        mediaItem.author =  currentItem.name
+        mediaItem.source = currentItem.url_resolved
+      }
     }
 
-    source: currentItem ? currentItem.url_resolved : ""
+    mediaItem: MediaItem {}
 }

@@ -1,5 +1,6 @@
 package org.yuradio;
 
+import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 
@@ -14,6 +15,8 @@ public class NativeMediaController {
     private static final String TAG = NativeMediaController.class.getSimpleName();
     MediaController controller = null;
     String mediaSource = "";
+    String mediaAuthor;
+    String artworkUri;
 
     private static class PlaybackState {
         final static int Playing = 0;
@@ -122,6 +125,18 @@ public class NativeMediaController {
         });
     }
 
+    private MediaItem buildMediaItem() {
+        Log.i(TAG, "Author: " + mediaAuthor + " ArtworkUri: " + artworkUri);
+        return new MediaItem.Builder()
+                .setMediaId("YuRadio-media")
+                .setUri(mediaSource)
+                .setMediaMetadata(new MediaMetadata.Builder()
+                        .setArtist(mediaAuthor)
+                        .setArtworkUri(Uri.parse(artworkUri))
+                        .build())
+                .build();
+    }
+
     public void setSource(String url) {
         if (controller == null) {
             return;
@@ -131,7 +146,7 @@ public class NativeMediaController {
             public void run() {
                 mediaSource = url;
 
-                MediaItem mediaItem = MediaItem.fromUri(url);
+                MediaItem mediaItem = buildMediaItem();
                 controller.setMediaItem(mediaItem);
                 controller.prepare();
             }
@@ -148,7 +163,7 @@ public class NativeMediaController {
             public void run() {
                 Log.i(TAG, "Controller Play");
                 if (controller.getCurrentMediaItem() == null && !mediaSource.isEmpty()) {
-                    MediaItem mediaItem = MediaItem.fromUri(mediaSource);
+                    MediaItem mediaItem = buildMediaItem();
                     controller.setMediaItem(mediaItem);
                 }
                 controller.prepare();
@@ -197,5 +212,13 @@ public class NativeMediaController {
                 controller.setVolume(volume);
             }
         });
+    }
+
+    public void setArtworkUri(String artworkUri) {
+        this.artworkUri = artworkUri;
+    }
+
+    public void setAuthor(String mediaAuthor) {
+        this.mediaAuthor = mediaAuthor;
     }
 }

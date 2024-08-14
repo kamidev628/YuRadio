@@ -14,8 +14,8 @@ public:
   virtual QString errorString() const;
   virtual QString streamTitle() const;
 
-  virtual void setSource(const QUrl &source);
-  virtual QUrl source() const;
+  virtual void setMediaItem(MediaItem *mediaItem);
+  virtual MediaItem *mediaItem();
 
   virtual void play() = 0;
   virtual void pause() = 0;
@@ -29,7 +29,7 @@ public:
   void clearErrors();
 
 signals:
-  void sourceChanged();
+  void mediaItemChanged();
   void playbackStateChanged();
   void errorChanged();
   void isPlayingChanged();
@@ -43,9 +43,10 @@ protected:
   void setStreamTitle(const QString &streamTitle);
   void setIsLoading(bool isLoading);
 
-private:
+protected:
   RadioPlayer::PlaybackState m_playbackState;
   RadioPlayer::Error m_error;
+  MediaItem *m_mediaItem = nullptr;
   QString m_errorString;
   QString m_streamTitle;
   float m_volume;

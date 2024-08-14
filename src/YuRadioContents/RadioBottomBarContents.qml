@@ -387,11 +387,14 @@ FocusScope {
     }
 
     Connections {
-        target: MainRadioPlayer
-
+        target: MainRadioPlayer.mediaItem
         function onSourceChanged() {
             root.musicInfo = null;
         }
+    }
+
+    Connections {
+        target: MainRadioPlayer
 
         function onStreamTitleChanged() {
             root.musicInfoModel.searchTerm = root.streamTitle;

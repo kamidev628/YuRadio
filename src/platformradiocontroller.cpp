@@ -85,7 +85,7 @@ bool PlatformRadioController::isLoading() const {
 void PlatformRadioController::setVolume(float volume) {
   if (!qFuzzyCompare(m_volume, volume)) {
     m_volume = volume;
-    volumeChanged();
+    emit volumeChanged();
   }
 }
 

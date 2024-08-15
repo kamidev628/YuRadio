@@ -5,6 +5,8 @@
 #include "basicradiocontroller.h"
 #include "icecastreaderproxyserver.h"
 
+using namespace Qt::StringLiterals;
+
 static RadioPlayer::PlaybackState
 mediaPlayerStateToRadioPlayer(QMediaPlayer::PlaybackState state) {
   switch (state) {
@@ -42,7 +44,7 @@ BasicRadioController::BasicRadioController(QObject *parent)
 
   connect(m_icecastProxy, &IcecastReaderProxyServer::icyMetaDataChanged, this,
           [this](const QVariantMap &icyMetaData) {
-    setStreamTitle(icyMetaData["StreamTitle"].toString());
+    setStreamTitle(icyMetaData[u"StreamTitle"_s].toString());
   });
   connect(m_icecastProxy, &IcecastReaderProxyServer::loadingChanged, this,
           [this](bool loading) { setIsLoading(loading); });
@@ -62,8 +64,8 @@ BasicRadioController::BasicRadioController(QObject *parent)
 
 QUrl BasicRadioController::icecastProxyServerUrl() {
   QUrl icecastProxyServerUrl;
-  icecastProxyServerUrl.setScheme("http");
-  icecastProxyServerUrl.setHost("127.0.0.1");
+  icecastProxyServerUrl.setScheme(u"http"_s);
+  icecastProxyServerUrl.setHost(u"127.0.0.1"_s);
   icecastProxyServerUrl.setPort(m_icecastProxy->serverPort());
   return icecastProxyServerUrl;
 }

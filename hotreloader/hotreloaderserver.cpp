@@ -23,22 +23,22 @@ HotReloaderServer::HotReloaderServer(quint16 webSocketPort, quint16 httpPort,
                                      QObject *parent)
     : QObject{parent}, m_httpServer(new QHttpServer(this)) {
 
-  m_server = new QWebSocketServer(QStringLiteral("Hotreloader Server"),
+  m_server = new QWebSocketServer(u"Hotreloader Server"_s,
                                   QWebSocketServer::NonSecureMode, this);
 
-  m_httpServer->route("/hotreloader/watched/files",
+  m_httpServer->route(u"/hotreloader/watched/files"_s,
                       [&](const QHttpServerRequest &req) {
     QDir appDir(QCoreApplication::applicationDirPath());
 
     QStringList filePaths;
 
     for (const auto &filePath : m_watcher.files()) {
-      filePaths << ("/" + appDir.relativeFilePath(filePath));
+      filePaths << ('/' + appDir.relativeFilePath(filePath));
     }
     return QJsonArray::fromStringList(filePaths);
   });
 
-  m_httpServer->route("/.*", [&](const QHttpServerRequest &req) {
+  m_httpServer->route(u"/.*"_s, [&](const QHttpServerRequest &req) {
     QString filePath = req.url().path();
 
     qCInfo(hotreloaderServerLog) << "File requested:" << filePath;
@@ -152,7 +152,7 @@ void HotReloaderServer::onFileChanged(const QString &path) {
 
   qCInfo(hotreloaderServerLog) << "File changed:" << path;
 
-  QString fileName = path.section("/", -1, -1);
+  QString fileName = path.section('/', -1, -1);
   QDirIterator it(QDir::currentPath(), {fileName}, QDir::Files,
                   QDirIterator::Subdirectories);
 
@@ -164,14 +164,14 @@ void HotReloaderServer::onFileChanged(const QString &path) {
 
   for (QWebSocket *client : m_clients) {
     /* Notify all clients about file change */
-    client->sendBinaryMessage("Notify");
+    client->sendBinaryMessage("Notify"_ba);
   }
 }
 
 void HotReloaderServer::addPaths(const QDir &directory) {
-  QStringList qmlFiles = directory.entryList({"*.qml"});
+  QStringList qmlFiles = directory.entryList({u"*.qml"_s});
   for (QString &qmlFile : qmlFiles) {
-    qmlFile.prepend(directory.absolutePath() + "/");
+    qmlFile.prepend(directory.absolutePath() + '/');
   }
 
   if (qmlFiles.count() > 0) {
@@ -183,7 +183,7 @@ void HotReloaderServer::addPaths(const QDir &directory) {
 
   for (QString &dir : directories) {
     if (!m_ignoreDirs.contains(dir)) {
-      dir.prepend(directory.absolutePath() + "/");
+      dir.prepend(directory.absolutePath() + '/');
       addPaths(QDir(dir));
     }
   }

@@ -10,12 +10,14 @@ Q_LOGGING_CATEGORY(networkManagerLog, "YuRest.NetworkManager")
 #include "json.h"
 #include "networkmanager.h"
 
+using namespace Qt::StringLiterals;
+
 NetworkManager::NetworkManager(QObject *parent)
     : QNetworkAccessManager(parent) {
   QString userAgent = applicationUserAgent();
 
-  setRawHeader("User-Agent", userAgent.toLatin1());
-  setRawHeader("Accept", "*/*");
+  setRawHeader("User-Agent"_ba, userAgent.toLatin1());
+  setRawHeader("Accept"_ba, "*/*"_ba);
 }
 
 static int httpStatusCode(QNetworkReply *reply) {
@@ -26,20 +28,20 @@ static QString
 requestMethodToString(QNetworkAccessManager::Operation operation) {
   switch (operation) {
     case QNetworkAccessManager::HeadOperation:
-      return "HEAD";
+      return u"HEAD"_s;
     case QNetworkAccessManager::GetOperation:
-      return "GET";
+      return u"GET"_s;
     case QNetworkAccessManager::PutOperation:
-      return "PUT";
+      return u"PUT"_s;
     case QNetworkAccessManager::PostOperation:
-      return "POST";
+      return u"POST"_s;
     case QNetworkAccessManager::DeleteOperation:
-      return "DELETE";
+      return u"DELETE"_s;
     case QNetworkAccessManager::CustomOperation:
-      return "CUSTOM";
+      return u"CUSTOM"_s;
     case QNetworkAccessManager::UnknownOperation:
     default:
-      return "UNKNOWN";
+      return u"UNKNOWN"_s;
   }
 }
 
@@ -47,9 +49,9 @@ NetworkError NetworkManager::checkNetworkErrors(QNetworkReply *reply) {
   const int httpCode = httpStatusCode(reply);
   const bool isReplyError = reply->error() != QNetworkReply::NoError;
 
-  QString debugMessage = QString("Request[%1]: %2")
-                           .arg(requestMethodToString(reply->operation()))
-                           .arg(reply->request().url().toString());
+  QString debugMessage =
+    u"Request[%1]: %2"_s.arg(requestMethodToString(reply->operation()))
+      .arg(reply->request().url().toString());
 
   qCInfo(networkManagerLog).noquote() << debugMessage;
 
@@ -79,7 +81,7 @@ NetworkResponse NetworkManager::post(const QString &path,
   QNetworkRequest request = prepareRequest(path);
 
   request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
-                    "application/json");
+                    u"application/json"_s);
 
   QNetworkReply *reply = QNetworkAccessManager::post(
     request, QJsonDocument::fromVariant(value).toJson(QJsonDocument::Compact));
@@ -209,13 +211,13 @@ void NetworkManager::removeRawHeader(const QByteArray &header) {
 QString NetworkManager::applicationUserAgent() {
   QString applicationVersion = QCoreApplication::applicationVersion();
   if (applicationVersion.isNull()) {
-    applicationVersion = "1.0";
+    applicationVersion = u"1.0"_s;
   }
 
   QString applicationName = QCoreApplication::applicationName();
   if (applicationName.isNull()) {
-    applicationName = "YuRest";
+    applicationName = u"YuRest"_s;
   }
 
-  return applicationName + "/" + applicationVersion;
+  return applicationName + '/'_L1 + applicationVersion;
 }

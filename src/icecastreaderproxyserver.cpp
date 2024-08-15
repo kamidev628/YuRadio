@@ -49,8 +49,8 @@ void IcecastReaderProxyServer::clientConnected() {
   m_client = m_server->nextPendingConnection();
 
   QNetworkRequest request(m_targetSource);
-  request.setRawHeader("Icy-MetaData", "1");
-  request.setRawHeader("Connection", "keep-alive");
+  request.setRawHeader("Icy-MetaData"_ba, "1"_ba);
+  request.setRawHeader("Connection"_ba, "keep-alive"_ba);
 
   m_reply = m_networkManager->get(request);
 
@@ -91,12 +91,11 @@ void IcecastReaderProxyServer::replyReadHeaders() {
       m_reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute)
         .toByteArray();
     if (reasonPhrase.isEmpty()) {
-      reasonPhrase = m_reply->error() ? "Internal Server Error" : "OK";
+      reasonPhrase = m_reply->error() ? "Internal Server Error"_ba : "OK"_ba;
     }
 
     /* We are ready to send data */
-    m_client->write(QString("HTTP/1.1 %1 %2\r\n\r\n")
-                      .arg(statusCode)
+    m_client->write(u"HTTP/1.1 %1 %2\r\n\r\n"_s.arg(statusCode)
                       .arg(reasonPhrase)
                       .toLocal8Bit());
   }
@@ -180,12 +179,12 @@ void IcecastReaderProxyServer::readIcyMetaData() {
    * This can't be prevented due to non-escaped characters(';)
    * 
    */
-  static QRegularExpression re(R"((?<key>[a-zA-Z]+)='(?<value>.*?)';)");
+  static QRegularExpression re(uR"((?<key>[a-zA-Z]+)='(?<value>.*?)';)"_s);
 
   for (const QRegularExpressionMatch &match :
        re.globalMatch(m_icyMetaDataBuffer)) {
-    QString key = match.captured("key");
-    QString value = match.captured("value");
+    QString key = match.captured(u"key"_s);
+    QString value = match.captured(u"value"_s);
 
     m_icyMetaData[key] = value;
   }

@@ -20,12 +20,12 @@ using namespace std::chrono_literals;
 SpotifyBackend::SpotifyBackend(QObject *parent)
     : MusicInfoProviderBackend(parent) {
   auto *replyHandler = new QOAuthHttpServerReplyHandler(1337, this);
-  replyHandler->setCallbackPath("/callback");
+  replyHandler->setCallbackPath(u"/callback"_s);
 
   m_oauth2.setReplyHandler(replyHandler);
   m_oauth2.setAuthorizationUrl(
-    QUrl("https://accounts.spotify.com/authorize"_L1));
-  m_oauth2.setAccessTokenUrl(QUrl("https://accounts.spotify.com/api/token"_L1));
+    QUrl(u"https://accounts.spotify.com/authorize"_s));
+  m_oauth2.setAccessTokenUrl(QUrl(u"https://accounts.spotify.com/api/token"_s));
 
   std::string clientId = SPOTIFY_CLIENTID;
   deobfuscate_str(clientId.data(), SPOTIFY_CLIENTID_HASH);
@@ -42,7 +42,7 @@ SpotifyBackend::SpotifyBackend(QObject *parent)
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::refreshTokenChanged, this,
           [](const QString &refreshToken) {
     QSettings settings;
-    settings.setValue("SpotifyRefreshToken", refreshToken);
+    settings.setValue("SpotifyRefreshToken"_L1, refreshToken);
   });
   connect(
     &m_oauth2, &QOAuth2AuthorizationCodeFlow::error, this,
@@ -74,7 +74,7 @@ SpotifyBackend::SpotifyBackend(QObject *parent)
 
 void SpotifyBackend::grant() {
   QSettings settings;
-  QVariant maybeRefreshToken = settings.value("SpotifyRefreshToken");
+  QVariant maybeRefreshToken = settings.value("SpotifyRefreshToken"_L1);
 
   if (maybeRefreshToken.isValid()) {
     m_oauth2.setRefreshToken(maybeRefreshToken.toString());
@@ -109,11 +109,11 @@ void SpotifyBackend::requestMusicInfo(const QString &searchString) {
     return;
   }
 
-  QUrl searchUrl("https://api.spotify.com/v1/search"_L1);
+  QUrl searchUrl(u"https://api.spotify.com/v1/search"_s);
 
   QUrlQuery query;
-  query.addQueryItem(QStringLiteral("type"), QStringLiteral("track"));
-  query.addQueryItem(QStringLiteral("q"), searchString);
+  query.addQueryItem(u"type"_s, u"track"_s);
+  query.addQueryItem(u"q"_s, searchString);
   searchUrl.setQuery(query);
 
   QNetworkReply *reply = m_oauth2.get(searchUrl);
@@ -137,35 +137,35 @@ void SpotifyBackend::handleMusicInfoReply(QNetworkReply *reply) {
   }
 
   QJsonObject rootObject = document->object();
-  QJsonObject tracksObject = rootObject[u"tracks"].toObject();
-  QJsonArray itemsArray = tracksObject[u"items"].toArray();
+  QJsonObject tracksObject = rootObject["tracks"_L1].toObject();
+  QJsonArray itemsArray = tracksObject["items"_L1].toArray();
   if (!itemsArray.size()) {
     emit errorOccurred();
     return;
   }
 
   QJsonObject itemObject = itemsArray[0].toObject();
-  QJsonObject albumObject = itemObject[u"album"].toObject();
+  QJsonObject albumObject = itemObject["album"_L1].toObject();
 
   MusicInfoDetails info;
 
-  for (auto artistObjectRef : itemObject[u"artists"].toArray()) {
+  for (auto artistObjectRef : itemObject["artists"_L1].toArray()) {
     QJsonObject artistObject = artistObjectRef.toObject();
-    info.artistNames.append(artistObject[u"name"].toString());
+    info.artistNames.append(artistObject["name"_L1].toString());
   }
 
-  for (auto imageObjectRef : albumObject[u"images"].toArray()) {
+  for (auto imageObjectRef : albumObject["images"_L1].toArray()) {
     QJsonObject imageObject = imageObjectRef.toObject();
-    info.coverUrls.append(imageObject[u"url"].toString());
+    info.coverUrls.append(imageObject["url"_L1].toString());
   }
 
-  info.songName = itemObject[u"name"].toString();
-  info.albumName = albumObject[u"name"].toString();
+  info.songName = itemObject["name"_L1].toString();
+  info.albumName = albumObject["name"_L1].toString();
 
-  QString releaseDateString = albumObject[u"release_date"].toString();
+  QString releaseDateString = albumObject["release_date"_L1].toString();
   info.releaseDate =
     QDateTime::fromString(releaseDateString, Qt::ISODate).date();
-  info.trackUrl = itemObject[u"external_urls"][u"spotify"].toString();
+  info.trackUrl = itemObject["external_urls"_L1]["spotify"_L1].toString();
 
   qCInfo(spotifyBackendLog) << "Album Name" << info.albumName;
   qCInfo(spotifyBackendLog) << "Song Name" << info.songName;
@@ -178,9 +178,9 @@ void SpotifyBackend::handleMusicInfoReply(QNetworkReply *reply) {
 
 bool SpotifyBackend::refreshAuthenticationSupported() {
   QSettings settings;
-  return settings.contains("SpotifyRefreshToken");
+  return settings.contains("SpotifyRefreshToken"_L1);
 }
 
 QString SpotifyBackend::backendName() const {
-  return "spotify";
+  return u"spotify"_s;
 }

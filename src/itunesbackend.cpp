@@ -13,7 +13,7 @@ using namespace Qt::StringLiterals;
 ItunesBackend::ItunesBackend(QObject *parent)
     : MusicInfoProviderBackend(parent),
       m_networkManager(new NetworkManager(this)) {
-  QUrl itunesUrl("https://itunes.apple.com");
+  QUrl itunesUrl(u"https://itunes.apple.com"_s);
 
   m_networkManager->setBaseUrl(itunesUrl);
 }
@@ -23,10 +23,10 @@ void ItunesBackend::requestMusicInfo(const QString &searchString) {
   m_searchTerm = searchString;
 
   QUrlQuery query;
-  query.addQueryItem(QStringLiteral("term"), searchString);
-  query.addQueryItem(QStringLiteral("media"), QStringLiteral("music"));
+  query.addQueryItem(u"term"_s, searchString);
+  query.addQueryItem(u"media"_s, u"music"_s);
 
-  m_response = m_networkManager->get(QStringLiteral("/search"), query);
+  m_response = m_networkManager->get(u"/search"_s, query);
 
   m_response
     .then(this, [this](const QByteArray &data) {
@@ -44,7 +44,7 @@ void ItunesBackend::handleReplyData(const QByteArray &data) {
   Q_ASSERT(document->isObject());
 
   QJsonObject rootObject = document->object();
-  QJsonArray results = rootObject[u"results"].toArray();
+  QJsonArray results = rootObject["results"_L1].toArray();
 
   if (results.isEmpty()) {
     qCInfo(itunesBackendLog)
@@ -73,12 +73,12 @@ void ItunesBackend::handleReplyData(const QByteArray &data) {
   for (qsizetype i = 0; i < results.count(); ++i) {
     QJsonObject musicInfo = results[i].toObject();
 
-    QString artistName = musicInfo[u"artistName"].toString();
-    QString songName = musicInfo[u"trackName"].toString();
+    QString artistName = musicInfo["artistName"_L1].toString();
+    QString songName = musicInfo["trackName"_L1].toString();
 
     QString fullSongName = artistName + songName;
 
-    QString releaseDateString = musicInfo[u"releaseDate"].toString();
+    QString releaseDateString = musicInfo["releaseDate"_L1].toString();
     QDateTime releaseDate =
       QDateTime::fromString(releaseDateString, Qt::ISODate);
 
@@ -91,15 +91,15 @@ void ItunesBackend::handleReplyData(const QByteArray &data) {
 
   MusicInfoDetails info;
 
-  info.albumName = bestMatch[u"collectionName"].toString();
-  info.songName = bestMatch[u"trackName"].toString();
-  info.artistNames.append(bestMatch[u"artistName"].toString());
+  info.albumName = bestMatch["collectionName"_L1].toString();
+  info.songName = bestMatch["trackName"_L1].toString();
+  info.artistNames.append(bestMatch["artistName"_L1].toString());
   info.coverUrls.append(
-    bestMatch[u"artworkUrl60"].toString().replace("60x60", "600x600"));
-  QString releaseDateString = bestMatch[u"releaseDate"].toString();
+    bestMatch["artworkUrl60"_L1].toString().replace("60x60"_L1, "600x600"_L1));
+  QString releaseDateString = bestMatch["releaseDate"_L1].toString();
   info.releaseDate =
     QDateTime::fromString(releaseDateString, Qt::ISODate).date();
-  info.trackUrl = bestMatch[u"trackViewUrl"].toString();
+  info.trackUrl = bestMatch["trackViewUrl"_L1].toString();
 
   qCInfo(itunesBackendLog) << "Album Name" << info.albumName;
   qCInfo(itunesBackendLog) << "Song Name" << info.songName;
@@ -111,5 +111,5 @@ void ItunesBackend::handleReplyData(const QByteArray &data) {
 }
 
 QString ItunesBackend::backendName() const {
-  return "itunes";
+  return u"itunes"_s;
 }

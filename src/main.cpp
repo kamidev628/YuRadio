@@ -22,24 +22,24 @@ using namespace Qt::StringLiterals;
 
 int main(int argc, char *argv[]) {
   /* Format debug messages */
-  qSetMessagePattern(QStringLiteral(
-    "[%{time yyyy/MM/dd h:mm:ss.zzz} "
+  qSetMessagePattern(
+    u"[%{time yyyy/MM/dd h:mm:ss.zzz} "
     "%{if-debug}D%{endif}%{if-info}I%{endif}%{if-warning}W%{endif}%{if-"
-    "critical}C%{endif}%{if-fatal}F%{endif}] %{file}:%{line} - %{message}"));
+    "critical}C%{endif}%{if-fatal}F%{endif}] %{file}:%{line} - %{message}"_s);
 
-  QLoggingCategory::setFilterRules(QStringLiteral(
-    "YuRadio.*.debug=true\nYuRadio.CircularBuffer.debug="
-    "false\nHotreloader.*.info=false\nYuRadio.IcecastReader.info=false"));
+  QLoggingCategory::setFilterRules(
+    u"YuRadio.*.debug=true\nYuRadio.CircularBuffer.debug="
+    "false\nHotreloader.*.info=false\nYuRadio.IcecastReader.info=false"_s);
   QThread::currentThread()->setObjectName("Main Thread"_L1);
 
   QGuiApplication app(argc, argv);
 
-  QCoreApplication::setOrganizationName(QStringLiteral("YuRadio"));
-  QCoreApplication::setApplicationName(QStringLiteral("YuRadio"));
-  QCoreApplication::setApplicationVersion(QStringLiteral("1.0"));
+  QCoreApplication::setOrganizationName(u"YuRadio"_s);
+  QCoreApplication::setApplicationName(u"YuRadio"_s);
+  QCoreApplication::setApplicationVersion(u"1.0"_s);
 
   QQmlApplicationEngine engine;
-  QQuickStyle::setStyle(QStringLiteral("Material"));
+  QQuickStyle::setStyle(u"Material"_s);
   qDebug() << "Version:" << QCoreApplication::applicationVersion();
 
   qDebug() << "Device supports OpenSSL:" << QSslSocket::supportsSsl();
@@ -51,16 +51,16 @@ int main(int argc, char *argv[]) {
   NativeMediaController::registerNativeMethods();
   AndroidKeyboard::registerNativeMethods();
 
-  engine.rootContext()->setContextProperty("androidKeyboard",
+  engine.rootContext()->setContextProperty(u"androidKeyboard"_s,
                                            AndroidKeyboard::instance());
 #endif /* Q_OS_ANDROID */
 
 #ifdef QT_DEBUG
-  HotReloaderClient client(&engine, "192.168.1.37", "/src/Main/Main.qml",
-                           "/src/Main/ErrorPage.qml",
-                           {"Main", "YuRadioContents"});
+  HotReloaderClient client(&engine, u"192.168.1.37"_s, u"/src/Main/Main.qml"_s,
+                           u"/src/Main/ErrorPage.qml"_s,
+                           {u"Main"_s, u"YuRadioContents"_s});
 #else
-  engine.loadFromModule("Main", "Main");
+  engine.loadFromModule(u"Main"_s, u"Main"_s);
 #endif /* QT_DEBUG */
 
   return app.exec();

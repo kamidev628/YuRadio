@@ -9,6 +9,8 @@
 #include "hotreloader.h"
 #include "hotreloaderurlinterceptor.h"
 
+using namespace Qt::StringLiterals;
+
 HotReloaderUrlInterceptor::HotReloaderUrlInterceptor(QString host,
                                                      QObject *parent)
     : QObject(parent), m_host(std::move(host)),
@@ -19,9 +21,9 @@ void HotReloaderUrlInterceptor::setModules(const QStringList &modules) {
   m_cachedFilePaths.clear();
 
   QUrl hotreloaderServerUrl;
-  hotreloaderServerUrl.setScheme("http");
+  hotreloaderServerUrl.setScheme(u"http"_s);
   hotreloaderServerUrl.setHost(m_host);
-  hotreloaderServerUrl.setPath(QStringLiteral("/hotreloader/watched/files"));
+  hotreloaderServerUrl.setPath(u"/hotreloader/watched/files"_s);
   hotreloaderServerUrl.setPort(HOTRELOADER_HTTP_PORT);
 
   QNetworkRequest request(hotreloaderServerUrl);
@@ -36,12 +38,12 @@ void HotReloaderUrlInterceptor::setModules(const QStringList &modules) {
     reply->deleteLater();
 
     for (const auto &file : files) {
-      QStringList fileDirs = file.toString().split("/");
+      QStringList fileDirs = file.toString().split('/');
 
       for (const auto &module : m_modules) {
         if (fileDirs.contains(module)) {
           QString fileName = fileDirs.last();
-          m_cachedFilePaths[fileName + "_" + module] = file.toString();
+          m_cachedFilePaths[fileName + '_' + module] = file.toString();
         }
       }
     }
@@ -54,23 +56,23 @@ QUrl HotReloaderUrlInterceptor::intercept(const QUrl &path, DataType type) {
     return path;
   }
 
-  const QString kResourcePrefix = "qrc:/qt/qml";
+  const QString kResourcePrefix(u"qrc:/qt/qml"_s);
 
   for (const auto &module : m_modules) {
-    QString moduleWithPrefix = kResourcePrefix + "/" + module;
+    QString moduleWithPrefix = kResourcePrefix + '/' + module;
 
     if (path.toString().contains(moduleWithPrefix)) {
-      QString fileName = path.toString().split("/").last();
-      QString cachedFilePath = fileName + "_" + module;
+      QString fileName = path.toString().split('/').last();
+      QString cachedFilePath = fileName + '_' + module;
       if (!m_cachedFilePaths.contains(cachedFilePath)) {
         return path;
       }
 
       QUrl newPath;
-      newPath.setScheme(QStringLiteral("http"));
+      newPath.setScheme(u"http"_s);
       newPath.setHost(m_host);
       newPath.setPort(HOTRELOADER_HTTP_PORT);
-      newPath.setPath(m_cachedFilePaths[fileName + "_" + module]);
+      newPath.setPath(m_cachedFilePaths[fileName + '_' + module]);
 
       return newPath;
     }

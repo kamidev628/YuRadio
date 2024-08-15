@@ -15,15 +15,16 @@ ItemDelegate {
     required property string url_resolved
     required property string countrycode
     required property string stationuuid
+    required property int bitrate
     required property NetworkManager networkManager
 
     property bool currentStation: MainRadioPlayer.currentItem?.stationuuid == stationuuid
 
     Binding {
-      when: root.currentStation
-      target: root.background
-      property: "color"
-      value: Qt.color("lightsteelblue").darker(AppSettings.isDarkTheme ? 1.8 : 1.05)
+        when: root.currentStation
+        target: root.background
+        property: "color"
+        value: Qt.color("lightsteelblue").darker(AppSettings.isDarkTheme ? 1.8 : 1.05)
     }
 
     height: GridView.view.cellHeight
@@ -35,6 +36,8 @@ ItemDelegate {
         Image {
             id: radioImage
 
+            property string placeholderImage: AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+
             Layout.fillHeight: true
             Layout.leftMargin: 5
             Layout.topMargin: 5
@@ -45,9 +48,15 @@ ItemDelegate {
             Material.background: Material.Red
 
             fillMode: Image.PreserveAspectFit
-            source: root.favicon ? root.favicon : (AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png")
-            smooth: true
+            source: root.favicon ? root.favicon : placeholderImage
+            smooth: false
             asynchronous: true
+
+            onStatusChanged: {
+                if (status == Image.Error) {
+                    source = placeholderImage;
+                }
+            }
 
             IconImage {
                 anchors {
@@ -102,6 +111,19 @@ ItemDelegate {
             onClicked: {
                 moreOptionsMenu.popup(moreOptions);
             }
+        }
+    }
+
+    Label {
+        text: root.bitrate + " kbps"
+        font.pointSize: 8
+        opacity: 0.8
+
+        anchors {
+            bottom: parent.bottom
+            right: parent.right
+            rightMargin: 5
+            bottomMargin: 5
         }
     }
 

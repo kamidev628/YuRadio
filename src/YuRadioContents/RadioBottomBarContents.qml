@@ -85,8 +85,10 @@ FocusScope {
                 Image {
                     id: stationImage
 
+                    property string placeholderImage: AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+
                     smooth: true
-                    source: root.stationIcon ? root.stationIcon : (AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png")
+                    source: root.stationIcon ? root.stationIcon : placeholderImage
 
                     fillMode: Image.PreserveAspectFit
 
@@ -97,6 +99,12 @@ FocusScope {
 
                     Layout.leftMargin: 10
                     Layout.fillHeight: true
+
+                    onStatusChanged: {
+                        if (status == Image.Error) {
+                            source = placeholderImage;
+                        }
+                    }
                 }
 
                 Item {
@@ -284,6 +292,7 @@ FocusScope {
                     spacing: 20
 
                     Image {
+                        id: musicInfoRowImage
                         source: root.musicInfo?.coverUrls[0] ?? ''
 
                         Layout.minimumWidth: Math.min(mainColumn.width * 4 / 9, 300)
@@ -295,6 +304,11 @@ FocusScope {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         fillMode: Image.PreserveAspectFit
+
+                        BusyIndicator {
+                          anchors.centerIn: parent
+                          visible: musicInfoRowImage.status == Image.Loading
+                        }
                     }
 
                     ColumnLayout {

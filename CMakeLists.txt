@@ -28,6 +28,10 @@ qt_add_translations(
 # changed
 
 if(NOT ANDROID)
+  install(
+    TARGETS YuRadio
+    BUNDLE DESTINATION .
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   # Deployment script for LINUX, MAC, WINDOWS
   qt_generate_deploy_qml_app_script(
     TARGET

@@ -95,3 +95,8 @@ Session.vim
 # Android
 .idea
 local.properties
+
+# Application Config
+src/applicationconfig.h
+
+CMakeUserPresets.json

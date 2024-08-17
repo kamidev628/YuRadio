@@ -1,4 +1,5 @@
 #include <QAudioDevice>
+#include <QAudioOutput>
 #include <QMediaDevices>
 #include <QMediaPlayer>
 

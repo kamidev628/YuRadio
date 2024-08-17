@@ -23,6 +23,10 @@ find_package(
 add_subdirectory(network)
 add_subdirectory(YuRadioContents)
 
+if(ANDROID)
+  add_subdirectory(android)
+endif()
+
 if(SPOTIFY_CLIENTID
    AND SPOTIFY_SECRET
    AND SPOTIFY_CLIENTID_HASH MATCHES "^(0|[a-fA-F0-9]+)$"
@@ -73,31 +77,6 @@ qt_add_qml_module(
   obf.h
   obf.cpp
   applicationconfig.h)
-
-# OpenSSL support for android
-if(ANDROID)
-  include(FetchContent)
-  FetchContent_Declare(
-    android_openssl
-    DOWNLOAD_EXTRACT_TIMESTAMP true
-    URL https://github.com/KDAB/android_openssl/archive/refs/heads/master.zip)
-  FetchContent_MakeAvailable(android_openssl)
-  include(${android_openssl_SOURCE_DIR}/android_openssl.cmake)
-endif()
-
-if(ANDROID)
-  target_sources(
-    YuRadio
-    PRIVATE android/androidkeyboard.h
-            android/androidkeyboard.cpp
-            android/androidradiocontroller.cpp
-            android/androidradiocontroller.h
-            android/nativemediacontroller.cpp
-            android/nativemediacontroller.h
-            android/notificationclient.cpp
-            android/notificationclient.h)
-  add_android_openssl_libraries(YuRadio)
-endif()
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1. If
 # you are developing for iOS or macOS you should consider setting an explicit,

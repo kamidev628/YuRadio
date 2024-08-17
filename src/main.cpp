@@ -4,8 +4,8 @@
 #include <QQuickStyle>
 
 #ifdef Q_OS_ANDROID
-  #include "android/androidkeyboard.h"
   #include "android/nativemediacontroller.h"
+  #include "android/virtualkeyboardlistener.h"
 #endif /* Q_OS_ANDROID */
 
 #ifdef QT_DEBUG
@@ -17,6 +17,8 @@
 
 #include <QLoggingCategory>
 #include <QSslSocket>
+
+#include "network/networkmanagerfactory.h"
 
 using namespace Qt::StringLiterals;
 
@@ -38,21 +40,21 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setApplicationName(u"YuRadio"_s);
   QCoreApplication::setApplicationVersion(u"1.0"_s);
 
+  qDebug() << "Version:" << QCoreApplication::applicationVersion();
+  qDebug() << "Device supports OpenSSL:" << QSslSocket::supportsSsl();
+
   QQmlApplicationEngine engine;
   QQuickStyle::setStyle(u"Material"_s);
-  qDebug() << "Version:" << QCoreApplication::applicationVersion();
 
-  qDebug() << "Device supports OpenSSL:" << QSslSocket::supportsSsl();
+  NetworkManagerFactory networkManagerFactory;
+  engine.setNetworkAccessManagerFactory(&networkManagerFactory);
 #ifdef Q_OS_ANDROID
   /* Rename android UI thread*/
   QNativeInterface::QAndroidApplication::runOnAndroidMainThread([]() {
     QThread::currentThread()->setObjectName("Android Main Thread"_L1);
   });
   NativeMediaController::registerNativeMethods();
-  AndroidKeyboard::registerNativeMethods();
-
-  engine.rootContext()->setContextProperty(u"androidKeyboard"_s,
-                                           AndroidKeyboard::instance());
+  VirtualKeyboardListener::registerNativeMethods();
 #endif /* Q_OS_ANDROID */
 
 #ifdef QT_DEBUG

@@ -111,7 +111,7 @@ NetworkResponse NetworkManager::put(const QString &path,
   QNetworkRequest request = prepareRequest(path);
 
   request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
-                    "application/json");
+                    u"application/json"_s);
 
   QNetworkReply *reply = QNetworkAccessManager::put(
     request, QJsonDocument::fromVariant(value).toJson(QJsonDocument::Compact));
@@ -172,13 +172,15 @@ QNetworkRequest NetworkManager::prepareRequest(const QString &path,
   return prepareRequest(url);
 }
 
-QNetworkRequest NetworkManager::prepareRequest(const QUrl &url) {
-  QNetworkRequest request(url);
-
+void NetworkManager::setRequestHeaders(QNetworkRequest &request) {
   for (const auto &[header, value] : m_headers.asKeyValueRange()) {
     request.setRawHeader(header, value);
   }
+}
 
+QNetworkRequest NetworkManager::prepareRequest(const QUrl &url) {
+  QNetworkRequest request(url);
+  setRequestHeaders(request);
   return request;
 }
 
@@ -220,4 +222,17 @@ QString NetworkManager::applicationUserAgent() {
   }
 
   return applicationName + '/'_L1 + applicationVersion;
+}
+
+QNetworkReply *
+NetworkManager::createRequest(Operation op,
+                              const QNetworkRequest &originalRequest,
+                              QIODevice *outgoingData) {
+  QNetworkRequest request = originalRequest;
+  setRequestHeaders(request);
+  qCInfo(networkManagerLog)
+    << u"Request[%1]: %2"_s.arg(requestMethodToString(op))
+         .arg(request.url().toString());
+
+  return QNetworkAccessManager::createRequest(op, request, outgoingData);
 }

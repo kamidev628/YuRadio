@@ -13,6 +13,8 @@ qt_add_qml_module(
   networkerror.h
   networkmanager.cpp
   networkmanager.h
+  networkmanagerfactory.h
+  networkmanagerfactory.cpp
   pagepagination.cpp
   pagepagination.h
   restpagination.cpp

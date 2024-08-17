@@ -51,10 +51,16 @@ signals:
 private:
   static NetworkError checkNetworkErrors(QNetworkReply *reply);
   static NetworkResponse makeNetworkResponse(QNetworkReply *reply);
+  void setRequestHeaders(QNetworkRequest &request);
 
   QNetworkRequest prepareRequest(const QString &path,
                                  const QUrlQuery &query = {});
   QNetworkRequest prepareRequest(const QUrl &url);
+
+protected:
+  QNetworkReply *createRequest(Operation op,
+                               const QNetworkRequest &originalRequest,
+                               QIODevice *outgoingData = nullptr) override;
 
 private:
   QByteArray m_bearerToken;

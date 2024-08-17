@@ -39,7 +39,6 @@ qt_add_qml_module(
   IconButton.qml
   VolumeController.qml
   MomentumAnimation.qml
-  FakeFlickable.qml
   HeaderComboBox.qml
   ListViewHighlightBar.qml
   radiobrowser.mjs

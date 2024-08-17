@@ -26,7 +26,7 @@ RadioBottomBarDrawer {
     states: [
         State {
             name: "hasCurrentItem"
-            when: !!MainRadioPlayer.currentItem
+            when: MainRadioPlayer.currentItem != null
 
             PropertyChanges {
                 root.minimumHeight: Math.max(parent.height / 12, bottomBarContents.implicitHeight)
@@ -101,7 +101,7 @@ RadioBottomBarDrawer {
 
         opacity: root.progress
 
-        visible: !bottomBarContents.playerButton.visible
+        visible: !bottomBarContents.playerButtonVisible
         onClicked: {
             MainRadioPlayer.toggle();
         }

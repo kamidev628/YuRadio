@@ -44,20 +44,29 @@ Item {
                 implicitHeight: 1
             }
 
-            Label {
-                text: qsTr("Could not fetch available servers")
-                Layout.topMargin: 5
-
-                Material.foreground: Material.color(Material.Grey, Material.Shade500)
-                opacity: 0.5
-                visible: !serversListView.model || !serversListView.model.length
-            }
-
             ListView {
                 id: serversListView
+
                 Layout.fillWidth: true
-                implicitHeight: 150
+                clip: true
+                Layout.preferredHeight: 150
+
                 boundsBehavior: Flickable.StopAtBounds
+
+                Label {
+                    text: qsTr("Could not fetch available servers")
+
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        right: parent.right
+                        topMargin: 5
+                    }
+
+                    Material.foreground: Material.color(Material.Grey, Material.Shade500)
+                    opacity: 0.5
+                    visible: !serversListView.model || !serversListView.model.length
+                }
 
                 ButtonGroup {
                     id: buttonGroup

@@ -115,7 +115,7 @@ ItemDelegate {
     }
 
     Label {
-        text: root.bitrate + " kbps"
+        text: qsTr("%1 kbps").arg(root.bitrate)
         font.pointSize: 8
         opacity: 0.8
 

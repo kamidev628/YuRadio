@@ -20,7 +20,7 @@ FocusScope {
     property string streamTitle: MainRadioPlayer.streamTitle
     property string lastStreamTitle: ""
 
-    property alias playerButton: playerButton
+    property alias playerButtonVisible: playerButtonLoader.active
 
     property real stationLatitude: MainRadioPlayer.currentItem?.geo_lat ?? 0
     property real stationLongitude: MainRadioPlayer.currentItem?.geo_long ?? 0
@@ -46,9 +46,9 @@ FocusScope {
 
             PropertyChanges {
                 stationInfoColumn.visible: true
-                playerButton.visible: false
-                closeButton.visible: false
-                secondaryColumnLayout.visible: true
+                playerButtonLoader.active: false
+                closeButtonLoader.active: false
+                secondaryColumnLayoutLoader.active: true
                 bottomBarRowLayout.spacing: 20
 
                 mainFlickable.anchors.leftMargin: 10
@@ -92,7 +92,7 @@ FocusScope {
 
                     fillMode: Image.PreserveAspectFit
 
-                    Layout.minimumHeight: Math.min(root.width / 3, root.height - 8, 300, mainColumn.implicitHeight)
+                    Layout.minimumHeight: Math.min(root.width / 3, root.height - 8, 300)
                     Layout.minimumWidth: Layout.minimumHeight
                     Layout.maximumHeight: Layout.minimumHeight
                     Layout.maximumWidth: Layout.minimumHeight
@@ -217,46 +217,69 @@ FocusScope {
                     }
                 }
 
-                IconButton {
-                    id: playerButton
+                Loader {
+                    id: playerButtonLoader
 
                     Layout.preferredWidth: 40
                     Layout.preferredHeight: Layout.preferredWidth
 
-                    icon.source: MainRadioPlayer.playing ? "images/pause.svg" : "images/play.svg"
-                    icon.sourceSize: Qt.size(height, height)
-                    icon.color: Material.color(Material.Grey, AppSettings.isDarkTheme ? Material.Shade400 : Material.Shade800)
+                    visible: active
+                    active: true
+                    sourceComponent: playerButtonComponent
+                }
 
-                    smooth: true
+                Component {
+                    id: playerButtonComponent
 
-                    onClicked: {
-                        MainRadioPlayer.toggle();
+                    IconButton {
+                        id: playerButton
+
+                        icon.source: MainRadioPlayer.playing ? "images/pause.svg" : "images/play.svg"
+                        icon.sourceSize: Qt.size(height, height)
+                        icon.color: Material.color(Material.Grey, AppSettings.isDarkTheme ? Material.Shade400 : Material.Shade800)
+
+                        smooth: true
+
+                        onClicked: {
+                            MainRadioPlayer.toggle();
+                        }
                     }
                 }
 
-                IconButton {
-                    id: closeButton
+                Loader {
+                    id: closeButtonLoader
 
                     Layout.rightMargin: 10
                     Layout.preferredWidth: 40
                     Layout.preferredHeight: Layout.preferredWidth
 
-                    icon.source: "images/close.svg"
-                    icon.sourceSize: Qt.size(height, height)
-                    icon.color: Material.color(Material.Grey, AppSettings.isDarkTheme ? Material.Shade400 : Material.Shade800)
+                    visible: active
+                    active: true
+                    sourceComponent: closeButtonComponent
+                }
 
-                    smooth: true
+                Component {
+                    id: closeButtonComponent
 
-                    onClicked: {
-                        MainRadioPlayer.stop();
-                        MainRadioPlayer.currentItem = undefined;
+                    IconButton {
+                        id: closeButton
+
+                        icon.source: "images/close.svg"
+                        icon.sourceSize: Qt.size(height, height)
+                        icon.color: Material.color(Material.Grey, AppSettings.isDarkTheme ? Material.Shade400 : Material.Shade800)
+
+                        smooth: true
+
+                        onClicked: {
+                            MainRadioPlayer.stop();
+                            MainRadioPlayer.currentItem = undefined;
+                        }
                     }
                 }
             }
 
-            ColumnLayout {
-                id: secondaryColumnLayout
-                visible: false
+            Loader {
+                id: secondaryColumnLayoutLoader
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -264,117 +287,129 @@ FocusScope {
                 Layout.topMargin: 20
                 Layout.leftMargin: 10
 
-                Label {
-                    visible: !musicInfoRow.visible && !busyIndicator.visible
-                    text: qsTr("Music Info is not avaialble")
-                    opacity: 0.5
-                    font.pointSize: 16
-                    Layout.topMargin: 15
-                    horizontalAlignment: Text.AlignHCenter
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                }
+                visible: active
+                active: false
+                sourceComponent: secondaryColumnLayoutComponent
+            }
 
-                BusyIndicator {
-                    id: busyIndicator
-                    visible: root.musicInfoModel.status == MusicInfoModel.Loading
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                }
+            Component {
+                id: secondaryColumnLayoutComponent
 
-                RowLayout {
-                    id: musicInfoRow
-                    visible: root.musicInfoModel.status == MusicInfoModel.Ready && root.musicInfo
+                ColumnLayout {
+                    id: secondaryColumnLayout
 
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    Label {
+                        visible: !musicInfoRow.visible && !busyIndicator.visible
+                        text: qsTr("Music Info is not avaialble")
+                        opacity: 0.5
+                        font.pointSize: 16
+                        Layout.topMargin: 15
+                        horizontalAlignment: Text.AlignHCenter
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                    }
 
-                    spacing: 20
+                    BusyIndicator {
+                        id: busyIndicator
+                        visible: root.musicInfoModel.status == MusicInfoModel.Loading
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                    }
 
-                    Image {
-                        id: musicInfoRowImage
-                        source: root.musicInfo?.coverUrls[0] ?? ''
-
-                        Layout.minimumWidth: Math.min(mainColumn.width * 4 / 9, 300)
-                        Layout.minimumHeight: Layout.minimumWidth
-
-                        Layout.maximumWidth: Layout.minimumWidth
-                        Layout.maximumHeight: Layout.minimumHeight
+                    RowLayout {
+                        id: musicInfoRow
+                        visible: root.musicInfoModel.status == MusicInfoModel.Ready && root.musicInfo != null
 
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        fillMode: Image.PreserveAspectFit
 
-                        BusyIndicator {
-                          anchors.centerIn: parent
-                          visible: musicInfoRowImage.status == Image.Loading
+                        spacing: 20
+
+                        Image {
+                            id: musicInfoRowImage
+                            source: root.musicInfo?.coverUrls[0] ?? ''
+
+                            Layout.minimumWidth: Math.min(mainColumn.width * 4 / 9, 300)
+                            Layout.minimumHeight: Layout.minimumWidth
+
+                            Layout.maximumWidth: Layout.minimumWidth
+                            Layout.maximumHeight: Layout.minimumHeight
+
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            fillMode: Image.PreserveAspectFit
+
+                            BusyIndicator {
+                                anchors.centerIn: parent
+                                visible: musicInfoRowImage.status == Image.Loading
+                            }
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+
+                            Label {
+                                text: qsTr("<b>Album</b>: %1").arg(root.musicInfo?.albumName)
+                                font.pointSize: 14
+                                Layout.fillWidth: true
+                                wrapMode: Text.WordWrap
+                                textFormat: Text.RichText
+                            }
+                            Label {
+                                text: qsTr("<b>Song</b>: %1").arg(root.musicInfo?.songName)
+                                font.pointSize: 14
+                                Layout.fillWidth: true
+                                wrapMode: Text.WordWrap
+                                textFormat: Text.RichText
+                            }
+                            Label {
+                                text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo?.artistNames.join(", "))
+                                font.pointSize: 14
+                                Layout.fillWidth: true
+                                wrapMode: Text.WordWrap
+                                textFormat: Text.RichText
+                            }
+
+                            Component {
+                                id: itunesButton
+                                ItunesButton {
+                                    text: showTrackButtonLoader.buttonText
+                                    link: root.musicInfo?.trackUrl ?? ''
+                                }
+                            }
+
+                            Component {
+                                id: spotifyButton
+                                SpotifyButton {
+                                    text: showTrackButtonLoader.buttonText
+                                    link: root.musicInfo?.trackUrl ?? ''
+                                }
+                            }
+
+                            Loader {
+                                id: showTrackButtonLoader
+
+                                property string buttonText: qsTr("Show track")
+                                sourceComponent: {
+                                    if (root.musicInfoModel.backendName == "itunes") {
+                                        return itunesButton;
+                                    }
+                                    if (root.musicInfoModel.backendName == "spotify") {
+                                        return spotifyButton;
+                                    }
+                                }
+                            }
                         }
                     }
 
-                    ColumnLayout {
+                    Label {
+                        text: qsTr("Provided for: %1").arg(root.streamTitle)
+                        visible: musicInfoRow.visible
+                        opacity: 0.6
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
-
-                        Label {
-                            text: qsTr("<b>Album</b>: %1").arg(root.musicInfo?.albumName)
-                            font.pointSize: 14
-                            Layout.fillWidth: true
-                            wrapMode: Text.WordWrap
-                            textFormat: Text.RichText
-                        }
-                        Label {
-                            text: qsTr("<b>Song</b>: %1").arg(root.musicInfo?.songName)
-                            font.pointSize: 14
-                            Layout.fillWidth: true
-                            wrapMode: Text.WordWrap
-                            textFormat: Text.RichText
-                        }
-                        Label {
-                            text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo?.artistNames.join(", "))
-                            font.pointSize: 14
-                            Layout.fillWidth: true
-                            wrapMode: Text.WordWrap
-                            textFormat: Text.RichText
-                        }
-
-                        Component {
-                            id: itunesButton
-                            ItunesButton {
-                                text: showTrackButtonLoader.buttonText
-                                link: root.musicInfo?.trackUrl ?? ''
-                            }
-                        }
-
-                        Component {
-                            id: spotifyButton
-                            SpotifyButton {
-                                text: showTrackButtonLoader.buttonText
-                                link: root.musicInfo?.trackUrl ?? ''
-                            }
-                        }
-
-                        Loader {
-                            id: showTrackButtonLoader
-
-                            property string buttonText: qsTr("Show track")
-                            sourceComponent: {
-                                if (root.musicInfoModel.backendName == "itunes") {
-                                    return itunesButton;
-                                }
-                                if (root.musicInfoModel.backendName == "spotify") {
-                                    return spotifyButton;
-                                }
-                            }
-                        }
+                        wrapMode: Text.WordWrap
                     }
-                }
-
-                Label {
-                    text: qsTr("Provided for: %1").arg(root.streamTitle)
-                    visible: musicInfoRow.visible
-                    opacity: 0.6
-                    Layout.fillWidth: true
-                    wrapMode: Text.WordWrap
                 }
             }
         }
@@ -385,7 +420,7 @@ FocusScope {
         interval: 500
         repeat: false
 
-        running: root.streamTitle && root.streamTitle !== root.lastStreamTitle && Application.state == Qt.ApplicationActive && secondaryColumnLayout.visible
+        running: root.streamTitle && root.streamTitle !== root.lastStreamTitle && Application.state == Qt.ApplicationActive && secondaryColumnLayoutLoader.active
 
         onTriggered: {
             root.lastStreamTitle = root.streamTitle;

@@ -73,7 +73,7 @@ QtObject {
         let exists = false;
         databaseInstance().transaction(tx => {
             let results = tx.executeSql("SELECT 1 FROM bookmark WHERE stationuuid = ?", [stationUUID]);
-            exists = !!results.rows.length;
+            exists = (results.rows.length != 0);
         });
         return exists;
     }
@@ -110,7 +110,7 @@ QtObject {
         let exists = false;
         databaseInstance().transaction(tx => {
             let results = tx.executeSql("SELECT 1 FROM vote WHERE stationuuid = ?", [stationUUID]);
-            exists = !!results.rows.length;
+            exists = (results.rows.length != 0);
         });
         return exists;
     }

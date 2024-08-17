@@ -1,7 +1,6 @@
 #ifndef RADIOPLAYER_H
 #define RADIOPLAYER_H
 
-#include <QAudioOutput>
 #include <QtQml>
 
 class PlatformRadioController;

@@ -44,12 +44,9 @@ ItemDelegate {
             Layout.bottomMargin: 5
             Layout.preferredWidth: height
 
-            Material.foreground: Material.Red
-            Material.background: Material.Red
-
             fillMode: Image.PreserveAspectFit
             source: root.favicon ? root.favicon : placeholderImage
-            smooth: false
+            smooth: true
             asynchronous: true
 
             onStatusChanged: {

@@ -11,8 +11,12 @@ import androidx.media3.common.Player;
 import androidx.media3.common.Player.Listener;
 import androidx.media3.session.MediaController;
 
+import com.google.common.base.Strings;
+
 public class NativeMediaController {
     private static final String TAG = NativeMediaController.class.getSimpleName();
+
+    AppActivity activity;
     MediaController controller = null;
     String mediaSource = "";
     String mediaAuthor;
@@ -45,6 +49,11 @@ public class NativeMediaController {
         } else {
             onPlaybackStateChangedNative(PlaybackState.Stopped);
         }
+    }
+
+    public void setActivity(AppActivity activity) {
+        this.activity = activity;
+        activity.registerNativeMediaController(this);
     }
 
     public void setController(MediaController controller) {
@@ -127,12 +136,13 @@ public class NativeMediaController {
 
     private MediaItem buildMediaItem() {
         Log.i(TAG, "Author: " + mediaAuthor + " ArtworkUri: " + artworkUri);
+
         return new MediaItem.Builder()
                 .setMediaId("YuRadio-media")
                 .setUri(mediaSource)
                 .setMediaMetadata(new MediaMetadata.Builder()
                         .setArtist(mediaAuthor)
-                        .setArtworkUri(Uri.parse(artworkUri))
+                        .setArtworkUri(Strings.isNullOrEmpty(artworkUri) ? Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Shortwave.svg/480px-Shortwave.svg.png") : Uri.parse(artworkUri))
                         .build())
                 .build();
     }

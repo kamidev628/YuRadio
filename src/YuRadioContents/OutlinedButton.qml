@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
+import QtQuick.Controls.Material.impl
 
 Button {
     id: root
@@ -21,5 +22,18 @@ Button {
         color: root.checked ? root.buttonColor : (AppSettings.isDarkTheme ? root.buttonColor.lighter(0.3) : "transparent")
         border.width: 1
         border.color: root.buttonColor
+
+        Ripple {
+            clipRadius: parent.radius
+            clip: true
+
+            width: parent.width
+            height: parent.height
+            pressed: root.pressed
+            anchor: root
+
+            active: root.down || root.visualFocus || root.hovered
+            color: root.flat && root.highlighted ?  root.Material.highlightedRippleColor : root.Material.rippleColor
+        }
     }
 }

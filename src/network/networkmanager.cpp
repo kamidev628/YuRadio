@@ -50,7 +50,7 @@ NetworkError NetworkManager::checkNetworkErrors(QNetworkReply *reply) {
   const bool isReplyError = reply->error() != QNetworkReply::NoError;
 
   QString debugMessage =
-    u"Request[%1]: %2"_s.arg(requestMethodToString(reply->operation()))
+    u"Request Finished[%1]: %2"_s.arg(requestMethodToString(reply->operation()))
       .arg(reply->request().url().toString());
 
   qCInfo(networkManagerLog).noquote() << debugMessage;
@@ -230,7 +230,7 @@ NetworkManager::createRequest(Operation op,
                               QIODevice *outgoingData) {
   QNetworkRequest request = originalRequest;
   setRequestHeaders(request);
-  qCInfo(networkManagerLog)
+  qCInfo(networkManagerLog).noquote()
     << u"Request[%1]: %2"_s.arg(requestMethodToString(op))
          .arg(request.url().toString());
 

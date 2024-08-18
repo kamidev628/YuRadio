@@ -28,25 +28,13 @@ Drawer {
         Image {
             id: profileImage
 
-            source: "images/profile-picture.jpg"
-            asynchronous: true
-            smooth: true
-            visible: false
-        }
-
-        ShaderEffectSource {
-            id: shaderEffectSource
-            sourceItem: profileImage
-        }
-
-        ShaderEffect {
             Layout.preferredWidth: parent.width * 2 / 5
             Layout.preferredHeight: parent.width * 2 / 5
             Layout.alignment: Qt.AlignHCenter
 
-            property variant source: shaderEffectSource
-
-            fragmentShader: "qrc:/shaders/RoundImage.frag.qsb"
+            source: "images/shortwave.svg"
+            asynchronous: true
+            smooth: true
         }
 
         ListView {

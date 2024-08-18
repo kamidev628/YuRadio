@@ -24,6 +24,7 @@ qt_add_qml_module(
   SettingsPage.qml
   AboutPage.qml
   FilledGridView.qml
+  RadioImage.qml
   RadioStationLocationPage.qml
   RadioStationView.qml
   RadioStationsViewHeader.qml

@@ -82,14 +82,13 @@ FocusScope {
                 id: bottomBarRowLayout
                 Layout.fillWidth: true
 
-                Image {
+                RadioImage {
                     id: stationImage
 
-                    property string placeholderImage: AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+                    fallbackSource: AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+                    targetSource: root.stationIcon
 
                     smooth: true
-                    source: root.stationIcon ? root.stationIcon : placeholderImage
-
                     fillMode: Image.PreserveAspectFit
 
                     Layout.minimumHeight: Math.min(root.width / 3, root.height - 8, 300)
@@ -99,12 +98,6 @@ FocusScope {
 
                     Layout.leftMargin: 10
                     Layout.fillHeight: true
-
-                    onStatusChanged: {
-                        if (status == Image.Error) {
-                            source = placeholderImage;
-                        }
-                    }
                 }
 
                 Item {

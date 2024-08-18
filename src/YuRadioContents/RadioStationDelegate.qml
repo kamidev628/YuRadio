@@ -33,10 +33,11 @@ ItemDelegate {
     RowLayout {
         anchors.fill: parent
 
-        Image {
+        RadioImage {
             id: radioImage
 
-            property string placeholderImage: AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+            fallbackSource: AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+            targetSource: root.favicon
 
             Layout.fillHeight: true
             Layout.leftMargin: 5
@@ -45,15 +46,7 @@ ItemDelegate {
             Layout.preferredWidth: height
 
             fillMode: Image.PreserveAspectFit
-            source: root.favicon ? root.favicon : placeholderImage
             smooth: true
-            asynchronous: true
-
-            onStatusChanged: {
-                if (status == Image.Error) {
-                    source = placeholderImage;
-                }
-            }
 
             IconImage {
                 anchors {

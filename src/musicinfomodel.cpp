@@ -68,10 +68,6 @@ MusicInfoModel::MusicInfoModel(QObject *parent)
   m_supportedBackends.append(new ItunesBackend(this));
   m_supportedBackends.append(m_spotify);
 
-  if (SpotifyBackend::refreshAuthenticationSupported()) {
-    grantSpotifyAccess();
-  }
-
   registerBackend(0);
 }
 
@@ -152,7 +148,7 @@ void MusicInfoModel::requestMusicInfo() {
 }
 
 QString MusicInfoModel::backendName() const {
-  return m_currentBackend->backendName();
+  return m_currentBackend ? m_currentBackend->backendName() : QString();
 }
 
 void MusicInfoModel::grantSpotifyAccess() {

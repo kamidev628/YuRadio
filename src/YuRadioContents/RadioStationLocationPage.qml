@@ -21,8 +21,8 @@ Item {
         }
     }
 
-    MapView {
-        id: mapView
+    Map {
+        id: map
         anchors.fill: parent
 
         MapQuickItem {
@@ -36,23 +36,65 @@ Item {
                 sourceSize: Qt.size(32, 32)
             }
         }
-        Component.onCompleted: {
-            map.addMapItem(marker);
+
+        plugin: mapPlugin
+        activeMapType: supportedMapTypes[supportedMapTypes.length - 1]
+        center: QtPositioning.coordinate(root.stationLatitude, root.stationLongitude)
+        zoomLevel: 14
+
+        Timer {
+          id: dragDelayTimer
+          interval: 100
         }
 
-        map.plugin: mapPlugin
-        map.activeMapType: map.supportedMapTypes[map.supportedMapTypes.length - 1]
-        map.center: QtPositioning.coordinate(root.stationLatitude, root.stationLongitude)
-        map.zoomLevel: 14
-        Shortcut {
-            enabled: mapView.map.zoomLevel < mapView.map.maximumZoomLevel
-            sequence: StandardKey.ZoomIn
-            onActivated: mapView.map.zoomLevel = Math.round(mapView.map.zoomLevel + 1)
+        property geoCoordinate startCentroid
+        PinchHandler {
+            id: pinchHandler
+            target: null
+            onActiveChanged: if (active) {
+                map.startCentroid = map.toCoordinate(pinchHandler.centroid.position, false);
+              } else {
+                dragDelayTimer.start()
+              }
+            onScaleChanged: delta => {
+                map.zoomLevel += Math.log2(delta);
+                map.alignCoordinateToPoint(map.startCentroid, pinchHandler.centroid.position);
+            }
+            onRotationChanged: delta => {
+                map.bearing -= delta;
+                map.alignCoordinateToPoint(map.startCentroid, pinchHandler.centroid.position);
+            }
+            grabPermissions: PointerHandler.TakeOverForbidden
+        }
+        WheelHandler {
+            id: wheelHandler
+            // workaround for QTBUG-87646 / QTBUG-112394 / QTBUG-112432:
+            // Magic Mouse pretends to be a trackpad but doesn't work with PinchHandler
+            // and we don't yet distinguish mice and trackpads on Wayland either
+            acceptedDevices: Qt.platform.pluginName === "cocoa" || Qt.platform.pluginName === "wayland" ? PointerDevice.Mouse | PointerDevice.TouchPad : PointerDevice.Mouse
+            rotationScale: 1 / 120
+            property: "zoomLevel"
+        }
+        DragHandler {
+            id: dragHandler
+            target: null
+            onTranslationChanged: delta => {
+              const deltaThreshold = 90;
+              /* HACK: In some cases DragHandler returns incorrect delta */
+              if (delta.x < deltaThreshold && delta.y < deltaThreshold && !dragDelayTimer.running) {
+                map.pan(-delta.x, -delta.y)
+              }
+            }
         }
         Shortcut {
-            enabled: mapView.map.zoomLevel > mapView.map.minimumZoomLevel
+            enabled: map.zoomLevel < map.maximumZoomLevel
+            sequence: StandardKey.ZoomIn
+            onActivated: map.zoomLevel = Math.round(map.zoomLevel + 1)
+        }
+        Shortcut {
+            enabled: map.zoomLevel > map.minimumZoomLevel
             sequence: StandardKey.ZoomOut
-            onActivated: mapView.map.zoomLevel = Math.round(mapView.map.zoomLevel - 1)
+            onActivated: map.zoomLevel = Math.round(map.zoomLevel - 1)
         }
     }
 }

@@ -215,7 +215,7 @@ bool SpotifyBackend::accessGranted() {
 
   return m_oauth2.status() == QAbstractOAuth::Status::Granted ||
          (!accessTokenData.accessToken.isNull() &&
-          QDateTime::currentDateTime().msecsTo(accessTokenData.expiration) > 0);
+          QDateTime::currentDateTime() < accessTokenData.expiration);
 }
 
 void SpotifyBackend::tryAuthenticate() {

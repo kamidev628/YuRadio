@@ -43,8 +43,8 @@ Item {
         zoomLevel: 14
 
         Timer {
-          id: dragDelayTimer
-          interval: 100
+            id: dragDelayTimer
+            interval: 100
         }
 
         property geoCoordinate startCentroid
@@ -53,9 +53,9 @@ Item {
             target: null
             onActiveChanged: if (active) {
                 map.startCentroid = map.toCoordinate(pinchHandler.centroid.position, false);
-              } else {
-                dragDelayTimer.start()
-              }
+            } else {
+                dragDelayTimer.start();
+            }
             onScaleChanged: delta => {
                 map.zoomLevel += Math.log2(delta);
                 map.alignCoordinateToPoint(map.startCentroid, pinchHandler.centroid.position);
@@ -66,24 +66,40 @@ Item {
             }
             grabPermissions: PointerHandler.TakeOverForbidden
         }
+
+        HoverHandler {
+            id: hoverHandler
+
+            property geoCoordinate startCoordinates
+
+            onPointChanged: {
+                startCoordinates = map.toCoordinate(point.position);
+            }
+        }
+
         WheelHandler {
             id: wheelHandler
             // workaround for QTBUG-87646 / QTBUG-112394 / QTBUG-112432:
             // Magic Mouse pretends to be a trackpad but doesn't work with PinchHandler
             // and we don't yet distinguish mice and trackpads on Wayland either
             acceptedDevices: Qt.platform.pluginName === "cocoa" || Qt.platform.pluginName === "wayland" ? PointerDevice.Mouse | PointerDevice.TouchPad : PointerDevice.Mouse
+
+            onWheel: event => {
+                map.zoomLevel += Math.cbrt(event.angleDelta.y) / 30;
+                map.alignCoordinateToPoint(hoverHandler.startCoordinates, point.position);
+            }
             rotationScale: 1 / 120
-            property: "zoomLevel"
         }
         DragHandler {
             id: dragHandler
             target: null
+
             onTranslationChanged: delta => {
-              const deltaThreshold = 90;
-              /* HACK: In some cases DragHandler returns incorrect delta */
-              if (delta.x < deltaThreshold && delta.y < deltaThreshold && !dragDelayTimer.running) {
-                map.pan(-delta.x, -delta.y)
-              }
+                const deltaThreshold = 90;
+                /* HACK: In some cases DragHandler returns incorrect delta */
+                if (delta.x < deltaThreshold && delta.y < deltaThreshold && !dragDelayTimer.running) {
+                    map.pan(-delta.x, -delta.y);
+                }
             }
         }
         Shortcut {

@@ -19,8 +19,6 @@ public:
 public slots:
   void grant();
 
-  static bool refreshAuthenticationSupported();
-
 signals:
   void authenticated();
   void authenticationError(const QString &error,
@@ -29,6 +27,27 @@ signals:
 private slots:
   void handleStatusChange(QOAuth2AuthorizationCodeFlow::Status status);
   void handleMusicInfoReply(QNetworkReply *reply);
+
+  void updateRefreshTimer(const QDateTime &expiration);
+  bool accessGranted();
+  void tryAuthenticate();
+
+private:
+  struct AccessTokenData {
+    QString accessToken;
+    QDateTime expiration;
+
+    bool isValid() const {
+      return !accessToken.isNull() && expiration.isValid() &&
+             QDateTime::currentDateTime().msecsTo(expiration) > 2000;
+    }
+  };
+
+  static QString storedRefreshToken();
+  static AccessTokenData storedAccessToken();
+  static void setStoredRefreshToken(const QString &refreshToken);
+  static void setStoredAccessToken(const QString &accessToken);
+  static void setStoredAccessTokenExpiration(const QDateTime &date);
 
 private:
   QOAuth2AuthorizationCodeFlow m_oauth2;

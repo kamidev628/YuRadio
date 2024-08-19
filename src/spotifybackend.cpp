@@ -39,27 +39,22 @@ SpotifyBackend::SpotifyBackend(QObject *parent)
 
   m_refreshTokenTimer.setSingleShot(true);
 
+  QMetaObject::invokeMethod(this, &SpotifyBackend::tryAuthenticate,
+                            Qt::QueuedConnection);
+
+  connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::tokenChanged, this,
+          &SpotifyBackend::setStoredAccessToken);
+  connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::expirationAtChanged, this,
+          &SpotifyBackend::setStoredAccessTokenExpiration);
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::refreshTokenChanged, this,
-          [](const QString &refreshToken) {
-    QSettings settings;
-    settings.setValue("SpotifyRefreshToken"_L1, refreshToken);
-  });
+          &SpotifyBackend::setStoredRefreshToken);
   connect(
     &m_oauth2, &QOAuth2AuthorizationCodeFlow::error, this,
     [](const QString &error, const QString &errorDescription, const QUrl &uri) {
     qCDebug(spotifyBackendLog) << "Error:" << error << errorDescription << uri;
   });
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::expirationAtChanged, this,
-          [this](const QDateTime &expiration) {
-    qCDebug(spotifyBackendLog) << "Token Expiration:" << expiration;
-    QDateTime currentDate = QDateTime::currentDateTime();
-    auto refreshInterval =
-      std::chrono::milliseconds(currentDate.msecsTo(expiration)) - 2min;
-    Q_ASSERT(refreshInterval > 0ms);
-
-    m_refreshTokenTimer.setInterval(refreshInterval);
-    m_refreshTokenTimer.start();
-  });
+          &SpotifyBackend::updateRefreshTimer);
   connect(&m_refreshTokenTimer, &QTimer::timeout, &m_oauth2,
           &QOAuth2AuthorizationCodeFlow::refreshAccessToken);
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::statusChanged, this,
@@ -73,13 +68,7 @@ SpotifyBackend::SpotifyBackend(QObject *parent)
 }
 
 void SpotifyBackend::grant() {
-  QSettings settings;
-  QVariant maybeRefreshToken = settings.value("SpotifyRefreshToken"_L1);
-
-  if (maybeRefreshToken.isValid()) {
-    m_oauth2.setRefreshToken(maybeRefreshToken.toString());
-    m_oauth2.refreshAccessToken();
-  } else {
+  if (!accessGranted()) {
     m_oauth2.grant();
   }
 }
@@ -103,7 +92,7 @@ void SpotifyBackend::handleStatusChange(
 }
 
 void SpotifyBackend::requestMusicInfo(const QString &searchString) {
-  if (m_oauth2.status() != QAbstractOAuth::Status::Granted) {
+  if (!accessGranted()) {
     qCDebug(spotifyBackendLog) << "Access is not granted";
     emit errorOccurred();
     return;
@@ -125,6 +114,7 @@ void SpotifyBackend::requestMusicInfo(const QString &searchString) {
 void SpotifyBackend::handleMusicInfoReply(QNetworkReply *reply) {
   reply->deleteLater();
   if (reply->error()) {
+    qCWarning(spotifyBackendLog) << reply->errorString() << reply->readAll();
     emit errorOccurred();
     return;
   }
@@ -176,11 +166,71 @@ void SpotifyBackend::handleMusicInfoReply(QNetworkReply *reply) {
   emit musicInformation(info);
 }
 
-bool SpotifyBackend::refreshAuthenticationSupported() {
-  QSettings settings;
-  return settings.contains("SpotifyRefreshToken"_L1);
-}
-
 QString SpotifyBackend::backendName() const {
   return u"spotify"_s;
+}
+
+QString SpotifyBackend::storedRefreshToken() {
+  QSettings settings;
+  return settings.value("SpotifyRefreshToken"_L1).toString();
+}
+
+void SpotifyBackend::setStoredRefreshToken(const QString &refreshToken) {
+  QSettings settings;
+  settings.setValue("SpotifyRefreshToken"_L1, refreshToken);
+}
+
+SpotifyBackend::AccessTokenData SpotifyBackend::storedAccessToken() {
+  QSettings settings;
+  QString accessToken = settings.value("SpotifyAccessToken"_L1).toString();
+  QDateTime expirationDate =
+    settings.value("SpotifyAccessTokenExpiration"_L1).toDateTime();
+  return {accessToken, expirationDate};
+}
+
+void SpotifyBackend::setStoredAccessToken(const QString &accessToken) {
+  QSettings settings;
+  settings.setValue("SpotifyAccessToken"_L1, accessToken);
+}
+
+void SpotifyBackend::setStoredAccessTokenExpiration(const QDateTime &date) {
+  QSettings settings;
+  settings.setValue("SpotifyAccessTokenExpiration"_L1, date);
+}
+
+void SpotifyBackend::updateRefreshTimer(const QDateTime &expiration) {
+  qCDebug(spotifyBackendLog) << "Token Expiration:" << expiration;
+
+  QDateTime currentDate = QDateTime::currentDateTime();
+  auto refreshInterval =
+    std::chrono::milliseconds(currentDate.msecsTo(expiration)) - 1min;
+  Q_ASSERT(refreshInterval > 0ms);
+
+  m_refreshTokenTimer.setInterval(refreshInterval);
+  m_refreshTokenTimer.start();
+}
+
+bool SpotifyBackend::accessGranted() {
+  AccessTokenData accessTokenData = storedAccessToken();
+
+  return m_oauth2.status() == QAbstractOAuth::Status::Granted ||
+         (!accessTokenData.accessToken.isNull() &&
+          QDateTime::currentDateTime().msecsTo(accessTokenData.expiration) > 0);
+}
+
+void SpotifyBackend::tryAuthenticate() {
+  AccessTokenData accessTokenData = storedAccessToken();
+  if (accessTokenData.isValid()) {
+    m_oauth2.setToken(accessTokenData.accessToken);
+    updateRefreshTimer(accessTokenData.expiration);
+  }
+
+  QString refreshToken = storedRefreshToken();
+  if (!refreshToken.isNull()) {
+    m_oauth2.setRefreshToken(refreshToken);
+
+    if (!accessTokenData.isValid()) {
+      m_oauth2.refreshAccessToken();
+    }
+  }
 }

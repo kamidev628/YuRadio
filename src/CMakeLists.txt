@@ -31,11 +31,11 @@ if(SPOTIFY_CLIENTID
    AND SPOTIFY_SECRET
    AND SPOTIFY_CLIENTID_HASH MATCHES "^(0|[a-fA-F0-9]+)$"
    AND SPOTIFY_SECRET_HASH MATCHES "^(0|[a-fA-F0-9]+)$")
-  message("Spotify support - NO")
+  message("Spotify support - OK")
 else()
   set(SPOTIFY_SECRET_HASH 0)
   set(SPOTIFY_CLIENTID_HASH 0)
-  message("Spotify support - OK")
+  message("Spotify support - NO")
 endif()
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/applicationconfig.h.in"

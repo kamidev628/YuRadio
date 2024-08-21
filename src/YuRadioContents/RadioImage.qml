@@ -2,28 +2,23 @@ import QtQuick
 import QtQuick.Controls
 
 Image {
+    id: root
     property string targetSource
     property string fallbackSource
 
-    function handleChange() {
-        if (targetSource) {
-            source = Qt.binding(() => targetSource);
-        } else if (fallbackSource) {
-            source = Qt.binding(() => fallbackSource);
-        }
-    }
+    property bool failed: true
+
+    source: root.failed ? fallbackSource : targetSource
+
+    asynchronous: true
 
     onTargetSourceChanged: {
-        handleChange();
-    }
-
-    onFallbackSourceChanged: {
-        handleChange();
+        failed = !targetSource
     }
 
     onStatusChanged: {
-        if (status == Image.Error) {
-            source = Qt.binding(() => fallbackSource);
+        if (status == Image.Error || status == Image.Null) {
+            failed = true;
         }
     }
 }

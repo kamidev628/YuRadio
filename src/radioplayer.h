@@ -5,41 +5,32 @@
 
 class PlatformRadioController;
 
-class MediaItem : public QObject {
-  Q_OBJECT
-  Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-  Q_PROPERTY(QString author READ author WRITE setAuthor NOTIFY authorChanged)
-  Q_PROPERTY(QUrl artworkUri READ artworkUri WRITE setArtworkUri NOTIFY
-               artworkUriChanged)
-  QML_ELEMENT
+struct MediaItem {
+  Q_GADGET
+  Q_PROPERTY(QUrl source MEMBER source)
+  Q_PROPERTY(QString author MEMBER author)
+  Q_PROPERTY(QUrl artworkUri MEMBER artworkUri)
 
 public:
-  explicit MediaItem(QObject *parent = nullptr);
+  MediaItem() = default;
 
-  QUrl source() const;
-  void setSource(const QUrl &newSource);
-  QString author() const;
-  void setAuthor(const QString &newAuthor);
+  bool operator==(const MediaItem &other) const {
+    return source == other.source && author == other.author &&
+           artworkUri == other.artworkUri;
+  }
 
-  QUrl artworkUri() const;
-  void setArtworkUri(const QUrl &newArtworkUri);
+  bool operator!=(const MediaItem &other) const { return !(other == *this); }
 
-signals:
-  void sourceChanged();
-  void authorChanged();
-  void artworkUriChanged();
-
-private:
-  QUrl m_source;
-  QString m_author;
-  QUrl m_artworkUri;
+  QUrl source;
+  QString author;
+  QUrl artworkUri;
 };
 
 class RadioPlayer : public QObject {
   Q_OBJECT
   Q_PROPERTY(
     QString streamTitle READ streamTitle NOTIFY streamTitleChanged FINAL)
-  Q_PROPERTY(MediaItem *mediaItem READ mediaItem WRITE setMediaItem NOTIFY
+  Q_PROPERTY(MediaItem mediaItem READ mediaItem WRITE setMediaItem NOTIFY
                mediaItemChanged FINAL)
   Q_PROPERTY(
     float volume READ volume WRITE setVolume NOTIFY volumeChanged FINAL)
@@ -76,8 +67,10 @@ public slots:
   void pause();
   void stop();
 
-  MediaItem *mediaItem() const;
-  void setMediaItem(MediaItem *mediaItem);
+  static MediaItem constructMediaItem();
+
+  MediaItem mediaItem() const;
+  void setMediaItem(const MediaItem &mediaItem);
 
   QString streamTitle() const;
 

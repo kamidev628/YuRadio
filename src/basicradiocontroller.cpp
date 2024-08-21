@@ -87,12 +87,8 @@ void BasicRadioController::pause() {
   m_mediaPlayer->pause();
 }
 
-void BasicRadioController::setMediaItem(MediaItem *mediaItem) {
-  if (mediaItem) {
-    connect(mediaItem, &MediaItem::sourceChanged, this,
-            [this, mediaItem]() { processMediaItem(mediaItem); });
-    processMediaItem(mediaItem);
-  }
+void BasicRadioController::setMediaItem(const MediaItem &mediaItem) {
+  processMediaItem(mediaItem);
 
   PlatformRadioController::setMediaItem(mediaItem);
 }
@@ -102,8 +98,8 @@ void BasicRadioController::setVolume(float volume) {
   PlatformRadioController::setVolume(volume);
 }
 
-void BasicRadioController::processMediaItem(MediaItem *mediaItem) {
-  m_icecastProxy->setTargetSource(mediaItem->source());
+void BasicRadioController::processMediaItem(const MediaItem &mediaItem) {
+  m_icecastProxy->setTargetSource(mediaItem.source);
 
   m_mediaPlayer->setSource({});
   m_mediaPlayer->setSource(icecastProxyServerUrl());

@@ -28,12 +28,9 @@ void AndroidRadioController::pause() {
   m_nativeController->pause();
 }
 
-void AndroidRadioController::setMediaItem(MediaItem *mediaItem) {
-  if (mediaItem) {
-    connect(mediaItem, &MediaItem::sourceChanged, this,
-            [this, mediaItem]() { processMediaItem(mediaItem); });
-    processMediaItem(mediaItem);
-  }
+void AndroidRadioController::setMediaItem(const MediaItem &mediaItem) {
+  processMediaItem(mediaItem);
+
   PlatformRadioController::setMediaItem(mediaItem);
 }
 
@@ -168,8 +165,8 @@ void AndroidRadioController::setVolume(float volume) {
   PlatformRadioController::setVolume(volume);
 }
 
-void AndroidRadioController::processMediaItem(MediaItem *mediaItem) {
-  m_nativeController->setSource(mediaItem->source());
-  m_nativeController->setAuthor(mediaItem->author());
-  m_nativeController->setArtworkUri(mediaItem->artworkUri());
+void AndroidRadioController::processMediaItem(const MediaItem &mediaItem) {
+  m_nativeController->setSource(mediaItem.source);
+  m_nativeController->setAuthor(mediaItem.author);
+  m_nativeController->setArtworkUri(mediaItem.artworkUri);
 }

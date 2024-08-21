@@ -82,45 +82,14 @@ void RadioPlayer::setVolume(float volume) {
   m_controller->setVolume(volume);
 }
 
-MediaItem::MediaItem(QObject *parent) : QObject(parent) {}
-
-QUrl MediaItem::source() const {
-  return m_source;
-}
-
-void MediaItem::setSource(const QUrl &source) {
-  if (m_source != source) {
-    m_source = source;
-    emit sourceChanged();
-  }
-}
-
-QString MediaItem::author() const {
-  return m_author;
-}
-
-void MediaItem::setAuthor(const QString &author) {
-  if (m_author != author) {
-    m_author = author;
-    emit authorChanged();
-  }
-}
-
-QUrl MediaItem::artworkUri() const {
-  return m_artworkUri;
-}
-
-void MediaItem::setArtworkUri(const QUrl &artworkUri) {
-  if (m_artworkUri != artworkUri) {
-    m_artworkUri = artworkUri;
-    emit artworkUriChanged();
-  }
-}
-
-MediaItem *RadioPlayer::mediaItem() const {
+MediaItem RadioPlayer::mediaItem() const {
   return m_controller->mediaItem();
 }
 
-void RadioPlayer::setMediaItem(MediaItem *mediaItem) {
+void RadioPlayer::setMediaItem(const MediaItem &mediaItem) {
   m_controller->setMediaItem(mediaItem);
+}
+
+MediaItem RadioPlayer::constructMediaItem() {
+  return {};
 }

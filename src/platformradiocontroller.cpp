@@ -14,18 +14,16 @@ RadioPlayer::Error PlatformRadioController::error() const {
   return m_error;
 }
 
-void PlatformRadioController::setMediaItem(MediaItem *mediaItem) {
+void PlatformRadioController::setMediaItem(const MediaItem &mediaItem) {
   if (m_mediaItem != mediaItem) {
     m_mediaItem = mediaItem;
-
-    connect(m_mediaItem, &MediaItem::sourceChanged, this,
-            [this]() { setStreamTitle({}); });
-
     emit mediaItemChanged();
+
+    setStreamTitle({});
   }
 }
 
-MediaItem *PlatformRadioController::mediaItem() {
+MediaItem PlatformRadioController::mediaItem() {
   return m_mediaItem;
 }
 

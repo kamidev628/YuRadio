@@ -10,13 +10,15 @@ RadioPlayer {
 
     onCurrentItemChanged: {
         AppSettings.lastStation = currentItem;
+        const newMediaItem = constructMediaItem()
+
         if (currentItem) {
-            mediaItem.artworkUri = currentItem.favicon;
-            mediaItem.author = currentItem.name;
-            mediaItem.source = currentItem.url_resolved;
+            newMediaItem.artworkUri = currentItem.favicon;
+            newMediaItem.author = currentItem.name;
+            newMediaItem.source = currentItem.url_resolved;
         }
+
+        mediaItem = newMediaItem
         Qt.callLater(play);
     }
-
-    mediaItem: MediaItem {}
 }

@@ -14,7 +14,7 @@ public:
   AndroidRadioController(QObject *parent = nullptr);
 
   void setVolume(float volume) override;
-  void setMediaItem(MediaItem *mediaItem) override;
+  void setMediaItem(const MediaItem &mediaItem) override;
   void play() override;
   void stop() override;
   void pause() override;
@@ -24,7 +24,7 @@ private slots:
   void handlePlayerError(int errorCode, const QString &message);
 
 private:
-  void processMediaItem(MediaItem *mediaItem);
+  void processMediaItem(const MediaItem &mediaItem);
 
 private:
   NativeMediaController *m_nativeController;

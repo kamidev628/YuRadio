@@ -112,7 +112,7 @@ ItemDelegate {
         anchors {
             bottom: parent.bottom
             right: parent.right
-            rightMargin: 5
+            rightMargin: 10
             bottomMargin: 5
         }
     }

@@ -429,8 +429,8 @@ FocusScope {
     }
 
     Connections {
-        target: MainRadioPlayer.mediaItem
-        function onSourceChanged() {
+        target: MainRadioPlayer
+        function onMediaItemChanged() {
             root.musicInfo = null;
         }
     }

@@ -14,8 +14,8 @@ public:
   virtual QString errorString() const;
   virtual QString streamTitle() const;
 
-  virtual void setMediaItem(MediaItem *mediaItem);
-  virtual MediaItem *mediaItem();
+  virtual void setMediaItem(const MediaItem &mediaItem);
+  virtual MediaItem mediaItem();
 
   virtual void play() = 0;
   virtual void pause() = 0;
@@ -46,7 +46,7 @@ protected:
 protected:
   RadioPlayer::PlaybackState m_playbackState;
   RadioPlayer::Error m_error;
-  MediaItem *m_mediaItem = nullptr;
+  MediaItem m_mediaItem;
   QString m_errorString;
   QString m_streamTitle;
   float m_volume;

@@ -53,6 +53,7 @@ void IcecastReaderProxyServer::clientConnected() {
   request.setRawHeader("Connection"_ba, "keep-alive"_ba);
 
   m_reply = m_networkManager->get(request);
+  emit loadingChanged(true);
 
   connect(m_client, &QTcpSocket::disconnected, m_reply, &QObject::deleteLater);
   connect(m_client, &QTcpSocket::disconnected, m_client, &QObject::deleteLater);
@@ -64,14 +65,13 @@ void IcecastReaderProxyServer::clientConnected() {
   connect(m_reply, &QNetworkReply::finished, m_client,
           &QTcpSocket::disconnectFromHost);
   connect(m_reply, &QNetworkReply::finished, this,
-          [this]() { loadingChanged(false); });
+          [this]() { emit loadingChanged(false); });
 }
 
 void IcecastReaderProxyServer::replyReadHeaders() {
   qCDebug(icecastReaderProxyServerLog)
     << "Headers:" << m_reply->rawHeaderPairs();
 
-  loadingChanged(true);
   bool metaIntParsed;
   m_icyMetaInt = m_reply->hasRawHeader("icy-metaint"_L1)
                    ? m_reply->rawHeader("icy-metaint"_L1).toInt(&metaIntParsed)

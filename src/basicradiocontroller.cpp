@@ -73,8 +73,7 @@ QUrl BasicRadioController::icecastProxyServerUrl() {
 
 void BasicRadioController::play() {
   if (m_mediaPlayer->playbackState() == QMediaPlayer::StoppedState) {
-    m_mediaPlayer->setSource({});
-    m_mediaPlayer->setSource(icecastProxyServerUrl());
+    reconnectToIcecastProxyServer();
   }
   m_mediaPlayer->play();
 }
@@ -100,7 +99,10 @@ void BasicRadioController::setVolume(float volume) {
 
 void BasicRadioController::processMediaItem(const MediaItem &mediaItem) {
   m_icecastProxy->setTargetSource(mediaItem.source);
+  reconnectToIcecastProxyServer();
+}
 
+void BasicRadioController::reconnectToIcecastProxyServer() {
   m_mediaPlayer->setSource({});
   m_mediaPlayer->setSource(icecastProxyServerUrl());
 }

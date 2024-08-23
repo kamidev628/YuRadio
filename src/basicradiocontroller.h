@@ -23,6 +23,7 @@ public:
   void setMediaItem(const MediaItem &mediaItem) override;
 
 private:
+  void reconnectToIcecastProxyServer();
   QUrl icecastProxyServerUrl();
   void processMediaItem(const MediaItem &mediaItem);
 

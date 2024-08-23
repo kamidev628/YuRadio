@@ -3,6 +3,7 @@ package org.yuradio;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
+import android.webkit.URLUtil;
 
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
@@ -148,14 +149,15 @@ public class NativeMediaController {
     }
 
     public void setSource(String url) {
-        if (controller == null) {
+        mediaSource = url;
+
+        if (controller == null || !URLUtil.isValidUrl(mediaSource)) {
             return;
         }
+
         new Handler(controller.getApplicationLooper()).post(new Runnable() {
             @Override
             public void run() {
-                mediaSource = url;
-
                 MediaItem mediaItem = buildMediaItem();
                 controller.setMediaItem(mediaItem);
                 controller.prepare();

@@ -95,3 +95,7 @@ void PlatformRadioController::clearErrors() {
   m_error = RadioPlayer::NoError;
   m_errorString = {};
 }
+
+bool PlatformRadioController::canPlay() const {
+  return m_mediaItem.source.isValid();
+}

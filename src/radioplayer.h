@@ -15,8 +15,8 @@ public:
   MediaItem() = default;
 
   bool operator==(const MediaItem &other) const {
-    return source == other.source && author == other.author &&
-           artworkUri == other.artworkUri;
+    return std::tie(source, author, artworkUri) ==
+           std::tie(other.source, other.author, other.artworkUri);
   }
 
   bool operator!=(const MediaItem &other) const { return !(other == *this); }

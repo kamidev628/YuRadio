@@ -26,6 +26,8 @@ public:
 
   virtual bool isPlaying() const;
   virtual bool isLoading() const;
+  virtual bool canPlay() const;
+
   void clearErrors();
 
 signals:

@@ -166,7 +166,9 @@ void AndroidRadioController::setVolume(float volume) {
 }
 
 void AndroidRadioController::processMediaItem(const MediaItem &mediaItem) {
-  m_nativeController->setSource(mediaItem.source);
   m_nativeController->setAuthor(mediaItem.author);
   m_nativeController->setArtworkUri(mediaItem.artworkUri);
+
+  /* NOTE: Set source lastly */
+  m_nativeController->setSource(mediaItem.source);
 }

@@ -31,7 +31,9 @@ RadioPlayer::RadioPlayer(QObject *parent) : QObject(parent) {
 
 void RadioPlayer::play() {
   m_controller->clearErrors();
-  m_controller->play();
+  if (m_controller->canPlay()) {
+    m_controller->play();
+  }
 }
 
 void RadioPlayer::pause() {

@@ -5,6 +5,7 @@
 
 #ifdef Q_OS_ANDROID
   #include "android/nativemediacontroller.h"
+  #include "android/notificationclient.h"
   #include "android/virtualkeyboardlistener.h"
 #endif /* Q_OS_ANDROID */
 
@@ -53,6 +54,11 @@ int main(int argc, char *argv[]) {
   QNativeInterface::QAndroidApplication::runOnAndroidMainThread([]() {
     QThread::currentThread()->setObjectName("Android Main Thread"_L1);
   });
+
+  NotificationClient notificationClient;
+  engine.rootContext()->setContextProperty("NotificationClient",
+                                           &notificationClient);
+
   NativeMediaController::registerNativeMethods();
   VirtualKeyboardListener::registerNativeMethods();
 #endif /* Q_OS_ANDROID */

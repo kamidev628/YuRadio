@@ -1,11 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
-
 #include "notificationclient.h"
 
+#include <QJniObject>
 #include <QtCore/private/qandroidextras_p.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qjniobject.h>
 
 using namespace Qt::StringLiterals;
 
@@ -21,29 +17,15 @@ NotificationClient::NotificationClient(QObject *parent) : QObject(parent) {
                     "(required for Android 13+)";
     }
   }
-
-  connect(this, &NotificationClient::notificationChanged, this,
-          &NotificationClient::updateAndroidNotification);
 }
 
-void NotificationClient::setNotification(const QString &notification) {
-  if (m_notification == notification) {
-    return;
-  }
-
-  m_notification = notification;
-  emit notificationChanged();
-}
-
-QString NotificationClient::notification() const {
-  return m_notification;
-}
-
-void NotificationClient::updateAndroidNotification() {
-  QJniObject javaNotification = QJniObject::fromString(m_notification);
+void NotificationClient::notify(const QString &contentTitle,
+                                const QString &contentText) {
+  QJniObject javaContentTitle = QJniObject::fromString(contentTitle);
+  QJniObject javaContentText = QJniObject::fromString(contentText);
   QJniObject::callStaticMethod<void>(
     "org/yuradio/NotificationClient", "notify",
-    "(Landroid/content/Context;Ljava/lang/String;)V",
+    "(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;)V",
     QNativeInterface::QAndroidApplication::context(),
-    javaNotification.object<jstring>());
+    javaContentTitle.object<jstring>(), javaContentText.object<jstring>());
 }

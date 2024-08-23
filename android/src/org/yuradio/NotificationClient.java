@@ -12,7 +12,7 @@ import android.graphics.BitmapFactory;
 import android.app.NotificationChannel;
 
 public class NotificationClient {
-    public static void notify(Context context, String message) {
+    public static void notify(Context context, String contentTitle, String contentText) {
         try {
             NotificationManager m_notificationManager = (NotificationManager)
                     context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -21,7 +21,7 @@ public class NotificationClient {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 int importance = NotificationManager.IMPORTANCE_DEFAULT;
                 NotificationChannel notificationChannel;
-                notificationChannel = new NotificationChannel("Qt", "Qt Notifier", importance);
+                notificationChannel = new NotificationChannel("YuRadio", "YuRadio Notifier", importance);
                 m_notificationManager.createNotificationChannel(notificationChannel);
                 m_builder = new Notification.Builder(context, notificationChannel.getId());
             } else {
@@ -31,10 +31,10 @@ public class NotificationClient {
             Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.shortwave);
             m_builder.setSmallIcon(R.drawable.shortwave)
                     .setLargeIcon(icon)
-                    .setContentTitle("A message from Qt!")
-                    .setContentText(message)
+                    .setContentTitle(contentTitle)
+                    .setContentText(contentText)
                     .setDefaults(Notification.DEFAULT_SOUND)
-                    .setColor(Color.GREEN)
+                    .setColor(Color.TRANSPARENT)
                     .setAutoCancel(true);
 
             m_notificationManager.notify(0, m_builder.build());

@@ -1,28 +1,17 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
-
 #ifndef NOTIFICATIONCLIENT_H
 #define NOTIFICATIONCLIENT_H
 
 #include <QObject>
+#include <QtQmlIntegration>
 
-//! [Qt Notification Class]
 class NotificationClient : public QObject {
   Q_OBJECT
+
 public:
-  explicit NotificationClient(QObject *parent = 0);
+  explicit NotificationClient(QObject *parent = nullptr);
 
-  Q_INVOKABLE void setNotification(const QString &notification);
-  Q_INVOKABLE QString notification() const;
-
-signals:
-  void notificationChanged();
-
-private slots:
-  void updateAndroidNotification();
-
-private:
-  QString m_notification;
+public slots:
+  void notify(const QString &contentTitle, const QString &contentText);
 };
-//! [Qt Notification Class]
-#endif // NOTIFICATIONCLIENT_H
+
+#endif  // NOTIFICATIONCLIENT_H

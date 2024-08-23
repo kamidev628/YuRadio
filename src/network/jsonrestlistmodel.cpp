@@ -22,16 +22,10 @@ void JsonRestListModel::setDataPath(const QString &newDataPath) {
   emit dataPathChanged();
 }
 
-void JsonRestListModel::handleRequestData(const QByteArray &data) {
-  auto scopeGuard = qScopeGuard([this]() {
-    if (status() != Ready) {
-      setStatus(Error);
-    }
-  });
-
+bool JsonRestListModel::tryParseJsonData(const QByteArray &data) {
   std::optional<QJsonDocument> document = json::byteArrayToJson(data);
   if (!document) {
-    return;
+    return false;
   }
 
   QJsonArray dataArray;
@@ -41,13 +35,13 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
     if (m_dataPath.isNull()) {
       qCWarning(yuRestLog)
         << "Received valid Json object, but `data` path is not specified";
-      return;
+      return false;
     }
 
     rootObj = document->object();
     if (!rootObj[m_dataPath].isArray()) {
       qCWarning(yuRestLog) << "Not valid array at:" << m_dataPath;
-      return;
+      return false;
     }
 
     dataArray = rootObj[m_dataPath].toArray();
@@ -56,7 +50,7 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
     dataArray = document->array();
   } else {
     qCWarning(yuRestLog) << "Invalid Json";
-    return;
+    return false;
   }
 
   qsizetype sizeBefore = m_items.size();
@@ -81,7 +75,15 @@ void JsonRestListModel::handleRequestData(const QByteArray &data) {
     emit countChanged();
   }
 
-  setStatus(Ready);
+  return true;
+}
+
+void JsonRestListModel::handleRequestData(const QByteArray &data) {
+  if (tryParseJsonData(data)) {
+    setStatus(Ready);
+  } else {
+    setStatus(Error);
+  }
 }
 
 QHash<int, QByteArray> JsonRestListModel::roleNames() const {

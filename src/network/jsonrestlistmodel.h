@@ -33,6 +33,9 @@ protected:
   void handleRequestData(const QByteArray &data) override;
 
 private:
+  bool tryParseJsonData(const QByteArray &data);
+
+private:
   QList<QVariantMap> m_items;
 
   QHash<int, QByteArray> m_roleNames;

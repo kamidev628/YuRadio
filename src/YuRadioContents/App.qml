@@ -19,11 +19,16 @@ ApplicationWindow {
 
     title: qsTr("YuRadio")
 
+    Binding {
+        target: AppSettings
+        property: "isDesktopLayout"
+        value: root.width > AppSettings.desktopLayoutWidth
+    }
+
     StateGroup {
         states: [
             State {
-                name: "desktopLayout"
-                when: root.width > AppSettings.desktopLayoutWidth
+                when: AppSettings.isDesktopLayout
 
                 PropertyChanges {
                     mainStackView.width: mainStackView.parent.width - drawer.width * drawer.position
@@ -110,8 +115,8 @@ ApplicationWindow {
     RadioDrawer {
         id: drawer
 
-        onVolumeSliderValueChanged: (volume) => {
-          MainRadioPlayer.setVolume(volume)
+        onVolumeSliderValueChanged: volume => {
+            MainRadioPlayer.setVolume(volume);
         }
         onShowBookmarksRequested: {
             root.stackViewPushPage(bookmarkPage, "bookmarkPage");

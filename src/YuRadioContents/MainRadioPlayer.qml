@@ -19,6 +19,5 @@ RadioPlayer {
         }
 
         mediaItem = newMediaItem
-        Qt.callLater(play);
     }
 }

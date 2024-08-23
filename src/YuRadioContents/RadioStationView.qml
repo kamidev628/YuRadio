@@ -47,6 +47,7 @@ FilledGridView {
             } else {
                 RadioBrowser.click(root.networkManager.baseUrl, stationuuid);
                 MainRadioPlayer.currentItem = Object.assign({}, root.model.get(delegate.index));
+                Qt.callLater(MainRadioPlayer.play);
             }
         }
     }

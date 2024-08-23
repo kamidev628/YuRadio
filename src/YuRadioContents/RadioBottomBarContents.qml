@@ -14,8 +14,6 @@ FocusScope {
     required property RadioBottomBarDrawer bottomBarDrawer
     property MusicInfoModel musicInfoModel: bottomBarDrawer.musicInfoModel
 
-    readonly property DragHandler bottomBarDragHandler: bottomBarDrawer.dragHandler
-
     property var musicInfo
     property string streamTitle: MainRadioPlayer.streamTitle
     property string lastStreamTitle: ""
@@ -36,7 +34,7 @@ FocusScope {
 
     Binding {
         when: mainFlickable.dragging
-        root.bottomBarDragHandler.enabled: false
+        root.bottomBarDrawer.interactive: false
     }
 
     states: [

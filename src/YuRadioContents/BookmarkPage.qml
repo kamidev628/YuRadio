@@ -27,15 +27,9 @@ Item {
 
     RadioBottomBar {
         id: bottomBarDrawer
+        interactive: !(root.drawer.opened && !AppSettings.isDesktopLayout)
         gridView: bookmarkGridView
         stackView: root.StackView.view
         musicInfoModel: root.musicInfoModel
-    }
-
-    Connections {
-        target: root.drawer
-        function onOpened() {
-            bottomBarDrawer.close();
-        }
     }
 }

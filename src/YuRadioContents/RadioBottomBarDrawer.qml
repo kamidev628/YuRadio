@@ -7,10 +7,10 @@ Item {
     id: root
 
     default property alias data: contentItem.data
-    property alias dragHandler: dragHandler
 
     required property real minimumHeight
     required property real maximumHeight
+    property bool interactive: true
 
     property real progress: (root.height - root.minimumHeight) / (root.maximumHeight - root.minimumHeight)
 
@@ -64,6 +64,7 @@ Item {
     }
 
     TapHandler {
+        enabled: root.interactive
         onTapped: {
             root.open();
         }
@@ -71,6 +72,7 @@ Item {
 
     DragHandler {
         id: dragHandler
+        enabled: root.interactive
         target: root
 
         dragThreshold: 50

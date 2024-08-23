@@ -19,10 +19,6 @@ Item {
     required property MusicInfoModel musicInfoModel
 
     function openSearchFilterDialog() {
-        /* TODO: underlying drag handler steals drag events from
-         * search-filter-dialog
-         */
-        bottomBarDrawer.close();
         if (searchFilterDialogLoader.active) {
             searchFilterDialogLoader.item.open();
         } else {
@@ -244,16 +240,10 @@ Item {
 
     RadioBottomBar {
         id: bottomBarDrawer
+        interactive: !((searchFilterDialogLoader.item?.opened ?? false) || (root.drawer.opened && !AppSettings.isDesktopLayout))
         gridView: radioGridView
         stackView: root.StackView.view
         musicInfoModel: root.musicInfoModel
-    }
-
-    Connections {
-        target: root.drawer
-        function onOpened() {
-            bottomBarDrawer.close();
-        }
     }
 
     Connections {

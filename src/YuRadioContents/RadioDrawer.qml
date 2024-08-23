@@ -88,7 +88,7 @@ Drawer {
                 icon.source: iconSource
                 highlighted: ListView.isCurrentItem
                 onClicked: {
-                    if (Window.width < AppSettings.desktopLayoutWidth) {
+                    if (!AppSettings.isDesktopLayout) {
                         root.close();
                     }
                     triggered();

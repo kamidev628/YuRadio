@@ -115,9 +115,6 @@ ApplicationWindow {
     RadioDrawer {
         id: drawer
 
-        onVolumeSliderValueChanged: volume => {
-            MainRadioPlayer.setVolume(volume);
-        }
         onShowBookmarksRequested: {
             root.stackViewPushPage(bookmarkPage, "bookmarkPage");
         }
@@ -213,19 +210,6 @@ ApplicationWindow {
         }
 
         Keys.onBackPressed: event => root.backButtonPressed(event)
-        Keys.onPressed: event => {
-            if (Qt.platform.pluginName === "wayland" || !AppSettings.isMobile) {
-                if (event.key == Qt.Key_MediaTogglePlayPause) {
-                    MainRadioPlayer.toggle();
-                } else if (event.key == Qt.Key_MediaPause) {
-                    MainRadioPlayer.pause();
-                } else if (event.key == Qt.Key_MediaStop) {
-                    MainRadioPlayer.stop();
-                } else if (event.key == Qt.Key_MediaPlay) {
-                    MainRadioPlayer.play();
-                }
-            }
-        }
     }
 
     header: ToolBar {
@@ -274,5 +258,14 @@ ApplicationWindow {
         }
 
         Keys.forwardTo: [mainStackView]
+    }
+
+    Shortcut {
+      sequences: ["Media Play", "Media Pause", "Toggle Media Play/Pause", "Media Stop"]
+      context: Qt.ApplicationShortcut
+      enabled: Qt.platform.pluginName === "wayland" || (!UIOHOOK_SUPPORTED && !AppSettings.isMobile)
+      onActivated: {
+        MainRadioPlayer.toggle()
+      }
     }
 }

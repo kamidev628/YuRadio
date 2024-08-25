@@ -15,6 +15,8 @@ RadioPlayer::RadioPlayer(QObject *parent) : QObject(parent) {
   m_controller = new BasicRadioController(this);
 #endif
 
+  connect(m_controller, &PlatformRadioController::volumeChanged, this,
+          &RadioPlayer::volumeChanged);
   connect(m_controller, &PlatformRadioController::mediaItemChanged, this,
           &RadioPlayer::mediaItemChanged);
   connect(m_controller, &PlatformRadioController::playbackStateChanged, this,

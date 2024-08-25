@@ -78,6 +78,10 @@ qt_add_qml_module(
   obf.cpp
   applicationconfig.h)
 
+if(BUILD_UIOHOOK)
+  target_sources(YuRadio PRIVATE globalkeylistener.h globalkeylistener.cpp)
+endif()
+
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1. If
 # you are developing for iOS or macOS you should consider setting an explicit,
 # fixed bundle identifier manually though.
@@ -106,7 +110,7 @@ target_link_libraries(
           Qt6::Svg
           YuRadioNetworkplugin
           YuRadioContentsplugin
-          "$<$<PLATFORM_ID:Linux,Windows,Darwin>:QHotkey::QHotkey>"
+          "$<TARGET_NAME_IF_EXISTS:uiohook>"
           "$<$<CONFIG:Debug>:HotReloader>")
 
 target_set_warnings(YuRadio)

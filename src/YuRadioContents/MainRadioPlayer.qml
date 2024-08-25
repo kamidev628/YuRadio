@@ -8,6 +8,11 @@ RadioPlayer {
 
     property var currentItem
 
+    volume: AppSettings.volume
+    onVolumeChanged: {
+      AppSettings.volume = volume
+    }
+
     onCurrentItemChanged: {
         AppSettings.lastStation = currentItem;
         const newMediaItem = constructMediaItem()

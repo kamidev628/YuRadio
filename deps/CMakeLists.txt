@@ -1,5 +1,3 @@
-if(LINUX
-   OR APPLE
-   OR WIN32)
-  add_subdirectory(QHotKey)
+if(BUILD_UIOHOOK)
+  add_subdirectory(uiohook)
 endif()

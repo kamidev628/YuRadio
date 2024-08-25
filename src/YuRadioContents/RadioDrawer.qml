@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import Main
 import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Controls
@@ -17,7 +18,6 @@ Drawer {
     signal showSearchRequested
     signal showSettingsRequested
     signal showAboutRequested
-    signal volumeSliderValueChanged(real value)
 
     ColumnLayout {
         id: columnLayout
@@ -99,12 +99,11 @@ Drawer {
         VolumeController {
             id: volumeController
 
-            volume: AppSettings.volume
+            volume: MainRadioPlayer.volume
 
             Layout.fillWidth: true
             onVolumeChanged: {
-                AppSettings.volume = volume;
-                root.volumeSliderValueChanged(volume);
+                MainRadioPlayer.volume = volume
             }
         }
 

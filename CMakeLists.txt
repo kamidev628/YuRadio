@@ -11,6 +11,22 @@ find_package(Qt6 REQUIRED COMPONENTS Core WebSockets HttpServer Quick)
 
 qt_standard_project_setup(REQUIRES 6.5 I18N_TRANSLATED_LANGUAGES en ru)
 
+option(
+  BUILD_UIOHOOK
+  "Build the uiohook library(enables media key support for desktop platforms)"
+  ON)
+
+if(NOT LINUX
+   AND NOT WIN32
+   AND NOT WIN64
+   AND NOT APPLE)
+  set(BUILD_UIOHOOK OFF)
+endif()
+
+if(BUILD_UIOHOOK)
+  add_compile_definitions(YuRadio PRIVATE UIOHOOK_SUPPORTED)
+endif()
+
 add_subdirectory(deps)
 add_subdirectory(hotreloader)
 add_subdirectory(src)
@@ -34,7 +50,10 @@ qt_add_translations(
 # NOTE: Don't forget to run `update_translations` target when ts files are
 # changed
 
-if(NOT ANDROID)
+if(LINUX
+   OR WIN32
+   OR WIN64
+   OR APPLE)
   install(
     TARGETS YuRadio
     BUNDLE DESTINATION .

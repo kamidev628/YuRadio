@@ -20,12 +20,13 @@
 #include <QSslSocket>
 
 #include "network/networkmanagerfactory.h"
+#include <QKeySequence>
+#include <QShortcut>
 
-#if defined(Q_OS_WINDOWS) || defined(Q_OS_DARWIN) ||                           \
-  (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID))
+#ifdef UIOHOOK_SUPPORTED
+  #include "globalkeylistener.h"
   #include "radioplayer.h"
-  #include <QHotkey>
-#endif
+#endif /* !UIOHOOK_SUPPORTED */
 
 using namespace Qt::StringLiterals;
 
@@ -56,17 +57,21 @@ int main(int argc, char *argv[]) {
   NetworkManagerFactory networkManagerFactory;
   engine.setNetworkAccessManagerFactory(&networkManagerFactory);
 
-#if defined(Q_OS_WINDOWS) || defined(Q_OS_DARWIN) ||                           \
-  (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID))
-  QHotkey mediaPlayHotKey(Qt::Key_MediaPlay, Qt::NoModifier, true);
-  auto *singleton = engine.singletonInstance<RadioPlayer *>("YuRadioContents",
-                                                            "MainRadioPlayer");
-  QObject::connect(&mediaPlayHotKey, &QHotkey::activated, singleton, [&]() {
-    singleton->toggle();
-    mediaPlayHotKey.resetShortcut();
-    mediaPlayHotKey.setShortcut(Qt::Key_MediaPlay, Qt::NoModifier, true);
+#ifdef UIOHOOK_SUPPORTED
+  engine.rootContext()->setContextProperty("UIOHOOK_SUPPORTED", true);
+  auto *player = engine.singletonInstance<RadioPlayer *>("YuRadioContents",
+                                                         "MainRadioPlayer");
+  GlobalKeyListener *listener = GlobalKeyListener::instance();
+  QObject::connect(listener, &GlobalKeyListener::keyPressed, player,
+                   [&](Qt::Key key) {
+    if (key == Qt::Key_MediaPlay || key == Qt::Key_MediaStop ||
+        key == Qt::Key_MediaPause) {
+      player->toggle();
+    }
   });
-#endif
+#else
+  engine.rootContext()->setContextProperty("UIOHOOK_SUPPORTED", false);
+#endif /* UIOHOOK_SUPPORTED */
 
 #ifdef Q_OS_ANDROID
   /* Rename android UI thread*/

@@ -11,8 +11,15 @@ find_package(Qt6 REQUIRED COMPONENTS Core WebSockets HttpServer Quick)
 
 qt_standard_project_setup(REQUIRES 6.5 I18N_TRANSLATED_LANGUAGES en ru)
 
+add_subdirectory(deps)
 add_subdirectory(hotreloader)
 add_subdirectory(src)
+
+if(WIN32)
+  set(app_icon_resource_windows
+      "${CMAKE_CURRENT_SOURCE_DIR}/resources/yuradio.rc")
+  target_sources(YuRadio PRIVATE ${app_icon_resource_windows})
+endif()
 
 qt_add_translations(
   TARGETS

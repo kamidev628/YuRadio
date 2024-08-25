@@ -1,0 +1,3 @@
+[submodule "deps/QHotKey"]
+	path = deps/QHotKey
+	url = https://github.com/Skycoder42/QHotkey

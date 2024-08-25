@@ -106,6 +106,7 @@ target_link_libraries(
           Qt6::Svg
           YuRadioNetworkplugin
           YuRadioContentsplugin
+          "$<$<PLATFORM_ID:Linux,Windows,Darwin>:QHotkey::QHotkey>"
           "$<$<CONFIG:Debug>:HotReloader>")
 
 target_set_warnings(YuRadio)

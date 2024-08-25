@@ -21,6 +21,12 @@
 
 #include "network/networkmanagerfactory.h"
 
+#if defined(Q_OS_WINDOWS) || defined(Q_OS_DARWIN) ||                           \
+  (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID))
+  #include "radioplayer.h"
+  #include <QHotkey>
+#endif
+
 using namespace Qt::StringLiterals;
 
 int main(int argc, char *argv[]) {
@@ -49,6 +55,19 @@ int main(int argc, char *argv[]) {
 
   NetworkManagerFactory networkManagerFactory;
   engine.setNetworkAccessManagerFactory(&networkManagerFactory);
+
+#if defined(Q_OS_WINDOWS) || defined(Q_OS_DARWIN) ||                           \
+  (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID))
+  QHotkey mediaPlayHotKey(Qt::Key_MediaPlay, Qt::NoModifier, true);
+  auto *singleton = engine.singletonInstance<RadioPlayer *>("YuRadioContents",
+                                                            "MainRadioPlayer");
+  QObject::connect(&mediaPlayHotKey, &QHotkey::activated, singleton, [&]() {
+    singleton->toggle();
+    mediaPlayHotKey.resetShortcut();
+    mediaPlayHotKey.setShortcut(Qt::Key_MediaPlay, Qt::NoModifier, true);
+  });
+#endif
+
 #ifdef Q_OS_ANDROID
   /* Rename android UI thread*/
   QNativeInterface::QAndroidApplication::runOnAndroidMainThread([]() {

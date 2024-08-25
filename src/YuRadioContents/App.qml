@@ -213,17 +213,18 @@ ApplicationWindow {
         }
 
         Keys.onBackPressed: event => root.backButtonPressed(event)
-
-        Keys.onPressed: (event) => {
-          if (event.key == Qt.Key_MediaTogglePlayPause) {
-            MainRadioPlayer.toggle()
-          } else if (event.key == Qt.Key_MediaPause) {
-            MainRadioPlayer.pause()
-          } else if (event.key == Qt.Key_MediaStop) {
-            MainRadioPlayer.stop()
-          } else if (event.key == Qt.Key_MediaPlay) {
-            MainRadioPlayer.play()
-          }
+        Keys.onPressed: event => {
+            if (Qt.platform.pluginName === "wayland" || !AppSettings.isMobile) {
+                if (event.key == Qt.Key_MediaTogglePlayPause) {
+                    MainRadioPlayer.toggle();
+                } else if (event.key == Qt.Key_MediaPause) {
+                    MainRadioPlayer.pause();
+                } else if (event.key == Qt.Key_MediaStop) {
+                    MainRadioPlayer.stop();
+                } else if (event.key == Qt.Key_MediaPlay) {
+                    MainRadioPlayer.play();
+                }
+            }
         }
     }
 

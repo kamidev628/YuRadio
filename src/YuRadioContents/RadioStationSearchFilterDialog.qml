@@ -29,9 +29,9 @@ Dialog {
 
     QtObject {
         id: internal
-        property int prevSelectedCountry
-        property int prevSelectedState
-        property int prevSelectedLanguage
+        property int prevSelectedCountry: -1
+        property int prevSelectedState: -1
+        property int prevSelectedLanguage: -1
         property list<int> prevSelectedTags
     }
 

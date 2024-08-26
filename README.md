@@ -14,9 +14,16 @@ You can:
  - Sort (votes, popularity, ...)
 
 ### Building
-
-In order to build the project, you will need Qt with some extra dependencies
+---
+In order to build the project, you will need Qt6.7 with some extra dependencies
 listed in the `CMakeLists.txt` files
+
+##### Available Build Options
+
+`BUILD_UIOHOOK` - Builds uiohook (enables media key support for desktop platforms)
+
+### Dependencies
+`Qt6` `uiohook`
 
 ### Supported platforms
 `android` `windows` `linux`

@@ -21,6 +21,7 @@ signals:
 
 private:
   void cleanupImpl();
+  void run();
 
 private:
   Q_DISABLE_COPY(GlobalKeyListener)

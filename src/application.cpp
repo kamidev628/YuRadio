@@ -1,3 +1,6 @@
+#include <QLoggingCategory>
+Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
+
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
@@ -45,8 +48,10 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
   QCoreApplication::setApplicationName(u"YuRadio"_s);
   QCoreApplication::setApplicationVersion(u"1.0"_s);
 
-  qDebug() << "Version:" << QCoreApplication::applicationVersion();
-  qDebug() << "Device supports OpenSSL:" << QSslSocket::supportsSsl();
+  qCInfo(applicationLog) << "Version:"
+                         << QCoreApplication::applicationVersion();
+  qCInfo(applicationLog) << "Device supports OpenSSL:"
+                         << QSslSocket::supportsSsl();
 
   m_engine = std::make_unique<QQmlApplicationEngine>();
 

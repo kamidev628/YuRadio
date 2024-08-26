@@ -15,11 +15,8 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
   #include "hotreloaderclient.h"
 #endif /* QT_DEBUG */
 
-#include <QDir>
-#include <QThread>
-
-#include <QLoggingCategory>
 #include <QSslSocket>
+#include <QThread>
 
 #include "network/networkmanagerfactory.h"
 
@@ -66,7 +63,7 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
                                                             "MainRadioPlayer");
   GlobalKeyListener *listener = GlobalKeyListener::instance();
   QObject::connect(listener, &GlobalKeyListener::keyPressed, player,
-                   [&](Qt::Key key) {
+                   [player](Qt::Key key) {
     if (key == Qt::Key_MediaPlay || key == Qt::Key_MediaStop ||
         key == Qt::Key_MediaPause) {
       player->toggle();

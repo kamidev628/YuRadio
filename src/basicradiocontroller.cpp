@@ -72,7 +72,10 @@ QUrl BasicRadioController::icecastProxyServerUrl() {
 }
 
 void BasicRadioController::play() {
-  if (m_mediaPlayer->playbackState() == QMediaPlayer::StoppedState) {
+  QMediaPlayer::MediaStatus status = m_mediaPlayer->mediaStatus();
+
+  if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::InvalidMedia ||
+      status == QMediaPlayer::EndOfMedia) {
     reconnectToIcecastProxyServer();
   }
   m_mediaPlayer->play();

@@ -27,7 +27,7 @@ Item {
 
     RadioBottomBar {
         id: bottomBarDrawer
-        interactive: !(root.drawer.opened && !AppSettings.isDesktopLayout)
+        interactive: !(root.drawer.opened && !Window.window.isDesktopLayout)
         gridView: bookmarkGridView
         stackView: root.StackView.view
         musicInfoModel: root.musicInfoModel

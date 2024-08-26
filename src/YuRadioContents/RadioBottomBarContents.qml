@@ -40,7 +40,7 @@ FocusScope {
     states: [
         State {
             name: "dragStarted"
-            when: root.bottomBarDrawer.height > root.implicitHeight + 100
+            when: root.bottomBarDrawer.height >= Math.min(root.implicitHeight + 100, root.bottomBarDrawer.maximumHeight)
 
             PropertyChanges {
                 stationInfoColumn.visible: true

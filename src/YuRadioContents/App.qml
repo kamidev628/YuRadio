@@ -15,20 +15,19 @@ ApplicationWindow {
     width: 640
     height: 880
 
+    minimumWidth: 300
+    minimumHeight: 300
+
     Material.theme: AppSettings.isDarkTheme ? Material.Dark : Material.Light
 
     title: qsTr("YuRadio")
 
-    Binding {
-        target: AppSettings
-        property: "isDesktopLayout"
-        value: root.width > AppSettings.desktopLayoutWidth
-    }
+    readonly property bool isDesktopLayout: width >= AppSettings.portraitLayoutWidth
 
     StateGroup {
         states: [
             State {
-                when: AppSettings.isDesktopLayout
+                when: root.isDesktopLayout
 
                 PropertyChanges {
                     mainStackView.width: mainStackView.parent.width - drawer.width * drawer.position
@@ -261,11 +260,11 @@ ApplicationWindow {
     }
 
     Shortcut {
-      sequences: ["Media Play", "Media Pause", "Toggle Media Play/Pause", "Media Stop"]
-      context: Qt.ApplicationShortcut
-      enabled: Qt.platform.pluginName === "wayland" || (!UIOHOOK_SUPPORTED && !AppSettings.isMobile)
-      onActivated: {
-        MainRadioPlayer.toggle()
-      }
+        sequences: ["Media Play", "Media Pause", "Toggle Media Play/Pause", "Media Stop"]
+        context: Qt.ApplicationShortcut
+        enabled: Qt.platform.pluginName === "wayland" || (!UIOHOOK_SUPPORTED && !AppSettings.isMobile)
+        onActivated: {
+            MainRadioPlayer.toggle();
+        }
     }
 }

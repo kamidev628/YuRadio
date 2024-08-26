@@ -88,7 +88,7 @@ Drawer {
                 icon.source: iconSource
                 highlighted: ListView.isCurrentItem
                 onClicked: {
-                    if (!AppSettings.isDesktopLayout) {
+                    if (!Window.window.isDesktopLayout) {
                         root.close();
                     }
                     triggered();
@@ -103,7 +103,7 @@ Drawer {
 
             Layout.fillWidth: true
             onVolumeChanged: {
-                MainRadioPlayer.volume = volume
+                MainRadioPlayer.volume = volume;
             }
         }
 

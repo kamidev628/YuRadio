@@ -240,7 +240,7 @@ Item {
 
     RadioBottomBar {
         id: bottomBarDrawer
-        interactive: !((searchFilterDialogLoader.item?.opened ?? false) || (root.drawer.opened && !AppSettings.isDesktopLayout))
+        interactive: !((searchFilterDialogLoader.item?.opened ?? false) || (root.drawer.opened && !Window.window.isDesktopLayout))
         gridView: radioGridView
         stackView: root.StackView.view
         musicInfoModel: root.musicInfoModel

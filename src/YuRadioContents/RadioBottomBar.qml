@@ -14,7 +14,9 @@ RadioBottomBarDrawer {
     required property StackView stackView
     required property MusicInfoModel musicInfoModel
 
-    maximumHeight: parent.height * 2 / 3
+    readonly property real preferredHeight: parent.height * 2 / 3
+
+    maximumHeight: preferredHeight
     minimumHeight: 0
 
     anchors {

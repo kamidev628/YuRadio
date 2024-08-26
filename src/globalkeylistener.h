@@ -20,6 +20,9 @@ signals:
   void keyTyped(Qt::Key key);
 
 private:
+  void cleanupImpl();
+
+private:
   Q_DISABLE_COPY(GlobalKeyListener)
 
   std::unique_ptr<QThread> m_thread;

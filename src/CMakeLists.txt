@@ -52,6 +52,8 @@ qt_add_qml_module(
   Main.qml
   ErrorPage.qml
   SOURCES
+  application.h
+  application.cpp
   algorithm.h
   algorithm.cpp
   icecastreaderproxyserver.h

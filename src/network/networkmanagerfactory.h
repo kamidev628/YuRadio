@@ -3,8 +3,12 @@
 
 #include <QQmlNetworkAccessManagerFactory>
 
-class NetworkManagerFactory : public QQmlNetworkAccessManagerFactory {
+class NetworkManagerFactory : public QObject,
+                              public QQmlNetworkAccessManagerFactory {
+  Q_OBJECT
+
 public:
+  explicit NetworkManagerFactory(QObject *parent = nullptr);
   QNetworkAccessManager *create(QObject *parent) override;
 };
 

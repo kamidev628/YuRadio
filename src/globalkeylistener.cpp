@@ -22,12 +22,6 @@ static inline Qt::Key UioHookKeyToQt(uint16_t keycode) {
   }
 }
 
-// NOTE: The following callback executes on the same thread that hook_run() is called
-// from.  This is important because hook_run() attaches to the operating systems
-// event dispatcher and may delay event delivery to the target application.
-// Furthermore, some operating systems may choose to disable your hook if it
-// takes too long to process.  If you need to do any extended processing, please
-// do so by copying the event to your own queued dispatch thread.
 static void uiohookEventCallback(uiohook_event *const event) {
   GlobalKeyListener *listener = GlobalKeyListener::instance();
 
@@ -68,7 +62,7 @@ GlobalKeyListener::GlobalKeyListener(QObject *parent) : QObject(parent) {
 }
 
 GlobalKeyListener::~GlobalKeyListener() {
-  QMetaObject::invokeMethod(this, &GlobalKeyListener::cleanup);
+  QMetaObject::invokeMethod(this, &GlobalKeyListener::cleanupImpl);
   m_thread->wait();
 }
 
@@ -78,6 +72,10 @@ GlobalKeyListener *GlobalKeyListener::instance() {
 }
 
 void GlobalKeyListener::cleanup() {
+  QMetaObject::invokeMethod(this, &GlobalKeyListener::cleanupImpl);
+}
+
+void GlobalKeyListener::cleanupImpl() {
   hook_stop();
   m_thread->quit();
 }

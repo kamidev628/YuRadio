@@ -67,16 +67,6 @@ Item {
             grabPermissions: PointerHandler.TakeOverForbidden
         }
 
-        HoverHandler {
-            id: hoverHandler
-
-            property geoCoordinate startCoordinates
-
-            onPointChanged: {
-                startCoordinates = map.toCoordinate(point.position);
-            }
-        }
-
         WheelHandler {
             id: wheelHandler
             // workaround for QTBUG-87646 / QTBUG-112394 / QTBUG-112432:
@@ -85,8 +75,9 @@ Item {
             acceptedDevices: Qt.platform.pluginName === "cocoa" || Qt.platform.pluginName === "wayland" ? PointerDevice.Mouse | PointerDevice.TouchPad : PointerDevice.Mouse
 
             onWheel: event => {
+                const location = map.toCoordinate(point.position)
                 map.zoomLevel += Math.cbrt(event.angleDelta.y) / 30;
-                map.alignCoordinateToPoint(hoverHandler.startCoordinates, point.position);
+                map.alignCoordinateToPoint(location, point.position);
             }
             rotationScale: 1 / 120
         }

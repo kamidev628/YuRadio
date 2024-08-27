@@ -7,12 +7,8 @@ class GlobalKeyListener : public QObject {
   Q_OBJECT
 
 public:
-  explicit GlobalKeyListener(QObject *parent = nullptr);
+  explicit GlobalKeyListener();
   ~GlobalKeyListener() override;
-
-  static GlobalKeyListener *instance();
-
-  void cleanup();
 
 signals:
   void keyPressed(Qt::Key key);
@@ -20,12 +16,10 @@ signals:
   void keyTyped(Qt::Key key);
 
 private:
-  void cleanupImpl();
+  void cleanup();
   void run();
 
 private:
-  Q_DISABLE_COPY(GlobalKeyListener)
-
   std::unique_ptr<QThread> m_thread;
 };
 

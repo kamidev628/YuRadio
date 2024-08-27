@@ -37,8 +37,7 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
     "critical}C%{endif}%{if-fatal}F%{endif}] %{file}:%{line} - %{message}"_s);
 
   QLoggingCategory::setFilterRules(
-    u"YuRadio.*.debug=true\nYuRadio.CircularBuffer.debug="
-    "false\nHotreloader.*.info=false\nYuRadio.IcecastReader.info=false"_s);
+    u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.IcecastReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false"_s);
   QThread::currentThread()->setObjectName("Main Thread"_L1);
 
   QCoreApplication::setOrganizationName(u"YuRadio"_s);
@@ -58,19 +57,19 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
   m_engine->setNetworkAccessManagerFactory(networkManagerFactory);
 
 #ifdef UIOHOOK_SUPPORTED
-  m_engine->rootContext()->setContextProperty("UIOHOOK_SUPPORTED", true);
+  m_engine->rootContext()->setContextProperty(u"UIOHOOK_SUPPORTED"_s, true);
   auto *player = m_engine->singletonInstance<RadioPlayer *>("YuRadioContents",
                                                             "MainRadioPlayer");
-  GlobalKeyListener *listener = GlobalKeyListener::instance();
-  QObject::connect(listener, &GlobalKeyListener::keyPressed, player,
-                   [player](Qt::Key key) {
+  m_globalKeyListener = std::make_unique<GlobalKeyListener>();
+  QObject::connect(m_globalKeyListener.get(), &GlobalKeyListener::keyPressed,
+                   player, [player](Qt::Key key) {
     if (key == Qt::Key_MediaPlay || key == Qt::Key_MediaStop ||
         key == Qt::Key_MediaPause) {
       player->toggle();
     }
   });
 #else
-  m_engine->rootContext()->setContextProperty("UIOHOOK_SUPPORTED", false);
+  m_engine->rootContext()->setContextProperty(u"UIOHOOK_SUPPORTED"_s, false);
 #endif /* UIOHOOK_SUPPORTED */
 
 #ifdef Q_OS_ANDROID
@@ -96,8 +95,4 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
 #endif /* QT_DEBUG */
 }
 
-Application::~Application() {
-#ifdef UIOHOOK_SUPPORTED
-  GlobalKeyListener::instance()->cleanup();
-#endif
-}
+Application::~Application() = default;

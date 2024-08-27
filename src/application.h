@@ -4,6 +4,7 @@
 #include <QGuiApplication>
 
 class QQmlApplicationEngine;
+class GlobalKeyListener;
 
 class Application : public QGuiApplication {
   Q_OBJECT
@@ -14,6 +15,9 @@ public:
 
 private:
   std::unique_ptr<QQmlApplicationEngine> m_engine;
+#ifdef UIOHOOK_SUPPORTED
+  std::unique_ptr<GlobalKeyListener> m_globalKeyListener;
+#endif /* UIOHOOK_SUPPORTED */
 };
 
 #endif /* !APPLICATION_H */

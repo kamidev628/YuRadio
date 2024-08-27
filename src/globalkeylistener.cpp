@@ -7,6 +7,8 @@ Q_LOGGING_CATEGORY(globalKeyListenerLog, "YuRadio.GlobalKeyListener")
 
 #include "globalkeylistener.h"
 
+static GlobalKeyListener *s_instance = nullptr;
+
 static inline Qt::Key UioHookKeyToQt(uint16_t keycode) {
   switch (keycode) {
     /* TODO: Add supported keys */
@@ -24,12 +26,11 @@ static inline Qt::Key UioHookKeyToQt(uint16_t keycode) {
 }
 
 static void uiohookEventCallback(uiohook_event *const event) {
-  GlobalKeyListener *listener = GlobalKeyListener::instance();
-
   keyboard_event_data &keyboard = event->data.keyboard;
+
   switch (event->type) {
     case EVENT_KEY_PRESSED:
-      emit listener->keyPressed(UioHookKeyToQt(keyboard.keycode));
+      emit s_instance->keyPressed(UioHookKeyToQt(keyboard.keycode));
       qCInfo(globalKeyListenerLog)
         << QString("GlobalKeyPress keycode=%1, rawcode=%2")
              .arg(keyboard.keycode)
@@ -37,7 +38,7 @@ static void uiohookEventCallback(uiohook_event *const event) {
       break;
 
     case EVENT_KEY_RELEASED:
-      emit listener->keyReleased(UioHookKeyToQt(keyboard.keycode));
+      emit s_instance->keyReleased(UioHookKeyToQt(keyboard.keycode));
       qCInfo(globalKeyListenerLog)
         << QString("GlobalKeyRelease keycode=%1, rawcode=%2")
              .arg(keyboard.keycode)
@@ -45,7 +46,7 @@ static void uiohookEventCallback(uiohook_event *const event) {
       break;
 
     case EVENT_KEY_TYPED:
-      emit listener->keyTyped(UioHookKeyToQt(keyboard.keycode));
+      emit s_instance->keyTyped(UioHookKeyToQt(keyboard.keycode));
       qCInfo(globalKeyListenerLog)
         << QString("GlobalKeyType keycode=%1, rawcode=%2")
              .arg(keyboard.keycode)
@@ -56,7 +57,10 @@ static void uiohookEventCallback(uiohook_event *const event) {
   }
 }
 
-GlobalKeyListener::GlobalKeyListener(QObject *parent) : QObject(parent) {
+GlobalKeyListener::GlobalKeyListener() : QObject(nullptr) {
+  Q_ASSERT(s_instance == nullptr);
+  s_instance = this;
+
   m_thread = std::make_unique<QThread>();
   moveToThread(m_thread.get());
 
@@ -67,20 +71,12 @@ GlobalKeyListener::GlobalKeyListener(QObject *parent) : QObject(parent) {
 }
 
 GlobalKeyListener::~GlobalKeyListener() {
-  QMetaObject::invokeMethod(this, &GlobalKeyListener::cleanupImpl);
+  QMetaObject::invokeMethod(this, &GlobalKeyListener::cleanup);
+  s_instance = nullptr;
   m_thread->wait();
 }
 
-GlobalKeyListener *GlobalKeyListener::instance() {
-  static GlobalKeyListener instance;
-  return &instance;
-}
-
 void GlobalKeyListener::cleanup() {
-  QMetaObject::invokeMethod(this, &GlobalKeyListener::cleanupImpl);
-}
-
-void GlobalKeyListener::cleanupImpl() {
   int status = hook_stop();
   switch (status) {
     case UIOHOOK_SUCCESS:

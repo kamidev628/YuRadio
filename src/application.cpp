@@ -56,22 +56,38 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
   auto *networkManagerFactory = new NetworkManagerFactory(m_engine.get());
   m_engine->setNetworkAccessManagerFactory(networkManagerFactory);
 
+  initializeShortcuts();
+  initializePlatform();
+
+#ifdef QT_DEBUG
+  new HotReloaderClient(m_engine.get(), u"192.168.1.37"_s,
+                        u"/src/Main/Main.qml"_s, u"/src/Main/ErrorPage.qml"_s,
+                        {u"Main"_s, u"YuRadioContents"_s}, this);
+#else
+  m_engine->loadFromModule(u"Main"_s, u"Main"_s);
+#endif /* QT_DEBUG */
+}
+
+Application::~Application() = default;
+
+void Application::initializeShortcuts() {
 #ifdef UIOHOOK_SUPPORTED
+  m_globalKeyListener = std::make_unique<GlobalKeyListener>();
+
   m_engine->rootContext()->setContextProperty(u"UIOHOOK_SUPPORTED"_s, true);
   auto *player = m_engine->singletonInstance<RadioPlayer *>("YuRadioContents",
                                                             "MainRadioPlayer");
-  m_globalKeyListener = std::make_unique<GlobalKeyListener>();
-  QObject::connect(m_globalKeyListener.get(), &GlobalKeyListener::keyPressed,
-                   player, [player](Qt::Key key) {
-    if (key == Qt::Key_MediaPlay || key == Qt::Key_MediaStop ||
-        key == Qt::Key_MediaPause) {
-      player->toggle();
-    }
-  });
+  auto *mediaPlayShortcut =
+    new GlobalShortcut(Qt::Key_MediaPlay, Qt::NoModifier, this);
+  connect(mediaPlayShortcut, &GlobalShortcut::activated, player,
+          &RadioPlayer::toggle);
+  mediaPlayShortcut->registerShortcut(m_globalKeyListener.get());
 #else
   m_engine->rootContext()->setContextProperty(u"UIOHOOK_SUPPORTED"_s, false);
 #endif /* UIOHOOK_SUPPORTED */
+}
 
+void Application::initializePlatform() {
 #ifdef Q_OS_ANDROID
   /* Rename android UI thread*/
   QNativeInterface::QAndroidApplication::runOnAndroidMainThread([]() {
@@ -85,14 +101,4 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
   NativeMediaController::registerNativeMethods();
   VirtualKeyboardListener::registerNativeMethods();
 #endif /* Q_OS_ANDROID */
-
-#ifdef QT_DEBUG
-  auto *client = new HotReloaderClient(
-    m_engine.get(), u"192.168.1.37"_s, u"/src/Main/Main.qml"_s,
-    u"/src/Main/ErrorPage.qml"_s, {u"Main"_s, u"YuRadioContents"_s}, this);
-#else
-  m_engine->loadFromModule(u"Main"_s, u"Main"_s);
-#endif /* QT_DEBUG */
 }
-
-Application::~Application() = default;

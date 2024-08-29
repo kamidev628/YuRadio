@@ -14,6 +14,10 @@ public:
   ~Application() override;
 
 private:
+  void initializeShortcuts();
+  void initializePlatform();
+
+private:
   std::unique_ptr<QQmlApplicationEngine> m_engine;
 #ifdef UIOHOOK_SUPPORTED
   std::unique_ptr<GlobalKeyListener> m_globalKeyListener;

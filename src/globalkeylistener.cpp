@@ -7,11 +7,17 @@ Q_LOGGING_CATEGORY(globalKeyListenerLog, "YuRadio.GlobalKeyListener")
 
 #include "globalkeylistener.h"
 
+using namespace Qt::StringLiterals;
+
 static GlobalKeyListener *s_instance = nullptr;
 
 static inline Qt::Key UioHookKeyToQt(uint16_t keycode) {
   switch (keycode) {
     /* TODO: Add supported keys */
+    case VC_Y:
+      return Qt::Key_Y;
+    case VC_U:
+      return Qt::Key_U;
     case VC_MEDIA_PLAY:
       return Qt::Key_MediaPlay;
     case VC_MEDIA_STOP:
@@ -25,12 +31,31 @@ static inline Qt::Key UioHookKeyToQt(uint16_t keycode) {
   }
 }
 
+#define CONVERT_MODIFIER(uiohook, target)                                      \
+  if (modifiers & (uiohook))                                                   \
+  qtModifiers |= (target)
+
+static inline Qt::KeyboardModifiers UioHookModifierToQt(uint16_t modifiers) {
+  Qt::KeyboardModifiers qtModifiers = Qt::NoModifier;
+
+  CONVERT_MODIFIER(MASK_SHIFT, Qt::ShiftModifier);
+  CONVERT_MODIFIER(MASK_CTRL, Qt::ControlModifier);
+  CONVERT_MODIFIER(MASK_META, Qt::MetaModifier);
+  CONVERT_MODIFIER(MASK_ALT, Qt::AltModifier);
+  CONVERT_MODIFIER(MASK_NUM_LOCK, Qt::KeypadModifier);
+
+  return qtModifiers;
+}
+
+#undef CONVERT_MODIFIER
+
 static void uiohookEventCallback(uiohook_event *const event) {
   keyboard_event_data &keyboard = event->data.keyboard;
 
   switch (event->type) {
     case EVENT_KEY_PRESSED:
-      emit s_instance->keyPressed(UioHookKeyToQt(keyboard.keycode));
+      emit s_instance->keyPressed(UioHookKeyToQt(keyboard.keycode),
+                                  UioHookModifierToQt(event->mask));
       qCInfo(globalKeyListenerLog)
         << QString("GlobalKeyPress keycode=%1, rawcode=%2")
              .arg(keyboard.keycode)
@@ -38,7 +63,8 @@ static void uiohookEventCallback(uiohook_event *const event) {
       break;
 
     case EVENT_KEY_RELEASED:
-      emit s_instance->keyReleased(UioHookKeyToQt(keyboard.keycode));
+      emit s_instance->keyReleased(UioHookKeyToQt(keyboard.keycode),
+                                   UioHookModifierToQt(event->mask));
       qCInfo(globalKeyListenerLog)
         << QString("GlobalKeyRelease keycode=%1, rawcode=%2")
              .arg(keyboard.keycode)
@@ -46,7 +72,8 @@ static void uiohookEventCallback(uiohook_event *const event) {
       break;
 
     case EVENT_KEY_TYPED:
-      emit s_instance->keyTyped(UioHookKeyToQt(keyboard.keycode));
+      emit s_instance->keyTyped(UioHookKeyToQt(keyboard.keycode),
+                                UioHookModifierToQt(event->mask));
       qCInfo(globalKeyListenerLog)
         << QString("GlobalKeyType keycode=%1, rawcode=%2")
              .arg(keyboard.keycode)
@@ -62,12 +89,15 @@ GlobalKeyListener::GlobalKeyListener() : QObject(nullptr) {
   s_instance = this;
 
   m_thread = std::make_unique<QThread>();
+  m_thread->setObjectName("GlobalKeyListenerThread"_L1);
+
   moveToThread(m_thread.get());
 
   hook_set_dispatch_proc(&uiohookEventCallback);
 
+  connect(m_thread.get(), &QThread::started, this, &GlobalKeyListener::start);
+
   m_thread->start();
-  connect(m_thread.get(), &QThread::started, this, &GlobalKeyListener::run);
 }
 
 GlobalKeyListener::~GlobalKeyListener() {
@@ -96,7 +126,9 @@ void GlobalKeyListener::cleanup() {
   m_thread->quit();
 }
 
-void GlobalKeyListener::run() {
+void GlobalKeyListener::start() {
+  qInfo() << "Start";
+
   int status = hook_run();
   switch (status) {
     case UIOHOOK_SUCCESS:
@@ -164,3 +196,24 @@ void GlobalKeyListener::run() {
       break;
   }
 }
+
+GlobalShortcut::GlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modifiers,
+                               QObject *parent)
+    : QObject(parent), m_key(key), m_modifiers(modifiers) {}
+
+void GlobalShortcut::registerShortcut(GlobalKeyListener *listener) {
+  connect(listener, &GlobalKeyListener::keyPressed, this,
+          [this](Qt::Key key, Qt::KeyboardModifiers modifiers) {
+    if (m_key == key && m_modifiers == modifiers) {
+      emit activated();
+    }
+  });
+}
+
+Qt::Key GlobalShortcut::key() const {
+  return m_key;
+}
+
+Qt::KeyboardModifiers GlobalShortcut::modifiers() const {
+  return m_modifiers;
+};

@@ -83,5 +83,4 @@ qt_add_shaders(
   PREFIX
   /
   FILES
-  "shaders/RoundImage.frag"
-  "shaders/Blur.frag")
+  "shaders/RoundImage.frag")

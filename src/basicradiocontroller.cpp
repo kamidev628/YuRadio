@@ -17,6 +17,9 @@ mediaPlayerStateToRadioPlayer(QMediaPlayer::PlaybackState state) {
       return RadioPlayer::PlayingState;
     case QMediaPlayer::PausedState:
       return RadioPlayer::PausedState;
+    default:
+      Q_UNREACHABLE();
+      return RadioPlayer::StoppedState;
   }
 }
 
@@ -33,6 +36,9 @@ mediaPlayerErrorToRadioPlayer(QMediaPlayer::Error error) {
       return RadioPlayer::NetworkError;
     case QMediaPlayer::AccessDeniedError:
       return RadioPlayer::AccessDeniedError;
+    default:
+      Q_UNREACHABLE();
+      return RadioPlayer::NoError;
   }
 }
 

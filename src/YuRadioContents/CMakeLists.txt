@@ -58,10 +58,8 @@ qt_add_qml_module(
   images/trash.svg
   images/menu.svg
   images/github-mark.svg
-  images/profile-picture.jpg
   images/radio.png
   images/radio-white.png
-  images/plus.svg
   images/play.svg
   images/pause.svg
   images/about.svg

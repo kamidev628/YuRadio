@@ -49,21 +49,13 @@ NetworkError NetworkManager::checkNetworkErrors(QNetworkReply *reply) {
   const int httpCode = httpStatusCode(reply);
   const bool isReplyError = reply->error() != QNetworkReply::NoError;
 
-  QString debugMessage =
-    u"Request Finished[%1]: %2"_s.arg(requestMethodToString(reply->operation()))
-      .arg(reply->request().url().toString());
-
-  qCInfo(networkManagerLog).noquote() << debugMessage;
+  QString errorMessage = reply->errorString();
 
   if (isReplyError) {
-    QByteArray data = reply->isReadable() ? reply->readAll() : "";
-    QString errorMessage = reply->errorString() + data;
-
-    qCWarning(networkManagerLog).noquote()
-      << QString("\t[NetworkError](%1): ").arg(httpCode) << errorMessage;
+    errorMessage += reply->readAll();
   }
 
-  return {reply->error(), reply->errorString()};
+  return {reply->error(), errorMessage};
 }
 
 NetworkResponse NetworkManager::post(const QString &path,
@@ -169,7 +161,7 @@ QNetworkRequest NetworkManager::prepareRequest(const QString &path,
     url.setQuery(query);
   }
 
-  return prepareRequest(url);
+  return QNetworkRequest(url);
 }
 
 void NetworkManager::setRequestHeaders(QNetworkRequest &request) {
@@ -234,5 +226,30 @@ NetworkManager::createRequest(Operation op,
     << u"Request[%1]: %2"_s.arg(requestMethodToString(op))
          .arg(request.url().toString());
 
-  return QNetworkAccessManager::createRequest(op, request, outgoingData);
+  request.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
+                       QNetworkRequest::PreferCache);
+  QNetworkReply *reply =
+    QNetworkAccessManager::createRequest(op, request, outgoingData);
+
+  connect(reply, &QNetworkReply::finished, this, [reply]() {
+    const int httpCode = httpStatusCode(reply);
+    const bool isReplyError = reply->error() != QNetworkReply::NoError;
+    const bool isFromCache =
+      reply->attribute(QNetworkRequest::SourceIsFromCacheAttribute).toBool();
+
+    QString debugMessage = QString("Request Finished[%1]%2: %3")
+                             .arg(requestMethodToString(reply->operation()))
+                             .arg(isFromCache ? "(CACHE)" : "")
+                             .arg(reply->request().url().toString());
+
+    qCInfo(networkManagerLog).noquote() << debugMessage;
+
+    if (isReplyError) {
+      qCWarning(networkManagerLog).noquote()
+        << QString("\t[NetworkError](%1): ").arg(httpCode)
+        << reply->errorString();
+    }
+  });
+
+  return reply;
 }

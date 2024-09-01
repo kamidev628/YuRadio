@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Controls
+import QtQuick.Controls.Material
 
 import YuRadioContents
 import Main
@@ -64,6 +65,11 @@ RadioBottomBarDrawer {
         blurMax: 64
         blur: 0.95
         saturation: -0.3
+
+        Rectangle {
+            anchors.fill: parent
+            color: AppSettings.isDarkTheme ? root.Material.background.lighter(1.4) : root.Material.background.darker(1.05)
+        }
     }
 
     Component {

@@ -41,8 +41,6 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
   QThread::currentThread()->setObjectName("Main Thread"_L1);
 
   QCoreApplication::setOrganizationName(u"YuRadio"_s);
-  QCoreApplication::setApplicationName(u"YuRadio"_s);
-  QCoreApplication::setApplicationVersion(u"1.0"_s);
 
   qCInfo(applicationLog) << "Version:"
                          << QCoreApplication::applicationVersion();

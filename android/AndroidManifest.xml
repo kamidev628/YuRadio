@@ -20,7 +20,7 @@
         android:fullBackupOnly="false"
         android:hardwareAccelerated="true"
         android:icon="@drawable/shortwave"
-        android:label="yuradio"
+        android:label="-- %%INSERT_APP_NAME%% --"
         android:name="org.qtproject.qt.android.bindings.QtApplication"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true">

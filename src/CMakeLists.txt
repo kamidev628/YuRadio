@@ -112,6 +112,6 @@ target_link_libraries(
           YuRadioNetworkplugin
           YuRadioContentsplugin
           "$<TARGET_NAME_IF_EXISTS:uiohook>"
-          "$<$<CONFIG:Debug>:HotReloader>")
+          "$<TARGET_NAME_IF_EXISTS:HotReloader>")
 
 target_set_warnings(YuRadio)

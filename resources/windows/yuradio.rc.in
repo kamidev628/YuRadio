@@ -1,0 +1,26 @@
+IDI_ICON1 ICON DISCARDABLE "yuradio.ico"
+
+1 VERSIONINFO
+FILEVERSION ${YURADIO_VERSION_MAJOR},${YURADIO_VERSION_MINOR},${YURADIO_VERSION_PATCH},0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "YuRadio"
+      VALUE "FileDescription", "YuRadio"
+      VALUE "FileVersion", "${YURADIO_VERSION_CANONICAL}"
+      VALUE "InternalName", "yuradio"
+      VALUE "OriginalFilename", "yuradio"
+      VALUE "ProductName", "YuRadio"
+      VALUE "ProductVersion", "${YURADIO_VERSION_CANONICAL}"
+      VALUE "Comments", "Free and open source software for playing online radio"
+      VALUE "LegalCopyright", ""
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 0x04B0
+  END
+END

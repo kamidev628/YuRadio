@@ -1,28 +1,19 @@
 cmake_minimum_required(VERSION 3.22)
 
-# TODO: Use configure_file to manage versions
-project(
-  YuRadio
-  VERSION 1.0
-  LANGUAGES CXX)
-
 include(cmake/CompilerWarnings.cmake)
-# include(cmake/VersionConfig.cmake)
+include(cmake/VersionConfig.cmake)
+include(CMakeDependentOption)
 
-find_package(Qt6 REQUIRED COMPONENTS Core WebSockets HttpServer Quick)
+project(YuRadio VERSION ${YURADIO_VERSION_CANONICAL})
+
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 qt_standard_project_setup(REQUIRES 6.5 I18N_TRANSLATED_LANGUAGES en ru)
 
-option(
+cmake_dependent_option(
   BUILD_UIOHOOK
   "Build the uiohook library(enables media key support for desktop platforms)"
-  ON)
-
-if(NOT LINUX
-   AND NOT WIN32
-   AND NOT APPLE)
-  set(BUILD_UIOHOOK OFF)
-endif()
+  ON "LINUX OR WIN32 OR APPLE" OFF)
 
 if(BUILD_UIOHOOK)
   add_compile_definitions(YuRadio PRIVATE UIOHOOK_SUPPORTED)
@@ -33,8 +24,8 @@ add_subdirectory(hotreloader)
 add_subdirectory(src)
 
 if(WIN32)
-  set(app_icon_resource_windows
-      "${CMAKE_CURRENT_SOURCE_DIR}/resources/windows/yuradio.rc")
+  set(app_icon_resource_windows "resources/windows/yuradio.rc")
+  configure_file("resources/windows/yuradio.rc.in" ${app_icon_resource_windows})
   target_sources(YuRadio PRIVATE ${app_icon_resource_windows})
 endif()
 
@@ -72,12 +63,15 @@ if(LINUX
   install(SCRIPT ${deploy_script} COMPONENT YuRadioInstaller)
 endif()
 
+# NOTE: Must specify CPACK_IFW_ROOT otherwise cmake will not find
+# C:/Qt6/Tools/QtInstallerFramework/4.8
+
 set(CPACK_GENERATOR IFW)
 set(CPACK_IFW_VERBOSE ON)
 
 set(CPACK_PACKAGE_NAME "YuRadio")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Cross-platform online radio player")
-set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_VERSION "${YURADIO_VERSION_CANONICAL}")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}")
 set(CPACK_COMPONENTS_ALL YuRadioInstaller)
 
@@ -98,6 +92,6 @@ cpack_add_component(YuRadioInstaller DISPLAY_NAME "YuRadio")
 cpack_ifw_configure_component(
   YuRadioInstaller FORCED_INSTALLATION
   NAME YuRadioInstaller
-  VERSION ${PROJECT_VERSION}
+  VERSION ${YURADIO_VERSION_CANONICAL}
   LICENSES "GPL License" ${CPACK_RESOURCE_FILE_LICENSE}
   DEFAULT TRUE)

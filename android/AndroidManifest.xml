@@ -50,7 +50,7 @@
         <activity
             android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
             android:exported="true"
-            android:label="YuRadio"
+            android:label="-- %%INSERT_APP_NAME%% --"
             android:launchMode="singleTop"
             android:name="org.yuradio.AppActivity"
             android:screenOrientation="unspecified"

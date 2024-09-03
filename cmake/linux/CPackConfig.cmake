@@ -1,0 +1,8 @@
+include_guard(GLOBAL)
+
+include(CPackCommon)
+
+set(CPACK_GENERATOR DEB)
+
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "yunag")
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)

@@ -101,13 +101,14 @@ GlobalKeyListener::GlobalKeyListener() : QObject(nullptr) {
 }
 
 GlobalKeyListener::~GlobalKeyListener() {
-  QMetaObject::invokeMethod(this, &GlobalKeyListener::cleanup);
-  s_instance = nullptr;
-  m_thread->wait();
+  cleanup();
 }
 
 void GlobalKeyListener::cleanup() {
+  s_instance = nullptr;
+
   int status = hook_stop();
+
   switch (status) {
     case UIOHOOK_SUCCESS:
       qCInfo(globalKeyListenerLog) << "Exited successfully";
@@ -123,7 +124,9 @@ void GlobalKeyListener::cleanup() {
       qCWarning(globalKeyListenerLog) << "An unknown hook error occurred";
       break;
   }
+
   m_thread->quit();
+  m_thread->wait();
 }
 
 void GlobalKeyListener::start() {

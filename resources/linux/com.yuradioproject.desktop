@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=YuRadio
+GenericName=Radio player Software
+Comment=Cross-platform online radio player
+Exec=YuRadio
+Icon=com.yuradioproject
+Terminal=false
+Type=Application
+Categories=AudioVideo;Recorder;
+StartupNotify=true
+StartupWMClass=YuRadio

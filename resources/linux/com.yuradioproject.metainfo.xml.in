@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>com.yuradioproject</id>
+  <launchable type="desktop-id">com.yuradioproject.desktop</launchable>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0-or-later</project_license>
+  <name>YuRadio</name>
+  <developer id="com.yuradioproject">
+    <name>YuRadio Project</name>
+  </developer>
+  <summary>Cross-platform online radio player</summary>
+  <description>
+    <p>Play your favorite radio stations.</p>
+  </description>
+  <recommends>
+    <internet>always</internet>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </recommends>
+  <supports>
+    <internet>offline-only</internet>
+    <control>touch</control>
+  </supports>
+  <branding>
+    <color type="primary">#284cb8</color>
+  </branding>
+  <content_rating type="oars-1.1"></content_rating>
+  <releases>
+    <release date="@APPDATA_RELEASE_DATE@" version="@OBS_VERSION@">
+      <url type="details">https://github.com/obsproject/obs-studio/releases/tag/@OBS_VERSION@</url>
+    </release>
+  </releases>
+</component>

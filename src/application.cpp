@@ -6,24 +6,20 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 #include <QQuickStyle>
 
 #ifdef Q_OS_ANDROID
-  #include "android/nativemediacontroller.h"
-  #include "android/notificationclient.h"
-  #include "android/virtualkeyboardlistener.h"
+#include "android/nativemediacontroller.h"
+#include "android/notificationclient.h"
+#include "android/virtualkeyboardlistener.h"
 #endif /* Q_OS_ANDROID */
 
 #ifdef QT_DEBUG
-  #include "hotreloaderclient.h"
+#include "hotreloaderclient.h"
 #endif /* QT_DEBUG */
 
 #include <QSslSocket>
 #include <QThread>
 
+#include "globalkeylistener.h"
 #include "network/networkmanagerfactory.h"
-
-#ifdef UIOHOOK_SUPPORTED
-  #include "globalkeylistener.h"
-  #include "radioplayer.h"
-#endif /* !UIOHOOK_SUPPORTED */
 
 using namespace Qt::StringLiterals;
 
@@ -54,7 +50,10 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
   auto *networkManagerFactory = new NetworkManagerFactory(m_engine.get());
   m_engine->setNetworkAccessManagerFactory(networkManagerFactory);
 
-  initializeShortcuts();
+#ifdef UIOHOOK_SUPPORTED
+  m_globalKeyListener = std::make_unique<GlobalKeyListener>();
+#endif /* UIOHOOK_SUPPORTED */
+
   initializePlatform();
 
 #ifdef QT_DEBUG
@@ -67,23 +66,6 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
 }
 
 Application::~Application() = default;
-
-void Application::initializeShortcuts() {
-#ifdef UIOHOOK_SUPPORTED
-  m_globalKeyListener = std::make_unique<GlobalKeyListener>();
-
-  m_engine->rootContext()->setContextProperty(u"UIOHOOK_SUPPORTED"_s, true);
-  auto *player = m_engine->singletonInstance<RadioPlayer *>("YuRadioContents",
-                                                            "MainRadioPlayer");
-  auto *mediaPlayShortcut =
-    new GlobalShortcut(Qt::Key_MediaPlay, Qt::NoModifier, this);
-  connect(mediaPlayShortcut, &GlobalShortcut::activated, player,
-          &RadioPlayer::toggle);
-  mediaPlayShortcut->registerShortcut(m_globalKeyListener.get());
-#else
-  m_engine->rootContext()->setContextProperty(u"UIOHOOK_SUPPORTED"_s, false);
-#endif /* UIOHOOK_SUPPORTED */
-}
 
 void Application::initializePlatform() {
 #ifdef Q_OS_ANDROID

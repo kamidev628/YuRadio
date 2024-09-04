@@ -1,11 +1,13 @@
 #include <QLoggingCategory>
 Q_LOGGING_CATEGORY(globalKeyListenerLog, "YuRadio.GlobalKeyListener")
 
+#include <QQmlInfo>
 #include <QThread>
 
-#include <uiohook.h>
-
 #include "globalkeylistener.h"
+
+#ifdef UIOHOOK_SUPPORTED
+#include <uiohook.h>
 
 using namespace Qt::StringLiterals;
 
@@ -31,23 +33,24 @@ static inline Qt::Key UioHookKeyToQt(uint16_t keycode) {
   }
 }
 
-#define CONVERT_MODIFIER(uiohook, target)                                      \
-  if (modifiers & (uiohook))                                                   \
-  qtModifiers |= (target)
-
 static inline Qt::KeyboardModifiers UioHookModifierToQt(uint16_t modifiers) {
   Qt::KeyboardModifiers qtModifiers = Qt::NoModifier;
 
-  CONVERT_MODIFIER(MASK_SHIFT, Qt::ShiftModifier);
-  CONVERT_MODIFIER(MASK_CTRL, Qt::ControlModifier);
-  CONVERT_MODIFIER(MASK_META, Qt::MetaModifier);
-  CONVERT_MODIFIER(MASK_ALT, Qt::AltModifier);
-  CONVERT_MODIFIER(MASK_NUM_LOCK, Qt::KeypadModifier);
+  const auto convert_modifier = [&](int uiohookMask,
+                                    Qt::KeyboardModifier qtModifier) {
+    if (modifiers & uiohookMask) {
+      qtModifiers |= qtModifier;
+    }
+  };
+
+  convert_modifier(MASK_SHIFT, Qt::ShiftModifier);
+  convert_modifier(MASK_CTRL, Qt::ControlModifier);
+  convert_modifier(MASK_META, Qt::MetaModifier);
+  convert_modifier(MASK_ALT, Qt::AltModifier);
+  convert_modifier(MASK_NUM_LOCK, Qt::KeypadModifier);
 
   return qtModifiers;
 }
-
-#undef CONVERT_MODIFIER
 
 static void uiohookEventCallback(uiohook_event *const event) {
   keyboard_event_data &keyboard = event->data.keyboard;
@@ -200,23 +203,77 @@ void GlobalKeyListener::start() {
   }
 }
 
-GlobalShortcut::GlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modifiers,
-                               QObject *parent)
-    : QObject(parent), m_key(key), m_modifiers(modifiers) {}
+GlobalShortcut::GlobalShortcut(QObject *parent) : QObject(parent) {
+  Q_ASSERT(s_instance != nullptr);
 
-void GlobalShortcut::registerShortcut(GlobalKeyListener *listener) {
-  connect(listener, &GlobalKeyListener::keyPressed, this,
+  connect(s_instance, &GlobalKeyListener::keyPressed, this,
           [this](Qt::Key key, Qt::KeyboardModifiers modifiers) {
-    if (m_key == key && m_modifiers == modifiers) {
+    if (m_enabled && m_sequence.matches(QKeyCombination(modifiers, key))) {
       emit activated();
     }
   });
 }
 
-Qt::Key GlobalShortcut::key() const {
-  return m_key;
+static QKeySequence valueToKeySequence(const QVariant &value,
+                                       const GlobalShortcut *const shortcut) {
+  if (value.userType() == QMetaType::Int) {
+    const QVector<QKeySequence> s = QKeySequence::keyBindings(
+      static_cast<QKeySequence::StandardKey>(value.toInt()));
+    if (s.size() > 1) {
+      const QString templateString = QString::fromUtf16(
+        u"Shortcut: Only binding to one of multiple key bindings associated "
+        u"with %1.");
+      qmlWarning(shortcut) << templateString.arg(
+        static_cast<QKeySequence::StandardKey>(value.toInt()));
+    }
+    return s.size() > 0 ? s[0] : QKeySequence{};
+  }
+
+  return QKeySequence::fromString(value.toString());
 }
 
-Qt::KeyboardModifiers GlobalShortcut::modifiers() const {
-  return m_modifiers;
-};
+QVariant GlobalShortcut::sequence() const {
+  return m_sequence;
+}
+
+void GlobalShortcut::setSequence(const QVariant &sequence) {
+  QKeySequence keySequence = valueToKeySequence(sequence, this);
+
+  if (m_sequence != keySequence) {
+    m_sequence = keySequence;
+    emit sequenceChanged();
+  }
+}
+
+bool GlobalShortcut::isEnabled() const {
+  return m_enabled;
+}
+
+void GlobalShortcut::setEnabled(bool enabled) {
+  if (m_enabled != enabled) {
+    m_enabled = enabled;
+    emit enabledChanged();
+  }
+}
+
+#else
+
+GlobalShortcut::GlobalShortcut(QObject *parent) : QObject(parent) {}
+
+QVariant GlobalShortcut::sequence() const {
+  return {};
+}
+
+void GlobalShortcut::setSequence(const QVariant &sequence) {
+  Q_UNUSED(sequence)
+}
+
+bool GlobalShortcut::isEnabled() const {
+  return false;
+}
+
+void GlobalShortcut::setEnabled(bool enabled) {
+  Q_UNUSED(enabled)
+}
+
+#endif /* UIOHOOK_SUPPORTED */

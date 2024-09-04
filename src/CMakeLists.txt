@@ -75,13 +75,11 @@ qt_add_qml_module(
   platformradiocontroller.h
   languagetranslator.h
   languagetranslator.cpp
+  globalkeylistener.h
+  globalkeylistener.cpp
   obf.h
   obf.cpp
   applicationconfig.h)
-
-if(BUILD_UIOHOOK)
-  target_sources(YuRadio PRIVATE globalkeylistener.h globalkeylistener.cpp)
-endif()
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1. If
 # you are developing for iOS or macOS you should consider setting an explicit,

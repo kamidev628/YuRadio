@@ -14,7 +14,6 @@ public:
   ~Application() override;
 
 private:
-  void initializeShortcuts();
   void initializePlatform();
 
 private:

@@ -1,9 +1,11 @@
 #ifndef GLOBALKEYLISTENER_H
 #define GLOBALKEYLISTENER_H
 
+#include <QKeySequence>
 #include <QObject>
-#include <QPointer>
+#include <QtQmlIntegration>
 
+#ifdef UIOHOOK_SUPPORTED
 class GlobalShortcut;
 
 class GlobalKeyListener : public QObject {
@@ -26,25 +28,35 @@ private:
   std::unique_ptr<QThread> m_thread;
 };
 
+#endif /* UIOHOOK_SUPPORTED */
+
 class GlobalShortcut : public QObject {
   Q_OBJECT
+  Q_PROPERTY(QVariant sequence READ sequence WRITE setSequence NOTIFY
+               sequenceChanged FINAL)
+  Q_PROPERTY(
+    bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged FINAL)
+  QML_ELEMENT
 
 public:
-  explicit GlobalShortcut(Qt::Key key,
-                          Qt::KeyboardModifiers modifiers = Qt::NoModifier,
-                          QObject *parent = nullptr);
+  explicit GlobalShortcut(QObject *parent = nullptr);
 
-  void registerShortcut(GlobalKeyListener *listener);
+  QVariant sequence() const;
+  void setSequence(const QVariant &sequence);
 
-  Qt::Key key() const;
-  Qt::KeyboardModifiers modifiers() const;
+  bool isEnabled() const;
+  void setEnabled(bool enabled);
 
 signals:
   void activated();
+  void sequenceChanged();
+  void enabledChanged();
 
 private:
-  Qt::Key m_key;
-  Qt::KeyboardModifiers m_modifiers;
+#ifdef UIOHOOK_SUPPORTED
+  QKeySequence m_sequence;
+  bool m_enabled;
+#endif /* UIOHOOK_SUPPORTED */
 };
 
 #endif /* !GLOBALKEYLISTENER_H */

@@ -262,9 +262,22 @@ ApplicationWindow {
     Shortcut {
         sequences: ["Media Play", "Media Pause", "Toggle Media Play/Pause", "Media Stop"]
         context: Qt.ApplicationShortcut
-        enabled: Qt.platform.pluginName === "wayland" || (!UIOHOOK_SUPPORTED && !AppSettings.isMobile)
+        enabled: {
+          if (AppSettings.isMobile) {
+            return false;
+          }
+          return !mediaPlayGlobalShortcut.enabled
+        } 
         onActivated: {
             MainRadioPlayer.toggle();
         }
+    }
+
+    GlobalShortcut {
+      id: mediaPlayGlobalShortcut
+      sequence: "Media Play"
+      onActivated: {
+          MainRadioPlayer.toggle();
+      }
     }
 }

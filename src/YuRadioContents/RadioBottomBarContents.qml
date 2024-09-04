@@ -398,6 +398,7 @@ FocusScope {
                         text: qsTr("Provided for: %1").arg(root.streamTitle)
                         visible: musicInfoRow.visible
                         opacity: 0.6
+                        Layout.bottomMargin: 6
                         Layout.fillWidth: true
                         wrapMode: Text.WordWrap
                     }

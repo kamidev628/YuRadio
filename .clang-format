@@ -59,7 +59,6 @@ Cpp11BracedListStyle: true
 EmptyLineBeforeAccessModifier: LogicalBlock
 FixNamespaceComments: true
 IndentCaseLabels: true
-IndentPPDirectives: BeforeHash
 KeepEmptyLinesAtTheStartOfBlocks: true
 NamespaceIndentation: None
 

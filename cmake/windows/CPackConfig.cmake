@@ -21,3 +21,6 @@ cpack_ifw_configure_component(
   VERSION ${YURADIO_VERSION_CANONICAL}
   LICENSES "GPL License" ${CPACK_RESOURCE_FILE_LICENSE}
   DEFAULT TRUE)
+cpack_ifw_configure_component(
+  YuRadioInstaller
+  SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/resources/windows/installscript.qs)

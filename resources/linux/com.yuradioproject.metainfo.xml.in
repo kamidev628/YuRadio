@@ -26,8 +26,8 @@
   </branding>
   <content_rating type="oars-1.1"></content_rating>
   <releases>
-    <release date="@APPDATA_RELEASE_DATE@" version="@OBS_VERSION@">
-      <url type="details">https://github.com/obsproject/obs-studio/releases/tag/@OBS_VERSION@</url>
+    <release version="@YURADIO_VERSION_CANONICAL@">
+      <url type="details">https://github.com/yunag/YuRadio/releases/tag/@YURADIO_VERSION_CANONICAL@</url>
     </release>
   </releases>
 </component>

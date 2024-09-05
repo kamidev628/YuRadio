@@ -1,10 +1,13 @@
 #include "androidradiocontroller.h"
 
+#include "androidmediasessionimageprovider.h"
 #include "nativemediacontroller.h"
 
 AndroidRadioController::AndroidRadioController(QObject *parent)
     : PlatformRadioController(parent),
-      m_nativeController(NativeMediaController::instance()) {
+      m_nativeController(NativeMediaController::instance()),
+      m_mediaSessionImageProvider(new AndroidMediaSessionImageProvider(this)) {
+
   connect(m_nativeController, &NativeMediaController::isLoadingChanged, this,
           [this](bool loading) { setIsLoading(loading); });
   connect(m_nativeController, &NativeMediaController::streamTitleChanged, this,
@@ -167,7 +170,9 @@ void AndroidRadioController::setVolume(float volume) {
 
 void AndroidRadioController::processMediaItem(const MediaItem &mediaItem) {
   m_nativeController->setAuthor(mediaItem.author);
-  m_nativeController->setArtworkUri(mediaItem.artworkUri);
+
+  m_mediaSessionImageProvider->setImageSource(mediaItem.artworkUri);
+  m_nativeController->setArtworkUri(m_mediaSessionImageProvider->imageUrl());
 
   /* NOTE: Set source lastly */
   m_nativeController->setSource(mediaItem.source);

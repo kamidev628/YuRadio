@@ -143,7 +143,7 @@ public class NativeMediaController {
                 .setUri(mediaSource)
                 .setMediaMetadata(new MediaMetadata.Builder()
                         .setArtist(mediaAuthor)
-                        .setArtworkUri(Strings.isNullOrEmpty(artworkUri) ? Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Shortwave.svg/480px-Shortwave.svg.png") : Uri.parse(artworkUri))
+                        .setArtworkUri(Uri.parse(artworkUri))
                         .build())
                 .build();
     }

@@ -6,6 +6,7 @@
 #include "platformradiocontroller.h"
 
 class NativeMediaController;
+class AndroidMediaSessionImageProvider;
 
 class AndroidRadioController : public PlatformRadioController {
   Q_OBJECT
@@ -28,6 +29,7 @@ private:
 
 private:
   NativeMediaController *m_nativeController;
+  AndroidMediaSessionImageProvider *m_mediaSessionImageProvider;
 };
 
 #endif /* !ANDROIDRADIOCONTROLLER_H */

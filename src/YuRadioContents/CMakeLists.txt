@@ -53,6 +53,7 @@ qt_add_qml_module(
   images/arrow-back.svg
   images/refresh.svg
   images/shortwave.svg
+  images/shortwave.png
   images/more-vert.svg
   images/search.svg
   images/trash.svg

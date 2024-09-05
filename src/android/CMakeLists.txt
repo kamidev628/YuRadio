@@ -11,6 +11,8 @@ target_sources(
   YuRadio
   PRIVATE androidkeyboard.h
           androidkeyboard.cpp
+          androidmediasessionimageprovider.h
+          androidmediasessionimageprovider.cpp
           androidradiocontroller.cpp
           androidradiocontroller.h
           nativemediacontroller.cpp

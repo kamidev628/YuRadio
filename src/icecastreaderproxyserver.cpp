@@ -19,7 +19,7 @@ IcecastReaderProxyServer::IcecastReaderProxyServer(QObject *parent)
     : QObject(parent), m_server(new QTcpServer(this)),
       m_networkManager(new NetworkManager(this)) {
   if (!m_server->listen()) {
-    qCWarning(icecastReaderProxyServerLog) << "Failed to listen";
+    qCWarning(icecastReaderProxyServerLog) << m_server->errorString();
     return;
   }
 

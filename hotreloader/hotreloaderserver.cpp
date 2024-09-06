@@ -27,7 +27,7 @@ HotReloaderServer::HotReloaderServer(quint16 webSocketPort, quint16 httpPort,
                                   QWebSocketServer::NonSecureMode, this);
 
   m_httpServer->route(u"/hotreloader/watched/files"_s,
-                      [&](const QHttpServerRequest &req) {
+                      [&](const QHttpServerRequest & /*req*/) {
     QDir appDir(QCoreApplication::applicationDirPath());
 
     QStringList filePaths;

@@ -58,9 +58,7 @@ function(target_set_warnings target)
       -Wduplicated-branches
       -Wduplicated-cond
       -Wfloat-equal
-      -Wmissing-declarations
-      -Wundef
-      -Wno-gnu-zero-variadic-macro-arguments)
+      -Wundef)
 
   set(GCC_WARNINGS
       ${CLANG_WARNINGS}

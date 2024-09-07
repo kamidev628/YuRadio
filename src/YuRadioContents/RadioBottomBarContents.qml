@@ -83,7 +83,7 @@ FocusScope {
                 RadioImage {
                     id: stationImage
 
-                    fallbackSource: AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+                    fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
                     targetSource: root.stationIcon
 
                     smooth: true
@@ -227,7 +227,7 @@ FocusScope {
 
                         icon.source: MainRadioPlayer.playing ? "images/pause.svg" : "images/play.svg"
                         icon.sourceSize: Qt.size(height, height)
-                        icon.color: Material.color(Material.Grey, AppSettings.isDarkTheme ? Material.Shade400 : Material.Shade800)
+                        icon.color: Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade400 : Material.Shade800)
 
                         smooth: true
 
@@ -257,7 +257,7 @@ FocusScope {
 
                         icon.source: "images/close.svg"
                         icon.sourceSize: Qt.size(height, height)
-                        icon.color: Material.color(Material.Grey, AppSettings.isDarkTheme ? Material.Shade400 : Material.Shade800)
+                        icon.color: Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade400 : Material.Shade800)
 
                         smooth: true
 

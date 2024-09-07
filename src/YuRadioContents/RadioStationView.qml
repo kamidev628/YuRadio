@@ -24,7 +24,7 @@ FilledGridView {
     highlightFollowsCurrentItem: true
 
     boundsMovement: Flickable.StopAtBounds
-    boundsBehavior: AppSettings.isMobile ? Flickable.DragOverBounds : Flickable.StopAtBounds
+    boundsBehavior: AppConfig.isMobile ? Flickable.DragOverBounds : Flickable.StopAtBounds
     highlight: ListViewHighlightBar {}
 
     anchors {

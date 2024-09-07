@@ -5,7 +5,7 @@ import QtQuick.Controls
 Flickable {
     id: root
 
-    interactive: AppSettings.isMobile
+    interactive: AppConfig.isMobile
 
     MouseArea {
         enabled: !root.interactive

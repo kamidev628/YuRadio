@@ -36,7 +36,7 @@ Dialog {
     }
 
     Binding {
-        when: AppSettings.isDarkTheme
+        when: AppConfig.isDarkTheme
         root.Material.background: root.Material.color(Material.Grey, Material.Shade900)
     }
 

@@ -33,7 +33,7 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
     "critical}C%{endif}%{if-fatal}F%{endif}] %{file}:%{line} - %{message}"_s);
 
   QLoggingCategory::setFilterRules(
-    u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.IcecastReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false"_s);
+    u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.IcecastReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false\nYuRest.NetworkManager.info=false"_s);
   QThread::currentThread()->setObjectName("Main Thread"_L1);
 
   QCoreApplication::setOrganizationName(u"YuRadio"_s);

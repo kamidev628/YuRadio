@@ -1,5 +1,6 @@
-set_source_files_properties(AppSettings.qml Utils.qml MainRadioPlayer.qml
-                            Storage.qml PROPERTIES QT_QML_SINGLETON_TYPE true)
+set_source_files_properties(
+  AppSettings.qml AppConfig.qml Utils.qml MainRadioPlayer.qml Storage.qml
+  PROPERTIES QT_QML_SINGLETON_TYPE true)
 
 qt_add_library(YuRadioContents STATIC)
 qt_add_qml_module(
@@ -14,6 +15,7 @@ qt_add_qml_module(
   MainRadioPlayer.qml
   BookmarkPage.qml
   AppSettings.qml
+  AppConfig.qml
   Utils.qml
   RadioStationDelegate.qml
   RadioBottomBarContents.qml

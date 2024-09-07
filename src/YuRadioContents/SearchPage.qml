@@ -224,7 +224,7 @@ Item {
 
         PullToRefreshHandler {
             id: pullToRefreshHandler
-            enabled: AppSettings.isMobile && isProcessing && !apiTimeoutTimer.running && radioGridView.verticalOvershoot <= 0
+            enabled: AppConfig.isMobile && isProcessing && !apiTimeoutTimer.running && radioGridView.verticalOvershoot <= 0
             refreshCondition: refreshTimer.running
 
             onPullDownRelease: {

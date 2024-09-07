@@ -24,7 +24,7 @@ ItemDelegate {
         when: root.currentStation
         target: root.background
         property: "color"
-        value: Qt.color("lightsteelblue").darker(AppSettings.isDarkTheme ? 1.8 : 1.05)
+        value: Qt.color("lightsteelblue").darker(AppConfig.isDarkTheme ? 1.8 : 1.05)
     }
 
     height: GridView.view.cellHeight
@@ -36,7 +36,7 @@ ItemDelegate {
         RadioImage {
             id: radioImage
 
-            fallbackSource: AppSettings.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+            fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
             targetSource: root.favicon
 
             Layout.fillHeight: true

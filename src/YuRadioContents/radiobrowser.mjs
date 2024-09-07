@@ -31,6 +31,12 @@ export function getLanguages(baseUrl) {
   return makeRequest(baseUrl + "/json/languages");
 }
 
+export function getStation(baseUrl, stationUUID) {
+  return makeRequest(baseUrl + `/json/stations/byuuid/${stationUUID}`).then(
+    (stations) => stations[0],
+  );
+}
+
 export function getCountries(baseUrl) {
   return makeRequest(baseUrl + "/json/countries");
 }

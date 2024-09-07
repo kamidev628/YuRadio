@@ -9,6 +9,8 @@ import QtQuick.Layouts
 Drawer {
     id: root
 
+    property bool isDesktopLayout: true
+
     width: Math.min(Math.min(parent.width, parent.height) / 3 * 2, implicitWidth)
     height: parent.height
 
@@ -88,7 +90,7 @@ Drawer {
                 icon.source: iconSource
                 highlighted: ListView.isCurrentItem
                 onClicked: {
-                    if (!Window.window.isDesktopLayout) {
+                    if (!root.isDesktopLayout) {
                         root.close();
                     }
                     triggered();
@@ -117,7 +119,7 @@ Drawer {
             }
             Switch {
                 id: themeSwitch
-                checked: !AppSettings.isDarkTheme
+                checked: !AppConfig.isDarkTheme
                 onClicked: {
                     AppSettings.theme = Qt.binding(() => {
                         return checked ? "Light" : "Dark";

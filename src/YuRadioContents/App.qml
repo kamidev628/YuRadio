@@ -1,4 +1,5 @@
 pragma ComponentBehavior: Bound
+import QtCore
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -18,11 +19,19 @@ ApplicationWindow {
     minimumWidth: 300
     minimumHeight: 300
 
-    Material.theme: AppSettings.isDarkTheme ? Material.Dark : Material.Light
+    Material.theme: AppConfig.isDarkTheme ? Material.Dark : Material.Light
 
     title: qsTr("YuRadio")
 
-    readonly property bool isDesktopLayout: width >= AppSettings.portraitLayoutWidth
+    readonly property bool isDesktopLayout: width >= AppConfig.portraitLayoutWidth
+
+    Settings {
+        property alias windowX: root.x
+        property alias windowY: root.y
+        property alias windowWidth: root.width
+        property alias windowHeight: root.height
+        property alias windowVisibility: root.visibility
+    }
 
     StateGroup {
         states: [
@@ -74,18 +83,21 @@ ApplicationWindow {
 
     Component.onCompleted: {
         Storage.init();
-        MainRadioPlayer.currentItem = AppSettings.lastStation;
     }
 
     NetworkManager {
         id: networkManager
 
-        baseUrl: AppSettings.radioBrowserBaseUrl
+        //baseUrl: AppSettings.radioBrowserBaseUrl
 
         Component.onCompleted: {
             if (!AppSettings.radioBrowserBaseUrl) {
                 RadioBrowser.baseUrlRandom().then(url => {
                     AppSettings.radioBrowserBaseUrl = url;
+                });
+            } else {
+                RadioBrowser.getStation(baseUrl, AppSettings.stationUuid).then(station => {
+                    MainRadioPlayer.currentItem = station;
                 });
             }
         }
@@ -113,6 +125,7 @@ ApplicationWindow {
 
     RadioDrawer {
         id: drawer
+        isDesktopLayout: root.isDesktopLayout
 
         onShowBookmarksRequested: {
             root.stackViewPushPage(bookmarkPage, "bookmarkPage");
@@ -216,7 +229,7 @@ ApplicationWindow {
 
         Material.background: Material.primary
         Binding {
-            when: AppSettings.isDarkTheme
+            when: AppConfig.isDarkTheme
             headerToolBar.Material.background: root.Material.background.lighter(1.5)
         }
 
@@ -263,21 +276,21 @@ ApplicationWindow {
         sequences: ["Media Play", "Media Pause", "Toggle Media Play/Pause", "Media Stop"]
         context: Qt.ApplicationShortcut
         enabled: {
-          if (AppSettings.isMobile) {
-            return false;
-          }
-          return !mediaPlayGlobalShortcut.enabled
-        } 
+            if (AppConfig.isMobile) {
+                return false;
+            }
+            return !mediaPlayGlobalShortcut.enabled;
+        }
         onActivated: {
             MainRadioPlayer.toggle();
         }
     }
 
     GlobalShortcut {
-      id: mediaPlayGlobalShortcut
-      sequence: "Media Play"
-      onActivated: {
-          MainRadioPlayer.toggle();
-      }
+        id: mediaPlayGlobalShortcut
+        sequence: "Media Play"
+        onActivated: {
+            MainRadioPlayer.toggle();
+        }
     }
 }

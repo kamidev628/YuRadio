@@ -68,7 +68,7 @@ RadioBottomBarDrawer {
 
         Rectangle {
             anchors.fill: parent
-            color: AppSettings.isDarkTheme ? root.Material.background.lighter(1.4) : root.Material.background.darker(1.05)
+            color: AppConfig.isDarkTheme ? root.Material.background.lighter(1.4) : root.Material.background.darker(1.05)
         }
     }
 

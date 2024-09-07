@@ -222,9 +222,9 @@ NetworkManager::createRequest(Operation op,
                               QIODevice *outgoingData) {
   QNetworkRequest request = originalRequest;
   setRequestHeaders(request);
-  qCInfo(networkManagerLog).noquote()
-    << u"Request[%1]: %2"_s.arg(requestMethodToString(op))
-         .arg(request.url().toString());
+  qCInfo(networkManagerLog).noquote() << QString("%1 %2")
+                                           .arg(requestMethodToString(op))
+                                           .arg(request.url().toString());
 
   request.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
                        QNetworkRequest::PreferCache);
@@ -237,17 +237,21 @@ NetworkManager::createRequest(Operation op,
     const bool isFromCache =
       reply->attribute(QNetworkRequest::SourceIsFromCacheAttribute).toBool();
 
-    QString debugMessage = QString("Request Finished[%1]%2: %3")
-                             .arg(requestMethodToString(reply->operation()))
-                             .arg(isFromCache ? "(CACHE)" : "")
-                             .arg(reply->request().url().toString());
-
-    qCInfo(networkManagerLog).noquote() << debugMessage;
-
     if (isReplyError) {
       qCWarning(networkManagerLog).noquote()
-        << QString("\t[NetworkError](%1): ").arg(httpCode)
-        << reply->errorString();
+        << QString("%1[%2] %3: %4")
+             .arg(requestMethodToString(reply->operation()))
+             .arg(httpCode)
+             .arg(reply->request().url().toString())
+             .arg(reply->errorString());
+    } else {
+      QString debugMessage = QString("%1[%2]%3 %4")
+                               .arg(requestMethodToString(reply->operation()))
+                               .arg(httpCode)
+                               .arg(isFromCache ? "(CACHE)" : "")
+                               .arg(reply->request().url().toString());
+
+      qCInfo(networkManagerLog).noquote() << debugMessage;
     }
   });
 

@@ -1,9 +1,11 @@
 #include "radioplayer.h"
 
 #ifdef Q_OS_ANDROID
-  #include "android/androidradiocontroller.h"
+#include "android/androidradiocontroller.h"
+#elif defined(Q_OS_LINUX)
+#include "linux/linuxradiocontroller.h"
 #else
-  #include "basicradiocontroller.h"
+#include "basicradiocontroller.h"
 #endif
 
 #include "platformradiocontroller.h"
@@ -11,6 +13,8 @@
 RadioPlayer::RadioPlayer(QObject *parent) : QObject(parent) {
 #ifdef Q_OS_ANDROID
   m_controller = new AndroidRadioController(this);
+#elif defined(Q_OS_LINUX)
+  m_controller = new LinuxRadioController(this);
 #else
   m_controller = new BasicRadioController(this);
 #endif

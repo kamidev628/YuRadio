@@ -88,7 +88,7 @@ ApplicationWindow {
     NetworkManager {
         id: networkManager
 
-        //baseUrl: AppSettings.radioBrowserBaseUrl
+        baseUrl: AppSettings.radioBrowserBaseUrl
 
         Component.onCompleted: {
             if (!AppSettings.radioBrowserBaseUrl) {

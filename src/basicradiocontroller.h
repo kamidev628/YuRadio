@@ -27,7 +27,7 @@ private:
   QUrl icecastProxyServerUrl();
   void processMediaItem(const MediaItem &mediaItem);
 
-private:
+protected:
   IcecastReaderProxyServer *m_icecastProxy;
   QMediaPlayer *m_mediaPlayer;
   QMediaDevices *m_mediaDevices;

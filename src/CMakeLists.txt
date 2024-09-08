@@ -5,26 +5,15 @@ qt_add_executable(YuRadio main.cpp)
 
 set_target_properties(YuRadio PROPERTIES AUTOMOC ON AUTORCC ON)
 
-find_package(
-  Qt6 6.5 REQUIRED
-  COMPONENTS Core
-             Svg
-             Sql
-             Qml
-             Quick
-             QuickControls2
-             Multimedia
-             ShaderTools
-             Positioning
-             Location
-             LinguistTools
-             NetworkAuth)
-
 add_subdirectory(network)
 add_subdirectory(YuRadioContents)
 
 if(ANDROID)
   add_subdirectory(android)
+endif()
+
+if(LINUX)
+  add_subdirectory(linux)
 endif()
 
 if(SPOTIFY_CLIENTID
@@ -111,5 +100,7 @@ target_link_libraries(
           YuRadioContentsplugin
           "$<TARGET_NAME_IF_EXISTS:uiohook>"
           "$<TARGET_NAME_IF_EXISTS:HotReloader>")
+
+# target_include_directories(YuRadio PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_set_warnings(YuRadio)

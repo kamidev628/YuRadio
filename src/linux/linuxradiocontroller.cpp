@@ -1,0 +1,80 @@
+#include <MprisPlayer>
+
+#include "linuxradiocontroller.h"
+
+using namespace Qt::StringLiterals;
+
+static Mpris::PlaybackStatus
+toMprisPlaybackStatus(RadioPlayer::PlaybackState state) {
+  switch (state) {
+    case RadioPlayer::StoppedState:
+      return Mpris::Stopped;
+    case RadioPlayer::PlayingState:
+      return Mpris::Playing;
+    case RadioPlayer::PausedState:
+      return Mpris::Paused;
+  }
+}
+
+LinuxRadioController::LinuxRadioController(QObject *parent)
+    : BasicRadioController(parent), m_mprisPlayer(new MprisPlayer(this)) {
+  /* Will register org.mpris.MediaPlayer2.yuradio service */
+  m_mprisPlayer->setServiceName("yuradio");
+  m_mprisPlayer->setIdentity("YuRadio");
+  m_mprisPlayer->setCanPlay(true);
+  m_mprisPlayer->setCanPause(true);
+  m_mprisPlayer->setCanControl(false);
+
+  connect(m_mprisPlayer, &MprisPlayer::playRequested, this,
+          &LinuxRadioController::play);
+  connect(m_mprisPlayer, &MprisPlayer::stopRequested, this,
+          &LinuxRadioController::stop);
+  connect(m_mprisPlayer, &MprisPlayer::pauseRequested, this,
+          &LinuxRadioController::pause);
+  connect(m_mprisPlayer, &MprisPlayer::playPauseRequested, this,
+          &LinuxRadioController::toggle);
+  connect(m_mprisPlayer, &MprisPlayer::volumeRequested, this,
+          [this](double volume) { setVolume(static_cast<float>(volume)); });
+
+  connect(m_mediaPlayer, &QMediaPlayer::mediaStatusChanged, this,
+          [this](QMediaPlayer::MediaStatus status) {
+    if (status == QMediaPlayer::LoadedMedia) {
+      m_mprisPlayer->setCanControl(true);
+    }
+  });
+
+  connect(this, &LinuxRadioController::volumeChanged, m_mprisPlayer, [this]() {
+    m_mprisPlayer->setVolume(static_cast<double>(volume()));
+  });
+  connect(this, &LinuxRadioController::playbackStateChanged, m_mprisPlayer,
+          [this]() {
+    m_mprisPlayer->setPlaybackStatus(toMprisPlaybackStatus(playbackState()));
+  });
+  connect(this, &LinuxRadioController::streamTitleChanged, this, [this]() {
+    QVariantMap metadata = m_mprisPlayer->metadata();
+    metadata["xesam:title"] = streamTitle();
+    m_mprisPlayer->setMetadata(metadata);
+  });
+}
+
+void LinuxRadioController::toggle() {
+  if (playbackState() == RadioPlayer::PlayingState) {
+    pause();
+  } else {
+    play();
+  }
+}
+
+void LinuxRadioController::setMediaItem(const MediaItem &mediaItem) {
+  QVariantMap mprisMetadata;
+
+  mprisMetadata["mpris:length"] = -1;
+  mprisMetadata["mpris:artUrl"] = mediaItem.artworkUri;
+  mprisMetadata["xesam:artist"] = mediaItem.author;
+  mprisMetadata["xesam:title"] = "YuRadio";
+
+  m_mprisPlayer->setMetadata(mprisMetadata);
+  m_mprisPlayer->setCanControl(false);
+
+  BasicRadioController::setMediaItem(mediaItem);
+}

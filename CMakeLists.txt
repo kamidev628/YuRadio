@@ -27,8 +27,6 @@ find_package(
              WebSockets
              NetworkAuth)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS DBus)
-
 qt_standard_project_setup(REQUIRES 6.5 I18N_TRANSLATED_LANGUAGES en ru)
 
 cmake_dependent_option(

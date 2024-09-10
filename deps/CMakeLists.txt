@@ -1,5 +1,5 @@
 if(BUILD_UIOHOOK)
-  add_subdirectory(uiohook)
+  add_subdirectory(uiohook EXCLUDE_FROM_ALL)
 endif()
 
 if(LINUX)

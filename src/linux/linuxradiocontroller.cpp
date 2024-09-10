@@ -19,8 +19,8 @@ toMprisPlaybackStatus(RadioPlayer::PlaybackState state) {
 LinuxRadioController::LinuxRadioController(QObject *parent)
     : BasicRadioController(parent), m_mprisPlayer(new MprisPlayer(this)) {
   /* Will register org.mpris.MediaPlayer2.yuradio service */
-  m_mprisPlayer->setServiceName("yuradio");
-  m_mprisPlayer->setIdentity("YuRadio");
+  m_mprisPlayer->setServiceName(u"yuradio"_s);
+  m_mprisPlayer->setIdentity(u"YuRadio"_s);
   m_mprisPlayer->setCanPlay(true);
   m_mprisPlayer->setCanPause(true);
   m_mprisPlayer->setCanControl(false);
@@ -52,7 +52,7 @@ LinuxRadioController::LinuxRadioController(QObject *parent)
   });
   connect(this, &LinuxRadioController::streamTitleChanged, this, [this]() {
     QVariantMap metadata = m_mprisPlayer->metadata();
-    metadata["xesam:title"] = streamTitle();
+    metadata[u"xesam:title"_s] = streamTitle();
     m_mprisPlayer->setMetadata(metadata);
   });
 }
@@ -68,10 +68,10 @@ void LinuxRadioController::toggle() {
 void LinuxRadioController::setMediaItem(const MediaItem &mediaItem) {
   QVariantMap mprisMetadata;
 
-  mprisMetadata["mpris:length"] = -1;
-  mprisMetadata["mpris:artUrl"] = mediaItem.artworkUri;
-  mprisMetadata["xesam:artist"] = mediaItem.author;
-  mprisMetadata["xesam:title"] = "YuRadio";
+  mprisMetadata[u"mpris:length"_s] = -1;
+  mprisMetadata[u"mpris:artUrl"_s] = mediaItem.artworkUri;
+  mprisMetadata[u"xesam:artist"_s] = mediaItem.author;
+  mprisMetadata[u"xesam:title"_s] = u"YuRadio"_s;
 
   m_mprisPlayer->setMetadata(mprisMetadata);
   m_mprisPlayer->setCanControl(false);

@@ -58,8 +58,8 @@ void AndroidMediaSessionImageProvider::clientConnected() {
 
 QUrl AndroidMediaSessionImageProvider::imageUrl() const {
   QUrl url;
-  url.setScheme("http");
-  url.setHost("127.0.0.1");
+  url.setScheme(u"http"_s);
+  url.setHost(u"127.0.0.1"_s);
   url.setPort(m_server->serverPort());
 
   QUrlQuery query;

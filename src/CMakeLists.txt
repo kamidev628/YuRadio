@@ -101,6 +101,4 @@ target_link_libraries(
           "$<TARGET_NAME_IF_EXISTS:uiohook>"
           "$<TARGET_NAME_IF_EXISTS:HotReloader>")
 
-# target_include_directories(YuRadio PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
 target_set_warnings(YuRadio)

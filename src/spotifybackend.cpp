@@ -102,6 +102,7 @@ void SpotifyBackend::requestMusicInfo(const QString &searchString) {
 
   QUrlQuery query;
   query.addQueryItem(u"type"_s, u"track"_s);
+  query.addQueryItem(u"limit"_s, u"1"_s);
   query.addQueryItem(u"q"_s, searchString);
   searchUrl.setQuery(query);
 
@@ -129,7 +130,7 @@ void SpotifyBackend::handleMusicInfoReply(QNetworkReply *reply) {
   QJsonObject rootObject = document->object();
   QJsonObject tracksObject = rootObject["tracks"_L1].toObject();
   QJsonArray itemsArray = tracksObject["items"_L1].toArray();
-  if (!itemsArray.size()) {
+  if (itemsArray.isEmpty()) {
     emit errorOccurred();
     return;
   }

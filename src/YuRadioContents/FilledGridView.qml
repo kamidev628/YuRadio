@@ -8,6 +8,8 @@ GridView {
     required property real minimumItemWidth
     property int numItemsInRow: Math.min(count, root.width / internal.itemWidth)
 
+    cellWidth: internal.itemWidth + internal.evenlyDistributedWidth
+
     QtObject {
         id: internal
 
@@ -16,6 +18,4 @@ GridView {
         property real remaindedWidth: root.width - totalItemsWidth
         property real evenlyDistributedWidth: Math.max(remaindedWidth / root.numItemsInRow, 0)
     }
-
-    cellWidth: internal.itemWidth + internal.evenlyDistributedWidth
 }

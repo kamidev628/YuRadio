@@ -6,9 +6,9 @@ import QtQuick.Controls.Material.impl
 Button {
     id: root
 
-    padding: 0
-
     property color buttonColor: Material.primary
+
+    padding: 0
 
     Material.foreground: checked ? Material.color(Material.Grey, Material.Shade500) : buttonColor
     Material.accent: Material.color(Material.Grey, Material.Shade100)

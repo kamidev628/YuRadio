@@ -11,18 +11,19 @@ Drawer {
 
     property bool isDesktopLayout: true
 
-    width: Math.min(Math.min(parent.width, parent.height) / 3 * 2, implicitWidth)
-    height: parent.height
-
-    Material.roundedScale: Material.NotRounded
-
     signal showBookmarksRequested
     signal showSearchRequested
     signal showSettingsRequested
     signal showAboutRequested
 
+    width: Math.min(Math.min(parent.width, parent.height) / 3 * 2, implicitWidth)
+    height: parent.height
+
+    Material.roundedScale: Material.NotRounded
+
     ColumnLayout {
         id: columnLayout
+
         anchors.fill: parent
         anchors.margins: 20
         spacing: 20
@@ -86,6 +87,7 @@ Drawer {
                 required property var triggered
 
                 width: parent.width
+
                 text: itemText
                 icon.source: iconSource
                 highlighted: ListView.isCurrentItem
@@ -113,12 +115,14 @@ Drawer {
             Layout.alignment: Qt.AlignHCenter
 
             Text {
-                text: qsTr("Dark")
                 anchors.verticalCenter: parent.verticalCenter
+
+                text: qsTr("Dark")
                 color: root.Material.primaryTextColor
             }
             Switch {
                 id: themeSwitch
+
                 checked: !AppConfig.isDarkTheme
                 onClicked: {
                     AppSettings.theme = Qt.binding(() => {
@@ -127,8 +131,9 @@ Drawer {
                 }
             }
             Text {
-                text: qsTr("Light")
                 anchors.verticalCenter: parent.verticalCenter
+
+                text: qsTr("Light")
                 color: root.Material.primaryTextColor
             }
         }

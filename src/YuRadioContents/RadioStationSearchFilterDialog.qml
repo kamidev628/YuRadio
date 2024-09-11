@@ -10,11 +10,11 @@ import network
 Dialog {
     id: root
 
+    required property NetworkManager networkManager
+
     readonly property var selectedCountry: countryCombo.currentIndex !== -1 ? countryCombo.model[countryCombo.currentIndex] : undefined
     readonly property var selectedState: stateCombo.currentIndex !== -1 ? stateModel.get(stateCombo.currentIndex).name : undefined
     readonly property var selectedLanguage: languageCombo.currentIndex !== -1 ? languageCombo.model[languageCombo.currentIndex] : undefined
-
-    required property NetworkManager networkManager
 
     function selectedTags() {
         let selectedTags = [];
@@ -25,14 +25,6 @@ Dialog {
             }
         }
         return selectedTags;
-    }
-
-    QtObject {
-        id: internal
-        property int prevSelectedCountry: -1
-        property int prevSelectedState: -1
-        property int prevSelectedLanguage: -1
-        property list<int> prevSelectedTags
     }
 
     Binding {
@@ -84,6 +76,7 @@ Dialog {
 
     ScrollView {
         id: scrollView
+
         anchors.fill: parent
 
         contentWidth: -1
@@ -91,14 +84,17 @@ Dialog {
 
         ColumnLayout {
             id: columnLayout
+
             width: scrollView.width
             height: scrollView.height
 
             Label {
                 text: qsTr("Search Filters")
+
+                Layout.fillWidth: true
+
                 font.bold: true
                 font.pointSize: 18
-                Layout.fillWidth: true
             }
 
             GridLayout {
@@ -115,7 +111,6 @@ Dialog {
 
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
-
                     implicitHeight: 40
 
                     editable: true
@@ -129,12 +124,15 @@ Dialog {
 
                 Label {
                     id: stateText
+
                     Layout.fillWidth: true
+
                     text: qsTr("State")
                 }
 
                 HeaderComboBox {
                     id: stateCombo
+
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
                     implicitHeight: 40
@@ -149,6 +147,7 @@ Dialog {
 
                     model: JsonRestListModel {
                         id: stateModel
+
                         restManager: root.networkManager
                         pagination: LimitPagination {
                             id: statesPagination
@@ -172,7 +171,12 @@ Dialog {
 
                         fetchMoreHandler: () => {
                             loadPage();
-                            pagination.nextPage();
+                        }
+
+                        onStatusChanged: {
+                            if (status == JsonRestListModel.Ready) {
+                                pagination.nextPage();
+                            }
                         }
 
                         onPathChanged: {
@@ -184,16 +188,18 @@ Dialog {
 
                 Label {
                     Layout.fillWidth: true
+
                     text: qsTr("Language")
                 }
 
                 HeaderComboBox {
                     id: languageCombo
+
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
+                    implicitHeight: 40
 
                     currentIndex: -1
-                    implicitHeight: 40
                     font.pointSize: 13
                     popup.font.pointSize: font.pointSize
 
@@ -206,29 +212,32 @@ Dialog {
             Label {
                 Layout.topMargin: 10
                 Layout.fillWidth: true
+
                 text: qsTr("Tags")
             }
 
             ScrollableFlickable {
                 id: tagsFlickable
+
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-
-                clip: true
-
-                boundsBehavior: Flickable.StopAtBounds
 
                 contentHeight: tagsFlow.implicitHeight
                 contentWidth: tagsFlow.implicitWidth
 
+                boundsBehavior: Flickable.StopAtBounds
+                clip: true
+
                 Flow {
                     id: tagsFlow
+
                     width: tagsFlickable.width
 
                     spacing: 4
 
                     Repeater {
                         id: tagsRepeater
+
                         model: Storage.getTags()
 
                         OutlinedButton {
@@ -248,8 +257,18 @@ Dialog {
         }
     }
 
+    QtObject {
+        id: internal
+
+        property int prevSelectedCountry: -1
+        property int prevSelectedState: -1
+        property int prevSelectedLanguage: -1
+        property list<int> prevSelectedTags
+    }
+
     Connections {
         target: root.networkManager
+
         function onBaseUrlChanged() {
             stateModel.reset();
         }

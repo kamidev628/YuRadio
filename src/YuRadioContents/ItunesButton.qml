@@ -4,6 +4,7 @@ import QtQuick.Controls.Material
 
 Button {
     id: root
+
     property string link
 
     Material.background: Material.color(Material.Grey, Material.Shade200)

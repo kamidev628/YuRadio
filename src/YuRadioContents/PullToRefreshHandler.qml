@@ -2,7 +2,6 @@ import QtQuick
 
 Item {
     id: root
-    anchors.fill: parent
 
     property Flickable target: parent as Flickable
     property int minimumThreshold: 100
@@ -20,6 +19,7 @@ Item {
     readonly property alias maximumProgress: internal.maximumProgress
 
     property alias refreshIndicator: refreshIndicatorLoader
+    property Component refreshIndicatorDelegate: PullToRefreshIndicator {}
 
     signal pullDown
     signal pullUp
@@ -28,26 +28,27 @@ Item {
 
     signal refreshed
 
-    property Component refreshIndicatorDelegate: PullToRefreshIndicator {}
+    anchors.fill: parent
 
-    QtObject {
-        id: internal
-        property bool isPullDown: false
-        property bool isPullUp: false
-        property bool isPullingDown: false
-        property bool isPullingUp: false
+    Loader {
+        id: refreshIndicatorLoader
 
-        property real minimumProgress: {
-            if (!root.enabled || !root.target || !root.minimumThreshold)
-                return 0;
-            return Math.min(Math.abs(root.target.verticalOvershoot) / root.minimumThreshold, 1.0);
+        property alias handler: root
+
+        Connections {
+            target: refreshIndicatorLoader.item
+
+            function onFullyRefreshedChanged() {
+                internal.isPullingDown = false;
+                internal.isPullingUp = false;
+                root.refreshed();
+            }
         }
-        property real maximumProgress: {
-            if (!root.enabled || !root.target || !root.maximumThreshold)
-                return 0;
-            return Math.min(Math.abs(root.target.verticalOvershoot) / root.maximumThreshold, 1.0);
-        }
+
+        active: root.enabled && root.isProcessing
+        sourceComponent: root.refreshIndicatorDelegate
     }
+
 
     Connections {
         target: root.target
@@ -87,22 +88,23 @@ Item {
         }
     }
 
-    Loader {
-        id: refreshIndicatorLoader
+    QtObject {
+        id: internal
 
-        property alias handler: root
+        property bool isPullDown: false
+        property bool isPullUp: false
+        property bool isPullingDown: false
+        property bool isPullingUp: false
 
-        Connections {
-            target: refreshIndicatorLoader.item
-
-            function onFullyRefreshedChanged() {
-                internal.isPullingDown = false;
-                internal.isPullingUp = false;
-                root.refreshed();
-            }
+        property real minimumProgress: {
+            if (!root.enabled || !root.target || !root.minimumThreshold)
+                return 0;
+            return Math.min(Math.abs(root.target.verticalOvershoot) / root.minimumThreshold, 1.0);
         }
-
-        active: root.enabled && root.isProcessing
-        sourceComponent: root.refreshIndicatorDelegate
+        property real maximumProgress: {
+            if (!root.enabled || !root.target || !root.maximumThreshold)
+                return 0;
+            return Math.min(Math.abs(root.target.verticalOvershoot) / root.maximumThreshold, 1.0);
+        }
     }
 }

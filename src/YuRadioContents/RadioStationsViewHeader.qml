@@ -8,12 +8,6 @@ import QtQuick.Layouts
 FocusScope {
     id: root
 
-    height: 40
-    width: GridView.view.width
-
-    property string orderByField: "votes"
-    property bool descending: true
-
     enum SortField {
         Votes,
         Popularity,
@@ -25,32 +19,11 @@ FocusScope {
         Tags
     }
 
-    QtObject {
-        id: internal
+    property string orderByField: "votes"
+    property bool descending: true
 
-        function getOrderByField() {
-            const field = buttonGroup.checkedButton?.modelData.field ?? RadioStationsViewHeader.SortField.Votes;
-            switch (field) {
-            case RadioStationsViewHeader.SortField.Votes:
-                return "votes";
-            case RadioStationsViewHeader.SortField.Popularity:
-                return "clickcount";
-            case RadioStationsViewHeader.SortField.Bitrate:
-                return "bitrate";
-            case RadioStationsViewHeader.SortField.Name:
-                return "name";
-            case RadioStationsViewHeader.SortField.Country:
-                return "country";
-            case RadioStationsViewHeader.SortField.State:
-                return "state";
-            case RadioStationsViewHeader.SortField.Language:
-                return "language";
-            case RadioStationsViewHeader.SortField.Tags:
-                return "tags";
-            }
-            return "votes";
-        }
-    }
+    height: 40
+    width: GridView.view.width
 
     ButtonGroup {
         id: buttonGroup
@@ -67,8 +40,8 @@ FocusScope {
             Layout.fillHeight: true
 
             Item {
-              Layout.fillWidth: true
-              Layout.horizontalStretchFactor: 1
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 1
             }
 
             IconButton {
@@ -78,6 +51,7 @@ FocusScope {
 
                 transform: Scale {
                     id: orderByButtonScale
+
                     yScale: root.descending ? 1 : -1
                     origin.x: orderByButton.width / 2
                     origin.y: orderByButton.height / 2
@@ -95,10 +69,12 @@ FocusScope {
 
             ListView {
                 id: listView
+                
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.maximumWidth: contentWidth
                 Layout.horizontalStretchFactor: Utils.maxInteger
+
                 orientation: Qt.Horizontal
                 spacing: 2
 
@@ -156,10 +132,38 @@ FocusScope {
                     text: modelData.text
                 }
             }
-        Item {
-          Layout.fillWidth: true
-          Layout.horizontalStretchFactor: 1
-        }
+            Item {
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 1
+            }
         }
     }
+
+    QtObject {
+        id: internal
+
+        function getOrderByField() {
+            const field = buttonGroup.checkedButton?.modelData.field ?? RadioStationsViewHeader.SortField.Votes;
+            switch (field) {
+            case RadioStationsViewHeader.SortField.Votes:
+                return "votes";
+            case RadioStationsViewHeader.SortField.Popularity:
+                return "clickcount";
+            case RadioStationsViewHeader.SortField.Bitrate:
+                return "bitrate";
+            case RadioStationsViewHeader.SortField.Name:
+                return "name";
+            case RadioStationsViewHeader.SortField.Country:
+                return "country";
+            case RadioStationsViewHeader.SortField.State:
+                return "state";
+            case RadioStationsViewHeader.SortField.Language:
+                return "language";
+            case RadioStationsViewHeader.SortField.Tags:
+                return "tags";
+            }
+            return "votes";
+        }
+    }
+
 }

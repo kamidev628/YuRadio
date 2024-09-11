@@ -17,13 +17,27 @@ RadioBottomBarDrawer {
 
     readonly property real preferredHeight: parent.height * 2 / 3
 
-    maximumHeight: preferredHeight
-    minimumHeight: 0
-
     anchors {
         bottom: parent.bottom
         left: parent.left
         right: parent.right
+    }
+
+    maximumHeight: preferredHeight
+    minimumHeight: 0
+
+    background: MultiEffect {
+        source: effectSource
+        autoPaddingEnabled: false
+        blurEnabled: true
+        blurMax: 64
+        blur: 0.95
+        saturation: -0.3
+
+        Rectangle {
+            anchors.fill: parent
+            color: AppConfig.isDarkTheme ? root.Material.background.lighter(1.4) : root.Material.background.darker(1.05)
+        }
     }
 
     states: [
@@ -52,28 +66,17 @@ RadioBottomBarDrawer {
 
     ShaderEffectSource {
         id: effectSource
+
         anchors.fill: parent
+
         sourceItem: root.gridView
         sourceRect: Qt.rect(0, root.gridView.height, root.width, root.height)
         visible: false
     }
 
-    background: MultiEffect {
-        source: effectSource
-        autoPaddingEnabled: false
-        blurEnabled: true
-        blurMax: 64
-        blur: 0.95
-        saturation: -0.3
-
-        Rectangle {
-            anchors.fill: parent
-            color: AppConfig.isDarkTheme ? root.Material.background.lighter(1.4) : root.Material.background.darker(1.05)
-        }
-    }
-
     Component {
         id: locationPage
+
         RadioStationLocationPage {
             stationLatitude: bottomBarContents.stationLatitude
             stationLongitude: bottomBarContents.stationLongitude
@@ -83,9 +86,10 @@ RadioBottomBarDrawer {
     RadioBottomBarContents {
         id: bottomBarContents
 
-        anchors.fill: parent
         property real stationLatitude
         property real stationLongitude
+
+        anchors.fill: parent
 
         bottomBarDrawer: root
         onShowRadioStationLocationRequested: (stationLat, stationLong) => {
@@ -102,6 +106,8 @@ RadioBottomBarDrawer {
             rightMargin: 8
             bottomMargin: 20
         }
+        width: 60
+        height: 60
 
         icon.source: MainRadioPlayer.playing ? "images/pause.svg" : "images/play.svg"
         icon.width: width / 2
@@ -113,8 +119,5 @@ RadioBottomBarDrawer {
         onClicked: {
             MainRadioPlayer.toggle();
         }
-
-        width: 60
-        height: 60
     }
 }

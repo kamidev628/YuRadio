@@ -21,16 +21,19 @@ Item {
     focus: true
 
     ScrollView {
-        anchors.fill: parent
-        anchors.topMargin: 10
-        anchors.leftMargin: 15
-        anchors.rightMargin: 5
+      anchors {
+        fill: parent
+        topMargin: 10
+        leftMargin: 15
+        rightMargin: 5
+      }
 
         contentWidth: -1
         contentHeight: columnLayout.implicitHeight
 
         ColumnLayout {
             id: columnLayout
+
             width: parent.width
 
             Label {
@@ -39,44 +42,22 @@ Item {
             }
 
             Rectangle {
-                color: Material.foreground
                 implicitWidth: parent.width * 2 / 3
                 implicitHeight: 1
+
+                color: Material.foreground
             }
 
             ListView {
                 id: serversListView
 
                 Layout.fillWidth: true
-                clip: true
                 Layout.preferredHeight: 150
+
+                clip: true
 
                 boundsBehavior: Flickable.StopAtBounds
 
-                Label {
-                    text: qsTr("Could not fetch available servers")
-
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                        right: parent.right
-                        topMargin: 5
-                    }
-
-                    Material.foreground: Material.color(Material.Grey, Material.Shade500)
-                    opacity: 0.5
-                    visible: !serversListView.model || !serversListView.model.length
-                }
-
-                ButtonGroup {
-                    id: buttonGroup
-                    onCheckedButtonChanged: {
-                        if (root.networkManager.baseUrl != checkedButton.modelData) {
-                            AppSettings.radioBrowserBaseUrl = checkedButton.modelData;
-                            root.networkManager.baseUrl = checkedButton.modelData;
-                        }
-                    }
-                }
                 delegate: ItemDelegate {
                     required property string modelData
 
@@ -94,16 +75,44 @@ Item {
                         model = [...new Set(urls)];
                     });
                 }
+
+                Label {
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        right: parent.right
+                        topMargin: 5
+                    }
+
+                    text: qsTr("Could not fetch available servers")
+
+                    Material.foreground: Material.color(Material.Grey, Material.Shade500)
+                    opacity: 0.5
+                    visible: !serversListView.model || !serversListView.model.length
+                }
+
+                ButtonGroup {
+                    id: buttonGroup
+
+                    onCheckedButtonChanged: {
+                        if (root.networkManager.baseUrl != checkedButton.modelData) {
+                            AppSettings.radioBrowserBaseUrl = checkedButton.modelData;
+                            root.networkManager.baseUrl = checkedButton.modelData;
+                        }
+                    }
+                }
             }
 
             Label {
-                text: qsTr("Initial Page")
                 Layout.topMargin: 20
+
+                text: qsTr("Initial Page")
                 font.pointSize: 14
             }
 
             ComboBox {
                 implicitWidth: parent.width * 2 / 3
+
                 model: [
                     {
                         text: qsTr("Search"),
@@ -116,22 +125,24 @@ Item {
                 ]
                 textRole: "text"
 
-                Component.onCompleted: {
-                    currentIndex = model.findIndex(x => x.page == AppSettings.initialPage);
-                }
                 onActivated: {
                     AppSettings.initialPage = currentValue.page;
+                }
+                Component.onCompleted: {
+                    currentIndex = model.findIndex(x => x.page == AppSettings.initialPage);
                 }
             }
 
             Label {
-                text: qsTr("Language")
                 Layout.topMargin: 20
+
+                text: qsTr("Language")
                 font.pointSize: 14
             }
 
             ComboBox {
                 implicitWidth: parent.width * 2 / 3
+
                 textRole: "text"
 
                 Component.onCompleted: {

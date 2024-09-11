@@ -12,25 +12,12 @@ import Main
 Item {
     id: root
 
-    focus: true
-
+    required property bool isDesktopLayout
     required property RadioDrawer drawer
     required property NetworkManager networkManager
     required property MusicInfoModel musicInfoModel
 
-    function openSearchFilterDialog() {
-        if (searchFilterDialogLoader.active) {
-            searchFilterDialogLoader.item.open();
-        } else {
-            searchFilterDialogLoader.active = true;
-        }
-    }
-
-    function radioModelReset() {
-        radioPagination.offset = 0;
-        radioModel.reset();
-        radioGridView.currentIndex = -1;
-    }
+    readonly property RadioStationSearchFilterDialog searchFilterDialog: searchFilterDialogLoader.item as RadioStationSearchFilterDialog
 
     property Component headerContent: RowLayout {
         id: headerLayout
@@ -60,6 +47,7 @@ Item {
 
         ToolButton {
             id: refreshButton
+
             icon.source: "images/refresh.svg"
             icon.color: enabled ? Material.color(Material.Grey, Material.Shade100) : ApplicationWindow.header.Material.background.darker(1.2)
 
@@ -83,12 +71,28 @@ Item {
         }
     }
 
+    function openSearchFilterDialog() {
+        if (searchFilterDialogLoader.active) {
+            searchFilterDialogLoader.item.open();
+        } else {
+            searchFilterDialogLoader.active = true;
+        }
+    }
+
+    function radioModelReset() {
+        radioPagination.offset = 0;
+        radioModel.reset();
+        radioGridView.currentIndex = -1;
+    }
+
+    focus: true
+
     Loader {
         id: searchFilterDialogLoader
 
-        active: false
-
         anchors.fill: parent
+
+        active: false
 
         sourceComponent: RadioStationSearchFilterDialog {
             id: searchFilterDialog
@@ -112,6 +116,10 @@ Item {
 
     JsonRestListModel {
         id: radioModel
+
+        function loadPageHandler() {
+            loadPage();
+        }
 
         restManager: root.networkManager
         pagination: LimitPagination {
@@ -154,10 +162,6 @@ Item {
                 key: "tagList"
             }
         ]
-
-        function loadPageHandler() {
-            loadPage();
-        }
 
         preprocessItem: item => {
             if (!item.url_resolved && !item.url) {
@@ -224,7 +228,8 @@ Item {
 
         PullToRefreshHandler {
             id: pullToRefreshHandler
-            enabled: AppConfig.isMobile && isProcessing && !apiTimeoutTimer.running && radioGridView.verticalOvershoot <= 0
+
+            enabled: isProcessing && !apiTimeoutTimer.running && radioGridView.verticalOvershoot <= 0
             refreshCondition: refreshTimer.running
 
             onPullDownRelease: {
@@ -240,7 +245,17 @@ Item {
 
     RadioBottomBar {
         id: bottomBarDrawer
-        interactive: !((searchFilterDialogLoader.item?.opened ?? false) || (root.drawer.opened && !Window.window.isDesktopLayout))
+
+        interactive: {
+            if (!root.searchFilterDialog) {
+                return true;
+            }
+            if (root.searchFilterDialog.opened || (root.drawer.opened && !root.isDesktopLayout)) {
+                return false;
+            }
+            return true;
+        }
+
         gridView: radioGridView
         stackView: root.StackView.view
         musicInfoModel: root.musicInfoModel
@@ -248,6 +263,7 @@ Item {
 
     Connections {
         target: root.networkManager
+
         function onBaseUrlChanged() {
             root.radioModelReset();
         }

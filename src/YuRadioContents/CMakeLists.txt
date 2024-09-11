@@ -41,7 +41,6 @@ qt_add_qml_module(
   ItunesButton.qml
   IconButton.qml
   VolumeController.qml
-  MomentumAnimation.qml
   HeaderComboBox.qml
   ListViewHighlightBar.qml
   radiobrowser.mjs

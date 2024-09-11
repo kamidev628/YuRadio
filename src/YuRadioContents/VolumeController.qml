@@ -5,10 +5,10 @@ import QtQuick.Layouts
 FocusScope {
     id: root
 
+    property alias volume: volumeSlider.value
+
     implicitWidth: volumeController.implicitWidth
     implicitHeight: volumeController.implicitHeight
-
-    property alias volume: volumeSlider.value
 
     RowLayout {
         id: volumeController

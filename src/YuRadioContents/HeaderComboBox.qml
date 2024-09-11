@@ -8,6 +8,12 @@ ComboBox {
 
     property string headerText: "SELECT ALL"
 
+    onAccepted: {
+        if (find(editText) === -1) {
+            editText = textAt(0);
+        }
+    }
+
     Binding {
         target: root.popup.contentItem
         property: "header"
@@ -20,12 +26,6 @@ ComboBox {
                     root.popup.close();
                 }
             }
-        }
-    }
-
-    onAccepted: {
-        if (find(editText) === -1) {
-            editText = textAt(0);
         }
     }
 }

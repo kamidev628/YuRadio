@@ -13,8 +13,10 @@ Item {
 
     Plugin {
         id: mapPlugin
+
         name: "osm"
         locales: AppSettings.locale
+
         PluginParameter {
             name: "osm.mapping.custom.host"
             value: "https://tile.openstreetmap.org/"
@@ -23,13 +25,23 @@ Item {
 
     Map {
         id: map
+
+        property geoCoordinate startCentroid
+
         anchors.fill: parent
+
+        plugin: mapPlugin
+        activeMapType: supportedMapTypes[supportedMapTypes.length - 1]
+        center: QtPositioning.coordinate(root.stationLatitude, root.stationLongitude)
+        zoomLevel: 14
 
         MapQuickItem {
             id: marker
+
+            coordinate: QtPositioning.coordinate(root.stationLatitude, root.stationLongitude)
             anchorPoint.x: image.width / 2
             anchorPoint.y: image.height
-            coordinate: QtPositioning.coordinate(root.stationLatitude, root.stationLongitude)
+
             sourceItem: Image {
                 id: image
                 source: "images/location.svg"
@@ -37,20 +49,16 @@ Item {
             }
         }
 
-        plugin: mapPlugin
-        activeMapType: supportedMapTypes[supportedMapTypes.length - 1]
-        center: QtPositioning.coordinate(root.stationLatitude, root.stationLongitude)
-        zoomLevel: 14
-
         Timer {
             id: dragDelayTimer
             interval: 100
         }
 
-        property geoCoordinate startCentroid
         PinchHandler {
             id: pinchHandler
+
             target: null
+
             onActiveChanged: if (active) {
                 map.startCentroid = map.toCoordinate(pinchHandler.centroid.position, false);
             } else {
@@ -81,8 +89,10 @@ Item {
             }
             rotationScale: 1 / 120
         }
+
         DragHandler {
             id: dragHandler
+
             target: null
 
             onTranslationChanged: delta => {
@@ -93,11 +103,13 @@ Item {
                 }
             }
         }
+
         Shortcut {
             enabled: map.zoomLevel < map.maximumZoomLevel
             sequence: StandardKey.ZoomIn
             onActivated: map.zoomLevel = Math.round(map.zoomLevel + 1)
         }
+
         Shortcut {
             enabled: map.zoomLevel > map.minimumZoomLevel
             sequence: StandardKey.ZoomOut

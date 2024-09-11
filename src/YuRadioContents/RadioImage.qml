@@ -3,9 +3,9 @@ import QtQuick.Controls
 
 Image {
     id: root
+
     property string targetSource
     property string fallbackSource
-
     property bool failed: true
 
     source: root.failed ? fallbackSource : targetSource

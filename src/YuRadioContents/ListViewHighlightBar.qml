@@ -13,6 +13,7 @@ Rectangle {
         enabled: AppSettings.enableSelectionAnimation
         SpringAnimation {
             id: xAnim
+
             spring: 4
             damping: 0.5
             duration: 80
@@ -22,6 +23,7 @@ Rectangle {
         enabled: AppSettings.enableSelectionAnimation
         SpringAnimation {
             id: yAnim
+
             spring: 4
             damping: 0.5
         }

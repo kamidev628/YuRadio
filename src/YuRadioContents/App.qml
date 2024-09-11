@@ -1,4 +1,5 @@
 pragma ComponentBehavior: Bound
+
 import QtCore
 import QtQuick
 import QtQuick.Controls
@@ -11,19 +12,51 @@ import Main
 
 ApplicationWindow {
     id: root
-    visible: true
+
+    enum Page {
+        Search,
+        Bookmark
+    }
+
+    readonly property bool isDesktopLayout: width >= AppConfig.portraitLayoutWidth
+    property list<Item> loadedPages: []
+
+    function backButtonPressed(): bool {
+        if (mainStackView.depth > 1) {
+            mainStackView.popCurrentItem();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function stackViewPushPage(component: Component, objectName: string) {
+        if (mainStackView.currentItem?.objectName == objectName) {
+            return;
+        }
+        let loadedPage = loadedPages.find(item => item.objectName == objectName);
+        if (loadedPage) {
+            mainStackView.replaceCurrentItem(loadedPage);
+        } else {
+            loadedPage = component.createObject(root);
+            loadedPages.push(loadedPage);
+            mainStackView.replaceCurrentItem(loadedPage);
+        }
+    }
 
     width: 640
     height: 880
-
     minimumWidth: 300
     minimumHeight: 300
 
+    title: qsTr("YuRadio")
+    visible: true
+
     Material.theme: AppConfig.isDarkTheme ? Material.Dark : Material.Light
 
-    title: qsTr("YuRadio")
-
-    readonly property bool isDesktopLayout: width >= AppConfig.portraitLayoutWidth
+    Component.onCompleted: {
+        Storage.init();
+    }
 
     Settings {
         property alias windowX: root.x
@@ -47,42 +80,6 @@ ApplicationWindow {
                 }
             }
         ]
-    }
-
-    enum Page {
-        Search,
-        Bookmark
-    }
-
-    property var loadedPages: []
-
-    function backButtonPressed(event) {
-        if (mainStackView.depth > 1) {
-            mainStackView.popCurrentItem();
-            if (event)
-                event.accepted = true;
-        } else {
-            if (event)
-                event.accepted = false;
-        }
-    }
-
-    function stackViewPushPage(component: Component, objectName: string) {
-        if (mainStackView.currentItem?.objectName == objectName) {
-            return;
-        }
-        let loadedPage = loadedPages.find(item => item.objectName == objectName);
-        if (loadedPage) {
-            mainStackView.replaceCurrentItem(loadedPage);
-        } else {
-            loadedPage = component.createObject(root);
-            loadedPages.push(loadedPage);
-            mainStackView.replaceCurrentItem(loadedPage);
-        }
-    }
-
-    Component.onCompleted: {
-        Storage.init();
     }
 
     NetworkManager {
@@ -125,6 +122,7 @@ ApplicationWindow {
 
     RadioDrawer {
         id: drawer
+
         isDesktopLayout: root.isDesktopLayout
 
         onShowBookmarksRequested: {
@@ -171,8 +169,8 @@ ApplicationWindow {
             bottom: parent.bottom
         }
         width: parent.width
-        focus: true
 
+        focus: true
         Component.onCompleted: {
             if (AppSettings.initialPage == App.Page.Search) {
                 root.stackViewPushPage(searchPage, "searchPage");
@@ -188,6 +186,8 @@ ApplicationWindow {
 
             SearchPage {
                 objectName: "searchPage"
+
+                isDesktopLayout: root.isDesktopLayout
                 drawer: drawer
                 networkManager: networkManager
                 musicInfoModel: musicInfoModel
@@ -196,9 +196,12 @@ ApplicationWindow {
 
         Component {
             id: bookmarkPage
+
             BookmarkPage {
                 objectName: "bookmarkPage"
+
                 drawer: drawer
+                isDesktopLayout: root.isDesktopLayout
                 networkManager: networkManager
                 musicInfoModel: musicInfoModel
             }
@@ -206,8 +209,10 @@ ApplicationWindow {
 
         Component {
             id: settingsPage
+
             SettingsPage {
                 objectName: "settingsPage"
+
                 networkManager: networkManager
                 languageTranslator: languageTranslator
                 musicInfoModel: musicInfoModel
@@ -216,22 +221,21 @@ ApplicationWindow {
 
         Component {
             id: aboutPage
+
             AboutPage {
                 objectName: "aboutPage"
             }
         }
 
-        Keys.onBackPressed: event => root.backButtonPressed(event)
+        Keys.onBackPressed: event => {
+            event.accepted = root.backButtonPressed();
+        }
     }
 
     header: ToolBar {
         id: headerToolBar
 
-        Material.background: Material.primary
-        Binding {
-            when: AppConfig.isDarkTheme
-            headerToolBar.Material.background: root.Material.background.lighter(1.5)
-        }
+        Material.background: AppConfig.isDarkTheme ? root.Material.background.lighter(1.5) : Material.primary
 
         RowLayout {
             anchors.fill: parent
@@ -242,9 +246,11 @@ ApplicationWindow {
 
             ToolButton {
                 id: menuButton
+
                 visible: !backButton.visible
-                icon.source: "images/menu.svg"
                 Material.foreground: Material.color(Material.Grey, Material.Shade100)
+
+                icon.source: "images/menu.svg"
                 onClicked: {
                     if (drawer.opened) {
                         drawer.close();
@@ -256,15 +262,18 @@ ApplicationWindow {
 
             ToolButton {
                 id: backButton
+
                 visible: mainStackView.currentItem?.displayBackButton ?? false
-                icon.source: "images/arrow-back.svg"
                 Material.foreground: Material.color(Material.Grey, Material.Shade100)
+
+                icon.source: "images/arrow-back.svg"
                 onClicked: root.backButtonPressed()
             }
 
             Loader {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
                 sourceComponent: mainStackView.currentItem?.headerContent
             }
         }
@@ -288,6 +297,7 @@ ApplicationWindow {
 
     GlobalShortcut {
         id: mediaPlayGlobalShortcut
+
         sequence: "Media Play"
         onActivated: {
             MainRadioPlayer.toggle();

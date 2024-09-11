@@ -10,11 +10,12 @@ import Main
 Item {
     id: root
 
-    focus: true
-
+    required property bool isDesktopLayout
     required property RadioDrawer drawer
     required property NetworkManager networkManager
     required property MusicInfoModel musicInfoModel
+
+    focus: true
 
     RadioStationView {
         id: bookmarkGridView
@@ -27,7 +28,8 @@ Item {
 
     RadioBottomBar {
         id: bottomBarDrawer
-        interactive: !(root.drawer.opened && !Window.window.isDesktopLayout)
+
+        interactive: !(root.drawer.opened && !root.isDesktopLayout)
         gridView: bookmarkGridView
         stackView: root.StackView.view
         musicInfoModel: root.musicInfoModel

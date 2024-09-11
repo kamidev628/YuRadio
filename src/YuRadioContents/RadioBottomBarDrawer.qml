@@ -16,8 +16,6 @@ Item {
 
     property Component background: Rectangle {}
 
-    height: minimumHeight
-
     function open() {
         if (root.height != maximumHeight) {
             openCloseAnimation.to = maximumHeight;
@@ -42,8 +40,11 @@ Item {
         }
     }
 
+    height: minimumHeight
+
     BoundaryRule on height {
         id: heightBoundaryRule
+
         maximum: root.maximumHeight
         minimum: root.minimumHeight
 
@@ -53,6 +54,7 @@ Item {
 
     NumberAnimation on height {
         id: openCloseAnimation
+
         duration: 200
         onFinished: {
             if (root.height == root.maximumHeight) {
@@ -72,6 +74,7 @@ Item {
 
     DragHandler {
         id: dragHandler
+
         enabled: root.interactive
         target: root
 
@@ -97,6 +100,7 @@ Item {
 
     Loader {
         anchors.fill: parent
+
         sourceComponent: root.background
     }
 
@@ -106,11 +110,11 @@ Item {
         Rectangle {
             id: bottomBarHandle
 
+            Layout.preferredHeight: 4
+            Layout.preferredWidth: Math.min(parent.width / 10, 100)
             Layout.alignment: Qt.AlignHCenter
             Layout.topMargin: 5
 
-            Layout.preferredHeight: 4
-            Layout.preferredWidth: Math.min(parent.width / 10, 100)
             radius: height / 2
 
             color: Material.color(Material.Grey, Material.Shade800)
@@ -119,10 +123,11 @@ Item {
 
         Item {
             id: contentItem
-            focus: true
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            focus: true
         }
     }
 }

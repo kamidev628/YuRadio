@@ -16,7 +16,9 @@ Label {
 
     MouseArea {
         id: mouseArea
+
         anchors.fill: parent
+
         acceptedButtons: Qt.NoButton
         cursorShape: Qt.PointingHandCursor
     }

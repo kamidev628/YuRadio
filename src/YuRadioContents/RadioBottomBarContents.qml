@@ -1,4 +1,5 @@
 pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
@@ -9,38 +10,25 @@ import Main
 FocusScope {
     id: root
 
-    implicitHeight: 70
-
     required property RadioBottomBarDrawer bottomBarDrawer
     property MusicInfoModel musicInfoModel: bottomBarDrawer.musicInfoModel
 
     property var musicInfo
-    property string streamTitle: MainRadioPlayer.streamTitle
+    property var radioStation: MainRadioPlayer.currentItem
+
     property string lastStreamTitle: ""
+    property string streamTitle: MainRadioPlayer.streamTitle
 
     property alias playerButtonVisible: playerButtonLoader.active
 
-    property real stationLatitude: MainRadioPlayer.currentItem?.geo_lat ?? 0
-    property real stationLongitude: MainRadioPlayer.currentItem?.geo_long ?? 0
-    property string stationName: MainRadioPlayer.currentItem?.name ?? ""
-    property string stationTags: MainRadioPlayer.currentItem?.tags ?? ""
-    property string stationUrl: MainRadioPlayer.currentItem?.url_resolved ?? ""
-    property string stationIcon: MainRadioPlayer.currentItem?.favicon ?? ""
-    property string stationHomepage: MainRadioPlayer.currentItem?.homepage ?? ""
-    property string stationCountry: MainRadioPlayer.currentItem?.country ?? ""
-    property string stationLanguage: MainRadioPlayer.currentItem?.language ?? ""
-
     signal showRadioStationLocationRequested(real staitonLat, real stationLong)
 
-    Binding {
-        when: mainFlickable.dragging
-        root.bottomBarDrawer.interactive: false
-    }
+    implicitHeight: 70
 
     states: [
         State {
             name: "dragStarted"
-            when: root.bottomBarDrawer.height >= Math.min(root.implicitHeight + 100, root.bottomBarDrawer.maximumHeight)
+            when: root.bottomBarDrawer.progress >= 0.3
 
             PropertyChanges {
                 stationInfoColumn.visible: true
@@ -61,6 +49,11 @@ FocusScope {
         }
     ]
 
+    Binding {
+        when: mainFlickable.dragging
+        root.bottomBarDrawer.interactive: false
+    }
+
     Flickable {
         id: mainFlickable
 
@@ -74,20 +67,16 @@ FocusScope {
 
         ColumnLayout {
             id: mainColumn
+
             width: parent.width
 
             RowLayout {
                 id: bottomBarRowLayout
+
                 Layout.fillWidth: true
 
                 RadioImage {
                     id: stationImage
-
-                    fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
-                    targetSource: root.stationIcon
-
-                    smooth: true
-                    fillMode: Image.PreserveAspectFit
 
                     Layout.minimumHeight: Math.min(root.width / 3, root.height - 8, 300)
                     Layout.minimumWidth: Layout.minimumHeight
@@ -96,6 +85,12 @@ FocusScope {
 
                     Layout.leftMargin: 10
                     Layout.fillHeight: true
+
+                    fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+                    targetSource: root.radioStation?.favicon ?? ""
+                    fillMode: Image.PreserveAspectFit
+
+                    smooth: true
                 }
 
                 Item {
@@ -109,9 +104,10 @@ FocusScope {
 
                         Label {
                             id: stationName
-                            text: root.stationName ? root.stationName : qsTr("Station")
 
                             width: parent.width
+
+                            text: root.radioStation?.name ?? qsTr("Station")
                             elide: Text.ElideRight
                             font.bold: true
                             font.pointSize: 16
@@ -119,21 +115,22 @@ FocusScope {
 
                         Label {
                             id: musicTags
-                            text: root.stationTags ? root.stationTags : '⸻'
-
-                            Binding {
-                                when: progressBar.visible || errorText.visible
-                                musicTags.text: ""
-                            }
-
-                            maximumLineCount: 3
 
                             width: parent.width
+
+                            text: {
+                                if (progressBar.visible || errorText.visible) {
+                                    return "";
+                                }
+                                return root.radioStation?.tags ?? '';
+                            }
                             elide: Text.ElideRight
                             font.pointSize: 13
+                            maximumLineCount: 3
 
                             Label {
                                 id: errorText
+
                                 anchors.fill: parent
 
                                 Material.foreground: Material.Red
@@ -141,30 +138,33 @@ FocusScope {
                                 elide: Text.ElideRight
                                 visible: MainRadioPlayer.error != RadioPlayer.NoError && !progressBar.visible
                             }
+
                             ProgressBar {
                                 id: progressBar
-                                indeterminate: true
+
                                 anchors.fill: parent
+
+                                indeterminate: true
                                 visible: MainRadioPlayer.loading && !MainRadioPlayer.playing
                             }
                         }
 
                         ColumnLayout {
                             id: stationInfoColumn
-                            visible: false
 
                             width: parent.width
 
+                            visible: false
                             spacing: 2
 
                             Label {
                                 id: country
+
                                 Layout.topMargin: 20
                                 Layout.fillWidth: true
+                                visible: root.radioStation?.country ?? false
 
-                                visible: root.stationCountry
-
-                                text: qsTr("Country: %1").arg(root.stationCountry)
+                                text: qsTr("Country: %1").arg(root.radioStation?.country ?? "")
                                 font.pointSize: 14
                                 wrapMode: Text.WordWrap
                             }
@@ -172,11 +172,12 @@ FocusScope {
                             Label {
                                 id: language
 
+                                readonly property string stationLanguage: root.radioStation?.language ?? ""
+
                                 Layout.fillWidth: true
+                                visible: root.radioStation?.language ?? false
 
-                                visible: root.stationLanguage
-
-                                text: root.stationLanguage.includes(",") ? qsTr("Languages: %1").arg(root.stationLanguage) : qsTr("Language: %1").arg(root.stationLanguage)
+                                text: stationLanguage.includes(",") ? qsTr("Languages: %1").arg(stationLanguage) : qsTr("Language: %1").arg(stationLanguage)
                                 font.pointSize: 14
                                 wrapMode: Text.WordWrap
                             }
@@ -184,10 +185,10 @@ FocusScope {
                             ClickableLink {
                                 id: homePage
 
-                                visible: root.stationHomepage
-                                linkText: qsTr('Homepage')
-                                link: root.stationHomepage
+                                visible: root.radioStation?.homepage ?? false
 
+                                linkText: qsTr('Homepage')
+                                link: root.radioStation?.homepage ?? ""
                                 font.pointSize: 14
                             }
 
@@ -195,13 +196,13 @@ FocusScope {
                                 id: mapButton
 
                                 flat: true
-                                visible: root.stationLatitude && root.stationLongitude
+                                visible: (root.radioStation?.geo_lat ?? false) && (root.radioStation?.geo_long ?? false)
 
                                 text: qsTr('Show on the map')
                                 icon.source: "images/map.svg"
 
                                 onClicked: {
-                                    root.showRadioStationLocationRequested(root.stationLatitude, root.stationLongitude);
+                                    root.showRadioStationLocationRequested(root.radioStation.geo_lat, root.radioStation.geo_long);
                                 }
                             }
                         }
@@ -213,8 +214,8 @@ FocusScope {
 
                     Layout.preferredWidth: 40
                     Layout.preferredHeight: Layout.preferredWidth
-
                     visible: active
+
                     active: true
                     sourceComponent: playerButtonComponent
                 }
@@ -243,8 +244,8 @@ FocusScope {
                     Layout.rightMargin: 10
                     Layout.preferredWidth: 40
                     Layout.preferredHeight: Layout.preferredWidth
-
                     visible: active
+
                     active: true
                     sourceComponent: closeButtonComponent
                 }
@@ -277,8 +278,8 @@ FocusScope {
 
                 Layout.topMargin: 20
                 Layout.leftMargin: 10
-
                 visible: active
+
                 active: false
                 sourceComponent: secondaryColumnLayoutComponent
             }
@@ -290,44 +291,47 @@ FocusScope {
                     id: secondaryColumnLayout
 
                     Label {
-                        visible: !musicInfoRow.visible && !busyIndicator.visible
-                        text: qsTr("Music Info is not avaialble")
-                        opacity: 0.5
-                        font.pointSize: 16
                         Layout.topMargin: 15
-                        horizontalAlignment: Text.AlignHCenter
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        horizontalAlignment: Text.AlignHCenter
+
+                        text: qsTr("Music Info is not avaialble")
+                        font.pointSize: 16
+
+                        visible: !musicInfoRow.visible && !busyIndicator.visible
+                        opacity: 0.5
                     }
 
                     BusyIndicator {
                         id: busyIndicator
-                        visible: root.musicInfoModel.status == MusicInfoModel.Loading
+
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        visible: root.musicInfoModel.status == MusicInfoModel.Loading
                     }
 
                     RowLayout {
                         id: musicInfoRow
-                        visible: root.musicInfoModel.status == MusicInfoModel.Ready && root.musicInfo != null
 
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+
+                        visible: root.musicInfoModel.status == MusicInfoModel.Ready && root.musicInfo != null
 
                         spacing: 20
 
                         Image {
                             id: musicInfoRowImage
-                            source: root.musicInfo?.coverUrls[0] ?? ''
 
                             Layout.minimumWidth: Math.min(mainColumn.width * 4 / 9, 300)
                             Layout.minimumHeight: Layout.minimumWidth
-
                             Layout.maximumWidth: Layout.minimumWidth
                             Layout.maximumHeight: Layout.minimumHeight
-
                             Layout.fillWidth: true
                             Layout.fillHeight: true
+
+                            source: root.musicInfo?.coverUrls[0] ?? ''
                             fillMode: Image.PreserveAspectFit
 
                             BusyIndicator {
@@ -341,29 +345,33 @@ FocusScope {
                             Layout.fillHeight: true
 
                             Label {
+                                Layout.fillWidth: true
+
                                 text: qsTr("<b>Album</b>: %1").arg(root.musicInfo?.albumName)
                                 font.pointSize: 14
-                                Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
                                 textFormat: Text.RichText
                             }
                             Label {
+                                Layout.fillWidth: true
+
                                 text: qsTr("<b>Song</b>: %1").arg(root.musicInfo?.songName)
                                 font.pointSize: 14
-                                Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
                                 textFormat: Text.RichText
                             }
                             Label {
+                                Layout.fillWidth: true
+
                                 text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo?.artistNames.join(", "))
                                 font.pointSize: 14
-                                Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
                                 textFormat: Text.RichText
                             }
 
                             Component {
                                 id: itunesButton
+
                                 ItunesButton {
                                     text: showTrackButtonLoader.buttonText
                                     link: root.musicInfo?.trackUrl ?? ''
@@ -372,6 +380,7 @@ FocusScope {
 
                             Component {
                                 id: spotifyButton
+
                                 SpotifyButton {
                                     text: showTrackButtonLoader.buttonText
                                     link: root.musicInfo?.trackUrl ?? ''
@@ -395,11 +404,13 @@ FocusScope {
                     }
 
                     Label {
-                        text: qsTr("Provided for: %1").arg(root.streamTitle)
-                        visible: musicInfoRow.visible
-                        opacity: 0.6
                         Layout.bottomMargin: 6
                         Layout.fillWidth: true
+
+                        visible: musicInfoRow.visible
+                        opacity: 0.6
+
+                        text: qsTr("Provided for: %1").arg(root.streamTitle)
                         wrapMode: Text.WordWrap
                     }
                 }
@@ -409,6 +420,7 @@ FocusScope {
 
     Timer {
         id: updateMusicInfoTimer
+
         interval: 500
         repeat: false
 
@@ -422,6 +434,7 @@ FocusScope {
 
     Connections {
         target: root.musicInfoModel
+
         function onMusicInfoChanged() {
             root.musicInfo = root.musicInfoModel.musicInfo;
         }
@@ -429,6 +442,7 @@ FocusScope {
 
     Connections {
         target: MainRadioPlayer
+
         function onMediaItemChanged() {
             root.musicInfo = null;
         }

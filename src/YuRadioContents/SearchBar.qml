@@ -11,18 +11,6 @@ Item {
     property alias searchIcon: searchButton.icon
     property alias searchButton: searchButton
 
-    Rectangle {
-        id: background
-        anchors {
-            fill: parent
-            bottomMargin: 6
-            topMargin: 6
-        }
-
-        color: "transparent"
-        radius: height / 2
-    }
-
     states: [
         State {
             name: "searching"
@@ -72,16 +60,28 @@ Item {
         }
     ]
 
+    Rectangle {
+        id: background
+        anchors {
+            fill: parent
+            bottomMargin: 6
+            topMargin: 6
+        }
+
+        color: "transparent"
+        radius: height / 2
+    }
+
     ToolButton {
         id: searchButton
-
-        icon.source: 'images/search.svg'
-        focusPolicy: Qt.NoFocus
 
         anchors {
             verticalCenter: parent.verticalCenter
             left: parent.left
         }
+
+        icon.source: 'images/search.svg'
+        focusPolicy: Qt.NoFocus
 
         onClicked: {
             if (!searchInput.activeFocus) {
@@ -92,8 +92,6 @@ Item {
 
     TextInput {
         id: searchInput
-        opacity: 0
-        clip: true
 
         anchors {
             verticalCenter: parent.verticalCenter
@@ -101,7 +99,9 @@ Item {
             left: searchButton.right
             right: parent.right
         }
-
         width: parent.width
+
+        opacity: 0
+        clip: true
     }
 }

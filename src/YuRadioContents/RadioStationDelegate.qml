@@ -18,7 +18,7 @@ ItemDelegate {
     required property int bitrate
     required property NetworkManager networkManager
 
-    property bool currentStation: MainRadioPlayer.currentItem?.stationuuid == stationuuid
+    readonly property bool currentStation: MainRadioPlayer.currentItem?.stationuuid == stationuuid
 
     Binding {
         when: root.currentStation
@@ -36,14 +36,14 @@ ItemDelegate {
         RadioImage {
             id: radioImage
 
-            fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
-            targetSource: root.favicon
-
             Layout.fillHeight: true
             Layout.leftMargin: 5
             Layout.topMargin: 5
             Layout.bottomMargin: 5
             Layout.preferredWidth: height
+
+            fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+            targetSource: root.favicon
 
             fillMode: Image.PreserveAspectFit
             smooth: true
@@ -71,14 +71,16 @@ ItemDelegate {
 
             Label {
                 Layout.fillWidth: true
-                elide: Text.ElideRight
+
                 text: root.name ? root.name : "Unknown Station"
                 font.bold: true
                 font.pointSize: 15
+                elide: Text.ElideRight
             }
 
             Label {
                 Layout.fillWidth: true
+
                 elide: Text.ElideRight
                 text: root.tags
                 font.pointSize: 14
@@ -87,11 +89,12 @@ ItemDelegate {
 
         IconButton {
             id: moreOptions
-            focus: true
 
             Layout.alignment: Qt.AlignVCenter
             Layout.fillHeight: true
             implicitWidth: 64
+
+            focus: true
 
             icon.fillMode: Image.PreserveAspectFit
             icon.source: "images/more-vert.svg"
@@ -105,16 +108,16 @@ ItemDelegate {
     }
 
     Label {
-        text: qsTr("%1 kbps").arg(root.bitrate)
-        font.pointSize: 8
-        opacity: 0.8
-
         anchors {
             bottom: parent.bottom
             right: parent.right
             rightMargin: 10
             bottomMargin: 5
         }
+
+        text: qsTr("%1 kbps").arg(root.bitrate)
+        font.pointSize: 8
+        opacity: 0.8
     }
 
     Menu {
@@ -131,6 +134,7 @@ ItemDelegate {
         EnhancedMenuItem {
             text: moreOptionsMenu.bookmarkAdded ? qsTr("Delete bookmark") : qsTr("Add bookmark")
             icon.source: moreOptionsMenu.bookmarkAdded ? "images/bookmark-added.svg" : "images/bookmark.svg"
+
             onTriggered: {
                 if (moreOptionsMenu.bookmarkAdded) {
                     Storage.deleteBookmark(root.stationuuid);
@@ -144,6 +148,7 @@ ItemDelegate {
             text: moreOptionsMenu.canVote ? qsTr("Vote") : qsTr("Already Voted")
             icon.source: moreOptionsMenu.canVote ? "images/thumb-up.svg" : "images/thumb-up-filled.svg"
             enabled: moreOptionsMenu.canVote
+
             onTriggered: {
                 if (moreOptionsMenu.canVote) {
                     Storage.addVote(root.stationuuid);

@@ -9,9 +9,10 @@ import QtQuick.Controls.Material.impl
 Pane {
     id: root
 
+    property bool fullyRefreshed: false
+
     width: 32
     height: 32
-
     x: (handler.width - width) / 2
     y: handler.maximumProgress * (handler.maximumThreshold + height) - height
 
@@ -27,7 +28,6 @@ Pane {
         }
     }
 
-    property bool fullyRefreshed: false
     onFullyRefreshedChanged: {
         root.state = "";
     }
@@ -103,12 +103,14 @@ Pane {
 
         ShapePath {
             id: progressIndicatorPath
+
             strokeWidth: 3
             strokeColor: root.Material.accent
             fillColor: "transparent"
 
             PathAngleArc {
                 id: progressIndicatorPathArc
+
                 centerX: progressIndicator.width / 2
                 centerY: progressIndicator.height / 2
                 radiusX: progressIndicator.width / 2 - 5
@@ -118,13 +120,14 @@ Pane {
 
                 NumberAnimation on startAngle {
                     id: progressIndicatorPathAnimation
-                    loops: Animation.Infinite
-                    running: false
-
-                    duration: 800
 
                     from: progressIndicatorPathArc.startAngle
                     to: from + 360
+                    duration: 800
+
+                    running: false
+                    loops: Animation.Infinite
+
                 }
             }
         }

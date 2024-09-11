@@ -1,4 +1,5 @@
 pragma Singleton
+
 import QtQuick
 
 QtObject {
@@ -6,5 +7,5 @@ QtObject {
     readonly property bool isLandscape: !isPortrait
     readonly property bool isDarkTheme: AppSettings.theme === "Dark"
     readonly property bool isMobile: Qt.platform.os == "android" || Qt.platform.os == "ios"
-    readonly property int portraitLayoutWidth: 980 
+    readonly property int portraitLayoutWidth: 980
 }

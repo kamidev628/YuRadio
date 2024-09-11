@@ -13,6 +13,13 @@ FilledGridView {
     required property RadioBottomBar bottomBar
     required property NetworkManager networkManager
 
+    anchors {
+        top: parent.top
+        left: parent.left
+        right: parent.right
+        bottom: bottomBar.top
+    }
+
     displayMarginEnd: bottomBar.height
     currentIndex: -1
 
@@ -26,13 +33,6 @@ FilledGridView {
     boundsMovement: Flickable.StopAtBounds
     boundsBehavior: AppConfig.isMobile ? Flickable.DragOverBounds : Flickable.StopAtBounds
     highlight: ListViewHighlightBar {}
-
-    anchors {
-        top: parent.top
-        left: parent.left
-        right: parent.right
-        bottom: bottomBar.top
-    }
 
     delegate: RadioStationDelegate {
         id: delegate

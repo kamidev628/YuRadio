@@ -16,12 +16,14 @@ Dialog {
     readonly property var selectedState: stateCombo.currentIndex !== -1 ? stateModel.get(stateCombo.currentIndex).name : undefined
     readonly property var selectedLanguage: languageCombo.currentIndex !== -1 ? languageCombo.model[languageCombo.currentIndex] : undefined
 
-    function selectedTags() {
+    signal filtersChanged(var country, var state, var language, var tags)
+
+    function selectedTags(): list<string> {
         let selectedTags = [];
         for (let i = 0; i < tagsRepeater.count; i++) {
-            let item = tagsRepeater.itemAt(i);
+            let item = tagsRepeater.itemAt(i) as Button;
             if (item.checked) {
-                selectedTags.push(item.modelData);
+                selectedTags.push(item.text);
             }
         }
         return selectedTags;
@@ -42,11 +44,13 @@ Dialog {
         internal.prevSelectedCountry = countryCombo.currentIndex;
         internal.prevSelectedState = stateCombo.currentIndex;
         internal.prevSelectedLanguage = languageCombo.currentIndex;
-        internal.prevSelectedTags = [];
-        for (let i = 0; i < tagsRepeater.count; i++) {
-            if (tagsRepeater.itemAt(i).checked) {
-                internal.prevSelectedTags.push(i);
-            }
+        internal.prevSelectedTags = selectedTags();
+    }
+
+    onAccepted: {
+        let tags = selectedTags();
+        if (internal.prevSelectedCountry == countryCombo.currentIndex && internal.prevSelectedState == stateCombo.currentIndex && internal.prevSelectedLanguage == languageCombo.currentIndex && internal.prevSelectedTags.sort().join('@') == tags.sort().join('@')) {} else {
+            root.filtersChanged(selectedCountry, selectedState, selectedLanguage, tags);
         }
     }
 
@@ -263,7 +267,7 @@ Dialog {
         property int prevSelectedCountry: -1
         property int prevSelectedState: -1
         property int prevSelectedLanguage: -1
-        property list<int> prevSelectedTags
+        property list<string> prevSelectedTags
     }
 
     Connections {

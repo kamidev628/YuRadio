@@ -71,7 +71,7 @@ Item {
         }
     }
 
-    function openSearchFilterDialog() {
+    function openSearchFilterDialog(): void {
         if (searchFilterDialogLoader.active) {
             searchFilterDialogLoader.item.open();
         } else {
@@ -79,7 +79,7 @@ Item {
         }
     }
 
-    function radioModelReset() {
+    function radioModelReset(): void {
         radioPagination.offset = 0;
         radioModel.reset();
         radioGridView.currentIndex = -1;
@@ -103,11 +103,11 @@ Item {
             anchors.centerIn: Overlay.overlay
 
             networkManager: root.networkManager
-            onAccepted: {
-                countryFilter.value = searchFilterDialog.selectedCountry;
-                stateFilter.value = searchFilterDialog.selectedState;
-                languageFilter.value = searchFilterDialog.selectedLanguage;
-                tagListFilter.value = searchFilterDialog.selectedTags().join(',');
+            onFiltersChanged: (country, state, language, tags) => {
+                countryFilter.value = country;
+                stateFilter.value = state;
+                languageFilter.value = language;
+                tagListFilter.value = tags.join(',');
                 root.radioModelReset();
             }
         }

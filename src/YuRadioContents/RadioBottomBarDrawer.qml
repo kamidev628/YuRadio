@@ -55,7 +55,9 @@ Item {
     NumberAnimation on height {
         id: openCloseAnimation
 
-        duration: 200
+        property real baseDuration: 200
+
+        duration: baseDuration
         onFinished: {
             if (root.height == root.maximumHeight) {
                 root.height = Qt.binding(() => root.maximumHeight);
@@ -89,11 +91,18 @@ Item {
             if (heightBoundaryRule.returnToBounds()) {
                 return;
             }
-            if (centroid.velocity.y > 1000) {
+            const threshold = 1000;
+            const maxVelocity = 4000;
+            const clampedVelocity = Utils.clamp(Math.abs(centroid.velocity.y), threshold, maxVelocity);
+            const velocityProgress = (clampedVelocity - threshold) / (maxVelocity - threshold);
+            const duration = openCloseAnimation.baseDuration * Math.exp(-3 / 2 * velocityProgress);
+            openCloseAnimation.duration = duration;
+            if (centroid.velocity.y > threshold) {
                 root.close();
-            } else if (centroid.velocity.y < -1000) {
+            } else if (centroid.velocity.y < -threshold) {
                 root.open();
             }
+            openCloseAnimation.duration = openCloseAnimation.baseDuration;
             root.returnToClosestBoundary();
         }
     }

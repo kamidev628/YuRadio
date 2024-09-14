@@ -7,7 +7,6 @@
 
 class NativeMediaController;
 class AndroidMediaSessionImageProvider;
-class RadioInfoReaderProxyServer;
 
 class AndroidRadioController : public PlatformRadioController {
   Q_OBJECT

@@ -18,12 +18,13 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 #include <QSslSocket>
 #include <QThread>
 
+#include "application.h"
+#include "applicationconfig.h"
 #include "globalkeylistener.h"
+
 #include "network/networkmanagerfactory.h"
 
 using namespace Qt::StringLiterals;
-
-#include "application.h"
 
 Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
   /* Format logging messages */
@@ -41,6 +42,10 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
   QThread::currentThread()->setObjectName("Main Thread"_L1);
 
   QCoreApplication::setOrganizationName(u"YuRadio"_s);
+
+  if (QCoreApplication::applicationVersion().isEmpty()) {
+    QCoreApplication::setApplicationVersion(YURADIO_VERSION);
+  }
 
   qCInfo(applicationLog) << "Version:"
                          << QCoreApplication::applicationVersion();

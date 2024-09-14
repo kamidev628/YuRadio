@@ -7,6 +7,6 @@ Exec=YuRadio
 Icon=com.yuradioproject
 Terminal=false
 Type=Application
-Categories=AudioVideo;Recorder;
+Categories=Audio;
 StartupNotify=true
 StartupWMClass=YuRadio

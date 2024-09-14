@@ -133,9 +133,8 @@ void GlobalKeyListener::cleanup() {
 }
 
 void GlobalKeyListener::start() {
-  qInfo() << "Start";
-
   int status = hook_run();
+
   switch (status) {
     case UIOHOOK_SUCCESS:
       break;
@@ -203,7 +202,8 @@ void GlobalKeyListener::start() {
   }
 }
 
-GlobalShortcut::GlobalShortcut(QObject *parent) : QObject(parent) {
+GlobalShortcut::GlobalShortcut(QObject *parent)
+    : QObject(parent), m_enabled(true) {
   Q_ASSERT(s_instance != nullptr);
 
   connect(s_instance, &GlobalKeyListener::keyPressed, this,

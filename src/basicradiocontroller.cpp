@@ -4,7 +4,7 @@
 #include <QMediaPlayer>
 
 #include "basicradiocontroller.h"
-#include "icecastreaderproxyserver.h"
+#include "radioinforeaderproxyserver.h"
 
 using namespace Qt::StringLiterals;
 
@@ -44,16 +44,16 @@ mediaPlayerErrorToRadioPlayer(QMediaPlayer::Error error) {
 
 BasicRadioController::BasicRadioController(QObject *parent)
     : PlatformRadioController(parent),
-      m_icecastProxy(new IcecastReaderProxyServer(this)),
+      m_proxyServer(new RadioInfoReaderProxyServer(this)),
       m_mediaPlayer(new QMediaPlayer(this)),
       m_mediaDevices(new QMediaDevices(this)) {
   m_mediaPlayer->setAudioOutput(new QAudioOutput(this));
 
-  connect(m_icecastProxy, &IcecastReaderProxyServer::icyMetaDataChanged, this,
+  connect(m_proxyServer, &RadioInfoReaderProxyServer::icyMetaDataChanged, this,
           [this](const QVariantMap &icyMetaData) {
     setStreamTitle(icyMetaData[u"StreamTitle"_s].toString());
   });
-  connect(m_icecastProxy, &IcecastReaderProxyServer::loadingChanged, this,
+  connect(m_proxyServer, &RadioInfoReaderProxyServer::loadingChanged, this,
           [this](bool loading) { setIsLoading(loading); });
   connect(m_mediaDevices, &QMediaDevices::audioOutputsChanged, this, [this]() {
     m_mediaPlayer->audioOutput()->setDevice(
@@ -69,21 +69,7 @@ BasicRadioController::BasicRadioController(QObject *parent)
   });
 }
 
-QUrl BasicRadioController::icecastProxyServerUrl() {
-  QUrl icecastProxyServerUrl;
-  icecastProxyServerUrl.setScheme(u"http"_s);
-  icecastProxyServerUrl.setHost(u"127.0.0.1"_s);
-  icecastProxyServerUrl.setPort(m_icecastProxy->serverPort());
-  return icecastProxyServerUrl;
-}
-
 void BasicRadioController::play() {
-  QMediaPlayer::MediaStatus status = m_mediaPlayer->mediaStatus();
-
-  if (status == QMediaPlayer::NoMedia || status == QMediaPlayer::InvalidMedia ||
-      status == QMediaPlayer::EndOfMedia) {
-    reconnectToIcecastProxyServer();
-  }
   m_mediaPlayer->play();
 }
 
@@ -107,11 +93,6 @@ void BasicRadioController::setVolume(float volume) {
 }
 
 void BasicRadioController::processMediaItem(const MediaItem &mediaItem) {
-  m_icecastProxy->setTargetSource(mediaItem.source);
-  reconnectToIcecastProxyServer();
-}
-
-void BasicRadioController::reconnectToIcecastProxyServer() {
-  m_mediaPlayer->setSource({});
-  m_mediaPlayer->setSource(icecastProxyServerUrl());
+  m_proxyServer->setTargetSource(mediaItem.source);
+  m_mediaPlayer->setSource(m_proxyServer->sourceUrl());
 }

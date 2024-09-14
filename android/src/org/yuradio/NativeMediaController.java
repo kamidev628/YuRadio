@@ -138,8 +138,7 @@ public class NativeMediaController {
     private MediaItem buildMediaItem() {
         Log.i(TAG, "Author: " + mediaAuthor + " ArtworkUri: " + artworkUri);
 
-        return new MediaItem.Builder()
-                .setMediaId("YuRadio-media")
+        return new MediaItem.Builder() 
                 .setUri(mediaSource)
                 .setMediaMetadata(new MediaMetadata.Builder()
                         .setArtist(mediaAuthor)

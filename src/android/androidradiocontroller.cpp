@@ -7,16 +7,15 @@ AndroidRadioController::AndroidRadioController(QObject *parent)
     : PlatformRadioController(parent),
       m_nativeController(NativeMediaController::instance()),
       m_mediaSessionImageProvider(new AndroidMediaSessionImageProvider(this)) {
-
   connect(m_nativeController, &NativeMediaController::isLoadingChanged, this,
           [this](bool loading) { setIsLoading(loading); });
   connect(m_nativeController, &NativeMediaController::streamTitleChanged, this,
           [this](const QString &streamTitle) { setStreamTitle(streamTitle); });
 
   connect(m_nativeController, &NativeMediaController::playbackStateChanged,
-          this, &AndroidRadioController::handlePlaybackStateChange);
+          this, &AndroidRadioController::playbackStateChanged);
   connect(m_nativeController, &NativeMediaController::playerErrorChanged, this,
-          &AndroidRadioController::handlePlayerError);
+          &AndroidRadioController::playerError);
 }
 
 void AndroidRadioController::play() {
@@ -37,7 +36,7 @@ void AndroidRadioController::setMediaItem(const MediaItem &mediaItem) {
   PlatformRadioController::setMediaItem(mediaItem);
 }
 
-void AndroidRadioController::handlePlaybackStateChange(int playbackStateCode) {
+void AndroidRadioController::playbackStateChanged(int playbackStateCode) {
   Q_UNUSED(playbackStateCode);
 
   switch (playbackStateCode) {
@@ -106,8 +105,8 @@ static QString errorMessageForCode(int errorCode) {
   }
 }
 
-void AndroidRadioController::handlePlayerError(int errorCode,
-                                               const QString & /*message*/) {
+void AndroidRadioController::playerError(int errorCode,
+                                         const QString & /*message*/) {
   RadioPlayer::Error playerError = RadioPlayer::ResourceError;
   QString errorMessage = errorMessageForCode(errorCode);
 
@@ -169,6 +168,9 @@ void AndroidRadioController::setVolume(float volume) {
 }
 
 void AndroidRadioController::processMediaItem(const MediaItem &mediaItem) {
+  if (!mediaItem.source.isValid()) {
+    return;
+  }
   m_nativeController->setAuthor(mediaItem.author);
 
   m_mediaSessionImageProvider->setImageSource(mediaItem.artworkUri);

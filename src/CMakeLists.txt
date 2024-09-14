@@ -44,8 +44,10 @@ qt_add_qml_module(
   application.cpp
   algorithm.h
   algorithm.cpp
-  icecastreaderproxyserver.h
-  icecastreaderproxyserver.cpp
+  downloadspeedmeasurer.h
+  downloadspeedmeasurer.cpp
+  radioinforeaderproxyserver.h
+  radioinforeaderproxyserver.cpp
   radioplayer.h
   radioplayer.cpp
   musicinfomodel.h

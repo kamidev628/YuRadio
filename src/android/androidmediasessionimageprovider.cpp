@@ -57,6 +57,10 @@ void AndroidMediaSessionImageProvider::clientConnected() {
 }
 
 QUrl AndroidMediaSessionImageProvider::imageUrl() const {
+  if (!m_server->isListening()) {
+    return m_imageSource;
+  }
+
   QUrl url;
   url.setScheme(u"http"_s);
   url.setHost(u"127.0.0.1"_s);

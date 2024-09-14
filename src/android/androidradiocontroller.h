@@ -7,6 +7,7 @@
 
 class NativeMediaController;
 class AndroidMediaSessionImageProvider;
+class RadioInfoReaderProxyServer;
 
 class AndroidRadioController : public PlatformRadioController {
   Q_OBJECT
@@ -21,8 +22,8 @@ public:
   void pause() override;
 
 private slots:
-  void handlePlaybackStateChange(int playbackStateCode);
-  void handlePlayerError(int errorCode, const QString &message);
+  void playbackStateChanged(int playbackStateCode);
+  void playerError(int errorCode, const QString &message);
 
 private:
   void processMediaItem(const MediaItem &mediaItem);

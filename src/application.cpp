@@ -26,14 +26,18 @@ using namespace Qt::StringLiterals;
 #include "application.h"
 
 Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
-  /* Format debug messages */
+  /* Format logging messages */
   qSetMessagePattern(
-    u"[%{time yyyy/MM/dd h:mm:ss.zzz} "
-    "%{if-debug}D%{endif}%{if-info}I%{endif}%{if-warning}W%{endif}%{if-"
-    "critical}C%{endif}%{if-fatal}F%{endif}] %{file}:%{line} - %{message}"_s);
+    u"%{if-category}%{category} %{endif}[%{time yyyy/MM/dd h:mm:ss.zzz} "
+    "%{if-debug}Debug%{endif}%{if-info}Info%{endif}%{if-warning}Warning%{endif}"
+    "%{if-critical}Critical%{endif}%{if-fatal}Fatal%{endif}]"
+#ifdef QT_DEBUG
+    " %{file}:%{line}"
+#endif /* QT_DEBUG */
+    " - %{message}"_s);
 
   QLoggingCategory::setFilterRules(
-    u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.IcecastReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false\nYuRest.NetworkManager.info=false"_s);
+    u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.RadioInfoReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false\nYuRest.NetworkManager.info=false"_s);
   QThread::currentThread()->setObjectName("Main Thread"_L1);
 
   QCoreApplication::setOrganizationName(u"YuRadio"_s);

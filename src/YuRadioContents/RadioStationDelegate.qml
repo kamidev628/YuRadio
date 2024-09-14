@@ -115,7 +115,7 @@ ItemDelegate {
             bottomMargin: 5
         }
 
-        text: qsTr("%1 kbps").arg(root.bitrate)
+        text: qsTr("%1 kbps").arg(root.bitrate ? root.bitrate : "-")
         font.pointSize: 8
         opacity: 0.8
     }

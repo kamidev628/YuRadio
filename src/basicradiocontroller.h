@@ -6,8 +6,7 @@
 #include "platformradiocontroller.h"
 
 class QMediaDevices;
-class IcecastReader;
-class IcecastReaderProxyServer;
+class RadioInfoReaderProxyServer;
 
 class BasicRadioController : public PlatformRadioController {
   Q_OBJECT
@@ -23,12 +22,10 @@ public:
   void setMediaItem(const MediaItem &mediaItem) override;
 
 private:
-  void reconnectToIcecastProxyServer();
-  QUrl icecastProxyServerUrl();
   void processMediaItem(const MediaItem &mediaItem);
 
 protected:
-  IcecastReaderProxyServer *m_icecastProxy;
+  RadioInfoReaderProxyServer *m_proxyServer;
   QMediaPlayer *m_mediaPlayer;
   QMediaDevices *m_mediaDevices;
 };

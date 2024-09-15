@@ -1,6 +1,7 @@
 #include <QLoggingCategory>
 Q_LOGGING_CATEGORY(radioInfoReaderLog, "YuRadio.RadioInfoReaderProxyServer")
 
+#include <QNetworkInformation>
 #include <QNetworkReply>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -9,7 +10,7 @@ Q_LOGGING_CATEGORY(radioInfoReaderLog, "YuRadio.RadioInfoReaderProxyServer")
 #include "radioinforeaderproxyserver.h"
 
 constexpr int ICY_MULTIPLIER = 16;
-constexpr qint64 MAXIMUM_WRITE_BUFFER_SIZE = 200000;
+constexpr qint64 MAXIMUM_WRITE_BUFFER_SIZE = 600000;
 
 using namespace Qt::StringLiterals;
 using namespace std::chrono_literals;
@@ -21,8 +22,6 @@ RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(QObject *parent)
     qCWarning(radioInfoReaderLog) << m_server->errorString();
     return;
   }
-
-  m_networkManager->setTransferTimeout(10s);
 
   connect(m_server, &QTcpServer::newConnection, this,
           &RadioInfoReaderProxyServer::clientConnected);
@@ -68,7 +67,6 @@ void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
   request.setRawHeader("Connection"_ba, "keep-alive"_ba);
 
   QNetworkReply *reply = m_networkManager->get(request);
-  emit loadingChanged(true);
 
   connect(client, &QTcpSocket::disconnected, reply, &QNetworkReply::abort);
   connect(client, &QTcpSocket::disconnected, client, &QObject::deleteLater);
@@ -77,6 +75,23 @@ void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
   connect(reply, &QNetworkReply::readyRead, client, [this, reply, client]() {
     replyReadHeaders(reply, client);
   }, Qt::SingleShotConnection);
+  connect(reply, &QNetworkReply::requestSent, this,
+          [this]() { emit loadingChanged(true); });
+  connect(reply, &QNetworkReply::errorOccurred, client,
+          [this, client](QNetworkReply::NetworkError err) {
+    auto *networkInfo = QNetworkInformation::instance();
+
+    if (err == QNetworkReply::TemporaryNetworkFailureError && networkInfo) {
+      connect(networkInfo, &QNetworkInformation::reachabilityChanged, client,
+              [this, client,
+               networkInfo](QNetworkInformation::Reachability reachability) {
+        if (reachability == QNetworkInformation::Reachability::Online) {
+          makeRequest(client);
+          networkInfo->disconnect(client);
+        }
+      });
+    }
+  });
   connect(reply, &QNetworkReply::finished, reply, &QObject::deleteLater);
   connect(reply, &QNetworkReply::finished, this,
           [this]() { emit loadingChanged(false); });

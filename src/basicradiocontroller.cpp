@@ -2,6 +2,7 @@
 #include <QAudioOutput>
 #include <QMediaDevices>
 #include <QMediaPlayer>
+#include <QNetworkInformation>
 
 #include "basicradiocontroller.h"
 #include "radioinforeaderproxyserver.h"
@@ -49,6 +50,14 @@ BasicRadioController::BasicRadioController(QObject *parent)
       m_mediaDevices(new QMediaDevices(this)) {
   m_mediaPlayer->setAudioOutput(new QAudioOutput(this));
 
+  auto *networkInformation = QNetworkInformation::instance();
+  connect(networkInformation, &QNetworkInformation::reachabilityChanged, this,
+          [this](QNetworkInformation::Reachability reachability) {
+    if (reachability == QNetworkInformation::Reachability::Online &&
+        m_mediaPlayer->mediaStatus() == QMediaPlayer::EndOfMedia) {
+      play();
+    }
+  });
   connect(m_proxyServer, &RadioInfoReaderProxyServer::icyMetaDataChanged, this,
           [this](const QVariantMap &icyMetaData) {
     setStreamTitle(icyMetaData[u"StreamTitle"_s].toString());

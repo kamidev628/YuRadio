@@ -15,6 +15,7 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 #include "hotreloaderclient.h"
 #endif /* QT_DEBUG */
 
+#include <QNetworkInformation>
 #include <QSslSocket>
 #include <QThread>
 
@@ -51,6 +52,12 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
                          << QCoreApplication::applicationVersion();
   qCInfo(applicationLog) << "Device supports OpenSSL:"
                          << QSslSocket::supportsSsl();
+
+  if (!QNetworkInformation::loadDefaultBackend()) {
+    qCWarning(applicationLog)
+      << "Failed to load QNetworkInformation default backend (Reconnection to "
+         "stations might not work)";
+  }
 
   m_engine = std::make_unique<QQmlApplicationEngine>();
 

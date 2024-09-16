@@ -26,8 +26,11 @@ else()
   set(SPOTIFY_CLIENTID_HASH 0)
 endif()
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/applicationconfig.h.in"
-               "${CMAKE_CURRENT_SOURCE_DIR}/applicationconfig.h")
+configure_file(applicationconfig.h.in
+               "${CMAKE_BINARY_DIR}/config/applicationconfig.h" @ONLY)
+
+target_include_directories(
+  YuRadio PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/config>")
 
 qt_add_qml_module(
   YuRadio
@@ -70,7 +73,6 @@ qt_add_qml_module(
   globalkeylistener.cpp
   obf.h
   obf.cpp
-  applicationconfig.h
   memoryliterals.h)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1. If

@@ -1,5 +1,7 @@
 include_guard(GLOBAL)
 
-set(app_icon_resource_windows "resources/windows/yuradio.rc")
-configure_file("resources/windows/yuradio.rc.in" ${app_icon_resource_windows})
-target_sources(YuRadio PRIVATE ${app_icon_resource_windows})
+set(yuradio_windows_resource ${CMAKE_BINARY_DIR}/resources/windows/yuradio.rc)
+configure_file(resources/windows/yuradio.rc.in ${yuradio_windows_resource})
+configure_file(resources/windows/yuradio.ico
+               ${CMAKE_BINARY_DIR}/resources/windows/yuradio.ico COPYONLY)
+target_sources(YuRadio PRIVATE ${yuradio_windows_resource})

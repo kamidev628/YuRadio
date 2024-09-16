@@ -6,14 +6,16 @@ Q_LOGGING_CATEGORY(radioInfoReaderLog, "YuRadio.RadioInfoReaderProxyServer")
 #include <QTcpServer>
 #include <QTcpSocket>
 
+#include "memoryliterals.h"
 #include "network/networkmanager.h"
 #include "radioinforeaderproxyserver.h"
 
-constexpr int ICY_MULTIPLIER = 16;
-constexpr qint64 MAXIMUM_WRITE_BUFFER_SIZE = 600000;
-
+using namespace MemoryLiterals;
 using namespace Qt::StringLiterals;
 using namespace std::chrono_literals;
+
+constexpr int ICY_MULTIPLIER = 16;
+constexpr qint64 MAXIMUM_WRITE_BUFFER_SIZE = 600_KiB;
 
 RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(QObject *parent)
     : QObject(parent), m_server(new QTcpServer(this)),

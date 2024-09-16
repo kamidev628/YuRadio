@@ -40,7 +40,7 @@ private:
 
     bool isValid() const {
       return !accessToken.isNull() && expiration.isValid() &&
-             QDateTime::currentDateTime().msecsTo(expiration) > 2000;
+             QDateTime::currentDateTime() < expiration;
     }
   };
 

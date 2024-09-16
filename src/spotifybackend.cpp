@@ -216,7 +216,12 @@ void SpotifyBackend::updateRefreshTimer(const QDateTime &expiration) {
     std::chrono::milliseconds(currentDate.msecsTo(expiration)) - 1min;
   Q_ASSERT(refreshInterval > 0ms);
 
-  m_refreshTokenTimer.setInterval(refreshInterval);
+  if (refreshInterval < 1min) {
+    m_refreshTokenTimer.setInterval(0);
+  } else {
+    m_refreshTokenTimer.setInterval(refreshInterval);
+  }
+
   m_refreshTokenTimer.start();
 }
 
@@ -224,8 +229,7 @@ bool SpotifyBackend::accessGranted() {
   AccessTokenData accessTokenData = storedAccessToken();
 
   return m_oauth2.status() == QAbstractOAuth::Status::Granted ||
-         (!accessTokenData.accessToken.isNull() &&
-          QDateTime::currentDateTime() < accessTokenData.expiration);
+         accessTokenData.isValid();
 }
 
 void SpotifyBackend::tryAuthorize() {

@@ -15,17 +15,19 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 #include "hotreloaderclient.h"
 #endif /* QT_DEBUG */
 
+#include <QFileInfo>
 #include <QNetworkInformation>
 #include <QSslSocket>
 #include <QThread>
 
 #include "application.h"
 #include "applicationconfig.h"
-#include "globalkeylistener.h"
 
+#include "memoryliterals.h"
 #include "network/networkmanagerfactory.h"
 
 using namespace Qt::StringLiterals;
+using namespace MemoryLiterals;
 
 QtMessageHandler g_originalHandler = nullptr;
 static const char g_logFileName[] = "log.txt";
@@ -54,7 +56,10 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
     " - %{message}"_s);
   g_originalHandler = qInstallMessageHandler(logToFileMessageHandler);
 
-  QFile::remove(g_logFileName);
+  QFileInfo logFileInfo(g_logFileName);
+  if (static_cast<std::size_t>(logFileInfo.size()) > 2_MiB) {
+    QFile::remove(g_logFileName);
+  }
 
   QLoggingCategory::setFilterRules(
     u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.RadioInfoReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false\nYuRest.NetworkManager.info=false"_s);
@@ -70,6 +75,12 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
                          << QCoreApplication::applicationVersion();
   qCInfo(applicationLog) << "Device supports OpenSSL:"
                          << QSslSocket::supportsSsl();
+#ifdef UIOHOOK_SUPPORTED
+  qCInfo(applicationLog) << "Uiohook is enabled. GlobalKeyListener will work";
+#else
+  qCInfo(applicationLog)
+    << "Uiohook is disabled. GlobalKeyListener will not work";
+#endif
 
   if (!QNetworkInformation::loadDefaultBackend()) {
     qCWarning(applicationLog)

@@ -70,7 +70,8 @@ qt_add_qml_module(
   globalkeylistener.cpp
   obf.h
   obf.cpp
-  applicationconfig.h)
+  applicationconfig.h
+  memoryliterals.h)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1. If
 # you are developing for iOS or macOS you should consider setting an explicit,

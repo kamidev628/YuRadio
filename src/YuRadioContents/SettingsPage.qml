@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Dialogs
 import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
@@ -21,12 +22,12 @@ Item {
     focus: true
 
     ScrollView {
-      anchors {
-        fill: parent
-        topMargin: 10
-        leftMargin: 15
-        rightMargin: 5
-      }
+        anchors {
+            fill: parent
+            topMargin: 10
+            leftMargin: 15
+            rightMargin: 5
+        }
 
         contentWidth: -1
         contentHeight: columnLayout.implicitHeight
@@ -171,11 +172,23 @@ Item {
                 }
             }
 
+            MessageDialog {
+                id: messageDialog
+
+                text: qsTr("Successfully Authorized")
+                buttons: MessageDialog.Ok
+            }
+
             SpotifyButton {
+                id: spotifyButton
+
+                property bool shouldShowMessage: false
+
                 Layout.topMargin: 10
 
                 text: qsTr("Spotify integration")
                 onClicked: {
+                    shouldShowMessage = true
                     root.musicInfoModel.grantSpotifyAccess();
                 }
             }
@@ -183,6 +196,16 @@ Item {
             Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+            }
+
+            Connections {
+                target: root.musicInfoModel
+                enabled: spotifyButton.shouldShowMessage
+
+                function onSpotifyAccessGranted() {
+                    messageDialog.open();
+                    spotifyButton.shouldShowMessage = false
+                }
             }
         }
     }

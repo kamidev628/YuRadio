@@ -99,3 +99,7 @@ void PlatformRadioController::clearErrors() {
 bool PlatformRadioController::canPlay() const {
   return m_mediaItem.source.isValid();
 }
+
+bool PlatformRadioController::canHandleMediaKeys() const {
+  return false;
+}

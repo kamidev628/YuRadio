@@ -93,6 +93,7 @@ signals:
   void musicInfoChanged();
   void statusChanged();
   void backendNameChanged();
+  void spotifyAccessGranted();
 
 protected:
   void registerBackend(qsizetype index);

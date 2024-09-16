@@ -98,6 +98,10 @@ void RadioPlayer::setMediaItem(const MediaItem &mediaItem) {
   m_controller->setMediaItem(mediaItem);
 }
 
+bool RadioPlayer::canHandleMediaKeys() const {
+  return m_controller->canHandleMediaKeys();
+}
+
 MediaItem RadioPlayer::constructMediaItem() {
   return {};
 }

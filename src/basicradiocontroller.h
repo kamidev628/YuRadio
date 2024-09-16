@@ -21,6 +21,9 @@ public:
   void setVolume(float volume) override;
   void setMediaItem(const MediaItem &mediaItem) override;
 
+private slots:
+  void mediaStatusChanged(QMediaPlayer::MediaStatus status);
+
 private:
   void processMediaItem(const MediaItem &mediaItem);
 
@@ -28,6 +31,7 @@ protected:
   RadioInfoReaderProxyServer *m_proxyServer;
   QMediaPlayer *m_mediaPlayer;
   QMediaDevices *m_mediaDevices;
+  int m_numberRetries;
 };
 
 #endif /* !BASICRADIOCONTROLLER_H */

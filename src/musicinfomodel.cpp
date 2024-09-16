@@ -68,6 +68,9 @@ MusicInfoModel::MusicInfoModel(QObject *parent)
   m_supportedBackends.append(new ItunesBackend(this));
   m_supportedBackends.append(m_spotify);
 
+  connect(m_spotify, &SpotifyBackend::granted, this,
+          &MusicInfoModel::spotifyAccessGranted);
+
   registerBackend(0);
 }
 

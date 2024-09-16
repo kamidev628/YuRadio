@@ -20,17 +20,18 @@ public slots:
   void grant();
 
 signals:
-  void authenticated();
-  void authenticationError(const QString &error,
-                           const QString &errorDescription, const QUrl &uri);
+  void granted();
+  void authorizationError(const QString &error, const QString &errorDescription,
+                          const QUrl &uri);
 
 private slots:
-  void handleStatusChange(QOAuth2AuthorizationCodeFlow::Status status);
-  void handleMusicInfoReply(QNetworkReply *reply);
+  void statusChanged(QOAuth2AuthorizationCodeFlow::Status status);
+  void requestFailed(QAbstractOAuth::Error error);
+  void processMusciInfoReply(QNetworkReply *reply);
 
   void updateRefreshTimer(const QDateTime &expiration);
   bool accessGranted();
-  void tryAuthenticate();
+  void tryAuthorize();
 
 private:
   struct AccessTokenData {

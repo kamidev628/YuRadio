@@ -40,6 +40,7 @@ class RadioPlayer : public QObject {
     PlaybackState playbackState READ playbackState NOTIFY playbackStateChanged)
   Q_PROPERTY(Error error READ error NOTIFY errorChanged)
   Q_PROPERTY(QString errorString READ errorString NOTIFY errorChanged)
+  Q_PROPERTY(bool canHandleMediaKeys READ canHandleMediaKeys CONSTANT)
   QML_ELEMENT
 
 public:
@@ -83,6 +84,8 @@ public slots:
 
   float volume() const;
   void setVolume(float newVolume);
+
+  bool canHandleMediaKeys() const;
 
 signals:
   void streamTitleChanged();

@@ -1,3 +1,6 @@
+#include <QLoggingCategory>
+Q_LOGGING_CATEGORY(basicRadioControllerLog, "YuRadio.BasicRadioController")
+
 #include <QAudioDevice>
 #include <QAudioOutput>
 #include <QMediaDevices>
@@ -6,6 +9,8 @@
 
 #include "basicradiocontroller.h"
 #include "radioinforeaderproxyserver.h"
+
+constexpr int MAXIMUM_NUMBER_OF_RETRIES = 3;
 
 using namespace Qt::StringLiterals;
 
@@ -18,10 +23,9 @@ mediaPlayerStateToRadioPlayer(QMediaPlayer::PlaybackState state) {
       return RadioPlayer::PlayingState;
     case QMediaPlayer::PausedState:
       return RadioPlayer::PausedState;
-    default:
-      Q_UNREACHABLE();
-      return RadioPlayer::StoppedState;
   }
+  Q_UNREACHABLE();
+  return RadioPlayer::StoppedState;
 }
 
 static RadioPlayer::Error
@@ -37,18 +41,20 @@ mediaPlayerErrorToRadioPlayer(QMediaPlayer::Error error) {
       return RadioPlayer::NetworkError;
     case QMediaPlayer::AccessDeniedError:
       return RadioPlayer::AccessDeniedError;
-    default:
-      Q_UNREACHABLE();
-      return RadioPlayer::NoError;
   }
+  Q_UNREACHABLE();
+  return RadioPlayer::NoError;
 }
 
 BasicRadioController::BasicRadioController(QObject *parent)
     : PlatformRadioController(parent),
       m_proxyServer(new RadioInfoReaderProxyServer(this)),
       m_mediaPlayer(new QMediaPlayer(this)),
-      m_mediaDevices(new QMediaDevices(this)) {
-  m_mediaPlayer->setAudioOutput(new QAudioOutput(this));
+      m_mediaDevices(new QMediaDevices(this)), m_numberRetries(0) {
+  auto *audioOutput = new QAudioOutput(this);
+  m_mediaPlayer->setAudioOutput(audioOutput);
+  connect(audioOutput, &QAudioOutput::volumeChanged, this,
+          [this](float volume) { PlatformRadioController::setVolume(volume); });
 
   auto *networkInformation = QNetworkInformation::instance();
   connect(networkInformation, &QNetworkInformation::reachabilityChanged, this,
@@ -68,12 +74,16 @@ BasicRadioController::BasicRadioController(QObject *parent)
     m_mediaPlayer->audioOutput()->setDevice(
       QMediaDevices::defaultAudioOutput());
   });
+  connect(m_mediaPlayer, &QMediaPlayer::mediaStatusChanged, this,
+          &BasicRadioController::mediaStatusChanged);
   connect(m_mediaPlayer, &QMediaPlayer::playbackStateChanged, this,
           [this](QMediaPlayer::PlaybackState state) {
+    qCDebug(basicRadioControllerLog) << "Playback State:" << state;
     setPlaybackState(mediaPlayerStateToRadioPlayer(state));
   });
   connect(m_mediaPlayer, &QMediaPlayer::errorOccurred, this,
           [this](QMediaPlayer::Error error, const QString &message) {
+    qCWarning(basicRadioControllerLog) << error << message;
     setError(mediaPlayerErrorToRadioPlayer(error), message);
   });
 }
@@ -98,10 +108,26 @@ void BasicRadioController::setMediaItem(const MediaItem &mediaItem) {
 
 void BasicRadioController::setVolume(float volume) {
   m_mediaPlayer->audioOutput()->setVolume(volume);
-  PlatformRadioController::setVolume(volume);
 }
 
 void BasicRadioController::processMediaItem(const MediaItem &mediaItem) {
   m_proxyServer->setTargetSource(mediaItem.source);
   m_mediaPlayer->setSource(m_proxyServer->sourceUrl());
+}
+
+void BasicRadioController::mediaStatusChanged(
+  QMediaPlayer::MediaStatus status) {
+  qCDebug(basicRadioControllerLog) << "Media Status:" << status;
+
+  if (status == QMediaPlayer::EndOfMedia &&
+      m_numberRetries < MAXIMUM_NUMBER_OF_RETRIES) {
+    qCDebug(basicRadioControllerLog)
+      << "Reconnection Retry:" << m_numberRetries;
+
+    m_numberRetries += 1;
+    m_mediaPlayer->play();
+
+  } else if (status == QMediaPlayer::LoadedMedia) {
+    m_numberRetries = 0;
+  }
 }

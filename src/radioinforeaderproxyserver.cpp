@@ -23,6 +23,8 @@ RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(QObject *parent)
     return;
   }
 
+  m_networkManager->setTransferTimeout(10s);
+
   connect(m_server, &QTcpServer::newConnection, this,
           &RadioInfoReaderProxyServer::clientConnected);
 }

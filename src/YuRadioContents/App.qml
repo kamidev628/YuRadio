@@ -285,7 +285,7 @@ ApplicationWindow {
         sequences: ["Media Play", "Media Pause", "Toggle Media Play/Pause", "Media Stop"]
         context: Qt.ApplicationShortcut
         enabled: {
-            if (AppConfig.isMobile) {
+            if (MainRadioPlayer.canHandleMediaKeys) {
                 return false;
             }
             return !mediaPlayGlobalShortcut.enabled;
@@ -298,6 +298,7 @@ ApplicationWindow {
     GlobalShortcut {
         id: mediaPlayGlobalShortcut
 
+        enabled: !MainRadioPlayer.canHandleMediaKeys
         sequence: "Media Play"
         onActivated: {
             MainRadioPlayer.toggle();

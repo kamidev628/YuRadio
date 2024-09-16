@@ -28,6 +28,8 @@ public:
   virtual bool isLoading() const;
   virtual bool canPlay() const;
 
+  virtual bool canHandleMediaKeys() const;
+
   void clearErrors();
 
 signals:

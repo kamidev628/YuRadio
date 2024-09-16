@@ -78,3 +78,7 @@ void LinuxRadioController::setMediaItem(const MediaItem &mediaItem) {
 
   BasicRadioController::setMediaItem(mediaItem);
 }
+
+bool LinuxRadioController::canHandleMediaKeys() const {
+  return true;
+}

@@ -36,10 +36,11 @@ SpotifyBackend::SpotifyBackend(QObject *parent)
   m_oauth2.setClientIdentifier(QString::fromStdString(clientId));
   m_oauth2.setClientIdentifierSharedKey(QString::fromStdString(secret));
   m_oauth2.setUserAgent(NetworkManager::applicationUserAgent());
+  m_oauth2.setNetworkAccessManager(new NetworkManager(this));
 
   m_refreshTokenTimer.setSingleShot(true);
 
-  QMetaObject::invokeMethod(this, &SpotifyBackend::tryAuthenticate,
+  QMetaObject::invokeMethod(this, &SpotifyBackend::tryAuthorize,
                             Qt::QueuedConnection);
 
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::tokenChanged, this,
@@ -53,16 +54,23 @@ SpotifyBackend::SpotifyBackend(QObject *parent)
     [](const QString &error, const QString &errorDescription, const QUrl &uri) {
     qCDebug(spotifyBackendLog) << "Error:" << error << errorDescription << uri;
   });
+  connect(&m_oauth2,
+          &QOAuth2AuthorizationCodeFlow::authorizationCallbackReceived, this,
+          [](const QVariantMap & /*data*/) {
+    qCDebug(spotifyBackendLog) << "Authorization Callback Received";
+  });
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::expirationAtChanged, this,
           &SpotifyBackend::updateRefreshTimer);
   connect(&m_refreshTokenTimer, &QTimer::timeout, &m_oauth2,
           &QOAuth2AuthorizationCodeFlow::refreshAccessToken);
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::statusChanged, this,
-          &SpotifyBackend::handleStatusChange);
+          &SpotifyBackend::statusChanged);
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::error, this,
-          &SpotifyBackend::authenticationError);
+          &SpotifyBackend::authorizationError);
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::granted, this,
-          &SpotifyBackend::authenticated);
+          &SpotifyBackend::granted);
+  connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::requestFailed, this,
+          &SpotifyBackend::requestFailed);
   connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser, this,
           &QDesktopServices::openUrl);
 }
@@ -73,7 +81,7 @@ void SpotifyBackend::grant() {
   }
 }
 
-void SpotifyBackend::handleStatusChange(
+void SpotifyBackend::statusChanged(
   QOAuth2AuthorizationCodeFlow::Status status) {
   switch (status) {
     case QAbstractOAuth::Status::NotAuthenticated:
@@ -109,13 +117,14 @@ void SpotifyBackend::requestMusicInfo(const QString &searchString) {
   QNetworkReply *reply = m_oauth2.get(searchUrl);
 
   connect(reply, &QNetworkReply::finished, this,
-          [this, reply]() { handleMusicInfoReply(reply); });
+          [this, reply]() { processMusciInfoReply(reply); });
+  connect(reply, &QNetworkReply::finished, reply, &QObject::deleteLater);
 }
 
-void SpotifyBackend::handleMusicInfoReply(QNetworkReply *reply) {
-  reply->deleteLater();
+void SpotifyBackend::processMusciInfoReply(QNetworkReply *reply) {
   if (reply->error()) {
     qCWarning(spotifyBackendLog) << reply->errorString() << reply->readAll();
+    tryAuthorize();
     emit errorOccurred();
     return;
   }
@@ -219,7 +228,7 @@ bool SpotifyBackend::accessGranted() {
           QDateTime::currentDateTime() < accessTokenData.expiration);
 }
 
-void SpotifyBackend::tryAuthenticate() {
+void SpotifyBackend::tryAuthorize() {
   AccessTokenData accessTokenData = storedAccessToken();
   if (accessTokenData.isValid()) {
     m_oauth2.setToken(accessTokenData.accessToken);
@@ -233,5 +242,28 @@ void SpotifyBackend::tryAuthenticate() {
     if (!accessTokenData.isValid()) {
       m_oauth2.refreshAccessToken();
     }
+  }
+}
+
+void SpotifyBackend::requestFailed(QAbstractOAuth::Error error) {
+  switch (error) {
+    case QAbstractOAuth::Error::NoError:
+      qCDebug(spotifyBackendLog) << "NoError";
+      break;
+    case QAbstractOAuth::Error::NetworkError:
+      qCDebug(spotifyBackendLog) << "NetworkError";
+      break;
+    case QAbstractOAuth::Error::ServerError:
+      qCDebug(spotifyBackendLog) << "ServerError";
+      break;
+    case QAbstractOAuth::Error::OAuthTokenNotFoundError:
+      qCDebug(spotifyBackendLog) << "OAuthTokenNotFoundError";
+      break;
+    case QAbstractOAuth::Error::OAuthTokenSecretNotFoundError:
+      qCDebug(spotifyBackendLog) << "OAuthTokenSecretNotFoundError";
+      break;
+    case QAbstractOAuth::Error::OAuthCallbackNotVerified:
+      qCDebug(spotifyBackendLog) << "OAuthCallbackNotVerified";
+      break;
   }
 }

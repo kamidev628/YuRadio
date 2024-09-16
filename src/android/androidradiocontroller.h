@@ -20,6 +20,8 @@ public:
   void stop() override;
   void pause() override;
 
+  bool canHandleMediaKeys() const override;
+
 private slots:
   void playbackStateChanged(int playbackStateCode);
   void playerError(int errorCode, const QString &message);

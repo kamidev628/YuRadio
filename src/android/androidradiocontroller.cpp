@@ -179,3 +179,7 @@ void AndroidRadioController::processMediaItem(const MediaItem &mediaItem) {
   /* NOTE: Set source lastly */
   m_nativeController->setSource(mediaItem.source);
 }
+
+bool AndroidRadioController::canHandleMediaKeys() const {
+  return true;
+}

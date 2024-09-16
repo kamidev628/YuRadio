@@ -71,15 +71,18 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
     QCoreApplication::setApplicationVersion(YURADIO_VERSION);
   }
 
-  qCInfo(applicationLog) << "Version:"
-                         << QCoreApplication::applicationVersion();
+  qCInfo(applicationLog).noquote()
+    << "Version:" << QCoreApplication::applicationVersion();
   qCInfo(applicationLog) << "Device supports OpenSSL:"
                          << QSslSocket::supportsSsl();
+  qCInfo(applicationLog).noquote()
+    << "CPU Architecture:" << QSysInfo::currentCpuArchitecture();
+  qCInfo(applicationLog).noquote()
+    << "Platform:" << QSysInfo::prettyProductName();
 #ifdef UIOHOOK_SUPPORTED
-  qCInfo(applicationLog) << "Uiohook is enabled. GlobalKeyListener will work";
+  qCInfo(applicationLog) << "Uiohook is enabled";
 #else
-  qCInfo(applicationLog)
-    << "Uiohook is disabled. GlobalKeyListener will not work";
+  qCInfo(applicationLog) << "Uiohook is disabled";
 #endif
 
   if (!QNetworkInformation::loadDefaultBackend()) {

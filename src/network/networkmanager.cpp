@@ -238,12 +238,17 @@ NetworkManager::createRequest(Operation op,
       reply->attribute(QNetworkRequest::SourceIsFromCacheAttribute).toBool();
 
     if (isReplyError) {
+      QString errorString = reply->errorString();
+      if (reply->isReadable() && reply->isOpen()) {
+        errorString += reply->peek(qMin(reply->bytesAvailable(), 500));
+      }
+
       qCWarning(networkManagerLog).noquote()
         << QString("%1[%2] %3: %4")
              .arg(requestMethodToString(reply->operation()))
              .arg(httpCode)
              .arg(reply->request().url().toString())
-             .arg(reply->errorString());
+             .arg(errorString);
     } else {
       QString debugMessage = QString("%1[%2]%3 %4")
                                .arg(requestMethodToString(reply->operation()))

@@ -27,6 +27,21 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 
 using namespace Qt::StringLiterals;
 
+QtMessageHandler g_originalHandler = nullptr;
+static const char g_logFileName[] = "log.txt";
+
+void logToFileMessageHandler(QtMsgType type, const QMessageLogContext &context,
+                             const QString &msg) {
+  QString message = qFormatLogMessage(type, context, msg);
+  static FILE *f = fopen(g_logFileName, "a");
+  fprintf(f, "%s\n", qPrintable(message));
+  fflush(f);
+
+  if (g_originalHandler) {
+    (*g_originalHandler)(type, context, msg);
+  }
+}
+
 Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
   /* Format logging messages */
   qSetMessagePattern(
@@ -37,6 +52,9 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
     " %{file}:%{line}"
 #endif /* QT_DEBUG */
     " - %{message}"_s);
+  g_originalHandler = qInstallMessageHandler(logToFileMessageHandler);
+
+  QFile::remove(g_logFileName);
 
   QLoggingCategory::setFilterRules(
     u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.RadioInfoReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false\nYuRest.NetworkManager.info=false"_s);
@@ -65,10 +83,6 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
 
   auto *networkManagerFactory = new NetworkManagerFactory(m_engine.get());
   m_engine->setNetworkAccessManagerFactory(networkManagerFactory);
-
-#ifdef UIOHOOK_SUPPORTED
-  m_globalKeyListener = std::make_unique<GlobalKeyListener>();
-#endif /* UIOHOOK_SUPPORTED */
 
   initializePlatform();
 

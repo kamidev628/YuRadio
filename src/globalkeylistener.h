@@ -6,14 +6,14 @@
 #include <QtQmlIntegration>
 
 #ifdef UIOHOOK_SUPPORTED
-class GlobalShortcut;
-
 class GlobalKeyListener : public QObject {
   Q_OBJECT
 
 public:
   explicit GlobalKeyListener();
   ~GlobalKeyListener() override;
+
+  static GlobalKeyListener *instance();
 
 signals:
   void keyPressed(Qt::Key key, Qt::KeyboardModifiers modifiers);

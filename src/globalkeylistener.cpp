@@ -11,7 +11,7 @@ Q_LOGGING_CATEGORY(globalKeyListenerLog, "YuRadio.GlobalKeyListener")
 
 using namespace Qt::StringLiterals;
 
-static GlobalKeyListener *s_instance = nullptr;
+Q_GLOBAL_STATIC(GlobalKeyListener, g_keyListener);
 
 static inline Qt::Key UioHookKeyToQt(uint16_t keycode) {
   switch (keycode) {
@@ -57,8 +57,8 @@ static void uiohookEventCallback(uiohook_event *const event) {
 
   switch (event->type) {
     case EVENT_KEY_PRESSED:
-      emit s_instance->keyPressed(UioHookKeyToQt(keyboard.keycode),
-                                  UioHookModifierToQt(event->mask));
+      emit g_keyListener->keyPressed(UioHookKeyToQt(keyboard.keycode),
+                                     UioHookModifierToQt(event->mask));
       qCInfo(globalKeyListenerLog)
         << QString("GlobalKeyPress keycode=%1, rawcode=%2")
              .arg(keyboard.keycode)
@@ -66,8 +66,8 @@ static void uiohookEventCallback(uiohook_event *const event) {
       break;
 
     case EVENT_KEY_RELEASED:
-      emit s_instance->keyReleased(UioHookKeyToQt(keyboard.keycode),
-                                   UioHookModifierToQt(event->mask));
+      emit g_keyListener->keyReleased(UioHookKeyToQt(keyboard.keycode),
+                                      UioHookModifierToQt(event->mask));
       qCInfo(globalKeyListenerLog)
         << QString("GlobalKeyRelease keycode=%1, rawcode=%2")
              .arg(keyboard.keycode)
@@ -75,8 +75,8 @@ static void uiohookEventCallback(uiohook_event *const event) {
       break;
 
     case EVENT_KEY_TYPED:
-      emit s_instance->keyTyped(UioHookKeyToQt(keyboard.keycode),
-                                UioHookModifierToQt(event->mask));
+      emit g_keyListener->keyTyped(UioHookKeyToQt(keyboard.keycode),
+                                   UioHookModifierToQt(event->mask));
       qCInfo(globalKeyListenerLog)
         << QString("GlobalKeyType keycode=%1, rawcode=%2")
              .arg(keyboard.keycode)
@@ -88,9 +88,6 @@ static void uiohookEventCallback(uiohook_event *const event) {
 }
 
 GlobalKeyListener::GlobalKeyListener() : QObject(nullptr) {
-  Q_ASSERT(s_instance == nullptr);
-  s_instance = this;
-
   m_thread = std::make_unique<QThread>();
   m_thread->setObjectName("GlobalKeyListenerThread"_L1);
 
@@ -103,13 +100,15 @@ GlobalKeyListener::GlobalKeyListener() : QObject(nullptr) {
   m_thread->start();
 }
 
+GlobalKeyListener *GlobalKeyListener::instance() {
+  return g_keyListener;
+}
+
 GlobalKeyListener::~GlobalKeyListener() {
   cleanup();
 }
 
 void GlobalKeyListener::cleanup() {
-  s_instance = nullptr;
-
   int status = hook_stop();
 
   switch (status) {
@@ -204,9 +203,7 @@ void GlobalKeyListener::start() {
 
 GlobalShortcut::GlobalShortcut(QObject *parent)
     : QObject(parent), m_enabled(true) {
-  Q_ASSERT(s_instance != nullptr);
-
-  connect(s_instance, &GlobalKeyListener::keyPressed, this,
+  connect(g_keyListener, &GlobalKeyListener::keyPressed, this,
           [this](Qt::Key key, Qt::KeyboardModifiers modifiers) {
     if (m_enabled && m_sequence.matches(QKeyCombination(modifiers, key))) {
       emit activated();

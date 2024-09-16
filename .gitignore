@@ -96,7 +96,4 @@ Session.vim
 .idea
 local.properties
 
-# Application Config
-src/applicationconfig.h
-
 CMakeUserPresets.json

@@ -157,10 +157,15 @@ FocusScope {
                             visible: false
                             spacing: 2
 
+                            Item {
+                                id: stationInfoColumnSpacer
+
+                                implicitHeight: 20
+                            }
+
                             Label {
                                 id: country
 
-                                Layout.topMargin: 20
                                 Layout.fillWidth: true
                                 visible: root.radioStation?.country ?? false
 
@@ -180,6 +185,16 @@ FocusScope {
                                 text: stationLanguage.includes(",") ? qsTr("Languages: %1").arg(stationLanguage) : qsTr("Language: %1").arg(stationLanguage)
                                 font.pointSize: 14
                                 wrapMode: Text.WordWrap
+                            }
+
+                            Label {
+                                id: bitrate
+
+                                Layout.fillWidth: true
+                                visible: root.radioStation?.bitrate ?? false
+
+                                text: qsTr("Bitrate: %1").arg(root.radioStation?.bitrate ?? 0)
+                                font.pointSize: 14
                             }
 
                             ClickableLink {

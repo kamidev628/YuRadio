@@ -1,6 +1,7 @@
 # YuRadio
 
-![YuRadio](./src/YuRadioContents/images/shortwave.svg)
+<img src="src/YuRadioContents/images/shortwave.svg" align="right"
+     alt="YuRadio Logo">
 
 A cross-platform application for playing online radio.\
 Application uses RadioBrowser api (see [radiobrowser](https://api.radio-browser.info/))
@@ -13,6 +14,12 @@ You can:
 - Increase the popularity of radio station by listening to it
 - Search using different filters (station name, country, state, language, tags)
 - Sort (votes, popularity, ...)
+
+\
+<img src="doc/screenshot.png" height="500">
+<a id="screenshot-light">
+<img src="doc/screenshot-light.png" height="500">
+</a>
 
 ### Building
 
@@ -29,9 +36,11 @@ listed in the `CMakeLists.txt` files
 | `SPOTIFY_CLIENTID_HASH` | Hash for app client id                                           |    0    |
 | `SPOTIFY_SECRET_HASH`   | Hash for app secret                                              |    0    |
 
+Spotify is only needed as an additional backend for displaying music information (as in [screenshot](#screenshot-light))
+
 ### Dependencies
 
-`Qt6` `uiohook`
+`Qt6` `uiohook` `qtmpris`
 
 ### Supported platforms
 

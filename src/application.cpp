@@ -15,9 +15,11 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 #include "hotreloaderclient.h"
 #endif /* QT_DEBUG */
 
+#include <QDir>
 #include <QFileInfo>
 #include <QNetworkInformation>
 #include <QSslSocket>
+#include <QStandardPaths>
 #include <QThread>
 
 #include "application.h"
@@ -30,14 +32,25 @@ using namespace Qt::StringLiterals;
 using namespace MemoryLiterals;
 
 QtMessageHandler g_originalHandler = nullptr;
-static const char g_logFileName[] = "log.txt";
 
-void logToFileMessageHandler(QtMsgType type, const QMessageLogContext &context,
-                             const QString &msg) {
+static QString logFilePath() {
+  QString logFileName = u"log.txt"_s;
+  QDir appDataLocation(
+    QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+
+  return appDataLocation.filePath(logFileName);
+}
+
+static void logToFileMessageHandler(QtMsgType type,
+                                    const QMessageLogContext &context,
+                                    const QString &msg) {
   QString message = qFormatLogMessage(type, context, msg);
-  static FILE *f = fopen(g_logFileName, "a");
-  fprintf(f, "%s\n", qPrintable(message));
-  fflush(f);
+  QString logPath = logFilePath();
+  static FILE *f = fopen(qPrintable(logPath), "a");
+  if (f) {
+    fprintf(f, "%s\n", qPrintable(message));
+    fflush(f);
+  }
 
   if (g_originalHandler) {
     (*g_originalHandler)(type, context, msg);
@@ -56,20 +69,24 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
     " - %{message}"_s);
   g_originalHandler = qInstallMessageHandler(logToFileMessageHandler);
 
-  QFileInfo logFileInfo(g_logFileName);
-  if (static_cast<std::size_t>(logFileInfo.size()) > 2_MiB) {
-    QFile::remove(g_logFileName);
-  }
-
-  QLoggingCategory::setFilterRules(
-    u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.RadioInfoReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false\nYuRest.NetworkManager.info=false"_s);
-  QThread::currentThread()->setObjectName("Main Thread"_L1);
-
-  QCoreApplication::setOrganizationName(u"YuRadio"_s);
-
   if (QCoreApplication::applicationVersion().isEmpty()) {
     QCoreApplication::setApplicationVersion(YURADIO_VERSION);
   }
+  QCoreApplication::setOrganizationName(u"YuRadio"_s);
+
+  /* Create AppDataLocation if not exists */
+  QDir().mkpath(
+    QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+
+  QString logPath = logFilePath();
+  QFileInfo logFileInfo(logPath);
+  if (logFileInfo.exists() &&
+      static_cast<std::size_t>(logFileInfo.size()) > 2_MiB) {
+    QFile::remove(logPath);
+  }
+  QLoggingCategory::setFilterRules(
+    u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.RadioInfoReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false\nYuRest.NetworkManager.info=false"_s);
+  QThread::currentThread()->setObjectName("Main Thread"_L1);
 
   qCInfo(applicationLog).noquote()
     << "Version:" << QCoreApplication::applicationVersion();

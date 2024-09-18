@@ -15,8 +15,6 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 #include "hotreloaderclient.h"
 #endif /* QT_DEBUG */
 
-#include <QDir>
-#include <QFileInfo>
 #include <QNetworkInformation>
 #include <QSslSocket>
 #include <QStandardPaths>
@@ -24,66 +22,19 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 
 #include "application.h"
 #include "applicationconfig.h"
+#include "logging.h"
 
-#include "memoryliterals.h"
 #include "network/networkmanagerfactory.h"
 
 using namespace Qt::StringLiterals;
-using namespace MemoryLiterals;
-
-QtMessageHandler g_originalHandler = nullptr;
-
-static QString logFilePath() {
-  QString logFileName = u"log.txt"_s;
-  QDir appDataLocation(
-    QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
-
-  return appDataLocation.filePath(logFileName);
-}
-
-static void logToFileMessageHandler(QtMsgType type,
-                                    const QMessageLogContext &context,
-                                    const QString &msg) {
-  QString message = qFormatLogMessage(type, context, msg);
-  QString logPath = logFilePath();
-  static FILE *f = fopen(qPrintable(logPath), "a");
-  if (f) {
-    fprintf(f, "%s\n", qPrintable(message));
-    fflush(f);
-  }
-
-  if (g_originalHandler) {
-    (*g_originalHandler)(type, context, msg);
-  }
-}
 
 Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
-  /* Format logging messages */
-  qSetMessagePattern(
-    u"%{if-category}%{category} %{endif}[%{time yyyy/MM/dd h:mm:ss.zzz} "
-    "%{if-debug}Debug%{endif}%{if-info}Info%{endif}%{if-warning}Warning%{endif}"
-    "%{if-critical}Critical%{endif}%{if-fatal}Fatal%{endif}]"
-#ifdef QT_DEBUG
-    " %{file}:%{line}"
-#endif /* QT_DEBUG */
-    " - %{message}"_s);
-  g_originalHandler = qInstallMessageHandler(logToFileMessageHandler);
-
   if (QCoreApplication::applicationVersion().isEmpty()) {
     QCoreApplication::setApplicationVersion(YURADIO_VERSION);
   }
   QCoreApplication::setOrganizationName(u"YuRadio"_s);
+  Logging::initialize();
 
-  /* Create AppDataLocation if not exists */
-  QDir().mkpath(
-    QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
-
-  QString logPath = logFilePath();
-  QFileInfo logFileInfo(logPath);
-  if (logFileInfo.exists() &&
-      static_cast<std::size_t>(logFileInfo.size()) > 2_MiB) {
-    QFile::remove(logPath);
-  }
   QLoggingCategory::setFilterRules(
     u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.RadioInfoReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false\nYuRest.NetworkManager.info=false"_s);
   QThread::currentThread()->setObjectName("Main Thread"_L1);
@@ -94,6 +45,9 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
                          << QSslSocket::supportsSsl();
   qCInfo(applicationLog).noquote()
     << "CPU Architecture:" << QSysInfo::currentCpuArchitecture();
+  qCInfo(applicationLog).noquote()
+    << "Build CPU Architecture:" << QSysInfo::buildCpuArchitecture();
+  qCInfo(applicationLog).noquote() << "Build ABI:" << QSysInfo::buildAbi();
   qCInfo(applicationLog).noquote()
     << "Platform:" << QSysInfo::prettyProductName();
 #ifdef UIOHOOK_SUPPORTED

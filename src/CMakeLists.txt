@@ -71,6 +71,8 @@ qt_add_qml_module(
   languagetranslator.cpp
   globalkeylistener.h
   globalkeylistener.cpp
+  logging.h
+  logging.cpp
   obf.h
   obf.cpp
   memoryliterals.h)

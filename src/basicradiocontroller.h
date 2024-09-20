@@ -12,7 +12,8 @@ class BasicRadioController : public PlatformRadioController {
   Q_OBJECT
 
 public:
-  BasicRadioController(QObject *parent = nullptr);
+  explicit BasicRadioController(QObject *parent = nullptr);
+  ~BasicRadioController() override;
 
   void play() override;
   void stop() override;
@@ -28,7 +29,9 @@ private:
   void processMediaItem(const MediaItem &mediaItem);
 
 protected:
-  std::unique_ptr<RadioInfoReaderProxyServer> m_proxyServer;
+  RadioInfoReaderProxyServer *m_proxyServer;
+  QThread m_proxyServerThread;
+
   QMediaPlayer *m_mediaPlayer;
   QMediaDevices *m_mediaDevices;
   int m_numberRetries;

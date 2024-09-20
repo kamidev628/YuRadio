@@ -51,6 +51,11 @@ BasicRadioController::BasicRadioController(QObject *parent)
       m_proxyServer(new RadioInfoReaderProxyServer),
       m_mediaPlayer(new QMediaPlayer(this)),
       m_mediaDevices(new QMediaDevices(this)), m_numberRetries(0) {
+  connect(&m_proxyServerThread, &QThread::started, m_proxyServer,
+          &RadioInfoReaderProxyServer::listen);
+  connect(&m_proxyServerThread, &QThread::finished, m_proxyServer,
+          &QObject::deleteLater);
+
   auto *audioOutput = new QAudioOutput(this);
   m_mediaPlayer->setAudioOutput(audioOutput);
   connect(audioOutput, &QAudioOutput::volumeChanged, this,
@@ -64,12 +69,12 @@ BasicRadioController::BasicRadioController(QObject *parent)
       play();
     }
   });
-  connect(m_proxyServer.get(), &RadioInfoReaderProxyServer::icyMetaDataChanged,
-          this, [this](const QVariantMap &icyMetaData) {
+  connect(m_proxyServer, &RadioInfoReaderProxyServer::icyMetaDataChanged, this,
+          [this](const QVariantMap &icyMetaData) {
     setStreamTitle(icyMetaData[u"StreamTitle"_s].toString());
   });
-  connect(m_proxyServer.get(), &RadioInfoReaderProxyServer::loadingChanged,
-          this, [this](bool loading) { setIsLoading(loading); });
+  connect(m_proxyServer, &RadioInfoReaderProxyServer::loadingChanged, this,
+          [this](bool loading) { setIsLoading(loading); });
   connect(m_mediaDevices, &QMediaDevices::audioOutputsChanged, this, [this]() {
     m_mediaPlayer->audioOutput()->setDevice(
       QMediaDevices::defaultAudioOutput());
@@ -86,6 +91,14 @@ BasicRadioController::BasicRadioController(QObject *parent)
     qCWarning(basicRadioControllerLog) << error << message;
     setError(mediaPlayerErrorToRadioPlayer(error), message);
   });
+
+  m_proxyServer->moveToThread(&m_proxyServerThread);
+  m_proxyServerThread.start();
+}
+
+BasicRadioController::~BasicRadioController() {
+  m_proxyServerThread.quit();
+  m_proxyServerThread.wait();
 }
 
 void BasicRadioController::play() {

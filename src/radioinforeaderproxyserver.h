@@ -38,8 +38,10 @@ public:
   QUrl targetSource() const;
 
   QUrl sourceUrl() const;
+  void setParseIcecastInfo(bool shouldParse);
+  bool parseIcecastInfo() const;
 
-  void shouldParseIcecastInfo(bool shouldParse);
+  void listen();
 
 signals:
   void icyMetaDataChanged(const QVariantMap &icyMetaData);
@@ -47,6 +49,7 @@ signals:
   void bitrateChanged(int bitrate);
 
 private slots:
+  void start();
   void makeRequest(QTcpSocket *client);
   void clientConnected();
   bool validateNetworkReply(QNetworkReply *reply, QTcpSocket *client);
@@ -59,7 +62,6 @@ private slots:
 
 private:
   mutable QReadWriteLock m_lock;
-  std::unique_ptr<QThread> m_thread;
 
   QTcpServer *m_server;
   NetworkManager *m_networkManager;

@@ -23,23 +23,19 @@ RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(QObject *parent)
   connect(m_server, &QTcpServer::newConnection, this,
           &RadioInfoReaderProxyServer::clientConnected);
 
-  m_thread = std::make_unique<QThread>();
-  m_thread->setObjectName("RadioInfoReaderProxyServerThread"_L1);
-  moveToThread(m_thread.get());
-
-  m_thread->start();
-
   m_networkManager->setTransferTimeout(10s);
-
-  if (!m_server->listen()) {
-    qCWarning(radioInfoReaderLog) << m_server->errorString();
-    return;
-  }
 }
 
-RadioInfoReaderProxyServer::~RadioInfoReaderProxyServer() {
-  m_thread->quit();
-  m_thread->wait();
+RadioInfoReaderProxyServer::~RadioInfoReaderProxyServer() = default;
+
+void RadioInfoReaderProxyServer::listen() {
+  QMetaObject::invokeMethod(this, &RadioInfoReaderProxyServer::start);
+}
+
+void RadioInfoReaderProxyServer::start() {
+  if (!m_server->listen()) {
+    qCWarning(radioInfoReaderLog) << m_server->errorString();
+  }
 }
 
 void RadioInfoReaderProxyServer::setTargetSource(const QUrl &targetSource) {
@@ -52,9 +48,19 @@ QUrl RadioInfoReaderProxyServer::targetSource() const {
   return m_targetSource;
 }
 
-void RadioInfoReaderProxyServer::shouldParseIcecastInfo(bool shouldParse) {
+void RadioInfoReaderProxyServer::setParseIcecastInfo(bool shouldParse) {
   QWriteLocker locker(&m_lock);
-  m_parseIcecastInfo = shouldParse;
+  if (!m_server->isListening()) {
+    m_parseIcecastInfo = shouldParse;
+  } else {
+    qCWarning(radioInfoReaderLog) << "Trying to call `setParseIcecastInfo` "
+                                     "when server is already listening";
+  }
+}
+
+bool RadioInfoReaderProxyServer::parseIcecastInfo() const {
+  QReadLocker locker(&m_lock);
+  return m_parseIcecastInfo;
 }
 
 QUrl RadioInfoReaderProxyServer::sourceUrl() const {
@@ -85,7 +91,7 @@ void RadioInfoReaderProxyServer::clientConnected() {
 }
 
 void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
-  QNetworkRequest request(m_targetSource);
+  QNetworkRequest request(targetSource());
   request.setRawHeader("Icy-MetaData"_ba, "1"_ba);
   request.setRawHeader("Connection"_ba, "keep-alive"_ba);
 

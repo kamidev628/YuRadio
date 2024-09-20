@@ -28,7 +28,7 @@ private:
   void processMediaItem(const MediaItem &mediaItem);
 
 protected:
-  RadioInfoReaderProxyServer *m_proxyServer;
+  std::unique_ptr<RadioInfoReaderProxyServer> m_proxyServer;
   QMediaPlayer *m_mediaPlayer;
   QMediaDevices *m_mediaDevices;
   int m_numberRetries;

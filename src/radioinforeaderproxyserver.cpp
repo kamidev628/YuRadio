@@ -20,26 +20,45 @@ constexpr qint64 MAXIMUM_WRITE_BUFFER_SIZE = 600_KiB;
 RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(QObject *parent)
     : QObject(parent), m_server(new QTcpServer(this)),
       m_networkManager(new NetworkManager(this)), m_parseIcecastInfo(true) {
+  connect(m_server, &QTcpServer::newConnection, this,
+          &RadioInfoReaderProxyServer::clientConnected);
+
+  m_thread = std::make_unique<QThread>();
+  m_thread->setObjectName("RadioInfoReaderProxyServerThread"_L1);
+  moveToThread(m_thread.get());
+
+  m_thread->start();
+
+  m_networkManager->setTransferTimeout(10s);
+
   if (!m_server->listen()) {
     qCWarning(radioInfoReaderLog) << m_server->errorString();
     return;
   }
+}
 
-  m_networkManager->setTransferTimeout(10s);
-
-  connect(m_server, &QTcpServer::newConnection, this,
-          &RadioInfoReaderProxyServer::clientConnected);
+RadioInfoReaderProxyServer::~RadioInfoReaderProxyServer() {
+  m_thread->quit();
+  m_thread->wait();
 }
 
 void RadioInfoReaderProxyServer::setTargetSource(const QUrl &targetSource) {
+  QWriteLocker locker(&m_lock);
   m_targetSource = targetSource;
 }
 
 QUrl RadioInfoReaderProxyServer::targetSource() const {
+  QReadLocker locker(&m_lock);
   return m_targetSource;
 }
 
+void RadioInfoReaderProxyServer::shouldParseIcecastInfo(bool shouldParse) {
+  QWriteLocker locker(&m_lock);
+  m_parseIcecastInfo = shouldParse;
+}
+
 QUrl RadioInfoReaderProxyServer::sourceUrl() const {
+  QReadLocker locker(&m_lock);
   if (!m_server->isListening() || !m_targetSource.isValid()) {
     return m_targetSource;
   }
@@ -246,8 +265,4 @@ void RadioInfoReaderProxyServer::readIcyMetaData(IcecastParserInfo *p) {
   qCInfo(radioInfoReaderLog) << "Icy-MetaData:" << p->icyMetaData;
 
   emit icyMetaDataChanged(p->icyMetaData);
-}
-
-void RadioInfoReaderProxyServer::shouldParseIcecastInfo(bool shouldParse) {
-  m_parseIcecastInfo = shouldParse;
 }

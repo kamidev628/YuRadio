@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QReadWriteLock>
 #include <QUrl>
 #include <QVariantMap>
 
@@ -31,6 +32,7 @@ class RadioInfoReaderProxyServer : public QObject {
 
 public:
   explicit RadioInfoReaderProxyServer(QObject *parent = nullptr);
+  ~RadioInfoReaderProxyServer() override;
 
   void setTargetSource(const QUrl &targetSource);
   QUrl targetSource() const;
@@ -56,8 +58,12 @@ private slots:
   void readIcyMetaData(IcecastParserInfo *p);
 
 private:
+  mutable QReadWriteLock m_lock;
+  std::unique_ptr<QThread> m_thread;
+
   QTcpServer *m_server;
   NetworkManager *m_networkManager;
+
   QUrl m_targetSource;
   bool m_parseIcecastInfo;
 };

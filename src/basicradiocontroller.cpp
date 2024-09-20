@@ -48,7 +48,7 @@ mediaPlayerErrorToRadioPlayer(QMediaPlayer::Error error) {
 
 BasicRadioController::BasicRadioController(QObject *parent)
     : PlatformRadioController(parent),
-      m_proxyServer(new RadioInfoReaderProxyServer(this)),
+      m_proxyServer(new RadioInfoReaderProxyServer),
       m_mediaPlayer(new QMediaPlayer(this)),
       m_mediaDevices(new QMediaDevices(this)), m_numberRetries(0) {
   auto *audioOutput = new QAudioOutput(this);
@@ -64,12 +64,12 @@ BasicRadioController::BasicRadioController(QObject *parent)
       play();
     }
   });
-  connect(m_proxyServer, &RadioInfoReaderProxyServer::icyMetaDataChanged, this,
-          [this](const QVariantMap &icyMetaData) {
+  connect(m_proxyServer.get(), &RadioInfoReaderProxyServer::icyMetaDataChanged,
+          this, [this](const QVariantMap &icyMetaData) {
     setStreamTitle(icyMetaData[u"StreamTitle"_s].toString());
   });
-  connect(m_proxyServer, &RadioInfoReaderProxyServer::loadingChanged, this,
-          [this](bool loading) { setIsLoading(loading); });
+  connect(m_proxyServer.get(), &RadioInfoReaderProxyServer::loadingChanged,
+          this, [this](bool loading) { setIsLoading(loading); });
   connect(m_mediaDevices, &QMediaDevices::audioOutputsChanged, this, [this]() {
     m_mediaPlayer->audioOutput()->setDevice(
       QMediaDevices::defaultAudioOutput());

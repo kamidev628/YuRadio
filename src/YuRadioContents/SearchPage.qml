@@ -69,6 +69,13 @@ Item {
                 root.openSearchFilterDialog();
             }
         }
+
+        Shortcut {
+            sequences: [StandardKey.Find, "Ctrl+E"]
+            onActivated: {
+                searchBar.activate();
+            }
+        }
     }
 
     function openSearchFilterDialog(): void {

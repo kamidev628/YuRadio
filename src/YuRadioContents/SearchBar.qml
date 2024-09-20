@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Material
 
-Item {
+FocusScope {
     id: root
 
     readonly property bool isSearching: searchInput.activeFocus
@@ -10,6 +10,10 @@ Item {
     property alias searchInput: searchInput
     property alias searchIcon: searchButton.icon
     property alias searchButton: searchButton
+
+    function activate(): void {
+        searchInput.forceActiveFocus();
+    }
 
     states: [
         State {
@@ -81,7 +85,9 @@ Item {
         }
 
         icon.source: 'images/search.svg'
-        focusPolicy: Qt.NoFocus
+
+        focus: true
+        focusPolicy: Qt.TabFocus
 
         onClicked: {
             if (!searchInput.activeFocus) {
@@ -101,7 +107,7 @@ Item {
         }
         width: parent.width
 
-        opacity: 0
         clip: true
+        opacity: 0
     }
 }

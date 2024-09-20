@@ -21,16 +21,7 @@ ApplicationWindow {
     readonly property bool isDesktopLayout: width >= AppConfig.portraitLayoutWidth
     property list<Item> loadedPages: []
 
-    function backButtonPressed(): bool {
-        if (mainStackView.depth > 1) {
-            mainStackView.popCurrentItem();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function stackViewPushPage(component: Component, objectName: string) {
+    function stackViewPushPage(component: Component, objectName: string): void {
         if (mainStackView.currentItem?.objectName == objectName) {
             return;
         }
@@ -226,10 +217,6 @@ ApplicationWindow {
                 objectName: "aboutPage"
             }
         }
-
-        Keys.onBackPressed: event => {
-            event.accepted = root.backButtonPressed();
-        }
     }
 
     header: ToolBar {
@@ -245,29 +232,10 @@ ApplicationWindow {
             }
 
             ToolButton {
-                id: menuButton
-
-                visible: !backButton.visible
-                Material.foreground: Material.color(Material.Grey, Material.Shade100)
-
-                icon.source: "images/menu.svg"
-                onClicked: {
-                    if (drawer.opened) {
-                        drawer.close();
-                    } else {
-                        drawer.open();
-                    }
-                }
-            }
-
-            ToolButton {
                 id: backButton
 
-                visible: mainStackView.currentItem?.displayBackButton ?? false
+                action: navigateBackAction
                 Material.foreground: Material.color(Material.Grey, Material.Shade100)
-
-                icon.source: "images/arrow-back.svg"
-                onClicked: root.backButtonPressed()
             }
 
             Loader {
@@ -279,6 +247,28 @@ ApplicationWindow {
         }
 
         Keys.forwardTo: [mainStackView]
+    }
+
+    Action {
+        id: navigateBackAction
+
+        icon.source: mainStackView.depth > 1 ? "images/arrow-back.svg" : "images/menu.svg"
+        onTriggered: {
+            if (mainStackView.depth > 1) {
+                mainStackView.popCurrentItem();
+            } else {
+                if (drawer.opened) {
+                    drawer.close();
+                } else {
+                    drawer.open();
+                }
+            }
+        }
+    }
+
+    Shortcut {
+        sequences: ["Esc", "Back"]
+        onActivated: navigateBackAction.trigger()
     }
 
     Shortcut {

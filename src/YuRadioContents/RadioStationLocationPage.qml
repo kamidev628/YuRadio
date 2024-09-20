@@ -9,8 +9,6 @@ Item {
     required property real stationLatitude
     required property real stationLongitude
 
-    property bool displayBackButton: true
-
     Plugin {
         id: mapPlugin
 

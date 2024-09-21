@@ -9,10 +9,10 @@ using namespace std::chrono_literals;
 
 DownloadSpeedMeasurer::DownloadSpeedMeasurer(QObject *parent)
     : QObject(parent), m_totalTime(0ms), m_windowInterval(2s), m_totalBytes(0) {
+  connect(&m_updateTimer, &QTimer::timeout, this, [this]() { measure(0); });
+
   m_updateTimer.setInterval(300ms);
   m_updateTimer.setSingleShot(false);
-
-  connect(&m_updateTimer, &QTimer::timeout, this, [this]() { measure(0); });
 }
 
 void DownloadSpeedMeasurer::measure(qint64 numBytes) {

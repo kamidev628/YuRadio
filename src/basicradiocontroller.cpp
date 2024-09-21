@@ -92,6 +92,7 @@ BasicRadioController::BasicRadioController(QObject *parent)
     setError(mediaPlayerErrorToRadioPlayer(error), message);
   });
 
+  m_proxyServerThread.setObjectName("RadioInfoReaderProxyServer Thread"_L1);
   m_proxyServer->moveToThread(&m_proxyServerThread);
   m_proxyServerThread.start();
 }

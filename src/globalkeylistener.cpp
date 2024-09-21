@@ -89,13 +89,13 @@ static void uiohookEventCallback(uiohook_event *const event) {
 
 GlobalKeyListener::GlobalKeyListener() : QObject(nullptr) {
   m_thread = std::make_unique<QThread>();
-  m_thread->setObjectName("GlobalKeyListenerThread"_L1);
+  connect(m_thread.get(), &QThread::started, this, &GlobalKeyListener::start);
+
+  m_thread->setObjectName("GlobalKeyListener Thread"_L1);
 
   moveToThread(m_thread.get());
 
   hook_set_dispatch_proc(&uiohookEventCallback);
-
-  connect(m_thread.get(), &QThread::started, this, &GlobalKeyListener::start);
 
   m_thread->start();
 }

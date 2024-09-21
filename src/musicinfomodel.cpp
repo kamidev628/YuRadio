@@ -65,11 +65,11 @@ void MusicInfo::setAlbumName(const QString &newAlbumName) {
 MusicInfoModel::MusicInfoModel(QObject *parent)
     : QObject(parent), m_spotify(new SpotifyBackend(this)),
       m_musicInfo(new MusicInfo(this)), m_status(Null) {
-  m_supportedBackends.append(new ItunesBackend(this));
-  m_supportedBackends.append(m_spotify);
-
   connect(m_spotify, &SpotifyBackend::granted, this,
           &MusicInfoModel::spotifyAccessGranted);
+
+  m_supportedBackends.append(new ItunesBackend(this));
+  m_supportedBackends.append(m_spotify);
 
   registerBackend(0);
 }

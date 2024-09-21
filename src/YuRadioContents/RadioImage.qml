@@ -13,7 +13,7 @@ Image {
     asynchronous: true
 
     onTargetSourceChanged: {
-        failed = !targetSource
+        failed = !targetSource;
     }
 
     onStatusChanged: {

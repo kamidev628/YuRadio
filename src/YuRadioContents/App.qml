@@ -19,7 +19,7 @@ ApplicationWindow {
     }
 
     readonly property bool isDesktopLayout: width >= AppConfig.portraitLayoutWidth
-    property list<Item> loadedPages: []
+    property list<Item> loadedPages
 
     function stackViewPushPage(component: Component, objectName: string): void {
         if (mainStackView.currentItem?.objectName == objectName) {

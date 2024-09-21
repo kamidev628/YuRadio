@@ -16,27 +16,33 @@ Item {
 
     property Component background: Rectangle {}
 
-    function open() {
+    function open(): void {
         if (root.height != maximumHeight) {
             openCloseAnimation.to = maximumHeight;
             openCloseAnimation.start();
         }
     }
 
-    function close() {
+    function close(): void {
         if (root.height != minimumHeight) {
             openCloseAnimation.to = minimumHeight;
             openCloseAnimation.start();
         }
     }
 
-    function returnToClosestBoundary() {
-        let velocityScale = (root.height - root.minimumHeight) / (root.maximumHeight - root.minimumHeight);
-        /* TODO: Adjust duration of the animation based on velocity */
-        if (root.height - root.minimumHeight < root.maximumHeight - root.height) {
+    function returnToClosestBoundary(): void {
+        if (root.progress < 0.5) {
             root.close();
         } else {
             root.open();
+        }
+    }
+
+    function _restoreHeightBinding(): void {
+        if (root.height >= root.maximumHeight) {
+            root.height = Qt.binding(() => root.maximumHeight);
+        } else {
+            root.height = Qt.binding(() => root.minimumHeight);
         }
     }
 
@@ -50,6 +56,8 @@ Item {
 
         minimumOvershoot: 5
         maximumOvershoot: 5
+
+        onReturnedToBounds: root._restoreHeightBinding()
     }
 
     NumberAnimation on height {
@@ -58,13 +66,7 @@ Item {
         property real baseDuration: 200
 
         duration: baseDuration
-        onFinished: {
-            if (root.height == root.maximumHeight) {
-                root.height = Qt.binding(() => root.maximumHeight);
-            } else if (root.height == root.minimumHeight) {
-                root.height = Qt.binding(() => root.minimumHeight);
-            }
-        }
+        onFinished: root._restoreHeightBinding()
     }
 
     TapHandler {
@@ -87,10 +89,16 @@ Item {
                 root.height -= delta;
         }
 
-        onActiveChanged: if (!active) {
+        onActiveChanged: {
+            if (active) {
+                openCloseAnimation.stop();
+                return;
+            }
             if (heightBoundaryRule.returnToBounds()) {
                 return;
             }
+
+            /* Calculate animation duration based on current velocity */
             const threshold = 1000;
             const maxVelocity = 4000;
             const clampedVelocity = Utils.clamp(Math.abs(centroid.velocity.y), threshold, maxVelocity);

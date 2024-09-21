@@ -18,15 +18,15 @@ Dialog {
 
     signal filtersChanged(var country, var state, var language, var tags)
 
-    function selectedTags(): list<string> {
-        let selectedTags = [];
+    function selectedTags(): var {
+        let tags = [];
         for (let i = 0; i < tagsRepeater.count; i++) {
             let item = tagsRepeater.itemAt(i) as Button;
             if (item.checked) {
-                selectedTags.push(item.text);
+                tags.push(item.text);
             }
         }
-        return selectedTags;
+        return tags;
     }
 
     Binding {

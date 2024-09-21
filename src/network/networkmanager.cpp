@@ -226,8 +226,6 @@ NetworkManager::createRequest(Operation op,
                                            .arg(requestMethodToString(op))
                                            .arg(request.url().toString());
 
-  request.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
-                       QNetworkRequest::PreferCache);
   QNetworkReply *reply =
     QNetworkAccessManager::createRequest(op, request, outgoingData);
 

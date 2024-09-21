@@ -16,7 +16,7 @@ class MusicInfoProviderBackend : public QObject {
   Q_OBJECT
 
 public:
-  MusicInfoProviderBackend(QObject *parent = nullptr);
+  explicit MusicInfoProviderBackend(QObject *parent = nullptr);
   ~MusicInfoProviderBackend() override = default;
 
   virtual void requestMusicInfo(const QString &searchString) = 0;

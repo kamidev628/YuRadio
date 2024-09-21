@@ -13,7 +13,7 @@ class MusicArtist : public QObject {
   QML_ELEMENT
 
 public:
-  MusicArtist(QObject *parent = nullptr);
+  explicit MusicArtist(QObject *parent = nullptr);
 
   QString artistName() const;
   void setArtistName(const QString &newArtistName);
@@ -38,7 +38,7 @@ class MusicAlbum : public QObject {
   QML_ELEMENT
 
 public:
-  MusicAlbum(QObject *parent = nullptr);
+  explicit MusicAlbum(QObject *parent = nullptr);
 
   void addArtist(MusicArtist *artist);
 

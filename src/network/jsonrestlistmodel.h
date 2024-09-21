@@ -10,7 +10,7 @@ class JsonRestListModel : public AbstractRestListModel {
   QML_ELEMENT
 
 public:
-  Q_INVOKABLE JsonRestListModel(QObject *parent = nullptr);
+  explicit JsonRestListModel(QObject *parent = nullptr);
 
   int rowCount(const QModelIndex &parent) const override;
   QVariant data(const QModelIndex &index, int role) const override;

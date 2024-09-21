@@ -55,7 +55,7 @@ class AbstractRestListModel : public QAbstractListModel {
   Q_PROPERTY(Status status READ status NOTIFY statusChanged FINAL)
 
 public:
-  AbstractRestListModel(QObject *parent = nullptr);
+  explicit AbstractRestListModel(QObject *parent = nullptr);
   using QAbstractListModel::QAbstractListModel;
 
   enum Status {

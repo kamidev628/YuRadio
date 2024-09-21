@@ -13,7 +13,7 @@ public:
   using FutureImage = QFuture<QPixmap>;
 
 public:
-  ImageLoader(NetworkManager *manager);
+  explicit ImageLoader(NetworkManager *manager);
 
   FutureImage load(const QUrl &url);
 

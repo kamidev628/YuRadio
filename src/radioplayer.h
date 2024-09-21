@@ -44,7 +44,7 @@ class RadioPlayer : public QObject {
   QML_ELEMENT
 
 public:
-  RadioPlayer(QObject *parent = nullptr);
+  explicit RadioPlayer(QObject *parent = nullptr);
 
   enum PlaybackState {
     StoppedState,

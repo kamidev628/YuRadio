@@ -10,7 +10,7 @@ class ItunesBackend : public MusicInfoProviderBackend {
   Q_OBJECT
 
 public:
-  ItunesBackend(QObject *parent = nullptr);
+  explicit ItunesBackend(QObject *parent = nullptr);
 
   void requestMusicInfo(const QString &searchString) override;
   QString backendName() const override;

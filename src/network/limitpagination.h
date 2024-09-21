@@ -13,10 +13,11 @@ class LimitPagination : public RestPagination {
                limitQueryChanged FINAL)
   Q_PROPERTY(QString offsetQuery READ offsetQuery WRITE setOffsetQuery NOTIFY
                offsetQueryChanged FINAL)
+  QML_IMPLEMENTS_INTERFACES(RestPagination)
   QML_ELEMENT
 
 public:
-  Q_INVOKABLE explicit LimitPagination(QObject *parent = nullptr);
+  explicit LimitPagination(QObject *parent = nullptr);
 
   QHash<QString, QString> queryParams() const override;
   void nextPage() override;

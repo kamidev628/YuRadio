@@ -15,10 +15,11 @@ class PagePagination : public RestPagination {
                perPageQueryChanged FINAL)
   Q_PROPERTY(QString currentPageQuery READ currentPageQuery WRITE
                setCurrentPageQuery NOTIFY currentPageQueryChanged FINAL)
+  QML_IMPLEMENTS_INTERFACES(RestPagination)
   QML_ELEMENT
 
 public:
-  Q_INVOKABLE explicit PagePagination(QObject *parent = nullptr);
+  explicit PagePagination(QObject *parent = nullptr);
 
   int perPage() const;
   int currentPage() const;

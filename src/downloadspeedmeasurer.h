@@ -8,6 +8,7 @@
 
 class DownloadSpeedMeasurer : public QObject {
   Q_OBJECT
+
 public:
   explicit DownloadSpeedMeasurer(QObject *parent = nullptr);
 

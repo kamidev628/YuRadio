@@ -12,7 +12,7 @@ class AndroidRadioController : public PlatformRadioController {
   Q_OBJECT
 
 public:
-  AndroidRadioController(QObject *parent = nullptr);
+  explicit AndroidRadioController(QObject *parent = nullptr);
 
   void setVolume(float volume) override;
   void setMediaItem(const MediaItem &mediaItem) override;

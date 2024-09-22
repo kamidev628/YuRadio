@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
@@ -5,7 +7,7 @@ import QtQuick.Layouts
 import "radiobrowser.mjs" as RadioBrowser
 import network
 
-ItemDelegate {
+Loader {
     id: root
 
     required property int index
@@ -16,149 +18,152 @@ ItemDelegate {
     required property string countrycode
     required property string stationuuid
     required property int bitrate
-    required property NetworkManager networkManager
+    required property Menu moreOptionsMenu
 
     readonly property bool currentStation: MainRadioPlayer.currentItem?.stationuuid == stationuuid
+    readonly property Component mainComponent: MainComponent {}
+    readonly property FilledGridView view: GridView.view as FilledGridView
 
-    Binding {
-        when: root.currentStation
-        target: root.background
-        property: "color"
-        value: Qt.color("lightsteelblue").darker(AppConfig.isDarkTheme ? 1.8 : 1.05)
+    signal clicked
+
+    function initialize() {
+        sourceComponent = mainComponent;
     }
 
-    height: GridView.view.cellHeight
-    width: GridView.view.cellWidth
+    height: view.cellHeight
+    width: view.cellWidth
+    focus: true
 
-    RowLayout {
-        anchors.fill: parent
+    sourceComponent: SceletonComponent {}
+    Component.onCompleted: {
+        Utils.execLater(root, view.numItemsInRow >= 3 ? Utils.getRandomInt(200, 300) : 100, initialize);
+    }
 
-        RadioImage {
-            id: radioImage
+    component SceletonComponent: Item {
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: 5
 
-            Layout.fillHeight: true
-            Layout.leftMargin: 5
-            Layout.topMargin: 5
-            Layout.bottomMargin: 5
-            Layout.preferredWidth: height
+            opacity: 0.3
+            radius: 8
 
-            fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
-            targetSource: root.favicon
-
-            fillMode: Image.PreserveAspectFit
-            smooth: true
-
-            IconImage {
-                anchors {
-                    left: parent.left
-                    top: parent.top
-                    leftMargin: 5
-                    topMargin: 5
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: AppConfig.isDarkTheme ? "#29323c" : "#e6e9f0"
                 }
 
-                opacity: 0.8
-                source: root.countrycode ? `https://flagsapi.com/${root.countrycode}/flat/24.png` : ''
-                sourceSize: Qt.size(24, 24)
+                GradientStop {
+                    position: 1
+                    color: AppConfig.isDarkTheme ? "#474445" : "#eef1f5"
+                }
+                orientation: Gradient.Vertical
             }
         }
+    }
 
-        ColumnLayout {
-            Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Layout.leftMargin: 5
-            Layout.rightMargin: 5
+    component MainComponent: ItemDelegate {
+        id: delegate
 
-            Label {
+        onClicked: root.clicked()
+        focusPolicy: Qt.StrongFocus
+
+        Binding {
+            when: root.currentStation
+            target: delegate.background
+            property: "color"
+            value: Qt.color("lightsteelblue").darker(AppConfig.isDarkTheme ? 1.8 : 1.05)
+        }
+
+        RowLayout {
+            anchors.fill: parent
+
+            RadioImage {
+                id: radioImage
+
+                Layout.fillHeight: true
+                Layout.leftMargin: 5
+                Layout.topMargin: 5
+                Layout.bottomMargin: 5
+                Layout.preferredWidth: height
+
+                fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+                targetSource: root.favicon
+
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+
+                IconImage {
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        leftMargin: 5
+                        topMargin: 5
+                    }
+
+                    opacity: 0.8
+                    source: root.countrycode ? `https://flagsapi.com/${root.countrycode}/flat/24.png` : ''
+                    sourceSize: Qt.size(24, 24)
+                }
+            }
+
+            ColumnLayout {
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                Layout.fillHeight: true
                 Layout.fillWidth: true
+                Layout.leftMargin: 5
+                Layout.rightMargin: 5
 
-                text: root.name ? root.name : "Unknown Station"
-                font.bold: true
-                font.pointSize: 15
-                elide: Text.ElideRight
+                Label {
+                    Layout.fillWidth: true
+
+                    text: root.name ? root.name : "Unknown Station"
+                    font.bold: true
+                    font.pointSize: 15
+                    elide: Text.ElideRight
+                }
+
+                Label {
+                    Layout.fillWidth: true
+
+                    elide: Text.ElideRight
+                    text: root.tags
+                    font.pointSize: 14
+                }
             }
 
-            Label {
-                Layout.fillWidth: true
+            IconButton {
+                id: moreOptions
 
-                elide: Text.ElideRight
-                text: root.tags
-                font.pointSize: 14
-            }
-        }
+                Layout.alignment: Qt.AlignVCenter
+                Layout.fillHeight: true
+                implicitWidth: 64
 
-        IconButton {
-            id: moreOptions
+                focus: true
 
-            Layout.alignment: Qt.AlignVCenter
-            Layout.fillHeight: true
-            implicitWidth: 64
+                icon.fillMode: Image.PreserveAspectFit
+                icon.source: "images/more-vert.svg"
+                icon.sourceSize: Qt.size(32, 32)
+                focusPolicy: Qt.StrongFocus
 
-            focus: true
-
-            icon.fillMode: Image.PreserveAspectFit
-            icon.source: "images/more-vert.svg"
-            icon.sourceSize: Qt.size(32, 32)
-            focusPolicy: Qt.StrongFocus
-
-            onClicked: {
-                moreOptionsMenu.popup(moreOptions);
-            }
-        }
-    }
-
-    Label {
-        anchors {
-            bottom: parent.bottom
-            right: parent.right
-            rightMargin: 10
-            bottomMargin: 5
-        }
-
-        text: qsTr("%1 kbps").arg(root.bitrate ? root.bitrate : "-")
-        font.pointSize: 8
-        opacity: 0.8
-    }
-
-    Menu {
-        id: moreOptionsMenu
-
-        property bool bookmarkAdded
-        property bool canVote
-
-        onAboutToShow: {
-            bookmarkAdded = Storage.existsBookmark(root.stationuuid);
-            canVote = !Storage.existsVote(root.stationuuid);
-        }
-
-        EnhancedMenuItem {
-            text: moreOptionsMenu.bookmarkAdded ? qsTr("Delete bookmark") : qsTr("Add bookmark")
-            icon.source: moreOptionsMenu.bookmarkAdded ? "images/bookmark-added.svg" : "images/bookmark.svg"
-
-            onTriggered: {
-                if (moreOptionsMenu.bookmarkAdded) {
-                    Storage.deleteBookmark(root.stationuuid);
-                } else {
-                    Storage.addBookmark(root.GridView.view.model.get(root.index));
+                onClicked: {
+                    root.moreOptionsMenu.index = root.index
+                    root.moreOptionsMenu.popup(moreOptions);
                 }
             }
         }
 
-        EnhancedMenuItem {
-            text: moreOptionsMenu.canVote ? qsTr("Vote") : qsTr("Already Voted")
-            icon.source: moreOptionsMenu.canVote ? "images/thumb-up.svg" : "images/thumb-up-filled.svg"
-            enabled: moreOptionsMenu.canVote
-
-            onTriggered: {
-                if (moreOptionsMenu.canVote) {
-                    Storage.addVote(root.stationuuid);
-                    RadioBrowser.vote(root.networkManager.baseUrl, root.stationuuid);
-                }
+        Label {
+            anchors {
+                bottom: parent.bottom
+                right: parent.right
+                rightMargin: 10
+                bottomMargin: 5
             }
-        }
-    }
 
-    component EnhancedMenuItem: MenuItem {
-        focusPolicy: Qt.TabFocus
+            text: qsTr("%1 kbps").arg(root.bitrate ? root.bitrate : "-")
+            font.pointSize: 8
+            opacity: 0.8
+        }
     }
 }

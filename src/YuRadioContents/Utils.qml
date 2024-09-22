@@ -33,4 +33,15 @@ QtObject {
         const maxFloored = Math.floor(max);
         return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
     }
+
+    function execLater(contextObject, delay, callback, args) {
+        let timer = Qt.createQmlObject("import QtQml 2.15; Timer { }", contextObject);
+        timer.interval = delay === undefined ? 100 : delay;
+        timer.repeat = false;
+        timer.triggered.connect(() => {
+            callback(args);
+            timer.destroy();
+        });
+        timer.start();
+    }
 }

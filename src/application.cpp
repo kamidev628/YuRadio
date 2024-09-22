@@ -4,6 +4,7 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
+#include <QSystemTrayIcon>
 
 #ifdef Q_OS_ANDROID
 #include "android/nativemediacontroller.h"
@@ -28,7 +29,7 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 
 using namespace Qt::StringLiterals;
 
-Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
+Application::Application(int argc, char **argv) : QApplication(argc, argv) {
   if (QCoreApplication::applicationVersion().isEmpty()) {
     QCoreApplication::setApplicationVersion(YURADIO_VERSION);
   }
@@ -55,6 +56,8 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
 #else
   qCInfo(applicationLog) << "Uiohook is disabled";
 #endif
+  qCInfo(applicationLog) << "System Tray Available:"
+                         << QSystemTrayIcon::isSystemTrayAvailable();
 
   if (!QNetworkInformation::loadDefaultBackend()) {
     qCWarning(applicationLog)
@@ -68,6 +71,8 @@ Application::Application(int argc, char **argv) : QGuiApplication(argc, argv) {
 
   auto *networkManagerFactory = new NetworkManagerFactory(m_engine.get());
   m_engine->setNetworkAccessManagerFactory(networkManagerFactory);
+  m_engine->rootContext()->setContextProperty(
+    "AppConfig_trayIconAvailable", QSystemTrayIcon::isSystemTrayAvailable());
 
   initializePlatform();
 

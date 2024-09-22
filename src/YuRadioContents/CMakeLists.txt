@@ -40,6 +40,7 @@ qt_add_qml_module(
   SpotifyButton.qml
   ItunesButton.qml
   IconButton.qml
+  TrayIcon.qml
   VolumeController.qml
   HeaderComboBox.qml
   ListViewHighlightBar.qml

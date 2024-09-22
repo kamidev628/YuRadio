@@ -5,6 +5,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Material
+import Qt.labs.platform as Platform
 
 import "radiobrowser.mjs" as RadioBrowser
 import network
@@ -292,6 +293,15 @@ ApplicationWindow {
         sequence: "Media Play"
         onActivated: {
             MainRadioPlayer.toggle();
+        }
+    }
+
+    Loader {
+        id: trayIconLoader
+        active: AppSettings.showIconInTray && AppConfig.trayIconAvailable
+
+        sourceComponent: TrayIcon {
+            window: root
         }
     }
 }

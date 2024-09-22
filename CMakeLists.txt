@@ -24,6 +24,7 @@ find_package(
              Location
              LinguistTools
              HttpServer
+             Widgets
              WebSockets
              NetworkAuth)
 

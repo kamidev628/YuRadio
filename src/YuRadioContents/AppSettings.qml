@@ -7,6 +7,8 @@ Settings {
     id: settings
 
     property bool enableSelectionAnimation: true
+    property bool showMessagesInTray: true
+    property bool showIconInTray: true
     property real volume: 1.0
     property var initialPage: App.Page.Search
     property string stationUuid

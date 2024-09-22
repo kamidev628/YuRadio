@@ -1,12 +1,12 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <QGuiApplication>
+#include <QApplication>
 
 class QQmlApplicationEngine;
 class GlobalKeyListener;
 
-class Application : public QGuiApplication {
+class Application : public QApplication {
   Q_OBJECT
 
 public:

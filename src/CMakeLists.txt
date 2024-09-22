@@ -103,6 +103,7 @@ target_link_libraries(
           Qt6::Location
           Qt6::NetworkAuth
           Qt6::Svg
+          Qt6::Widgets
           YuRadioNetworkplugin
           YuRadioContentsplugin
           "$<TARGET_NAME_IF_EXISTS:uiohook>"

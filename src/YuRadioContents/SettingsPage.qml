@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Dialogs
 import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
@@ -178,13 +177,13 @@ Item {
                 checked: AppSettings.showIconInTray
                 visible: AppConfig.trayIconAvailable
                 onCheckedChanged: {
-                  AppSettings.showIconInTray = checked
+                    AppSettings.showIconInTray = checked;
                 }
             }
 
             CheckBox {
                 id: showMessagesInTrayCheckbox
-                
+
                 Layout.topMargin: 5
 
                 text: qsTr("Show messages in tray")
@@ -192,15 +191,8 @@ Item {
                 checked: AppSettings.showMessagesInTray
                 visible: AppConfig.trayIconAvailable
                 onCheckedChanged: {
-                  AppSettings.showMessagesInTray = checked
+                    AppSettings.showMessagesInTray = checked;
                 }
-            }
-
-            MessageDialog {
-                id: messageDialog
-
-                text: qsTr("Successfully Authorized")
-                buttons: MessageDialog.Ok
             }
 
             SpotifyButton {
@@ -232,5 +224,15 @@ Item {
                 }
             }
         }
+    }
+
+    Dialog {
+        id: messageDialog
+
+        Label {
+            text: qsTr("Successfully Authorized")
+        }
+        anchors.centerIn: Overlay.overlay
+        standardButtons: Dialog.Ok
     }
 }

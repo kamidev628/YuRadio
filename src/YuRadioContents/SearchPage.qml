@@ -79,8 +79,8 @@ Item {
     }
 
     function openSearchFilterDialog(): void {
-        if (searchFilterDialogLoader.active) {
-            searchFilterDialogLoader.item.open();
+        if (searchFilterDialog) {
+            searchFilterDialog.open();
         } else {
             searchFilterDialogLoader.active = true;
         }
@@ -118,7 +118,7 @@ Item {
                 root.radioModelReset();
             }
         }
-        onLoaded: item.open()
+        onLoaded: root.searchFilterDialog.open()
     }
 
     JsonRestListModel {
@@ -264,7 +264,7 @@ Item {
         }
 
         gridView: radioGridView
-        stackView: root.StackView.view
+        stackView: root.StackView.view as StackView
         musicInfoModel: root.musicInfoModel
     }
 

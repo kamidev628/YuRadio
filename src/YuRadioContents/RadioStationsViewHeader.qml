@@ -5,6 +5,8 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
+import YuRadioContents
+
 FocusScope {
     id: root
 

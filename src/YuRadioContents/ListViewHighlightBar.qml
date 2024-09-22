@@ -1,5 +1,7 @@
 import QtQuick
 
+import YuRadioContents
+
 Rectangle {
     width: GridView.view.currentItem?.width ?? 0
     height: GridView.view.currentItem?.height ?? 0

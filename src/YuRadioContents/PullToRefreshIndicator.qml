@@ -6,6 +6,7 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Controls.Material.impl
 
+/* NOTE: Currently I can't qualify access due to cyclic dependency */
 Pane {
     id: root
 
@@ -127,7 +128,6 @@ Pane {
 
                     running: false
                     loops: Animation.Infinite
-
                 }
             }
         }

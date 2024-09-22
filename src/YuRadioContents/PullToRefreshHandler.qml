@@ -49,7 +49,6 @@ Item {
         sourceComponent: root.refreshIndicatorDelegate
     }
 
-
     Connections {
         target: root.target
         enabled: root.enabled && !root.isPulling

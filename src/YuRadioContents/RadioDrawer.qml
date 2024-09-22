@@ -1,10 +1,11 @@
 pragma ComponentBehavior: Bound
 
-import Main
 import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Controls
 import QtQuick.Layouts
+
+import YuRadioContents
 
 Drawer {
     id: root

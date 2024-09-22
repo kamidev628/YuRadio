@@ -6,12 +6,13 @@ import QtQuick.Controls.Material
 import QtQuick.Layouts
 
 import Main
+import YuRadioContents
 
 FocusScope {
     id: root
 
     required property RadioBottomBarDrawer bottomBarDrawer
-    property MusicInfoModel musicInfoModel: bottomBarDrawer.musicInfoModel
+    required property MusicInfoModel musicInfoModel
 
     property var musicInfo
     property var radioStation: MainRadioPlayer.currentItem

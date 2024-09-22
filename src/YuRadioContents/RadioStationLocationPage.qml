@@ -3,6 +3,8 @@ import QtQuick
 import QtLocation
 import QtPositioning
 
+import YuRadioContents
+
 Item {
     id: root
 
@@ -13,7 +15,7 @@ Item {
         id: mapPlugin
 
         name: "osm"
-        locales: AppSettings.locale
+        locales: [AppSettings.locale]
 
         PluginParameter {
             name: "osm.mapping.custom.host"

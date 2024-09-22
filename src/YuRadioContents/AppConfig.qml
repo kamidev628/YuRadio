@@ -1,6 +1,7 @@
 pragma Singleton
 
 import QtQuick
+import YuRadioContents
 
 QtObject {
     readonly property bool isPortrait: Screen.width < Screen.height

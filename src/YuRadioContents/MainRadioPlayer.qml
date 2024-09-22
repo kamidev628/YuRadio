@@ -2,6 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Main
+import YuRadioContents
 
 RadioPlayer {
     id: root

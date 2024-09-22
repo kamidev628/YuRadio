@@ -92,6 +92,7 @@ RadioBottomBarDrawer {
         anchors.fill: parent
 
         bottomBarDrawer: root
+        musicInfoModel: root.musicInfoModel
         onShowRadioStationLocationRequested: (stationLat, stationLong) => {
             stationLatitude = stationLat;
             stationLongitude = stationLong;

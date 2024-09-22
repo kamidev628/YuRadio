@@ -4,8 +4,7 @@ import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
-import "radiobrowser.mjs" as RadioBrowser
-import network
+import YuRadioContents
 
 Loader {
     id: root
@@ -22,21 +21,22 @@ Loader {
 
     readonly property bool currentStation: MainRadioPlayer.currentItem?.stationuuid == stationuuid
     readonly property Component mainComponent: MainComponent {}
+    readonly property Component sceletonComponent: SceletonComponent {}
     readonly property FilledGridView view: GridView.view as FilledGridView
 
     signal clicked
-
-    function initialize() {
-        sourceComponent = mainComponent;
-    }
 
     height: view.cellHeight
     width: view.cellWidth
     focus: true
 
-    sourceComponent: SceletonComponent {}
     Component.onCompleted: {
-        Utils.execLater(root, view.numItemsInRow >= 3 ? Utils.getRandomInt(200, 300) : 100, initialize);
+        if (view.numItemsInRow >= 3) {
+            sourceComponent = sceletonComponent;
+            Utils.execLater(root, Utils.getRandomInt(200, 300), () => sourceComponent = mainComponent);
+        } else {
+            sourceComponent = mainComponent;
+        }
     }
 
     component SceletonComponent: Item {
@@ -147,7 +147,7 @@ Loader {
                 focusPolicy: Qt.StrongFocus
 
                 onClicked: {
-                    root.moreOptionsMenu.index = root.index
+                    root.moreOptionsMenu.index = root.index;
                     root.moreOptionsMenu.popup(moreOptions);
                 }
             }

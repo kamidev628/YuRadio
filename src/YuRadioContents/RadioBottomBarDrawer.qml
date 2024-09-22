@@ -3,6 +3,8 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material
 import Qt.labs.animation
 
+import YuRadioContents
+
 Item {
     id: root
 

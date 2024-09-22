@@ -6,6 +6,7 @@ import QtQuick.Controls.Material
 import QtQuick.Layouts
 
 import network
+import YuRadioContents
 
 Dialog {
     id: root

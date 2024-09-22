@@ -75,7 +75,6 @@ FilledGridView {
         property bool bookmarkAdded
         property bool canVote
 
-
         onAboutToShow: {
             bookmarkAdded = Storage.existsBookmark(stationuuid);
             canVote = !Storage.existsVote(stationuuid);

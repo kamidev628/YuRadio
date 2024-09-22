@@ -5,11 +5,11 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Material
-import Qt.labs.platform as Platform
 
 import "radiobrowser.mjs" as RadioBrowser
 import network
 import Main
+import YuRadioContents
 
 ApplicationWindow {
     id: root
@@ -223,7 +223,7 @@ ApplicationWindow {
     header: ToolBar {
         id: headerToolBar
 
-        Material.background: AppConfig.isDarkTheme ? root.Material.background.lighter(1.5) : Material.primary
+        Material.background: AppConfig.isDarkTheme ? root.Material.background.lighter(1.5) : root.Material.primary
 
         RowLayout {
             anchors.fill: parent

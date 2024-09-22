@@ -38,7 +38,6 @@ qt_add_qml_module(
   "Main"
   VERSION
   1.0
-  NO_PLUGIN
   QML_FILES
   Main.qml
   ErrorPage.qml

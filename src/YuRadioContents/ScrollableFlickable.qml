@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 
+import YuRadioContents
+
 /* NOTE: Use this when multiple scrollviews are stacked */
 Flickable {
     id: root

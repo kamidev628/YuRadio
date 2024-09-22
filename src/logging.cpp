@@ -31,7 +31,7 @@ static void logToFileMessageHandler(QtMsgType type,
 void Logging::initialize() {
   /* Format logging messages */
   qSetMessagePattern(
-    u"%{if-category}%{category} %{endif}[%{time yyyy/MM/dd h:mm:ss.zzz} "
+    u"%{if-category}%{category}%{endif}[%{time yyyy/MM/dd h:mm:ss.zzz} "
     "%{if-debug}Debug%{endif}%{if-info}Info%{endif}%{if-warning}Warning%{endif}"
     "%{if-critical}Critical%{endif}%{if-fatal}Fatal%{endif}]"
 #ifdef QT_DEBUG

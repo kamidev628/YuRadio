@@ -34,7 +34,6 @@ protected:
 
   QMediaPlayer *m_mediaPlayer;
   QMediaDevices *m_mediaDevices;
-  int m_numberRetries;
 };
 
 #endif /* !BASICRADIOCONTROLLER_H */

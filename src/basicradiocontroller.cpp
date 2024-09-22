@@ -10,8 +10,6 @@ Q_LOGGING_CATEGORY(basicRadioControllerLog, "YuRadio.BasicRadioController")
 #include "basicradiocontroller.h"
 #include "radioinforeaderproxyserver.h"
 
-constexpr int MAXIMUM_NUMBER_OF_RETRIES = 3;
-
 using namespace Qt::StringLiterals;
 
 static RadioPlayer::PlaybackState
@@ -50,7 +48,7 @@ BasicRadioController::BasicRadioController(QObject *parent)
     : PlatformRadioController(parent),
       m_proxyServer(new RadioInfoReaderProxyServer),
       m_mediaPlayer(new QMediaPlayer(this)),
-      m_mediaDevices(new QMediaDevices(this)), m_numberRetries(0) {
+      m_mediaDevices(new QMediaDevices(this)) {
   connect(&m_proxyServerThread, &QThread::started, m_proxyServer,
           &RadioInfoReaderProxyServer::listen);
   connect(&m_proxyServerThread, &QThread::finished, m_proxyServer,
@@ -133,15 +131,7 @@ void BasicRadioController::mediaStatusChanged(
   QMediaPlayer::MediaStatus status) {
   qCDebug(basicRadioControllerLog) << "Media Status:" << status;
 
-  if (status == QMediaPlayer::EndOfMedia &&
-      m_numberRetries < MAXIMUM_NUMBER_OF_RETRIES) {
-    qCDebug(basicRadioControllerLog)
-      << "Reconnection Retry:" << m_numberRetries;
-
-    m_numberRetries += 1;
+  if (status == QMediaPlayer::EndOfMedia) {
     m_mediaPlayer->play();
-
-  } else if (status == QMediaPlayer::LoadedMedia) {
-    m_numberRetries = 0;
   }
 }

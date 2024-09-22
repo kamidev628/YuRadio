@@ -18,8 +18,6 @@ void PlatformRadioController::setMediaItem(const MediaItem &mediaItem) {
   if (m_mediaItem != mediaItem) {
     m_mediaItem = mediaItem;
     emit mediaItemChanged();
-
-    setStreamTitle({});
   }
 }
 

@@ -124,10 +124,8 @@ Drawer {
                 id: themeSwitch
 
                 checked: !AppConfig.isDarkTheme
-                onClicked: {
-                    AppSettings.theme = Qt.binding(() => {
-                        return checked ? "Light" : "Dark";
-                    });
+                onCheckedChanged: {
+                    AppSettings.theme = checked ? "Light" : "Dark";
                 }
             }
             Text {

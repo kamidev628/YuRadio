@@ -38,8 +38,7 @@ Item {
             width: parent.width
 
             Label {
-                text: qsTr("Servers")
-                font.pointSize: 14
+                text: qsTr("Available Servers")
             }
 
             Rectangle {
@@ -107,8 +106,7 @@ Item {
             Label {
                 Layout.topMargin: 20
 
-                text: qsTr("Initial Page")
-                font.pointSize: 14
+                text: qsTr("Start Page")
             }
 
             ComboBox {
@@ -138,7 +136,6 @@ Item {
                 Layout.topMargin: 20
 
                 text: qsTr("Language")
-                font.pointSize: 14
             }
 
             ComboBox {
@@ -165,10 +162,37 @@ Item {
             CheckBox {
                 Layout.topMargin: 10
 
-                text: qsTr("Enable Selection Animations")
+                text: qsTr("Animate selection changes")
                 checked: AppSettings.enableSelectionAnimation
                 onCheckedChanged: {
                     AppSettings.enableSelectionAnimation = checked;
+                }
+            }
+
+            CheckBox {
+                id: showTrayIconCheckbox
+
+                Layout.topMargin: 5
+
+                text: qsTr("Show icon in tray")
+                checked: AppSettings.showIconInTray
+                visible: AppConfig.trayIconAvailable
+                onCheckedChanged: {
+                  AppSettings.showIconInTray = checked
+                }
+            }
+
+            CheckBox {
+                id: showMessagesInTrayCheckbox
+                
+                Layout.topMargin: 5
+
+                text: qsTr("Show messages in tray")
+                enabled: showTrayIconCheckbox.checked
+                checked: AppSettings.showMessagesInTray
+                visible: AppConfig.trayIconAvailable
+                onCheckedChanged: {
+                  AppSettings.showMessagesInTray = checked
                 }
             }
 
@@ -188,7 +212,7 @@ Item {
 
                 text: qsTr("Spotify integration")
                 onClicked: {
-                    shouldShowMessage = true
+                    shouldShowMessage = true;
                     root.musicInfoModel.grantSpotifyAccess();
                 }
             }
@@ -204,7 +228,7 @@ Item {
 
                 function onSpotifyAccessGranted() {
                     messageDialog.open();
-                    spotifyButton.shouldShowMessage = false
+                    spotifyButton.shouldShowMessage = false;
                 }
             }
         }

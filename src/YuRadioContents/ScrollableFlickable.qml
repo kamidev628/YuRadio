@@ -7,27 +7,22 @@ import YuRadioContents
 Flickable {
     id: root
 
-    interactive: AppConfig.isMobile
-
-    MouseArea {
-        enabled: !root.interactive
-        anchors.fill: parent
-        preventStealing: true
-
+    WheelHandler {
+        blocking: false
+        acceptedDevices: PointerDevice.Mouse
+        enabled: root.interactive
         onWheel: event => {
             if (event.angleDelta.y > 0) {
                 if (root.atYBeginning) {
-                    event.accepted = false;
-                } else {
-                    scrollBar.decrease();
+                    root.interactive = false;
                 }
             } else {
                 if (root.atYEnd) {
-                    event.accepted = false;
-                } else {
-                    scrollBar.increase();
+                    root.interactive = false;
                 }
             }
+            event.accepted = false;
+            Qt.callLater(() => root.interactive = true);
         }
     }
 

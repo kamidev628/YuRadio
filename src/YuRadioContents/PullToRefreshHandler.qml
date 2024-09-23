@@ -38,7 +38,7 @@ Item {
         Connections {
             target: refreshIndicatorLoader.item
 
-            function onFullyRefreshedChanged() {
+            function onRefreshed() {
                 internal.isPullingDown = false;
                 internal.isPullingUp = false;
                 root.refreshed();

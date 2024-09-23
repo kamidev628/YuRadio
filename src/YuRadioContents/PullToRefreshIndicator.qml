@@ -12,6 +12,8 @@ Pane {
 
     property bool fullyRefreshed: false
 
+    signal refreshed
+
     width: 32
     height: 32
     x: (handler.width - width) / 2
@@ -30,7 +32,10 @@ Pane {
     }
 
     onFullyRefreshedChanged: {
-        root.state = "";
+        if (fullyRefreshed) {
+            root.state = "";
+            root.refreshed();
+        }
     }
 
     states: [

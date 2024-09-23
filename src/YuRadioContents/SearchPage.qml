@@ -54,7 +54,6 @@ Item {
             enabled: !pullToRefreshHandler.isProcessing && !apiTimeoutTimer.running
             onClicked: {
                 root.radioModelReset();
-                apiTimeoutTimer.start();
             }
         }
 
@@ -87,9 +86,11 @@ Item {
     }
 
     function radioModelReset(): void {
-        radioPagination.offset = 0;
-        radioModel.reset();
-        radioGridView.currentIndex = -1;
+        if (!apiTimeoutTimer.running) {
+            radioPagination.offset = 0;
+            radioModel.reset();
+            radioGridView.currentIndex = -1;
+        }
     }
 
     focus: true
@@ -125,7 +126,12 @@ Item {
         id: radioModel
 
         function loadPageHandler() {
-            loadPage();
+            if (!apiTimeoutTimer.running) {
+                loadPage();
+                if (apiTimeoutTimer.shouldRun) {
+                    apiTimeoutTimer.start();
+                }
+            }
         }
 
         restManager: root.networkManager
@@ -225,7 +231,10 @@ Item {
 
         Timer {
             id: apiTimeoutTimer
-            interval: 4500
+
+            property bool shouldRun: true
+
+            interval: 1500
         }
 
         Timer {
@@ -241,11 +250,12 @@ Item {
 
             onPullDownRelease: {
                 refreshTimer.start();
+                apiTimeoutTimer.shouldRun = false;
                 root.radioModelReset();
             }
 
             onRefreshed: {
-                apiTimeoutTimer.start();
+                apiTimeoutTimer.shouldRun = true;
             }
         }
     }
@@ -266,6 +276,13 @@ Item {
         gridView: radioGridView
         stackView: root.StackView.view as StackView
         musicInfoModel: root.musicInfoModel
+    }
+
+    Shortcut {
+        sequences: [StandardKey.Refresh, "Ctrl+R"]
+        onActivated: {
+            root.radioModelReset();
+        }
     }
 
     Connections {

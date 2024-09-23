@@ -14,6 +14,8 @@ FilledGridView {
     required property RadioBottomBar bottomBar
     required property NetworkManager networkManager
 
+    property alias moreOptionsMenu: moreOptionsMenu
+
     anchors {
         top: parent.top
         left: parent.left
@@ -63,47 +65,9 @@ FilledGridView {
         }
     }
 
-    component EnhancedMenuItem: MenuItem {
-        focusPolicy: Qt.TabFocus
-    }
-
-    Menu {
+    MoreOptionsMenu {
         id: moreOptionsMenu
 
-        property int index: -1
-        property string stationuuid: index !== -1 ? root.model.get(index).stationuuid : ""
-        property bool bookmarkAdded
-        property bool canVote
-
-        onAboutToShow: {
-            bookmarkAdded = Storage.existsBookmark(stationuuid);
-            canVote = !Storage.existsVote(stationuuid);
-        }
-
-        EnhancedMenuItem {
-            text: moreOptionsMenu.bookmarkAdded ? qsTr("Delete bookmark") : qsTr("Add bookmark")
-            icon.source: moreOptionsMenu.bookmarkAdded ? "images/bookmark-added.svg" : "images/bookmark.svg"
-
-            onTriggered: {
-                if (moreOptionsMenu.bookmarkAdded) {
-                    Storage.deleteBookmark(moreOptionsMenu.stationuuid);
-                } else {
-                    Storage.addBookmark(root.model.get(moreOptionsMenu.index));
-                }
-            }
-        }
-
-        EnhancedMenuItem {
-            text: moreOptionsMenu.canVote ? qsTr("Vote") : qsTr("Already Voted")
-            icon.source: moreOptionsMenu.canVote ? "images/thumb-up.svg" : "images/thumb-up-filled.svg"
-            enabled: moreOptionsMenu.canVote
-
-            onTriggered: {
-                if (moreOptionsMenu.canVote) {
-                    Storage.addVote(moreOptionsMenu.stationuuid);
-                    RadioBrowser.vote(root.networkManager.baseUrl, moreOptionsMenu.stationuuid);
-                }
-            }
-        }
+        networkManager: root.networkManager
     }
 }

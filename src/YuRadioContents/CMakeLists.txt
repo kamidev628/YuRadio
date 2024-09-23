@@ -26,6 +26,7 @@ qt_add_qml_module(
   SettingsPage.qml
   AboutPage.qml
   FilledGridView.qml
+  MoreOptionsMenu.qml
   RadioImage.qml
   RadioStationLocationPage.qml
   RadioStationView.qml
@@ -58,6 +59,7 @@ qt_add_qml_module(
   images/shortwave.png
   images/more-vert.svg
   images/search.svg
+  images/sync.svg
   images/trash.svg
   images/menu.svg
   images/github-mark.svg

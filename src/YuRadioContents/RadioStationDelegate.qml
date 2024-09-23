@@ -147,7 +147,7 @@ Loader {
                 focusPolicy: Qt.StrongFocus
 
                 onClicked: {
-                    root.moreOptionsMenu.index = root.index;
+                    root.moreOptionsMenu.station = root.view.model.get(root.index);
                     root.moreOptionsMenu.popup(moreOptions);
                 }
             }

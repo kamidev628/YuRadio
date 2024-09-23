@@ -22,6 +22,7 @@ Item {
 
         bottomBar: bottomBarDrawer
         networkManager: root.networkManager
+        moreOptionsMenu.enableSynchronization: true
 
         model: Storage.bookmarkModel
     }
@@ -29,7 +30,7 @@ Item {
     RadioBottomBar {
         id: bottomBarDrawer
 
-        interactive: !(root.drawer.opened && !root.isDesktopLayout)
+        interactive: !root.drawer.opened || root.isDesktopLayout
         gridView: bookmarkGridView
         stackView: root.StackView.view
         musicInfoModel: root.musicInfoModel

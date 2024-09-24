@@ -17,7 +17,14 @@ Storage::Storage(QObject *parent) : QObject(parent) {
     return;
   }
 
-  database.setDatabaseName(u"YuRadio"_s);
+  /* Create AppDataLocation if not exists */
+  QDir().mkpath(
+    QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+
+  QDir appDataLocation(
+    QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+
+  database.setDatabaseName(appDataLocation.filePath(u"YuRadio.db"_s));
   if (!database.open()) {
     qCWarning(storageLog) << "Failed to open Database:" << database.lastError();
     return;

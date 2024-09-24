@@ -1,3 +1,6 @@
+#include <QLoggingCategory>
+Q_LOGGING_CATEGORY(languageTranslatorLog, "YuRadio.LanguageTranslator")
+
 #include <QGuiApplication>
 #include <QLocale>
 #include <QTranslator>
@@ -9,8 +12,10 @@
 using namespace Qt::StringLiterals;
 
 LanguageTranslator::LanguageTranslator(QObject *parent)
-    : QObject(parent), m_translator(new QTranslator(this)) {
-  QGuiApplication::installTranslator(m_translator);
+    : QObject(parent), m_translator(new QTranslator(this)),
+      m_qtTrasnlator(new QTranslator(this)) {
+  QCoreApplication::installTranslator(m_translator);
+  QCoreApplication::installTranslator(m_qtTrasnlator);
 
   QDirIterator it(u":/i18n"_s, {u"*"_s}, QDir::Files,
                   QDirIterator::Subdirectories);
@@ -23,22 +28,29 @@ LanguageTranslator::LanguageTranslator(QObject *parent)
 }
 
 bool LanguageTranslator::load(const QString &language) {
-  if (m_translator->load(QLocale(language), u"YuRadio"_s, u"_"_s,
-                         u":/i18n"_s)) {
-    qmlEngine(this)->retranslate();
-    return true;
-  }
-  return false;
+  return load(QLocale(language));
 }
 
 bool LanguageTranslator::loadSystemLanguage() {
-  if (m_translator->load(QLocale(), u"YuRadio"_s, u"_"_s, u":/i18n"_s)) {
-    qmlEngine(this)->retranslate();
-    return true;
-  }
-  return false;
+  return load(QLocale());
 }
 
 QStringList LanguageTranslator::locales() const {
   return m_locales;
 };
+
+bool LanguageTranslator::load(const QLocale &locale) {
+  if (!m_qtTrasnlator->load(locale, u"qt"_s, u"_"_s)) {
+    qCWarning(languageTranslatorLog)
+      << "Failed to load builtin Qt translations";
+  }
+
+  if (m_translator->load(locale, u"YuRadio"_s, u"_"_s, u":/i18n"_s)) {
+    qmlEngine(this)->retranslate();
+    return true;
+  }
+
+  qCWarning(languageTranslatorLog) << "Failed to load YuRadio translations";
+
+  return false;
+}

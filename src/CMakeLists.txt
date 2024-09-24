@@ -58,6 +58,8 @@ qt_add_qml_module(
   musicinfoproviderbackend.cpp
   itunesbackend.h
   itunesbackend.cpp
+  storage.h
+  storage.cpp
   spotifybackend.h
   spotifybackend.cpp
   imageloader.h
@@ -70,6 +72,10 @@ qt_add_qml_module(
   languagetranslator.cpp
   globalkeylistener.h
   globalkeylistener.cpp
+  radiostation.h
+  radiostation.cpp
+  radiostationmodel.h
+  radiostationmodel.cpp
   logging.h
   logging.cpp
   obf.h

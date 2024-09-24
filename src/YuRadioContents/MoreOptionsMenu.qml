@@ -4,22 +4,23 @@ import QtQuick.Controls
 import YuRadioContents
 import "radiobrowser.mjs" as RadioBrowser
 import network
+import Main
 
 Menu {
     id: root
 
     required property NetworkManager networkManager
 
-    property var station
-    property string stationuuid: station?.stationuuid ?? ""
+    property radiostation station
+    property string uuid: station.uuid
 
-    property bool enableSynchronization: true
+    property bool enableSynchronization: false
     property bool bookmarkAdded
     property bool canVote
 
     onAboutToShow: {
-        bookmarkAdded = Storage.existsBookmark(stationuuid);
-        canVote = !Storage.existsVote(stationuuid);
+        bookmarkAdded = Storage.existsBookmark(root.uuid);
+        canVote = !Storage.existsVote(root.uuid);
     }
 
     component EnhancedMenuItem: MenuItem {
@@ -32,9 +33,9 @@ Menu {
 
         onTriggered: {
             if (root.bookmarkAdded) {
-                Storage.deleteBookmark(root.stationuuid);
+                AppStorage.deleteBookmark(root.uuid);
             } else {
-                Storage.addBookmark(root.station);
+                AppStorage.addBookmark(root.station);
             }
         }
     }
@@ -46,8 +47,8 @@ Menu {
 
         onTriggered: {
             if (root.canVote) {
-                Storage.addVote(root.stationuuid);
-                RadioBrowser.vote(root.networkManager.baseUrl, root.stationuuid);
+                Storage.addVote(root.uuid);
+                RadioBrowser.vote(root.networkManager.baseUrl, root.uuid);
             }
         }
     }
@@ -59,9 +60,10 @@ Menu {
         height: visible ? implicitHeight : 0
 
         onTriggered: {
-            RadioBrowser.getStation(root.networkManager.baseUrl, root.stationuuid).then(newStation => {
-                Storage.deleteBookmark(root.stationuuid);
-                Storage.addBookmark(newStation);
+            RadioBrowser.getStation(root.networkManager.baseUrl, root.uuid).then(newStation => {
+                let parsedStation = RadioStationFactory.fromJson(newStation);
+                AppStorage.deleteBookmark(root.uuid);
+                AppStorage.addBookmark(parsedStation);
             });
         }
     }

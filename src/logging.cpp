@@ -10,6 +10,8 @@ using namespace MemoryLiterals;
 
 QtMessageHandler g_originalHandler = nullptr;
 
+constexpr qint64 MAX_LOG_FILE_SIZE = 1_MiB;
+
 static void logToFileMessageHandler(QtMsgType type,
                                     const QMessageLogContext &context,
                                     const QString &msg) {
@@ -31,7 +33,7 @@ static void logToFileMessageHandler(QtMsgType type,
 void Logging::initialize() {
   /* Format logging messages */
   qSetMessagePattern(
-    u"%{if-category}%{category}%{endif}[%{time yyyy/MM/dd h:mm:ss.zzz} "
+    u"%{if-category}%{category} %{endif}[%{time yyyy/MM/dd h:mm:ss.zzz} "
     "%{if-debug}Debug%{endif}%{if-info}Info%{endif}%{if-warning}Warning%{endif}"
     "%{if-critical}Critical%{endif}%{if-fatal}Fatal%{endif}]"
 #ifdef QT_DEBUG
@@ -46,10 +48,19 @@ void Logging::initialize() {
     QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 
   QString logPath = logFilePath();
-  QFileInfo logFileInfo(logPath);
-  if (logFileInfo.exists() &&
-      static_cast<std::size_t>(logFileInfo.size()) > 2_MiB) {
-    QFile::remove(logPath);
+
+  QFile logFile(logPath);
+  bool ok = logFile.open(QIODevice::ReadWrite);
+
+  if (ok && logFile.size() > MAX_LOG_FILE_SIZE) {
+    qint64 overgrow = logFile.size() - MAX_LOG_FILE_SIZE;
+    Q_ASSERT(overgrow > 0);
+
+    logFile.skip(static_cast<qint64>(200_KiB) + overgrow);
+
+    QByteArray newData = logFile.readAll();
+    logFile.resize(0);
+    logFile.write(newData);
   }
 }
 

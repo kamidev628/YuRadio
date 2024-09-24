@@ -18,7 +18,11 @@ public:
   Q_INVOKABLE QStringList locales() const;
 
 private:
+  bool load(const QLocale &locale);
+
+private:
   QTranslator *m_translator;
+  QTranslator *m_qtTrasnlator;
   QStringList m_locales;
 };
 

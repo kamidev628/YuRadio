@@ -22,40 +22,52 @@ void JsonRestListModel::setDataPath(const QString &newDataPath) {
   emit dataPathChanged();
 }
 
-bool JsonRestListModel::tryParseJsonData(const QByteArray &data) {
+std::optional<QJsonArray>
+JsonRestListModel::parseJson(const QByteArray &data, const QString &dataPath) {
   std::optional<QJsonDocument> document = json::byteArrayToJson(data);
   if (!document) {
-    return false;
+    return {};
   }
 
   QJsonArray dataArray;
   QJsonObject rootObj;
 
   if (document->isObject()) {
-    if (m_dataPath.isNull()) {
+    if (dataPath.isNull()) {
       qCWarning(yuRestLog)
-        << "Received valid Json object, but `data` path is not specified";
-      return false;
+        << "Received valid JSON object, but `data` path is not specified";
+      return {};
     }
 
     rootObj = document->object();
-    if (!rootObj[m_dataPath].isArray()) {
-      qCWarning(yuRestLog) << "Not valid array at:" << m_dataPath;
-      return false;
+    if (!rootObj[dataPath].isArray()) {
+      qCWarning(yuRestLog) << "Not valid array at:" << dataPath;
+      return {};
     }
 
-    dataArray = rootObj[m_dataPath].toArray();
+    dataArray = rootObj[dataPath].toArray();
 
   } else if (document->isArray()) {
     dataArray = document->array();
   } else {
     qCWarning(yuRestLog) << "Invalid Json";
+    return {};
+  }
+
+  return dataArray;
+}
+
+bool JsonRestListModel::tryParseJsonData(const QByteArray &data) {
+  auto maybeJsonArray = parseJson(data, m_dataPath);
+  if (!maybeJsonArray) {
     return false;
   }
 
   qsizetype sizeBefore = m_items.size();
   QQmlEngine *engine = qmlEngine(this);
-  for (const auto &dataObj : std::as_const(dataArray)) {
+  Q_ASSERT(engine != nullptr);
+
+  for (const auto &dataObj : std::as_const(*maybeJsonArray)) {
     int last = rowCount({});
 
     QJSValue obj = engine->toScriptValue(dataObj.toObject());

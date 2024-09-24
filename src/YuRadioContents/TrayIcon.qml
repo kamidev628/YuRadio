@@ -2,6 +2,7 @@ import QtQml
 import QtQuick
 
 import Qt.labs.platform as Platform
+import YuRadioContents
 
 Platform.SystemTrayIcon {
     id: root

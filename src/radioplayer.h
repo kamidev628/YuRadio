@@ -10,6 +10,7 @@ struct MediaItem {
   Q_PROPERTY(QUrl source MEMBER source)
   Q_PROPERTY(QString author MEMBER author)
   Q_PROPERTY(QUrl artworkUri MEMBER artworkUri)
+  QML_VALUE_TYPE(mediaitem)
 
 public:
   MediaItem() = default;

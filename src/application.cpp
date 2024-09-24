@@ -16,6 +16,7 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 #include "hotreloaderclient.h"
 #endif /* QT_DEBUG */
 
+#include <QDirIterator>
 #include <QNetworkInformation>
 #include <QSslSocket>
 #include <QStandardPaths>
@@ -56,7 +57,7 @@ Application::Application(int argc, char **argv) : QApplication(argc, argv) {
 #else
   qCInfo(applicationLog) << "Uiohook is disabled";
 #endif
-  qCInfo(applicationLog) << "System Tray Available:"
+  qCInfo(applicationLog) << "System tray available:"
                          << QSystemTrayIcon::isSystemTrayAvailable();
 
   if (!QNetworkInformation::loadDefaultBackend()) {

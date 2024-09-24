@@ -1,5 +1,5 @@
 set_source_files_properties(
-  AppSettings.qml AppConfig.qml Utils.qml MainRadioPlayer.qml Storage.qml
+  AppSettings.qml AppConfig.qml Utils.qml MainRadioPlayer.qml AppStorage.qml
   PROPERTIES QT_QML_SINGLETON_TYPE true)
 
 qt_add_library(YuRadioContents STATIC)
@@ -16,6 +16,7 @@ qt_add_qml_module(
   BookmarkPage.qml
   AppSettings.qml
   AppConfig.qml
+  AppStorage.qml
   Utils.qml
   RadioStationDelegate.qml
   RadioBottomBarContents.qml
@@ -37,7 +38,6 @@ qt_add_qml_module(
   OutlinedButton.qml
   ClickableLink.qml
   SearchBar.qml
-  Storage.qml
   SpotifyButton.qml
   ItunesButton.qml
   IconButton.qml

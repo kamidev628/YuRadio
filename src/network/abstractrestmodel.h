@@ -42,7 +42,7 @@ class AbstractRestListModel : public QAbstractListModel {
   Q_OBJECT
 
   Q_PROPERTY(NetworkManager *restManager READ restManager WRITE setRestManager
-               NOTIFY restManagerChanged REQUIRED)
+               NOTIFY restManagerChanged)
   Q_PROPERTY(RestPagination *pagination READ pagination WRITE setPagination
                NOTIFY paginationChanged)
   Q_PROPERTY(int count READ count NOTIFY countChanged FINAL)

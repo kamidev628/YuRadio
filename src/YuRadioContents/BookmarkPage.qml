@@ -23,8 +23,9 @@ Item {
         bottomBar: bottomBarDrawer
         networkManager: root.networkManager
         moreOptionsMenu.enableSynchronization: true
+        stationAtIndex: index => bookmarkGridView.model[index]
 
-        model: Storage.bookmarkModel
+        model: AppStorage.bookmarkModel
     }
 
     RadioBottomBar {

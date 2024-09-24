@@ -43,7 +43,7 @@ RadioBottomBarDrawer {
     states: [
         State {
             name: "hasCurrentItem"
-            when: MainRadioPlayer.currentItem != null
+            when: MainRadioPlayer.currentItem.isValid()
 
             PropertyChanges {
                 root.minimumHeight: Math.max(parent.height / 12, bottomBarContents.implicitHeight)

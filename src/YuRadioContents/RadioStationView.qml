@@ -14,7 +14,11 @@ FilledGridView {
     required property RadioBottomBar bottomBar
     required property NetworkManager networkManager
 
+    required property var stationAtIndex
+
     property alias moreOptionsMenu: moreOptionsMenu
+
+    signal moreOptionsMenuRequested(int index, Item context)
 
     anchors {
         top: parent.top
@@ -51,14 +55,18 @@ FilledGridView {
 
         focus: true
         focusPolicy: Qt.StrongFocus
-        moreOptionsMenu: moreOptionsMenu
+
+        onMoreOptionsMenuRequested: (context) => {
+            root.moreOptionsMenu.station = root.stationAtIndex(delegate.index);
+            root.moreOptionsMenu.popup(context);
+        }
 
         onClicked: {
             if (currentStation) {
                 MainRadioPlayer.toggle();
             } else {
-                RadioBrowser.click(root.networkManager.baseUrl, stationuuid);
-                MainRadioPlayer.currentItem = Object.assign({}, root.model.get(delegate.index));
+                RadioBrowser.click(root.networkManager.baseUrl, delegate.uuid);
+                MainRadioPlayer.currentItem = root.stationAtIndex(delegate.index);
                 root.currentIndex = delegate.index;
                 Qt.callLater(MainRadioPlayer.play);
             }

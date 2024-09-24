@@ -122,7 +122,7 @@ Item {
         onLoaded: root.searchFilterDialog.open()
     }
 
-    JsonRestListModel {
+    RadioStationModel {
         id: radioModel
 
         function loadPageHandler() {
@@ -176,22 +176,6 @@ Item {
             }
         ]
 
-        preprocessItem: item => {
-            if (!item.url_resolved && !item.url) {
-                return undefined;
-            }
-            item.name = item.name.trim();
-            item.tags = item.tags.trim().split(',').join(', ');
-            item.language = item.language.trim().split(',').join(', ');
-            if (item.bitrate > 1411) {
-                item.bitrate /= 1000;
-            }
-            if (!item.url_resolved) {
-                item.url_resolved = item.url;
-            }
-            return item;
-        }
-
         onStatusChanged: {
             if (status == JsonRestListModel.Ready) {
                 radioPagination.nextPage();
@@ -225,6 +209,7 @@ Item {
             onDescendingChanged: orderChangedHandler()
             onOrderByFieldChanged: orderChangedHandler()
         }
+        stationAtIndex: index => radioModel.get(index)
 
         footer: FooterBar {}
         model: radioModel

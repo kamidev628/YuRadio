@@ -16,14 +16,17 @@ public:
   QVariant data(const QModelIndex &index, int role) const override;
 
   QHash<int, QByteArray> roleNames() const override;
+  void reset() override;
 
-  Q_INVOKABLE void reset() override;
   Q_INVOKABLE QVariantMap get(int row);
 
   QString dataPath() const;
   void setDataPath(const QString &newDataPath);
 
   void generateRoleNames(const QVariantMap &item);
+
+  static std::optional<QJsonArray> parseJson(const QByteArray &data,
+                                             const QString &dataPath = {});
 
 signals:
   void dataPathChanged();

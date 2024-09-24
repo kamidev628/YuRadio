@@ -1,4 +1,4 @@
-pragma ComponentBehavior: Bound
+pragma ComponentBehavior
 
 import QtQuick
 import QtQuick.Controls
@@ -7,6 +7,7 @@ import QtQuick.Layouts
 
 import network
 import YuRadioContents
+import Main
 
 Dialog {
     id: root

@@ -15,7 +15,7 @@ FocusScope {
     required property MusicInfoModel musicInfoModel
 
     property var musicInfo
-    property var radioStation: MainRadioPlayer.currentItem
+    property radiostation radioStation: MainRadioPlayer.currentItem
 
     property string lastStreamTitle: ""
     property string streamTitle: MainRadioPlayer.streamTitle
@@ -88,7 +88,7 @@ FocusScope {
                     Layout.fillHeight: true
 
                     fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
-                    targetSource: root.radioStation?.favicon ?? ""
+                    targetSource: root.radioStation.favicon
                     fillMode: Image.PreserveAspectFit
 
                     smooth: true
@@ -108,7 +108,7 @@ FocusScope {
 
                             width: parent.width
 
-                            text: root.radioStation?.name ?? qsTr("Station")
+                            text: root.radioStation.name
                             elide: Text.ElideRight
                             font.bold: true
                             font.pointSize: 16
@@ -123,7 +123,7 @@ FocusScope {
                                 if (progressBar.visible || errorText.visible) {
                                     return "";
                                 }
-                                return root.radioStation?.tags ?? '';
+                                return root.radioStation.tags.join(", ");
                             }
                             elide: Text.ElideRight
                             font.pointSize: 13
@@ -135,7 +135,7 @@ FocusScope {
                                 anchors.fill: parent
 
                                 Material.foreground: Material.Red
-                                text: visible ? MainRadioPlayer.errorString : ``
+                                text: visible ? MainRadioPlayer.errorString : ""
                                 elide: Text.ElideRight
                                 visible: MainRadioPlayer.error != RadioPlayer.NoError && !progressBar.visible
                             }
@@ -168,9 +168,9 @@ FocusScope {
                                 id: country
 
                                 Layout.fillWidth: true
-                                visible: root.radioStation?.country ?? false
+                                visible: root.radioStation.country
 
-                                text: qsTr("Country: %1").arg(root.radioStation?.country ?? "")
+                                text: qsTr("Country: %1").arg(root.radioStation.country)
                                 font.pointSize: 14
                                 wrapMode: Text.WordWrap
                             }
@@ -178,12 +178,10 @@ FocusScope {
                             Label {
                                 id: language
 
-                                readonly property string stationLanguage: root.radioStation?.language ?? ""
-
                                 Layout.fillWidth: true
-                                visible: root.radioStation?.language ?? false
+                                visible: root.radioStation.language
 
-                                text: stationLanguage.includes(",") ? qsTr("Languages: %1").arg(stationLanguage) : qsTr("Language: %1").arg(stationLanguage)
+                                text: root.radioStation.language.includes(",") ? qsTr("Languages: %1").arg(root.radioStation.language) : qsTr("Language: %1").arg(root.radioStation.language)
                                 font.pointSize: 14
                                 wrapMode: Text.WordWrap
                             }
@@ -192,19 +190,19 @@ FocusScope {
                                 id: bitrate
 
                                 Layout.fillWidth: true
-                                visible: root.radioStation?.bitrate ?? false
+                                visible: root.radioStation.bitrate
 
-                                text: qsTr("Bitrate: %1").arg(root.radioStation?.bitrate ?? 0)
+                                text: qsTr("Bitrate: %1").arg(root.radioStation.bitrate)
                                 font.pointSize: 14
                             }
 
                             ClickableLink {
                                 id: homePage
 
-                                visible: root.radioStation?.homepage ?? false
+                                visible: root.radioStation.homepage
 
                                 linkText: qsTr('Homepage')
-                                link: root.radioStation?.homepage ?? ""
+                                link: root.radioStation.homepage
                                 font.pointSize: 14
                             }
 
@@ -212,13 +210,13 @@ FocusScope {
                                 id: mapButton
 
                                 flat: true
-                                visible: (root.radioStation?.geo_lat ?? false) && (root.radioStation?.geo_long ?? false)
+                                visible: root.radioStation.geoLatitude && root.radioStation.geoLongitude
 
                                 text: qsTr('Show on the map')
                                 icon.source: "images/map.svg"
 
                                 onClicked: {
-                                    root.showRadioStationLocationRequested(root.radioStation.geo_lat, root.radioStation.geo_long);
+                                    root.showRadioStationLocationRequested(root.radioStation.geoLatitude, root.radioStation.geoLongitude);
                                 }
                             }
                         }
@@ -280,7 +278,7 @@ FocusScope {
 
                         onClicked: {
                             MainRadioPlayer.stop();
-                            MainRadioPlayer.currentItem = undefined;
+                            MainRadioPlayer.currentItem = RadioStationFactory.create();
                         }
                     }
                 }
@@ -424,7 +422,7 @@ FocusScope {
                         Layout.fillWidth: true
 
                         visible: musicInfoRow.visible
-                        opacity: 0.6
+                        opacity: 0.7
 
                         text: qsTr("Provided for: %1").arg(root.streamTitle)
                         wrapMode: Text.WordWrap

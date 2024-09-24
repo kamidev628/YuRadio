@@ -10,21 +10,24 @@ Loader {
     id: root
 
     required property int index
-    required property string favicon
-    required property string name
-    required property string tags
-    required property string url_resolved
-    required property string countrycode
-    required property string stationuuid
     required property int bitrate
-    required property Menu moreOptionsMenu
 
-    readonly property bool currentStation: MainRadioPlayer.currentItem?.stationuuid == stationuuid
+    required property list<string> tags
+
+    required property string name
+    required property string countryCode
+    required property string uuid
+
+    required property url favicon
+    required property url url
+
+    readonly property bool currentStation: MainRadioPlayer.currentItem.isValid() && MainRadioPlayer.currentItem.uuid == uuid
     readonly property Component mainComponent: MainComponent {}
     readonly property Component sceletonComponent: SceletonComponent {}
     readonly property FilledGridView view: GridView.view as FilledGridView
 
     signal clicked
+    signal moreOptionsMenuRequested(context: Item)
 
     height: view.cellHeight
     width: view.cellWidth
@@ -102,7 +105,7 @@ Loader {
                     }
 
                     opacity: 0.8
-                    source: root.countrycode ? `https://flagsapi.com/${root.countrycode}/flat/24.png` : ''
+                    source: root.countryCode ? `https://flagsapi.com/${root.countryCode}/flat/24.png` : ''
                     sourceSize: Qt.size(24, 24)
                 }
             }
@@ -127,7 +130,7 @@ Loader {
                     Layout.fillWidth: true
 
                     elide: Text.ElideRight
-                    text: root.tags
+                    text: root.tags.join(", ")
                     font.pointSize: 14
                 }
             }
@@ -147,8 +150,7 @@ Loader {
                 focusPolicy: Qt.StrongFocus
 
                 onClicked: {
-                    root.moreOptionsMenu.station = root.view.model.get(root.index);
-                    root.moreOptionsMenu.popup(moreOptions);
+                    root.moreOptionsMenuRequested(moreOptions)
                 }
             }
         }

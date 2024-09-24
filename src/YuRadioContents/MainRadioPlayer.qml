@@ -7,7 +7,7 @@ import YuRadioContents
 RadioPlayer {
     id: root
 
-    property var currentItem
+    property radiostation currentItem
 
     volume: AppSettings.volume
     onVolumeChanged: {
@@ -16,11 +16,11 @@ RadioPlayer {
 
     onCurrentItemChanged: {
         const newMediaItem = constructMediaItem();
-        if (currentItem) {
+        if (currentItem.isValid()) {
             newMediaItem.artworkUri = currentItem.favicon;
             newMediaItem.author = currentItem.name;
-            newMediaItem.source = currentItem.url_resolved;
-            AppSettings.stationUuid = currentItem.stationuuid;
+            newMediaItem.source = currentItem.url;
+            AppSettings.stationUuid = currentItem.uuid;
         } else {
             AppSettings.stationUuid = "";
         }

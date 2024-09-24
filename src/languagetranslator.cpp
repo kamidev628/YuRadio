@@ -40,7 +40,9 @@ QStringList LanguageTranslator::locales() const {
 };
 
 bool LanguageTranslator::load(const QLocale &locale) {
-  if (!m_qtTrasnlator->load(locale, u"qt"_s, u"_"_s)) {
+  if (!m_qtTrasnlator->load(
+        locale, u"qt"_s, u"_"_s,
+        QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
     qCWarning(languageTranslatorLog)
       << "Failed to load builtin Qt translations";
   }

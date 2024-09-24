@@ -36,6 +36,14 @@ ApplicationWindow {
         }
     }
 
+    function backButtonPressed() {
+        if (mainStackView.depth > 1) {
+            mainStackView.popCurrentItem();
+        } else {
+            Qt.quit();
+        }
+    }
+
     width: 640
     height: 880
     minimumWidth: 300
@@ -86,7 +94,7 @@ ApplicationWindow {
                 });
             } else {
                 RadioBrowser.getStation(baseUrl, AppSettings.stationUuid).then(station => {
-                    let parsedItem = RadioStationFactory.fromJson(station)
+                    let parsedItem = RadioStationFactory.fromJson(station);
                     MainRadioPlayer.currentItem = parsedItem;
                 });
             }
@@ -95,24 +103,24 @@ ApplicationWindow {
         onBaseUrlChanged: {
             if (baseUrl) {
                 if (!Storage.getCountries().length) {
-                    console.log("Caching countries...")
+                    console.log("Caching countries...");
                     RadioBrowser.getCountries(baseUrl).then(countries => {
                         Storage.addCountries(countries.filter(country => country.name && country.iso_3166_1).map(country => country.name));
-                        console.log("Cached countries:", Storage.getCountries())
+                        console.log("Countries Cached!");
                     });
                 }
                 if (!Storage.getLanguages().length) {
-                    console.log("Caching languages...")
+                    console.log("Caching languages...");
                     RadioBrowser.getLanguages(baseUrl).then(languages => {
                         Storage.addLanguages(languages.filter(language => language.name && language.iso_639).map(language => language.name));
-                        console.log("Cached languages", Storage.getLanguages())
+                        console.log("Languages Cached!");
                     });
                 }
                 if (!Storage.getTags().length) {
-                    console.log("Caching tags...")
+                    console.log("Caching tags...");
                     RadioBrowser.getTopUsedTags(baseUrl, 100).then(tags => {
                         Storage.addTags(tags.filter(tag => tag.name).map(tag => tag.name));
-                        console.log("Cached tags", Storage.getTags())
+                        console.log("Tags Cached!");
                     });
                 }
             }
@@ -242,7 +250,7 @@ ApplicationWindow {
             ToolButton {
                 id: backButton
 
-                action: navigateBackAction
+                action: navigateAction
                 Material.foreground: Material.color(Material.Grey, Material.Shade100)
             }
 
@@ -258,7 +266,7 @@ ApplicationWindow {
     }
 
     Action {
-        id: navigateBackAction
+        id: navigateAction
 
         icon.source: mainStackView.depth > 1 ? "images/arrow-back.svg" : "images/menu.svg"
         onTriggered: {
@@ -275,8 +283,13 @@ ApplicationWindow {
     }
 
     Shortcut {
-        sequences: ["Esc", "Back"]
-        onActivated: navigateBackAction.trigger()
+        sequence: "Esc"
+        onActivated: navigateAction.trigger()
+    }
+
+    Shortcut {
+        sequence: "Back"
+        onActivated: root.backButtonPressed()
     }
 
     Shortcut {

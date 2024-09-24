@@ -27,7 +27,7 @@ Loader {
     readonly property FilledGridView view: GridView.view as FilledGridView
 
     signal clicked
-    signal moreOptionsMenuRequested(context: Item)
+    signal moreOptionsMenuRequested(Item context)
 
     height: view.cellHeight
     width: view.cellWidth
@@ -150,7 +150,7 @@ Loader {
                 focusPolicy: Qt.StrongFocus
 
                 onClicked: {
-                    root.moreOptionsMenuRequested(moreOptions)
+                    root.moreOptionsMenuRequested(moreOptions);
                 }
             }
         }

@@ -96,6 +96,7 @@ void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
   request.setRawHeader("Connection"_ba, "keep-alive"_ba);
 
   QNetworkReply *reply = m_networkManager->get(request);
+  reply->ignoreSslErrors();
 
   connect(client, &QTcpSocket::disconnected, reply, &QNetworkReply::abort);
   connect(client, &QTcpSocket::disconnected, client, &QObject::deleteLater);

@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 
@@ -25,6 +27,12 @@ Menu {
 
     component EnhancedMenuItem: MenuItem {
         focusPolicy: Qt.TabFocus
+
+        onImplicitWidthChanged: {
+            if (root.contentWidth < implicitWidth) {
+                root.contentWidth = implicitWidth;
+            }
+        }
     }
 
     EnhancedMenuItem {

@@ -136,7 +136,7 @@ Item {
 
             radius: height / 2
 
-            color: Material.color(Material.Grey, Material.Shade800)
+            color: Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade500 : Material.Shade800)
             opacity: 0.7
         }
 

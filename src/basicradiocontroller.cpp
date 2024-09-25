@@ -101,11 +101,15 @@ BasicRadioController::~BasicRadioController() {
 }
 
 void BasicRadioController::play() {
+  if (m_mediaItem.source.isValid()) {
+    m_mediaPlayer->setSource(m_proxyServer->sourceUrl());
+  }
   m_mediaPlayer->play();
 }
 
 void BasicRadioController::stop() {
   m_mediaPlayer->stop();
+  m_mediaPlayer->setSource({});
 }
 
 void BasicRadioController::pause() {

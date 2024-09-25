@@ -192,7 +192,10 @@ public class NativeMediaController {
             @Override
             public void run() {
                 Log.i(TAG, "Controller Stop");
+
                 controller.stop();
+                // BUG: ExoPlayer doesn't `emit` onIsPlayingChanged
+                onPlaybackStateChangedNative(PlaybackState.Stopped);
             }
         });
     }

@@ -42,11 +42,12 @@ Drawer {
         }
 
         ListView {
-            focus: true
-            currentIndex: -1
-
             Layout.fillHeight: true
             Layout.fillWidth: true
+
+            focus: true
+
+            currentIndex: -1
             clip: true
             boundsBehavior: Flickable.StopAtBounds
             ScrollIndicator.vertical: ScrollIndicator {}
@@ -92,6 +93,10 @@ Drawer {
                 text: itemText
                 icon.source: iconSource
                 highlighted: ListView.isCurrentItem
+
+                focusPolicy: Qt.StrongFocus
+                focus: true
+
                 onClicked: {
                     if (!root.isDesktopLayout) {
                         root.close();
@@ -128,7 +133,8 @@ Drawer {
             }
             Switch {
                 id: themeSwitch
-
+                
+                Accessible.name: qsTr("Theme")
                 checked: !AppConfig.isDarkTheme
                 onCheckedChanged: {
                     AppSettings.theme = checked ? "Light" : "Dark";

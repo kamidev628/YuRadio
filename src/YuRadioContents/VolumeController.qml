@@ -21,6 +21,8 @@ FocusScope {
 
         Button {
             id: volumeButton
+
+            Accessible.name: volumeController.muted ? qsTr("Unmute") : qsTr("Mute")
             display: AbstractButton.IconOnly
             flat: true
 
@@ -42,7 +44,9 @@ FocusScope {
 
         Slider {
             id: volumeSlider
+
             Layout.fillWidth: true
+            Accessible.name: qsTr("Volume")
 
             from: 0
             to: 1

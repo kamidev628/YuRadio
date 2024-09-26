@@ -12,7 +12,7 @@ Settings {
     property bool resumePlaybackWhenNetworkRestored: true
     property bool enableBottomBarBlur: true
     property real volume: 1.0
-    property var initialPage: App.Page.Search
+    property int initialPage: App.Page.Search
     property real fontScale: 1.0
     property string stationUuid
     property string locale

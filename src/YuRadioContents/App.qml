@@ -256,6 +256,8 @@ ApplicationWindow {
             ToolButton {
                 id: backButton
 
+                Accessible.name: mainStackView.depth > 1 ? qsTr("Back") : qsTr("Menu")
+
                 action: navigateAction
                 Material.foreground: Material.color(Material.Grey, Material.Shade100)
             }

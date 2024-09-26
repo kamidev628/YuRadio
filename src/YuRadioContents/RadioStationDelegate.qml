@@ -69,7 +69,11 @@ Loader {
         id: delegate
 
         onClicked: root.clicked()
+
+        Accessible.name: root.name + " " + root.tags
+
         focusPolicy: Qt.StrongFocus
+        focus: true
 
         Binding {
             when: root.currentStation
@@ -94,8 +98,7 @@ Loader {
                 targetSource: root.favicon
 
                 fillMode: Image.PreserveAspectFit
-                smooth: false
-                sourceSize: Qt.size(width, height)
+                smooth: true
                 asynchronous: true
 
                 IconImage {
@@ -167,13 +170,13 @@ Loader {
                 Layout.alignment: Qt.AlignVCenter
                 Layout.fillHeight: true
                 implicitWidth: 64
+                Accessible.name: qsTr("More options menu")
 
-                focus: true
-
-                icon.fillMode: Image.PreserveAspectFit
                 icon.source: "images/more-vert.svg"
-                icon.sourceSize: Qt.size(32, 32)
-                focusPolicy: Qt.StrongFocus
+                icon.width: 32
+                icon.height: 32
+                icon.color: Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade400 : Material.Shade800)
+                opacity: 0.5
 
                 onClicked: {
                     root.moreOptionsMenuRequested(moreOptions);

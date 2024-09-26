@@ -34,8 +34,8 @@ FilledGridView {
     cellHeight: 100 * AppSettings.fontScale
 
     clip: true
-    focus: true
     highlightFollowsCurrentItem: true
+    focus: true
 
     boundsMovement: Flickable.StopAtBounds
     boundsBehavior: AppConfig.isMobile ? Flickable.DragOverBounds : Flickable.StopAtBounds
@@ -54,11 +54,10 @@ FilledGridView {
         id: delegate
 
         focus: true
-        focusPolicy: Qt.StrongFocus
 
         onMoreOptionsMenuRequested: context => {
             root.moreOptionsMenu.station = root.stationAtIndex(delegate.index);
-            root.moreOptionsMenu.popup(context);
+            root.moreOptionsMenu.popup(context, 0, 0);
         }
 
         onClicked: {

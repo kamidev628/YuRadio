@@ -1,31 +1,12 @@
-import QtQuick
 import QtQuick.Controls
 
-Item {
+ToolButton {
     id: root
 
-    property alias icon: iconImage
+    display: AbstractButton.IconOnly
 
-    signal clicked
-
-    implicitHeight: icon.implicitHeight
-    implicitWidth: icon.implicitWidth
-
-    IconImage {
-        id: iconImage
-
-        anchors.centerIn: parent
-
-        antialiasing: false
-        smooth: false
-    }
-
-    MouseArea {
-        anchors.fill: parent
-
-        focusPolicy: root.focusPolicy
-        onClicked: {
-            root.clicked();
-        }
-    }
+    leftPadding: 0
+    rightPadding: 0
+    topPadding: 0
+    bottomPadding: 0
 }

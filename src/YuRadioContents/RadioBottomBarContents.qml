@@ -242,11 +242,15 @@ FocusScope {
                     IconButton {
                         id: playerButton
 
-                        icon.source: MainRadioPlayer.playing ? "images/pause.svg" : "images/play.svg"
-                        icon.sourceSize: Qt.size(height, height)
-                        icon.color: Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade400 : Material.Shade800)
+                        text: MainRadioPlayer.playing ? qsTr("Pause") : qsTr("Play")
 
-                        smooth: true
+                        hoverEnabled: false
+                        down: false
+
+                        icon.source: MainRadioPlayer.playing ? "images/pause.svg" : "images/play.svg"
+                        icon.width: height
+                        icon.height: height
+                        icon.color: Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade400 : Material.Shade800)
 
                         onClicked: {
                             MainRadioPlayer.toggle();
@@ -272,11 +276,15 @@ FocusScope {
                     IconButton {
                         id: closeButton
 
+                        text: qsTr("Stop media and hide bottom bar")
+
                         icon.source: "images/close.svg"
-                        icon.sourceSize: Qt.size(height, height)
+                        icon.width: height
+                        icon.height: height
                         icon.color: Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade400 : Material.Shade800)
 
-                        smooth: true
+                        hoverEnabled: false
+                        down: false
 
                         onClicked: {
                             MainRadioPlayer.stop();

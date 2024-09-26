@@ -61,8 +61,10 @@ FocusScope {
                     origin.y: orderByButton.height / 2
                 }
 
+                text: root.descending ? qsTr("Descending Order") : qsTr("Ascending Order")
                 icon.source: 'images/sort.svg'
-                icon.sourceSize: Qt.size(height, height)
+                icon.width: height
+                icon.height: height
 
                 icon.color: Material.primary
 
@@ -73,7 +75,7 @@ FocusScope {
 
             ListView {
                 id: listView
-                
+
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.maximumWidth: contentWidth
@@ -84,6 +86,7 @@ FocusScope {
 
                 cacheBuffer: 1000000
                 clip: true
+                focus: true
 
                 model: [
                     {
@@ -127,7 +130,9 @@ FocusScope {
                     anchors.verticalCenter: parent?.verticalCenter
                     height: ListView.view.height - 6
 
-                    focusPolicy: Qt.NoFocus
+                    focusPolicy: Qt.StrongFocus
+                    focus: true
+
                     autoExclusive: true
                     checkable: true
                     checked: index == 0
@@ -169,5 +174,4 @@ FocusScope {
             return "votes";
         }
     }
-
 }

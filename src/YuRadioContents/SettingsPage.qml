@@ -18,6 +18,10 @@ Item {
     required property LanguageTranslator languageTranslator
     required property MusicInfoModel musicInfoModel
 
+    property string translatedLanguageString: qsTr("Language")
+    property string translatedStartPageString: qsTr("Start Page")
+    property string translatedFontScaleString: qsTr("Font scale")
+
     focus: true
 
     TabBar {
@@ -77,11 +81,15 @@ Item {
                     Layout.preferredHeight: 150
 
                     clip: true
+                    focus: true
 
                     boundsBehavior: Flickable.StopAtBounds
 
                     delegate: ScalableItemDelegate {
                         required property string modelData
+
+                        focus: true
+                        focusPolicy: Qt.StrongFocus
 
                         implicitWidth: ListView.view.width * 2 / 3
                         text: modelData
@@ -128,7 +136,7 @@ Item {
                 ScalableLabel {
                     Layout.topMargin: 20
 
-                    text: qsTr("Start Page")
+                    text: root.translatedStartPageString
                 }
 
                 ScalableComboBox {
@@ -146,6 +154,7 @@ Item {
                     ]
                     textRole: "text"
 
+                    Accessible.name: root.translatedStartPageString
                     onActivated: {
                         AppSettings.initialPage = currentValue.page;
                     }
@@ -157,13 +166,14 @@ Item {
                 ScalableLabel {
                     Layout.topMargin: 20
 
-                    text: qsTr("Language")
+                    text: root.translatedLanguageString
                 }
 
                 ScalableComboBox {
                     implicitWidth: parent.width * 2 / 3
 
                     textRole: "text"
+                    Accessible.name: root.translatedLanguageString
 
                     Component.onCompleted: {
                         model = root.languageTranslator.locales().map(locale => ({
@@ -231,7 +241,7 @@ Item {
                 ScalableCheckBox {
                     Layout.topMargin: 5
 
-                    text: qsTr("Resume playback when the network connections is restored")
+                    text: qsTr("Resume playback when network connections is restored")
                     checked: AppSettings.resumePlaybackWhenNetworkRestored
                     onCheckedChanged: {
                         AppSettings.resumePlaybackWhenNetworkRestored = checked;
@@ -273,7 +283,7 @@ Item {
             Label {
                 Layout.topMargin: 20
 
-                text: qsTr("Font Scale: %1").arg(slider.value)
+                text: `${root.translatedFontScaleString}: ${slider.value.toFixed(1)}`
                 font.pointSize: 12
             }
 
@@ -292,6 +302,7 @@ Item {
                     id: slider
 
                     Layout.fillWidth: true
+                    Accessible.name: root.translatedFontScaleString
 
                     snapMode: Slider.SnapAlways
                     stepSize: 0.1

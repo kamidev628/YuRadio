@@ -108,15 +108,10 @@ Dialog {
                 columns: 2
 
                 ScalableLabel {
+                    id: countryLabel
+
                     Layout.fillWidth: true
                     text: qsTr("Country")
-                }
-
-                component CustomHeaderComboBox: HeaderComboBox {
-                    editable: true
-                    currentIndex: -1
-
-                    fontPointSize: 13
                 }
 
                 CustomHeaderComboBox {
@@ -124,6 +119,7 @@ Dialog {
 
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
+                    Accessible.name: countryLabel.text
 
                     model: Storage.getCountries()
                 }
@@ -141,6 +137,7 @@ Dialog {
 
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
+                    Accessible.name: stateText.text
 
                     implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
                     textRole: "name"
@@ -187,6 +184,8 @@ Dialog {
                 }
 
                 ScalableLabel {
+                    id: languageLabel
+
                     Layout.fillWidth: true
 
                     text: qsTr("Language")
@@ -197,12 +196,15 @@ Dialog {
 
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
+                    Accessible.name: languageLabel.text
 
                     model: Storage.getLanguages()
                 }
             }
 
             ScalableLabel {
+                id: tagsLabel
+
                 Layout.topMargin: 10
                 Layout.fillWidth: true
 
@@ -214,6 +216,7 @@ Dialog {
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Accessible.name: tagsLabel.text
 
                 contentHeight: tagsFlow.implicitHeight
                 contentWidth: tagsFlow.implicitWidth
@@ -237,7 +240,7 @@ Dialog {
                             required property int index
                             required property string modelData
 
-                            focusPolicy: Qt.NoFocus
+                            focusPolicy: Qt.StrongFocus
                             height: 40 * AppSettings.fontScale
 
                             checkable: true
@@ -248,6 +251,13 @@ Dialog {
                 }
             }
         }
+    }
+
+    component CustomHeaderComboBox: HeaderComboBox {
+        editable: true
+        currentIndex: -1
+
+        fontPointSize: 13
     }
 
     QtObject {

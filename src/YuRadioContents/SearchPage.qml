@@ -36,6 +36,7 @@ Item {
 
             implicitWidth: height
             searchIcon.color: Material.color(Material.Grey, Material.Shade100)
+            Accessible.name: qsTr("Search")
 
             Layout.fillHeight: true
 
@@ -50,6 +51,7 @@ Item {
 
             icon.source: "images/refresh.svg"
             icon.color: enabled ? Material.color(Material.Grey, Material.Shade100) : ApplicationWindow.header.Material.background.darker(1.2)
+            Accessible.name: qsTr("Refresh")
 
             enabled: !pullToRefreshHandler.isProcessing && !apiTimeoutTimer.running
             onClicked: {
@@ -60,6 +62,7 @@ Item {
         ToolButton {
             id: filterIcon
 
+            Accessible.name: qsTr("Search Filters")
             icon.source: 'images/filter.svg'
             icon.color: Material.color(Material.Grey, Material.Shade100)
 

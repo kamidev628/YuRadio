@@ -72,6 +72,7 @@ qt_add_qml_module(
   images/radio-white.png
   images/play.svg
   images/pause.svg
+  images/stop.svg
   images/about.svg
   images/filter.svg
   images/sort.svg

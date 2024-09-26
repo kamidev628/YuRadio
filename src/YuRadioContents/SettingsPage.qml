@@ -169,6 +169,16 @@ Item {
             }
 
             ScalableCheckBox {
+                Layout.topMargin: 5
+
+                text: qsTr("Enable bottom bar blur")
+                checked: AppSettings.enableBottomBarBlur
+                onCheckedChanged: {
+                    AppSettings.enableBottomBarBlur = checked;
+                }
+            }
+
+            ScalableCheckBox {
                 id: showTrayIconCheckbox
 
                 Layout.topMargin: 5
@@ -205,7 +215,23 @@ Item {
                 }
             }
 
+            SpotifyButton {
+                id: spotifyButton
+
+                property bool shouldShowMessage: false
+
+                Layout.topMargin: 10
+
+                text: qsTr("Spotify integration")
+                onClicked: {
+                    shouldShowMessage = true;
+                    root.musicInfoModel.grantSpotifyAccess();
+                }
+            }
+
             Label {
+                Layout.topMargin: 20
+
                 text: qsTr("Font Scale: %1").arg(slider.value)
                 font.pointSize: 12
             }
@@ -228,7 +254,7 @@ Item {
 
                     snapMode: Slider.SnapAlways
                     stepSize: 0.1
-                    from: 0.8
+                    from: 0.7
                     value: AppSettings.fontScale
                     to: 1.5
 
@@ -239,20 +265,6 @@ Item {
                     text: qsTr("A")
                     font.pixelSize: 21
                     font.weight: 400
-                }
-            }
-
-            SpotifyButton {
-                id: spotifyButton
-
-                property bool shouldShowMessage: false
-
-                Layout.topMargin: 10
-
-                text: qsTr("Spotify integration")
-                onClicked: {
-                    shouldShowMessage = true;
-                    root.musicInfoModel.grantSpotifyAccess();
                 }
             }
 

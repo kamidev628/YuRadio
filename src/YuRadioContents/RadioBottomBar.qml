@@ -15,16 +15,7 @@ RadioBottomBarDrawer {
     required property StackView stackView
     required property MusicInfoModel musicInfoModel
 
-    anchors {
-        bottom: parent.bottom
-        left: parent.left
-        right: parent.right
-    }
-
-    maximumHeight: parent.height * 2 / 3
-    minimumHeight: 0
-
-    background: MultiEffect {
+    property Component blurBehindBackground: MultiEffect {
         source: effectSource
         autoPaddingEnabled: false
         blurEnabled: true
@@ -37,6 +28,23 @@ RadioBottomBarDrawer {
             color: AppConfig.isDarkTheme ? root.Material.background.lighter(1.4) : root.Material.background.darker(1.05)
         }
     }
+
+    property Component normalBackground: NormalBackground {}
+
+    component NormalBackground: Rectangle {
+        color: AppConfig.isDarkTheme ? root.Material.background.lighter(1.4) : root.Material.background.darker(1.05)
+    }
+
+    anchors {
+        bottom: parent.bottom
+        left: parent.left
+        right: parent.right
+    }
+
+    maximumHeight: parent.height * 2 / 3
+    minimumHeight: 0
+
+    background: AppSettings.enableBottomBarBlur ? blurBehindBackground : normalBackground
 
     states: [
         State {

@@ -20,215 +20,256 @@ Item {
 
     focus: true
 
-    ScrollView {
+    TabBar {
+        id: tabBar
         anchors {
-            fill: parent
-            topMargin: 10
-            leftMargin: 15
-            rightMargin: 5
+            top: parent.top
+            left: parent.left
+            right: parent.right
         }
 
-        contentWidth: -1
-        contentHeight: columnLayout.implicitHeight
+        TabButton {
+            text: qsTr("General")
+        }
+        TabButton {
+            text: qsTr("Font")
+        }
+    }
 
-        ColumnLayout {
-            id: columnLayout
+    StackLayout {
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: tabBar.bottom
+            bottom: parent.bottom
 
-            width: parent.width
+            leftMargin: 10
+            topMargin: 10
+            rightMargin: 10
+        }
 
-            ScalableLabel {
-                text: qsTr("Available Servers")
-            }
+        currentIndex: tabBar.currentIndex
 
-            Rectangle {
-                implicitWidth: parent.width * 2 / 3
-                implicitHeight: 1
+        ScrollView {
+            contentWidth: -1
+            contentHeight: columnLayout.implicitHeight
 
-                color: Material.foreground
-            }
+            ColumnLayout {
+                id: columnLayout
 
-            ListView {
-                id: serversListView
-
-                Layout.fillWidth: true
-                Layout.preferredHeight: 150
-
-                clip: true
-
-                boundsBehavior: Flickable.StopAtBounds
-
-                delegate: ScalableItemDelegate {
-                    required property string modelData
-
-                    implicitWidth: ListView.view.width * 2 / 3
-                    text: modelData
-                    checkable: true
-                    checked: modelData == root.networkManager.baseUrl
-                    down: checked
-                    autoExclusive: true
-                    ButtonGroup.group: buttonGroup
-                }
-
-                Component.onCompleted: {
-                    RadioBrowser.baseUrls().then(urls => {
-                        model = [...new Set(urls)];
-                    });
-                }
+                width: parent.width
 
                 ScalableLabel {
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                        right: parent.right
-                        topMargin: 5
-                    }
-
-                    text: qsTr("Could not fetch available servers")
-
-                    Material.foreground: Material.color(Material.Grey, Material.Shade500)
-                    opacity: 0.5
-                    visible: !serversListView.model || !serversListView.model.length
+                    text: qsTr("Available Servers")
                 }
 
-                ButtonGroup {
-                    id: buttonGroup
+                Rectangle {
+                    implicitWidth: parent.width * 2 / 3
+                    implicitHeight: 1
 
-                    onCheckedButtonChanged: {
-                        if (root.networkManager.baseUrl != checkedButton.modelData) {
-                            AppSettings.radioBrowserBaseUrl = checkedButton.modelData;
-                            root.networkManager.baseUrl = checkedButton.modelData;
+                    color: Material.foreground
+                }
+
+                ListView {
+                    id: serversListView
+
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 150
+
+                    clip: true
+
+                    boundsBehavior: Flickable.StopAtBounds
+
+                    delegate: ScalableItemDelegate {
+                        required property string modelData
+
+                        implicitWidth: ListView.view.width * 2 / 3
+                        text: modelData
+                        checkable: true
+                        checked: modelData == root.networkManager.baseUrl
+                        down: checked
+                        autoExclusive: true
+                        ButtonGroup.group: buttonGroup
+                    }
+
+                    Component.onCompleted: {
+                        RadioBrowser.baseUrls().then(urls => {
+                            model = [...new Set(urls)];
+                        });
+                    }
+
+                    ScalableLabel {
+                        anchors {
+                            left: parent.left
+                            top: parent.top
+                            right: parent.right
+                            topMargin: 5
+                        }
+
+                        text: qsTr("Could not fetch available servers")
+
+                        Material.foreground: Material.color(Material.Grey, Material.Shade500)
+                        opacity: 0.5
+                        visible: !serversListView.model || !serversListView.model.length
+                    }
+
+                    ButtonGroup {
+                        id: buttonGroup
+
+                        onCheckedButtonChanged: {
+                            if (root.networkManager.baseUrl != checkedButton.modelData) {
+                                AppSettings.radioBrowserBaseUrl = checkedButton.modelData;
+                                root.networkManager.baseUrl = checkedButton.modelData;
+                            }
                         }
                     }
                 }
-            }
 
-            ScalableLabel {
-                Layout.topMargin: 20
+                ScalableLabel {
+                    Layout.topMargin: 20
 
-                text: qsTr("Start Page")
-            }
+                    text: qsTr("Start Page")
+                }
 
-            ScalableComboBox {
-                implicitWidth: parent.width * 2 / 3
+                ScalableComboBox {
+                    implicitWidth: parent.width * 2 / 3
 
-                model: [
-                    {
-                        text: qsTr("Search"),
-                        page: App.Page.Search
-                    },
-                    {
-                        text: qsTr("Bookmarks"),
-                        page: App.Page.Bookmark
+                    model: [
+                        {
+                            text: qsTr("Search"),
+                            page: App.Page.Search
+                        },
+                        {
+                            text: qsTr("Bookmarks"),
+                            page: App.Page.Bookmark
+                        }
+                    ]
+                    textRole: "text"
+
+                    onActivated: {
+                        AppSettings.initialPage = currentValue.page;
                     }
-                ]
-                textRole: "text"
-
-                onActivated: {
-                    AppSettings.initialPage = currentValue.page;
-                }
-                Component.onCompleted: {
-                    currentIndex = model.findIndex(x => x.page == AppSettings.initialPage);
-                }
-            }
-
-            ScalableLabel {
-                Layout.topMargin: 20
-
-                text: qsTr("Language")
-            }
-
-            ScalableComboBox {
-                implicitWidth: parent.width * 2 / 3
-
-                textRole: "text"
-
-                Component.onCompleted: {
-                    model = root.languageTranslator.locales().map(locale => ({
-                                text: Qt.locale(locale).nativeLanguageName + (locale.includes("_") ? Qt.locale(locale).nativeTerritoryName : ""),
-                                code: locale
-                            }));
-                    currentIndex = model.findIndex(x => x.code == AppSettings.locale);
-                    if (currentIndex == -1) {
-                        currentIndex = model.findIndex(x => x.code.includes(AppSettings.locale) || AppSettings.locale.includes(x.code));
+                    Component.onCompleted: {
+                        currentIndex = model.findIndex(x => x.page == AppSettings.initialPage);
                     }
                 }
-                onActivated: {
-                    AppSettings.locale = currentValue.code;
-                    root.languageTranslator.load(currentValue.code);
+
+                ScalableLabel {
+                    Layout.topMargin: 20
+
+                    text: qsTr("Language")
+                }
+
+                ScalableComboBox {
+                    implicitWidth: parent.width * 2 / 3
+
+                    textRole: "text"
+
+                    Component.onCompleted: {
+                        model = root.languageTranslator.locales().map(locale => ({
+                                    text: Qt.locale(locale).nativeLanguageName + (locale.includes("_") ? Qt.locale(locale).nativeTerritoryName : ""),
+                                    code: locale
+                                }));
+                        currentIndex = model.findIndex(x => x.code == AppSettings.locale);
+                        if (currentIndex == -1) {
+                            currentIndex = model.findIndex(x => x.code.includes(AppSettings.locale) || AppSettings.locale.includes(x.code));
+                        }
+                    }
+                    onActivated: {
+                        AppSettings.locale = currentValue.code;
+                        root.languageTranslator.load(currentValue.code);
+                    }
+                }
+
+                ScalableCheckBox {
+                    Layout.topMargin: 10
+
+                    text: qsTr("Animate selection changes")
+                    checked: AppSettings.enableSelectionAnimation
+                    onCheckedChanged: {
+                        AppSettings.enableSelectionAnimation = checked;
+                    }
+                }
+
+                ScalableCheckBox {
+                    Layout.topMargin: 5
+
+                    text: qsTr("Enable bottom bar blur")
+                    checked: AppSettings.enableBottomBarBlur
+                    onCheckedChanged: {
+                        AppSettings.enableBottomBarBlur = checked;
+                    }
+                }
+
+                ScalableCheckBox {
+                    id: showTrayIconCheckbox
+
+                    Layout.topMargin: 5
+
+                    text: qsTr("Show icon in tray")
+                    checked: AppSettings.showIconInTray
+                    visible: AppConfig.trayIconAvailable
+                    onCheckedChanged: {
+                        AppSettings.showIconInTray = checked;
+                    }
+                }
+
+                ScalableCheckBox {
+                    id: showMessagesInTrayCheckbox
+
+                    Layout.topMargin: 5
+
+                    text: qsTr("Show messages in tray")
+                    enabled: showTrayIconCheckbox.checked
+                    checked: AppSettings.showMessagesInTray
+                    visible: AppConfig.trayIconAvailable
+                    onCheckedChanged: {
+                        AppSettings.showMessagesInTray = checked;
+                    }
+                }
+
+                ScalableCheckBox {
+                    Layout.topMargin: 5
+
+                    text: qsTr("Resume playback when the network connections is restored")
+                    checked: AppSettings.resumePlaybackWhenNetworkRestored
+                    onCheckedChanged: {
+                        AppSettings.resumePlaybackWhenNetworkRestored = checked;
+                    }
+                }
+
+                SpotifyButton {
+                    id: spotifyButton
+
+                    property bool shouldShowMessage: false
+
+                    Layout.topMargin: 10
+
+                    text: qsTr("Spotify integration")
+                    onClicked: {
+                        shouldShowMessage = true;
+                        root.musicInfoModel.grantSpotifyAccess();
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
+
+                Connections {
+                    target: root.musicInfoModel
+                    enabled: spotifyButton.shouldShowMessage
+
+                    function onSpotifyAccessGranted() {
+                        messageDialog.open();
+                        spotifyButton.shouldShowMessage = false;
+                    }
                 }
             }
+        }
 
-            ScalableCheckBox {
-                Layout.topMargin: 10
-
-                text: qsTr("Animate selection changes")
-                checked: AppSettings.enableSelectionAnimation
-                onCheckedChanged: {
-                    AppSettings.enableSelectionAnimation = checked;
-                }
-            }
-
-            ScalableCheckBox {
-                Layout.topMargin: 5
-
-                text: qsTr("Enable bottom bar blur")
-                checked: AppSettings.enableBottomBarBlur
-                onCheckedChanged: {
-                    AppSettings.enableBottomBarBlur = checked;
-                }
-            }
-
-            ScalableCheckBox {
-                id: showTrayIconCheckbox
-
-                Layout.topMargin: 5
-
-                text: qsTr("Show icon in tray")
-                checked: AppSettings.showIconInTray
-                visible: AppConfig.trayIconAvailable
-                onCheckedChanged: {
-                    AppSettings.showIconInTray = checked;
-                }
-            }
-
-            ScalableCheckBox {
-                id: showMessagesInTrayCheckbox
-
-                Layout.topMargin: 5
-
-                text: qsTr("Show messages in tray")
-                enabled: showTrayIconCheckbox.checked
-                checked: AppSettings.showMessagesInTray
-                visible: AppConfig.trayIconAvailable
-                onCheckedChanged: {
-                    AppSettings.showMessagesInTray = checked;
-                }
-            }
-
-            ScalableCheckBox {
-                Layout.topMargin: 5
-
-                text: qsTr("Resume playback when the network connections is restored")
-                checked: AppSettings.resumePlaybackWhenNetworkRestored
-                onCheckedChanged: {
-                    AppSettings.resumePlaybackWhenNetworkRestored = checked;
-                }
-            }
-
-            SpotifyButton {
-                id: spotifyButton
-
-                property bool shouldShowMessage: false
-
-                Layout.topMargin: 10
-
-                text: qsTr("Spotify integration")
-                onClicked: {
-                    shouldShowMessage = true;
-                    root.musicInfoModel.grantSpotifyAccess();
-                }
-            }
-
+        ColumnLayout {
             Label {
                 Layout.topMargin: 20
 
@@ -268,19 +309,9 @@ Item {
                 }
             }
 
-            Item {
+            ScalableLabel {
                 Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
-
-            Connections {
-                target: root.musicInfoModel
-                enabled: spotifyButton.shouldShowMessage
-
-                function onSpotifyAccessGranted() {
-                    messageDialog.open();
-                    spotifyButton.shouldShowMessage = false;
-                }
+                text: qsTr("Sample Text")
             }
         }
     }

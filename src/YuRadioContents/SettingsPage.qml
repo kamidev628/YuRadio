@@ -158,10 +158,6 @@ Item {
                 }
             }
 
-            component ScalableCheckBox : CheckBox {
-              ScalableFontPicker {}
-            }
-
             ScalableCheckBox {
                 Layout.topMargin: 10
 
@@ -199,6 +195,15 @@ Item {
                 }
             }
 
+            ScalableCheckBox {
+                Layout.topMargin: 5
+
+                text: qsTr("Resume playback when the network connections is restored")
+                checked: AppSettings.resumePlaybackWhenNetworkRestored
+                onCheckedChanged: {
+                    AppSettings.resumePlaybackWhenNetworkRestored = checked;
+                }
+            }
 
             Label {
                 text: qsTr("Font Scale: %1").arg(slider.value)
@@ -266,6 +271,10 @@ Item {
                 }
             }
         }
+    }
+
+    component ScalableCheckBox: CheckBox {
+        ScalableFontPicker {}
     }
 
     Dialog {

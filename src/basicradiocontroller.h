@@ -27,6 +27,7 @@ private slots:
 
 private:
   void processMediaItem(const MediaItem &mediaItem);
+  void reconnectMediaPlayer();
 
 protected:
   RadioInfoReaderProxyServer *m_proxyServer;

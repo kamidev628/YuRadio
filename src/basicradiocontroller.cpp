@@ -59,14 +59,6 @@ BasicRadioController::BasicRadioController(QObject *parent)
   connect(audioOutput, &QAudioOutput::volumeChanged, this,
           [this](float volume) { PlatformRadioController::setVolume(volume); });
 
-  auto *networkInformation = QNetworkInformation::instance();
-  connect(networkInformation, &QNetworkInformation::reachabilityChanged, this,
-          [this](QNetworkInformation::Reachability reachability) {
-    if (reachability == QNetworkInformation::Reachability::Online &&
-        m_mediaPlayer->mediaStatus() == QMediaPlayer::EndOfMedia) {
-      play();
-    }
-  });
   connect(m_proxyServer, &RadioInfoReaderProxyServer::icyMetaDataChanged, this,
           [this](const QVariantMap &icyMetaData) {
     setStreamTitle(icyMetaData[u"StreamTitle"_s].toString());
@@ -101,9 +93,13 @@ BasicRadioController::~BasicRadioController() {
 }
 
 void BasicRadioController::play() {
-  if (m_mediaItem.source.isValid()) {
+  if (m_mediaItem.source.isValid() &&
+      m_mediaPlayer->source() != m_proxyServer->sourceUrl()) {
     m_mediaPlayer->setSource(m_proxyServer->sourceUrl());
+  } else if (m_mediaPlayer->error()) {
+    reconnectMediaPlayer();
   }
+
   m_mediaPlayer->play();
 }
 
@@ -131,11 +127,19 @@ void BasicRadioController::processMediaItem(const MediaItem &mediaItem) {
   m_mediaPlayer->setSource(m_proxyServer->sourceUrl());
 }
 
+void BasicRadioController::reconnectMediaPlayer() {
+  m_mediaPlayer->setSource({});
+  m_mediaPlayer->setSource(m_proxyServer->sourceUrl());
+}
+
 void BasicRadioController::mediaStatusChanged(
   QMediaPlayer::MediaStatus status) {
-  qCDebug(basicRadioControllerLog) << "Media Status:" << status;
+  qCDebug(basicRadioControllerLog)
+    << "Media Status:" << status << m_mediaPlayer->error();
 
-  if (status == QMediaPlayer::EndOfMedia) {
+  if (status == QMediaPlayer::EndOfMedia && !m_mediaPlayer->error()) {
+    reconnectMediaPlayer();
+
     m_mediaPlayer->play();
   }
 }

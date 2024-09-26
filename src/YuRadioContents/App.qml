@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtCore
 import QtQuick
+import QtNetwork
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Material
@@ -327,6 +328,18 @@ ApplicationWindow {
 
         sourceComponent: TrayIcon {
             window: root
+        }
+    }
+
+    Connections {
+        target: NetworkInformation
+
+        enabled: MainRadioPlayer.currentItem.isValid() && AppSettings.resumePlaybackWhenNetworkRestored && MainRadioPlayer.playbackState !== RadioPlayer.PausedState
+
+        function onReachabilityChanged() {
+            if (NetworkInformation.reachability === NetworkInformation.Reachability.Online) {
+                Qt.callLater(MainRadioPlayer.play);
+            }
         }
     }
 }

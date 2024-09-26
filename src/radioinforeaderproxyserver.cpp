@@ -83,6 +83,7 @@ QUrl RadioInfoReaderProxyServer::sourceUrl() const {
 
 void RadioInfoReaderProxyServer::clientConnected() {
   QTcpSocket *client = m_server->nextPendingConnection();
+  qCDebug(radioInfoReaderLog) << "Client connected";
 
   connect(client, &QTcpSocket::readyRead, this, [this, client]() {
     (void)client->readAll();
@@ -108,20 +109,12 @@ void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
   connect(reply, &QNetworkReply::requestSent, this,
           [this]() { emit loadingChanged(true); });
   connect(reply, &QNetworkReply::errorOccurred, client,
-          [this, client](QNetworkReply::NetworkError err) {
-    auto *networkInfo = QNetworkInformation::instance();
-
-    if (err == QNetworkReply::TemporaryNetworkFailureError && networkInfo) {
-      connect(networkInfo, &QNetworkInformation::reachabilityChanged, client,
-              [this, client,
-               networkInfo](QNetworkInformation::Reachability reachability) {
-        if (reachability == QNetworkInformation::Reachability::Online) {
-          makeRequest(client);
-          networkInfo->disconnect(client);
-        }
-      });
+          [client](QNetworkReply::NetworkError err) {
+    if (err != QNetworkReply::OperationCanceledError) {
+      client->disconnectFromHost();
     }
   });
+
   connect(reply, &QNetworkReply::finished, reply, &QObject::deleteLater);
   connect(reply, &QNetworkReply::finished, this,
           [this]() { emit loadingChanged(false); });

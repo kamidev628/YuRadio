@@ -26,9 +26,14 @@ ApplicationWindow {
         if (mainStackView.currentItem?.objectName == objectName) {
             return;
         }
+        if (mainStackView.depth > 1) {
+            mainStackView.popToIndex(0);
+        }
         let loadedPage = loadedPages.find(item => item.objectName == objectName);
         if (loadedPage) {
-            mainStackView.replaceCurrentItem(loadedPage);
+            if (mainStackView.currentItem.objectName !== loadedPage.objectName) {
+                mainStackView.replaceCurrentItem(loadedPage);
+            }
         } else {
             loadedPage = component.createObject(root);
             loadedPages.push(loadedPage);

@@ -15,15 +15,13 @@ RadioBottomBarDrawer {
     required property StackView stackView
     required property MusicInfoModel musicInfoModel
 
-    readonly property real preferredHeight: parent.height * 2 / 3
-
     anchors {
         bottom: parent.bottom
         left: parent.left
         right: parent.right
     }
 
-    maximumHeight: preferredHeight
+    maximumHeight: parent.height * 2 / 3
     minimumHeight: 0
 
     background: MultiEffect {
@@ -46,7 +44,7 @@ RadioBottomBarDrawer {
             when: MainRadioPlayer.currentItem.isValid()
 
             PropertyChanges {
-                root.minimumHeight: Math.max(parent.height / 12, bottomBarContents.implicitHeight)
+                root.minimumHeight: Math.max(parent.height / 12, 70 * AppSettings.fontScale, 70)
             }
         }
     ]

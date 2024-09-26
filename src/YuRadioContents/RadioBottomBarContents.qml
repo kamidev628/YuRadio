@@ -24,7 +24,7 @@ FocusScope {
 
     signal showRadioStationLocationRequested(real staitonLat, real stationLong)
 
-    implicitHeight: 70
+    implicitHeight: mainColumn.implicitHeight
 
     states: [
         State {
@@ -45,7 +45,7 @@ FocusScope {
                 bottomBarTextColumn.anchors.rightMargin: 10
 
                 stationName.wrapMode: Text.WordWrap
-                musicTags.wrapMode: Text.WordWrap
+                stationTags.wrapMode: Text.WordWrap
             }
         }
     ]
@@ -103,7 +103,7 @@ FocusScope {
 
                         width: parent.width
 
-                        Label {
+                        ScalableLabel {
                             id: stationName
 
                             width: parent.width
@@ -111,11 +111,11 @@ FocusScope {
                             text: root.radioStation.name
                             elide: Text.ElideRight
                             font.bold: true
-                            font.pointSize: 16
+                            fontPointSize: 16
                         }
 
-                        Label {
-                            id: musicTags
+                        ScalableLabel {
+                            id: stationTags
 
                             width: parent.width
 
@@ -126,15 +126,17 @@ FocusScope {
                                 return root.radioStation.tags.join(", ");
                             }
                             elide: Text.ElideRight
-                            font.pointSize: 13
+                            fontPointSize: 13
                             maximumLineCount: 3
 
-                            Label {
+                            ScalableLabel {
                                 id: errorText
 
                                 anchors.fill: parent
 
                                 Material.foreground: Material.Red
+                                fontPointSize: 12
+
                                 text: visible ? MainRadioPlayer.errorString : ""
                                 elide: Text.ElideRight
                                 visible: MainRadioPlayer.error != RadioPlayer.NoError && !progressBar.visible
@@ -164,36 +166,36 @@ FocusScope {
                                 implicitHeight: 20
                             }
 
-                            Label {
+                            ScalableLabel {
                                 id: country
 
                                 Layout.fillWidth: true
                                 visible: root.radioStation.country
 
                                 text: qsTr("Country: %1").arg(root.radioStation.country)
-                                font.pointSize: 14
+                                fontPointSize: 14
                                 wrapMode: Text.WordWrap
                             }
 
-                            Label {
+                            ScalableLabel {
                                 id: language
 
                                 Layout.fillWidth: true
                                 visible: root.radioStation.language
 
                                 text: root.radioStation.language.includes(",") ? qsTr("Languages: %1").arg(root.radioStation.language) : qsTr("Language: %1").arg(root.radioStation.language)
-                                font.pointSize: 14
+                                fontPointSize: 14
                                 wrapMode: Text.WordWrap
                             }
 
-                            Label {
+                            ScalableLabel {
                                 id: bitrate
 
                                 Layout.fillWidth: true
                                 visible: root.radioStation.bitrate
 
                                 text: qsTr("Bitrate: %1").arg(root.radioStation.bitrate)
-                                font.pointSize: 14
+                                fontPointSize: 14
                             }
 
                             ClickableLink {
@@ -203,10 +205,10 @@ FocusScope {
 
                                 linkText: qsTr('Homepage')
                                 link: root.radioStation.homepage
-                                font.pointSize: 14
+                                fontPointSize: 14
                             }
 
-                            Button {
+                            ScalableButton {
                                 id: mapButton
 
                                 flat: true
@@ -304,14 +306,14 @@ FocusScope {
                 ColumnLayout {
                     id: secondaryColumnLayout
 
-                    Label {
+                    ScalableLabel {
                         Layout.topMargin: 15
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         horizontalAlignment: Text.AlignHCenter
 
                         text: qsTr("Music Info is not avaialble")
-                        font.pointSize: 16
+                        fontPointSize: 16
 
                         visible: !musicInfoRow.visible && !busyIndicator.visible
                         opacity: 0.5
@@ -358,27 +360,27 @@ FocusScope {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
 
-                            Label {
+                            ScalableLabel {
                                 Layout.fillWidth: true
 
                                 text: qsTr("<b>Album</b>: %1").arg(root.musicInfo?.albumName)
-                                font.pointSize: 14
+                                fontPointSize: 14
                                 wrapMode: Text.WordWrap
                                 textFormat: Text.RichText
                             }
-                            Label {
+                            ScalableLabel {
                                 Layout.fillWidth: true
 
                                 text: qsTr("<b>Song</b>: %1").arg(root.musicInfo?.songName)
-                                font.pointSize: 14
+                                fontPointSize: 14
                                 wrapMode: Text.WordWrap
                                 textFormat: Text.RichText
                             }
-                            Label {
+                            ScalableLabel {
                                 Layout.fillWidth: true
 
                                 text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo?.artistNames.join(", "))
-                                font.pointSize: 14
+                                fontPointSize: 14
                                 wrapMode: Text.WordWrap
                                 textFormat: Text.RichText
                             }
@@ -417,7 +419,7 @@ FocusScope {
                         }
                     }
 
-                    Label {
+                    ScalableLabel {
                         Layout.bottomMargin: 6
                         Layout.fillWidth: true
 

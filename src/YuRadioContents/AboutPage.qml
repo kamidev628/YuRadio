@@ -48,7 +48,7 @@ Item {
                     source: "images/shortwave.svg"
                 }
 
-                Label {
+                ScalableLabel {
                     Layout.fillWidth: true
                     Layout.topMargin: 5
 
@@ -69,7 +69,7 @@ All other platforms will use Qt's _**QMediaPlayer**_
                     wrapMode: Text.WordWrap
                 }
 
-                Button {
+                ScalableButton {
                     Layout.fillWidth: true
                     Layout.topMargin: 20
                     Material.background: Material.color(Material.Grey, Material.ShadeA200)

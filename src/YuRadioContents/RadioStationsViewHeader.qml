@@ -24,7 +24,7 @@ FocusScope {
     property string orderByField: "votes"
     property bool descending: true
 
-    height: 40
+    height: 40 * AppSettings.fontScale
     width: GridView.view.width
 
     ButtonGroup {
@@ -38,6 +38,8 @@ FocusScope {
         anchors.fill: parent
 
         RowLayout {
+            id: rowLayout
+
             Layout.fillWidth: true
             Layout.fillHeight: true
 

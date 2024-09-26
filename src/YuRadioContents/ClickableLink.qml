@@ -2,9 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
-Label {
-    id: homePage
-
+ScalableLabel {
     property string linkText
     property string link
 
@@ -12,7 +10,7 @@ Label {
     textFormat: Text.RichText
     onLinkActivated: link => Qt.openUrlExternally(link)
 
-    font.pointSize: 14
+    fontPointSize: 14
 
     MouseArea {
         id: mouseArea

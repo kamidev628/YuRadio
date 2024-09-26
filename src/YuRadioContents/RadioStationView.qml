@@ -30,8 +30,8 @@ FilledGridView {
     displayMarginEnd: bottomBar.height
     currentIndex: -1
 
-    minimumItemWidth: 400
-    cellHeight: 100
+    minimumItemWidth: 400 * AppSettings.fontScale
+    cellHeight: 100 * AppSettings.fontScale
 
     clip: true
     focus: true
@@ -56,7 +56,7 @@ FilledGridView {
         focus: true
         focusPolicy: Qt.StrongFocus
 
-        onMoreOptionsMenuRequested: (context) => {
+        onMoreOptionsMenuRequested: context => {
             root.moreOptionsMenu.station = root.stationAtIndex(delegate.index);
             root.moreOptionsMenu.popup(context);
         }

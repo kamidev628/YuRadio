@@ -82,7 +82,7 @@ Drawer {
                 }
             }
 
-            delegate: ItemDelegate {
+            delegate: ScalableItemDelegate {
                 required property string itemText
                 required property string iconSource
                 required property var triggered
@@ -112,14 +112,19 @@ Drawer {
             }
         }
 
-        Row {
+        RowLayout {
+            Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter
 
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-
+            Item {
+                Layout.horizontalStretchFactor: Utils.maxInteger
+                Layout.fillWidth: true
+            }
+            ScalableLabel {
                 text: qsTr("Dark")
-                color: root.Material.primaryTextColor
+                Layout.fillWidth: true
+
+                elide: Text.ElideRight
             }
             Switch {
                 id: themeSwitch
@@ -129,11 +134,15 @@ Drawer {
                     AppSettings.theme = checked ? "Light" : "Dark";
                 }
             }
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-
+            ScalableLabel {
                 text: qsTr("Light")
-                color: root.Material.primaryTextColor
+                Layout.fillWidth: true
+
+                elide: Text.ElideRight
+            }
+            Item {
+                Layout.horizontalStretchFactor: Utils.maxInteger
+                Layout.fillWidth: true
             }
         }
     }

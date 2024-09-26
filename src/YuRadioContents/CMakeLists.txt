@@ -25,6 +25,11 @@ qt_add_qml_module(
   ScrollableFlickable.qml
   SearchPage.qml
   SettingsPage.qml
+  ScalableLabel.qml
+  ScalableComboBox.qml
+  ScalableFontPicker.qml
+  ScalableItemDelegate.qml
+  ScalableButton.qml
   AboutPage.qml
   FilledGridView.qml
   MoreOptionsMenu.qml

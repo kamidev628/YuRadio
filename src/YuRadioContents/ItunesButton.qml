@@ -1,8 +1,7 @@
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Controls.Material
 
-Button {
+ScalableButton {
     id: root
 
     property string link

@@ -117,21 +117,21 @@ Loader {
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
 
-                Label {
+                ScalableLabel {
                     Layout.fillWidth: true
 
                     text: root.name ? root.name : "Unknown Station"
                     font.bold: true
-                    font.pointSize: 15
+                    fontPointSize: 15
                     elide: Text.ElideRight
                 }
 
-                Label {
+                ScalableLabel {
                     Layout.fillWidth: true
 
                     elide: Text.ElideRight
                     text: root.tags.join(", ")
-                    font.pointSize: 14
+                    fontPointSize: 14
                 }
             }
 
@@ -155,7 +155,7 @@ Loader {
             }
         }
 
-        Label {
+        ScalableLabel {
             anchors {
                 bottom: parent.bottom
                 right: parent.right
@@ -164,7 +164,7 @@ Loader {
             }
 
             text: qsTr("%1 kbps").arg(root.bitrate ? root.bitrate : "-")
-            font.pointSize: 8
+            fontPointSize: 8
             opacity: 0.8
         }
     }

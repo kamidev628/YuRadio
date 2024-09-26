@@ -1,11 +1,10 @@
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Controls.Material.impl
 
 import YuRadioContents
 
-Button {
+ScalableButton {
     id: root
 
     property color buttonColor: Material.primary
@@ -35,7 +34,7 @@ Button {
             anchor: root
 
             active: root.down || root.visualFocus || root.hovered
-            color: root.flat && root.highlighted ?  root.Material.highlightedRippleColor : root.Material.rippleColor
+            color: root.flat && root.highlighted ? root.Material.highlightedRippleColor : root.Material.rippleColor
         }
     }
 }

@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 
-ComboBox {
+ScalableComboBox {
     id: root
 
     property string headerText: "SELECT ALL"

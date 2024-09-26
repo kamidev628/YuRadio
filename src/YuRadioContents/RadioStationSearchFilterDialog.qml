@@ -59,7 +59,7 @@ Dialog {
     onRejected: {
         for (let i = 0; i < tagsRepeater.count; i++) {
             let item = tagsRepeater.itemAt(i);
-            item.checked = internal.prevSelectedTags.includes(i);
+            item.checked = internal.prevSelectedTags.includes(item.text);
         }
         countryCombo.currentIndex = internal.prevSelectedCountry;
         stateCombo.currentIndex = internal.prevSelectedState;
@@ -94,41 +94,41 @@ Dialog {
             width: scrollView.width
             height: scrollView.height
 
-            Label {
+            ScalableLabel {
                 text: qsTr("Search Filters")
 
                 Layout.fillWidth: true
 
                 font.bold: true
-                font.pointSize: 18
+                fontPointSize: 18
             }
 
             GridLayout {
                 Layout.topMargin: 20
                 columns: 2
 
-                Label {
+                ScalableLabel {
                     Layout.fillWidth: true
                     text: qsTr("Country")
                 }
 
-                HeaderComboBox {
+                component CustomHeaderComboBox: HeaderComboBox {
+                    editable: true
+                    currentIndex: -1
+
+                    fontPointSize: 13
+                }
+
+                CustomHeaderComboBox {
                     id: countryCombo
 
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
-                    implicitHeight: 40
-
-                    editable: true
-                    currentIndex: -1
-
-                    font.pointSize: 13
-                    popup.font.pointSize: font.pointSize
 
                     model: Storage.getCountries()
                 }
 
-                Label {
+                ScalableLabel {
                     id: stateText
 
                     Layout.fillWidth: true
@@ -136,20 +136,14 @@ Dialog {
                     text: qsTr("State")
                 }
 
-                HeaderComboBox {
+                CustomHeaderComboBox {
                     id: stateCombo
 
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
-                    implicitHeight: 40
 
                     implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
-                    editable: true
                     textRole: "name"
-
-                    font.pointSize: 13
-                    popup.font.pointSize: font.pointSize
-                    currentIndex: -1
 
                     model: JsonRestListModel {
                         id: stateModel
@@ -192,30 +186,23 @@ Dialog {
                     }
                 }
 
-                Label {
+                ScalableLabel {
                     Layout.fillWidth: true
 
                     text: qsTr("Language")
                 }
 
-                HeaderComboBox {
+                CustomHeaderComboBox {
                     id: languageCombo
 
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
-                    implicitHeight: 40
-
-                    currentIndex: -1
-                    font.pointSize: 13
-                    popup.font.pointSize: font.pointSize
-
-                    editable: true
 
                     model: Storage.getLanguages()
                 }
             }
 
-            Label {
+            ScalableLabel {
                 Layout.topMargin: 10
                 Layout.fillWidth: true
 
@@ -251,9 +238,9 @@ Dialog {
                             required property string modelData
 
                             focusPolicy: Qt.NoFocus
+                            height: 40 * AppSettings.fontScale
 
                             checkable: true
-                            implicitHeight: 35
 
                             text: modelData
                         }

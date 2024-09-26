@@ -36,7 +36,7 @@ Item {
 
             width: parent.width
 
-            Label {
+            ScalableLabel {
                 text: qsTr("Available Servers")
             }
 
@@ -57,7 +57,7 @@ Item {
 
                 boundsBehavior: Flickable.StopAtBounds
 
-                delegate: ItemDelegate {
+                delegate: ScalableItemDelegate {
                     required property string modelData
 
                     implicitWidth: ListView.view.width * 2 / 3
@@ -75,7 +75,7 @@ Item {
                     });
                 }
 
-                Label {
+                ScalableLabel {
                     anchors {
                         left: parent.left
                         top: parent.top
@@ -102,13 +102,13 @@ Item {
                 }
             }
 
-            Label {
+            ScalableLabel {
                 Layout.topMargin: 20
 
                 text: qsTr("Start Page")
             }
 
-            ComboBox {
+            ScalableComboBox {
                 implicitWidth: parent.width * 2 / 3
 
                 model: [
@@ -131,13 +131,13 @@ Item {
                 }
             }
 
-            Label {
+            ScalableLabel {
                 Layout.topMargin: 20
 
                 text: qsTr("Language")
             }
 
-            ComboBox {
+            ScalableComboBox {
                 implicitWidth: parent.width * 2 / 3
 
                 textRole: "text"
@@ -158,7 +158,11 @@ Item {
                 }
             }
 
-            CheckBox {
+            component ScalableCheckBox : CheckBox {
+              ScalableFontPicker {}
+            }
+
+            ScalableCheckBox {
                 Layout.topMargin: 10
 
                 text: qsTr("Animate selection changes")
@@ -168,7 +172,7 @@ Item {
                 }
             }
 
-            CheckBox {
+            ScalableCheckBox {
                 id: showTrayIconCheckbox
 
                 Layout.topMargin: 5
@@ -181,7 +185,7 @@ Item {
                 }
             }
 
-            CheckBox {
+            ScalableCheckBox {
                 id: showMessagesInTrayCheckbox
 
                 Layout.topMargin: 5
@@ -192,6 +196,44 @@ Item {
                 visible: AppConfig.trayIconAvailable
                 onCheckedChanged: {
                     AppSettings.showMessagesInTray = checked;
+                }
+            }
+
+
+            Label {
+                text: qsTr("Font Scale: %1").arg(slider.value)
+                font.pointSize: 12
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+
+                spacing: 12
+
+                Label {
+                    text: qsTr("A")
+                    font.pixelSize: 14
+                    font.weight: 400
+                }
+
+                Slider {
+                    id: slider
+
+                    Layout.fillWidth: true
+
+                    snapMode: Slider.SnapAlways
+                    stepSize: 0.1
+                    from: 0.8
+                    value: AppSettings.fontScale
+                    to: 1.5
+
+                    onMoved: AppSettings.fontScale = value
+                }
+
+                Label {
+                    text: qsTr("A")
+                    font.pixelSize: 21
+                    font.weight: 400
                 }
             }
 
@@ -229,7 +271,7 @@ Item {
     Dialog {
         id: messageDialog
 
-        Label {
+        ScalableLabel {
             text: qsTr("Successfully Authorized")
         }
         anchors.centerIn: Overlay.overlay

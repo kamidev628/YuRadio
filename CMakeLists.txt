@@ -34,13 +34,20 @@ cmake_dependent_option(
   BUILD_UIOHOOK
   "Build the uiohook library(enables media key support for desktop platforms)"
   ON "LINUX OR WIN32 OR APPLE" OFF)
+option(BUILD_HOTRELOADER "Build hotreloader" OFF)
 
 if(BUILD_UIOHOOK)
   add_compile_definitions(YuRadio PRIVATE UIOHOOK_SUPPORTED)
 endif()
 
+if(BUILD_HOTRELOADER)
+  add_compile_definitions(YuRadio PRIVATE HOTRELOADER_SUPPORTED)
+endif()
+
 add_subdirectory(deps)
-add_subdirectory(hotreloader)
+if(BUILD_HOTRELOADER)
+  add_subdirectory(hotreloader)
+endif()
 add_subdirectory(src)
 
 include(DesktopConfig OPTIONAL)

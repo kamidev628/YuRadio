@@ -12,7 +12,7 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 #include "android/virtualkeyboardlistener.h"
 #endif /* Q_OS_ANDROID */
 
-#ifdef QT_DEBUG
+#ifdef HOTRELOADER_SUPPORTED
 #include "hotreloaderclient.h"
 #endif /* QT_DEBUG */
 
@@ -31,9 +31,12 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 using namespace Qt::StringLiterals;
 
 Application::Application(int argc, char **argv) : QApplication(argc, argv) {
-  if (QCoreApplication::applicationVersion().isEmpty()) {
-    QCoreApplication::setApplicationVersion(YURADIO_VERSION);
-  }
+#if !defined(Q_OS_LINUX) || defined(Q_OS_ANDROID)
+  QString packageVersion = QCoreApplication::applicationVersion();
+  Q_ASSERT(packageVersion.startsWith(YURADIO_VERSION));
+#endif
+
+  QCoreApplication::setApplicationVersion(YURADIO_VERSION);
   QCoreApplication::setOrganizationName(u"YuRadio"_s);
   Logging::initialize();
 
@@ -77,7 +80,7 @@ Application::Application(int argc, char **argv) : QApplication(argc, argv) {
 
   initializePlatform();
 
-#ifdef QT_DEBUG
+#ifdef HOTRELOADER_SUPPORTED
   new HotReloaderClient(m_engine.get(), u"192.168.1.37"_s,
                         u"/src/Main/Main.qml"_s, u"/src/Main/ErrorPage.qml"_s,
                         {u"Main"_s, u"YuRadioContents"_s}, this);

@@ -94,7 +94,9 @@ Loader {
                 targetSource: root.favicon
 
                 fillMode: Image.PreserveAspectFit
-                smooth: true
+                smooth: false
+                sourceSize: Qt.size(width, height)
+                asynchronous: true
 
                 IconImage {
                     anchors {
@@ -117,21 +119,45 @@ Loader {
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
 
+                Timer {
+                    id: updateElideTimer
+                    interval: 50
+                    repeat: false
+
+                    onRunningChanged: {
+                        if (running) {
+                            stationName.elide = Text.ElideNone;
+                            stationTags.elide = Text.ElideNone;
+                        }
+                    }
+
+                    onTriggered: {
+                        stationName.elide = Text.ElideRight;
+                        stationTags.elide = Text.ElideRight;
+                    }
+                }
+
                 ScalableLabel {
+                    id: stationName
                     Layout.fillWidth: true
 
                     text: root.name ? root.name : "Unknown Station"
                     font.bold: true
                     fontPointSize: 15
-                    elide: Text.ElideRight
+                    clip: true
+
+                    onWidthChanged: updateElideTimer.restart()
                 }
 
                 ScalableLabel {
+                    id: stationTags
                     Layout.fillWidth: true
 
-                    elide: Text.ElideRight
                     text: root.tags.join(", ")
                     fontPointSize: 14
+                    clip: true
+
+                    onWidthChanged: updateElideTimer.restart()
                 }
             }
 

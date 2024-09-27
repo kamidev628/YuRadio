@@ -38,11 +38,8 @@ Application::Application(int argc, char **argv) : QApplication(argc, argv) {
 
   QCoreApplication::setApplicationVersion(YURADIO_VERSION);
   QCoreApplication::setOrganizationName(u"YuRadio"_s);
-  Logging::initialize();
-
-  QLoggingCategory::setFilterRules(
-    u"YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio.RadioInfoReaderProxyServer.info=false\nYuRadio.GlobalKeyListener.info=false\nYuRest.NetworkManager.info=false"_s);
   QThread::currentThread()->setObjectName("Main Thread"_L1);
+  Logging::initialize();
 
   qCInfo(applicationLog).noquote()
     << "Version:" << QCoreApplication::applicationVersion();
@@ -64,17 +61,16 @@ Application::Application(int argc, char **argv) : QApplication(argc, argv) {
                          << QSystemTrayIcon::isSystemTrayAvailable();
 
   if (!QNetworkInformation::loadDefaultBackend()) {
-    qCWarning(applicationLog)
-      << "Failed to load QNetworkInformation default backend (Reconnection to "
-         "stations might not work)";
+    qCWarning(applicationLog) << "Failed to load QNetworkInformation default "
+                                 "backend (Reconnections might not work)";
   }
 
   m_engine = std::make_unique<QQmlApplicationEngine>();
 
   QQuickStyle::setStyle(u"Material"_s);
 
-  auto *networkManagerFactory = new NetworkManagerFactory(m_engine.get());
-  m_engine->setNetworkAccessManagerFactory(networkManagerFactory);
+  m_engine->setNetworkAccessManagerFactory(
+    new NetworkManagerFactory(m_engine.get()));
   m_engine->rootContext()->setContextProperty(
     "AppConfig_trayIconAvailable", QSystemTrayIcon::isSystemTrayAvailable());
 

@@ -125,15 +125,28 @@ Item {
         onLoaded: root.searchFilterDialog.open()
     }
 
+    Timer {
+        id: loadPageTimer
+
+        function loadPage() {
+            radioModel.loadPage();
+            if (!apiTimeoutTimer.running && apiTimeoutTimer.shouldRun) {
+                apiTimeoutTimer.start();
+            }
+        }
+
+        interval: apiTimeoutTimer.interval
+        onTriggered: loadPage()
+    }
+
     RadioStationModel {
         id: radioModel
 
         function loadPageHandler() {
-            if (!apiTimeoutTimer.running) {
-                loadPage();
-                if (apiTimeoutTimer.shouldRun) {
-                    apiTimeoutTimer.start();
-                }
+            if (apiTimeoutTimer.running) {
+                loadPageTimer.start();
+            } else {
+                loadPageTimer.loadPage();
             }
         }
 
@@ -180,7 +193,7 @@ Item {
         ]
 
         onStatusChanged: {
-            if (status == JsonRestListModel.Ready) {
+            if (status == RadioStationModel.Ready) {
                 radioPagination.nextPage();
             }
         }
@@ -191,7 +204,7 @@ Item {
     component FooterBar: BusyIndicator {
         width: GridView.view.width
         height: visible ? 50 : 0
-        visible: radioModel.status == JsonRestListModel.Loading
+        visible: radioModel.status == RadioStationModel.Loading
     }
 
     RadioStationView {
@@ -222,7 +235,7 @@ Item {
 
             property bool shouldRun: true
 
-            interval: 1500
+            interval: 1000
         }
 
         Timer {

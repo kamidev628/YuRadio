@@ -32,10 +32,14 @@ Item {
             right: parent.right
         }
 
-        TabButton {
+        component ScalableTabButton : TabButton {
+            ScalableFontPicker {}
+        }
+
+        ScalableTabButton {
             text: qsTr("General")
         }
-        TabButton {
+        ScalableTabButton {
             text: qsTr("Font")
         }
     }
@@ -323,6 +327,10 @@ Item {
             ScalableLabel {
                 Layout.fillWidth: true
                 text: qsTr("Sample Text")
+            }
+
+            Item {
+                Layout.fillHeight: true
             }
         }
     }

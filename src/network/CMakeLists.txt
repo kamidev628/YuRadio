@@ -21,4 +21,7 @@ qt_add_qml_module(
   restpagination.h
   json.cpp
   json.h
-  modelhelper.h)
+  modelhelper.h
+  DEPENDENCIES
+  QtCore
+  QtQuick)

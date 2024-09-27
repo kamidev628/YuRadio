@@ -8,7 +8,6 @@ import Main
 QtObject {
     id: root
 
-    property var database: null
     property list<radiostation> bookmarkModel
     property Timer voteUpdateTimer: Timer {
         interval: 10 * 60 * 1000 // 10 minutes

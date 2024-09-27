@@ -228,7 +228,7 @@ FocusScope {
                 Loader {
                     id: playerButtonLoader
 
-                    Layout.preferredWidth: 50
+                    Layout.preferredWidth: 45
                     Layout.preferredHeight: 40
                     visible: active
 
@@ -262,7 +262,7 @@ FocusScope {
                     id: closeButtonLoader
 
                     Layout.rightMargin: 10
-                    Layout.preferredWidth: 50
+                    Layout.preferredWidth: 45
                     Layout.preferredHeight: 40
                     visible: active
 
@@ -300,6 +300,8 @@ FocusScope {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
+                Layout.minimumHeight: 400
+
                 Layout.topMargin: 20
                 Layout.leftMargin: 10
                 visible: active
@@ -331,7 +333,7 @@ FocusScope {
                         id: busyIndicator
 
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
+
                         visible: root.musicInfoModel.status == MusicInfoModel.Loading
                     }
 
@@ -428,7 +430,6 @@ FocusScope {
                     }
 
                     ScalableLabel {
-                        Layout.bottomMargin: 6
                         Layout.fillWidth: true
 
                         visible: musicInfoRow.visible
@@ -436,6 +437,12 @@ FocusScope {
 
                         text: qsTr("Provided for: %1").arg(root.streamTitle)
                         wrapMode: Text.WordWrap
+                    }
+
+                    Item {
+                        Layout.fillHeight: true
+                        Layout.minimumHeight: 5
+                        Layout.verticalStretchFactor: Utils.maxInteger
                     }
                 }
             }

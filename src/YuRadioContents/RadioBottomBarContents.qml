@@ -228,8 +228,8 @@ FocusScope {
                 Loader {
                     id: playerButtonLoader
 
-                    Layout.preferredWidth: 40
-                    Layout.preferredHeight: Layout.preferredWidth
+                    Layout.preferredWidth: 50
+                    Layout.preferredHeight: 40
                     visible: active
 
                     active: true
@@ -262,8 +262,8 @@ FocusScope {
                     id: closeButtonLoader
 
                     Layout.rightMargin: 10
-                    Layout.preferredWidth: 40
-                    Layout.preferredHeight: Layout.preferredWidth
+                    Layout.preferredWidth: 50
+                    Layout.preferredHeight: 40
                     visible: active
 
                     active: true

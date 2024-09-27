@@ -4,6 +4,12 @@
 #include "network/abstractrestmodel.h"
 #include "radiostation.h"
 
+struct QmlForeignQAbstractRestListModel {
+  Q_GADGET
+  QML_FOREIGN(QAbstractListModel)
+  QML_ANONYMOUS
+};
+
 class RadioStationModel : public AbstractRestListModel {
   Q_OBJECT
   QML_ELEMENT

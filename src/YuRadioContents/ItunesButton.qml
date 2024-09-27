@@ -6,8 +6,8 @@ ScalableButton {
 
     property string link
 
+    Material.theme: Material.Light
     Material.background: Material.color(Material.Grey, Material.Shade200)
-    Material.foreground: Material.color(Material.Grey, Material.ShadeA200)
 
     icon.source: "images/itunes-logo.svg"
     icon.color: "transparent"

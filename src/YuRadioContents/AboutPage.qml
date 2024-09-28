@@ -48,10 +48,11 @@ Item {
                     source: "images/shortwave.svg"
                 }
 
-                ScalableLabel {
+                TextArea {
                     Layout.fillWidth: true
                     Layout.topMargin: 5
 
+                    readOnly: true
                     textFormat: Text.MarkdownText
                     text: qsTr(`
 ## About
@@ -67,6 +68,9 @@ All other platforms will use Qt's _**QMediaPlayer**_
 `)
 
                     wrapMode: Text.WordWrap
+                    background: Item {}
+
+                    ScalableFontPicker {}
                 }
 
                 ScalableButton {

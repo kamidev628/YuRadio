@@ -15,6 +15,7 @@ Loader {
     required property list<string> tags
 
     required property string name
+    required property string country
     required property string countryCode
     required property string uuid
 
@@ -70,7 +71,7 @@ Loader {
 
         onClicked: root.clicked()
 
-        Accessible.name: root.name + " " + root.tags
+        Accessible.name: qsTr("Radio station name: %1, Country: %2, Tags: %3").arg(root.name).arg(root.country).arg(root.tags.join(", "))
 
         focusPolicy: Qt.StrongFocus
         focus: true

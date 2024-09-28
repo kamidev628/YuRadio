@@ -24,7 +24,7 @@ FocusScope {
     property string orderByField: "votes"
     property bool descending: true
 
-    height: 40 * AppSettings.fontScale
+    height: Math.max(40, 40 * AppSettings.fontScale)
     width: GridView.view.width
 
     ButtonGroup {
@@ -52,6 +52,7 @@ FocusScope {
                 id: orderByButton
 
                 Layout.fillHeight: true
+                Layout.preferredWidth: implicitHeight + 5
 
                 transform: Scale {
                     id: orderByButtonScale
@@ -61,7 +62,7 @@ FocusScope {
                     origin.y: orderByButton.height / 2
                 }
 
-                text: root.descending ? qsTr("Descending Order") : qsTr("Ascending Order")
+                text: root.descending ? qsTr("Sort in ascending order") : qsTr("Sort in descending order")
                 icon.source: 'images/sort.svg'
                 icon.width: height
                 icon.height: height
@@ -136,6 +137,7 @@ FocusScope {
                     autoExclusive: true
                     checkable: true
                     checked: index == 0
+                    Accessible.name: qsTr("Sort by %1").arg(text)
 
                     ButtonGroup.group: buttonGroup
                     text: modelData.text

@@ -22,7 +22,7 @@ FocusScope {
         Button {
             id: volumeButton
 
-            Accessible.name: volumeController.muted ? qsTr("Unmute") : qsTr("Mute")
+            text: volumeController.muted ? qsTr("Unmute") : qsTr("Mute")
             display: AbstractButton.IconOnly
             flat: true
 

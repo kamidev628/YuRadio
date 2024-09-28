@@ -106,6 +106,7 @@ FocusScope {
             right: parent.right
         }
         width: parent.width
+        Accessible.searchEdit: true
 
         clip: true
         opacity: 0

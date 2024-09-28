@@ -123,8 +123,10 @@ void BasicRadioController::setVolume(float volume) {
 }
 
 void BasicRadioController::processMediaItem(const MediaItem &mediaItem) {
-  m_proxyServer->setTargetSource(mediaItem.source);
-  m_mediaPlayer->setSource(m_proxyServer->sourceUrl());
+  if (mediaItem.source.isValid()) {
+    m_proxyServer->setTargetSource(mediaItem.source);
+    m_mediaPlayer->setSource(m_proxyServer->sourceUrl());
+  }
 }
 
 void BasicRadioController::reconnectMediaPlayer() {

@@ -63,6 +63,8 @@ private slots:
 private:
   mutable QReadWriteLock m_lock;
 
+  QPointer<QNetworkReply> m_previousReply;
+
   QTcpServer *m_server;
   NetworkManager *m_networkManager;
 

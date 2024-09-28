@@ -96,8 +96,15 @@ void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
   request.setRawHeader("Icy-MetaData"_ba, "1"_ba);
   request.setRawHeader("Connection"_ba, "keep-alive"_ba);
 
+  if (m_previousReply) {
+    /* NOTE: Avoid emitting loadingChanged */
+    m_previousReply->disconnect(this);
+  }
+
   QNetworkReply *reply = m_networkManager->get(request);
   reply->ignoreSslErrors();
+
+  m_previousReply = reply;
 
   connect(client, &QTcpSocket::disconnected, reply, &QNetworkReply::abort);
   connect(client, &QTcpSocket::disconnected, client, &QObject::deleteLater);

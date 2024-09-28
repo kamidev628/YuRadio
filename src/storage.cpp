@@ -41,11 +41,19 @@ Storage::Storage(QObject *parent) : QObject(parent) {
                   stationuuid TEXT PRIMARY KEY,
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 ))");
-  query.exec(R"(CREATE TABLE IF NOT EXISTS language(name TEXT PRIMARY KEY))");
-  query.exec(R"(CREATE TABLE IF NOT EXISTS country(name TEXT PRIMARY KEY))");
+  query.exec(R"(CREATE TABLE IF NOT EXISTS language(
+                  language_id INTEGER PRIMARY KEY,
+                  name TEXT UNIQUE
+                ))");
+  query.exec(R"(CREATE TABLE IF NOT EXISTS country(
+                  country_id INTEGER PRIMARY KEY,
+                  name TEXT UNIQUE
+                ))");
   query.exec(R"(CREATE TABLE IF NOT EXISTS tag(
-    tag_id INTEGER PRIMARY KEY, name TEXT UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP))");
+                  tag_id INTEGER PRIMARY KEY, 
+                  name TEXT UNIQUE,
+                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ))");
 
   database.commit();
 }
@@ -156,7 +164,7 @@ bool Storage::addLanguages(const QStringList &languages) {
 
 QStringList Storage::getLanguages() {
   QSqlQuery query;
-  query.exec("SELECT name FROM language");
+  query.exec("SELECT name FROM language ORDER BY language_id");
 
   QStringList languages;
   while (query.next()) {
@@ -179,7 +187,7 @@ bool Storage::addTags(const QStringList &tags) {
 
 QStringList Storage::getTags() {
   QSqlQuery query;
-  query.exec("SELECT name FROM tag");
+  query.exec("SELECT name FROM tag ORDER BY name");
 
   QStringList tags;
   while (query.next()) {

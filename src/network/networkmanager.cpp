@@ -51,7 +51,7 @@ NetworkError NetworkManager::checkNetworkErrors(QNetworkReply *reply) {
 
   QString errorMessage = reply->errorString();
 
-  if (isReplyError) {
+  if (isReplyError && reply->isReadable()) {
     errorMessage += reply->readAll();
   }
 

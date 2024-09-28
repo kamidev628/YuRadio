@@ -33,7 +33,8 @@ using namespace Qt::StringLiterals;
 Application::Application(int argc, char **argv) : QApplication(argc, argv) {
 #if !defined(Q_OS_LINUX) || defined(Q_OS_ANDROID)
   QString packageVersion = QCoreApplication::applicationVersion();
-  Q_ASSERT(packageVersion.startsWith(YURADIO_VERSION));
+  Q_ASSERT(packageVersion.startsWith(YURADIO_VERSION) ||
+           QString(YURADIO_VERSION).startsWith(packageVersion));
 #endif
 
   QCoreApplication::setApplicationVersion(YURADIO_VERSION);

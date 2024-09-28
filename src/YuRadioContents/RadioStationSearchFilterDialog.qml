@@ -43,10 +43,12 @@ Dialog {
         if (stateModel.status == JsonRestListModel.Error) {
             stateModel.reset();
         }
-        internal.prevSelectedCountry = countryCombo.currentIndex;
-        internal.prevSelectedState = stateCombo.currentIndex;
-        internal.prevSelectedLanguage = languageCombo.currentIndex;
-        internal.prevSelectedTags = selectedTags();
+    }
+
+    onAboutToShow: {
+        countryCombo.restore();
+        stateCombo.restore();
+        languageCombo.restore();
     }
 
     onAccepted: {
@@ -54,11 +56,15 @@ Dialog {
         if (internal.prevSelectedCountry == countryCombo.currentIndex && internal.prevSelectedState == stateCombo.currentIndex && internal.prevSelectedLanguage == languageCombo.currentIndex && internal.prevSelectedTags.sort().join('@') == tags.sort().join('@')) {} else {
             root.filtersChanged(selectedCountry, selectedState, selectedLanguage, tags);
         }
+        internal.prevSelectedCountry = countryCombo.currentIndex;
+        internal.prevSelectedState = stateCombo.currentIndex;
+        internal.prevSelectedLanguage = languageCombo.currentIndex;
+        internal.prevSelectedTags = tags;
     }
 
     onRejected: {
         for (let i = 0; i < tagsRepeater.count; i++) {
-            let item = tagsRepeater.itemAt(i);
+            let item = tagsRepeater.itemAt(i) as Button;
             item.checked = internal.prevSelectedTags.includes(item.text);
         }
         countryCombo.currentIndex = internal.prevSelectedCountry;
@@ -241,7 +247,12 @@ Dialog {
                             required property string modelData
 
                             focusPolicy: Qt.StrongFocus
-                            height: 40 * AppSettings.fontScale
+                            height: Math.max(implicitHeight, 40 * AppSettings.fontScale)
+
+                            topPadding: 5
+                            bottomPadding: 5
+                            leftPadding: 12
+                            rightPadding: 12
 
                             checkable: true
 
@@ -254,10 +265,25 @@ Dialog {
     }
 
     component CustomHeaderComboBox: HeaderComboBox {
+        function resetInput() {
+            currentIndex = -1;
+            editText = "";
+        }
+
+        function restore() {
+            editText = textAt(currentIndex)
+        }
+
         editable: true
         currentIndex: -1
 
         fontPointSize: 13
+
+        onAccepted: {
+            if (find(editText) === -1) {
+                resetInput();
+            }
+        }
     }
 
     QtObject {

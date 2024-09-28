@@ -14,4 +14,16 @@ QtObject {
     function getScaledFont(desiredFontPointSize: int): int {
         return Math.floor(desiredFontPointSize * AppSettings.fontScale);
     }
+
+    function isSmallSize(size: int): bool {
+        return size <= AppSettings.smallSize
+    }
+
+    function isMediumSize(width: int): bool {
+        return AppSettings.smallSize < width && width <= AppSettings.mediumSize
+    }
+
+    function isLargeSize(width: int): bool {
+        return AppSettings.mediumSize < width && width <= AppSettings.largeSize;
+    }
 }

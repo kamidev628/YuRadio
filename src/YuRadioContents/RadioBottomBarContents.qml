@@ -17,7 +17,7 @@ FocusScope {
     property var musicInfo
     property radiostation radioStation: MainRadioPlayer.currentItem
 
-    property string lastStreamTitle: ""
+    property string lastStreamTitle
     property string streamTitle: MainRadioPlayer.streamTitle
 
     property alias playerButtonVisible: playerButtonLoader.active
@@ -476,6 +476,7 @@ FocusScope {
 
         function onMediaItemChanged() {
             root.musicInfo = null;
+            root.lastStreamTitle = "";
         }
 
         function onStreamTitleChanged() {

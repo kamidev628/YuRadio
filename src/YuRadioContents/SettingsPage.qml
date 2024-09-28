@@ -26,14 +26,11 @@ Item {
 
     TabBar {
         id: tabBar
+
         anchors {
             top: parent.top
             left: parent.left
             right: parent.right
-        }
-
-        component ScalableTabButton : TabButton {
-            ScalableFontPicker {}
         }
 
         ScalableTabButton {
@@ -44,293 +41,333 @@ Item {
         }
     }
 
+    component ScalableTabButton: TabButton {
+        ScalableFontPicker {}
+    }
+
     StackLayout {
         anchors {
             left: parent.left
             right: parent.right
-            top: tabBar.bottom
             bottom: parent.bottom
-
-            leftMargin: 10
-            topMargin: 10
-            rightMargin: 10
+            top: tabBar.bottom
         }
 
         currentIndex: tabBar.currentIndex
 
         ScrollView {
+            id: scroll
             contentWidth: -1
-            contentHeight: columnLayout.implicitHeight
+            contentHeight: generalPage.implicitHeight
 
-            ColumnLayout {
-                id: columnLayout
+            Binding {
+                target: scroll.contentItem
+                property: "boundsBehavior"
+                value: Flickable.StopAtBounds
+            }
 
-                width: parent.width
+            Item {
+                id: generalPage
 
-                ScalableLabel {
-                    text: qsTr("Available Servers")
-                }
+                implicitHeight: columnLayout.implicitHeight
+                implicitWidth: parent.width
 
-                Rectangle {
-                    implicitWidth: parent.width * 2 / 3
-                    implicitHeight: 1
+                ColumnLayout {
+                    id: columnLayout
 
-                    color: Material.foreground
-                }
-
-                ListView {
-                    id: serversListView
-
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 150
-
-                    clip: true
-                    focus: true
-
-                    boundsBehavior: Flickable.StopAtBounds
-
-                    delegate: ScalableItemDelegate {
-                        required property string modelData
-
-                        focus: true
-                        focusPolicy: Qt.StrongFocus
-
-                        implicitWidth: ListView.view.width * 2 / 3
-                        text: modelData
-                        checkable: true
-                        checked: modelData == root.networkManager.baseUrl
-                        down: checked
-                        autoExclusive: true
-                        ButtonGroup.group: buttonGroup
-                    }
-
-                    Component.onCompleted: {
-                        RadioBrowser.baseUrls().then(urls => {
-                            model = [...new Set(urls)];
-                        });
+                    anchors {
+                        fill: parent
+                        leftMargin: 10
+                        rightMargin: 10
+                        topMargin: 20
                     }
 
                     ScalableLabel {
-                        anchors {
-                            left: parent.left
-                            top: parent.top
-                            right: parent.right
-                            topMargin: 5
-                        }
-
-                        text: qsTr("Could not fetch available servers")
-
-                        Material.foreground: Material.color(Material.Grey, Material.Shade500)
-                        opacity: 0.5
-                        visible: !serversListView.model || !serversListView.model.length
+                        text: qsTr("Available Servers")
+                        Layout.fillWidth: true
                     }
 
-                    ButtonGroup {
-                        id: buttonGroup
+                    Rectangle {
+                        implicitWidth: parent.width * 2 / 3
+                        implicitHeight: 1
 
-                        onCheckedButtonChanged: {
-                            if (root.networkManager.baseUrl != checkedButton.modelData) {
-                                AppSettings.radioBrowserBaseUrl = checkedButton.modelData;
-                                root.networkManager.baseUrl = checkedButton.modelData;
+                        color: Material.foreground
+                    }
+
+                    ListView {
+                        id: serversListView
+
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 150
+
+                        clip: true
+                        focus: true
+
+                        boundsBehavior: Flickable.StopAtBounds
+
+                        delegate: ScalableItemDelegate {
+                            required property string modelData
+
+                            focus: true
+                            focusPolicy: Qt.StrongFocus
+
+                            implicitWidth: AppConfig.isSmallSize(root.width) ? ListView.view.width : ListView.view.width * 2 / 3
+                            text: modelData
+                            checkable: true
+                            checked: modelData == root.networkManager.baseUrl
+                            down: checked
+                            autoExclusive: true
+                            ButtonGroup.group: buttonGroup
+                        }
+
+                        Component.onCompleted: {
+                            RadioBrowser.baseUrls().then(urls => {
+                                model = [...new Set(urls)];
+                            });
+                        }
+
+                        ScalableLabel {
+                            anchors {
+                                left: parent.left
+                                top: parent.top
+                                right: parent.right
+                                topMargin: 5
+                            }
+
+                            text: qsTr("Could not fetch available servers")
+
+                            Material.foreground: Material.color(Material.Grey, Material.Shade500)
+                            opacity: 0.5
+                            visible: !serversListView.model || !serversListView.model.length
+                        }
+
+                        ButtonGroup {
+                            id: buttonGroup
+
+                            onCheckedButtonChanged: {
+                                if (root.networkManager.baseUrl != checkedButton.modelData) {
+                                    AppSettings.radioBrowserBaseUrl = checkedButton.modelData;
+                                    root.networkManager.baseUrl = checkedButton.modelData;
+                                }
                             }
                         }
                     }
-                }
 
-                ScalableLabel {
-                    Layout.topMargin: 20
+                    ScalableLabel {
+                        Layout.topMargin: 20
+                        Layout.fillWidth: true
 
-                    text: root.translatedStartPageString
-                }
+                        text: root.translatedStartPageString
+                    }
 
-                ScalableComboBox {
-                    implicitWidth: parent.width * 2 / 3
+                    ScalableComboBox {
+                        implicitWidth: AppConfig.isSmallSize(root.width) ? parent.width : parent.width * 2 / 3
 
-                    model: [
-                        {
-                            text: qsTr("Search"),
-                            page: App.Page.Search
-                        },
-                        {
-                            text: qsTr("Bookmarks"),
-                            page: App.Page.Bookmark
+                        model: [
+                            {
+                                text: qsTr("Search"),
+                                page: App.Page.Search
+                            },
+                            {
+                                text: qsTr("Bookmarks"),
+                                page: App.Page.Bookmark
+                            }
+                        ]
+                        textRole: "text"
+
+                        Accessible.name: root.translatedStartPageString
+                        onActivated: {
+                            AppSettings.initialPage = currentValue.page;
                         }
-                    ]
-                    textRole: "text"
-
-                    Accessible.name: root.translatedStartPageString
-                    onActivated: {
-                        AppSettings.initialPage = currentValue.page;
-                    }
-                    Component.onCompleted: {
-                        currentIndex = model.findIndex(x => x.page == AppSettings.initialPage);
-                    }
-                }
-
-                ScalableLabel {
-                    Layout.topMargin: 20
-
-                    text: root.translatedLanguageString
-                }
-
-                ScalableComboBox {
-                    implicitWidth: parent.width * 2 / 3
-
-                    textRole: "text"
-                    Accessible.name: root.translatedLanguageString
-
-                    Component.onCompleted: {
-                        model = root.languageTranslator.locales().map(locale => ({
-                                    text: Qt.locale(locale).nativeLanguageName + (locale.includes("_") ? Qt.locale(locale).nativeTerritoryName : ""),
-                                    code: locale
-                                }));
-                        currentIndex = model.findIndex(x => x.code == AppSettings.locale);
-                        if (currentIndex == -1) {
-                            currentIndex = model.findIndex(x => x.code.includes(AppSettings.locale) || AppSettings.locale.includes(x.code));
+                        Component.onCompleted: {
+                            currentIndex = model.findIndex(x => x.page == AppSettings.initialPage);
                         }
                     }
-                    onActivated: {
-                        AppSettings.locale = currentValue.code;
-                        root.languageTranslator.load(currentValue.code);
+
+                    ScalableLabel {
+                        Layout.topMargin: 20
+                        Layout.fillWidth: true
+
+                        text: root.translatedLanguageString
                     }
-                }
 
-                ScalableCheckBox {
-                    Layout.topMargin: 10
+                    ScalableComboBox {
+                        implicitWidth: AppConfig.isSmallSize(root.width) ? parent.width : parent.width * 2 / 3
 
-                    text: qsTr("Animate selection changes")
-                    checked: AppSettings.enableSelectionAnimation
-                    onCheckedChanged: {
-                        AppSettings.enableSelectionAnimation = checked;
+                        textRole: "text"
+                        Accessible.name: root.translatedLanguageString
+
+                        Component.onCompleted: {
+                            model = root.languageTranslator.locales().map(locale => ({
+                                        text: Qt.locale(locale).nativeLanguageName + (locale.includes("_") ? Qt.locale(locale).nativeTerritoryName : ""),
+                                        code: locale
+                                    }));
+                            currentIndex = model.findIndex(x => x.code == AppSettings.locale);
+                            if (currentIndex == -1) {
+                                currentIndex = model.findIndex(x => x.code.includes(AppSettings.locale) || AppSettings.locale.includes(x.code));
+                            }
+                        }
+                        onActivated: {
+                            AppSettings.locale = currentValue.code;
+                            root.languageTranslator.load(currentValue.code);
+                        }
                     }
-                }
 
-                ScalableCheckBox {
-                    Layout.topMargin: 5
+                    ScalableCheckBox {
+                        Layout.topMargin: 10
+                        Layout.fillWidth: true
 
-                    text: qsTr("Enable bottom bar blur")
-                    checked: AppSettings.enableBottomBarBlur
-                    onCheckedChanged: {
-                        AppSettings.enableBottomBarBlur = checked;
+                        text: qsTr("Animate selection changes")
+                        checked: AppSettings.enableSelectionAnimation
+                        onCheckedChanged: {
+                            AppSettings.enableSelectionAnimation = checked;
+                        }
                     }
-                }
 
-                ScalableCheckBox {
-                    id: showTrayIconCheckbox
+                    ScalableCheckBox {
+                        Layout.topMargin: 5
+                        Layout.fillWidth: true
 
-                    Layout.topMargin: 5
-
-                    text: qsTr("Show icon in tray")
-                    checked: AppSettings.showIconInTray
-                    visible: AppConfig.trayIconAvailable
-                    onCheckedChanged: {
-                        AppSettings.showIconInTray = checked;
+                        text: qsTr("Enable bottom bar blur")
+                        checked: AppSettings.enableBottomBarBlur
+                        onCheckedChanged: {
+                            AppSettings.enableBottomBarBlur = checked;
+                        }
                     }
-                }
 
-                ScalableCheckBox {
-                    id: showMessagesInTrayCheckbox
+                    ScalableCheckBox {
+                        id: showTrayIconCheckbox
 
-                    Layout.topMargin: 5
+                        Layout.topMargin: 5
+                        Layout.fillWidth: true
 
-                    text: qsTr("Show messages in tray")
-                    enabled: showTrayIconCheckbox.checked
-                    checked: AppSettings.showMessagesInTray
-                    visible: AppConfig.trayIconAvailable
-                    onCheckedChanged: {
-                        AppSettings.showMessagesInTray = checked;
+                        text: qsTr("Show icon in tray")
+                        checked: AppSettings.showIconInTray
+                        visible: AppConfig.trayIconAvailable
+                        onCheckedChanged: {
+                            AppSettings.showIconInTray = checked;
+                        }
                     }
-                }
 
-                ScalableCheckBox {
-                    Layout.topMargin: 5
+                    ScalableCheckBox {
+                        id: showMessagesInTrayCheckbox
 
-                    text: qsTr("Resume playback when network connections is restored")
-                    checked: AppSettings.resumePlaybackWhenNetworkRestored
-                    onCheckedChanged: {
-                        AppSettings.resumePlaybackWhenNetworkRestored = checked;
+                        Layout.topMargin: 5
+                        Layout.fillWidth: true
+
+                        text: qsTr("Show messages in tray")
+                        enabled: showTrayIconCheckbox.checked
+                        checked: AppSettings.showMessagesInTray
+                        visible: AppConfig.trayIconAvailable
+                        onCheckedChanged: {
+                            AppSettings.showMessagesInTray = checked;
+                        }
                     }
-                }
 
-                SpotifyButton {
-                    id: spotifyButton
+                    ScalableCheckBox {
+                        Layout.topMargin: 5
+                        Layout.fillWidth: true
 
-                    property bool shouldShowMessage: false
-
-                    Layout.topMargin: 10
-
-                    text: qsTr("Spotify integration")
-                    onClicked: {
-                        shouldShowMessage = true;
-                        root.musicInfoModel.grantSpotifyAccess();
+                        text: qsTr("Resume playback when back online")
+                        checked: AppSettings.resumePlaybackWhenNetworkRestored
+                        onCheckedChanged: {
+                            AppSettings.resumePlaybackWhenNetworkRestored = checked;
+                        }
                     }
-                }
 
-                Item {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                }
+                    SpotifyButton {
+                        id: spotifyButton
 
-                Connections {
-                    target: root.musicInfoModel
-                    enabled: spotifyButton.shouldShowMessage
+                        property bool shouldShowMessage: false
 
-                    function onSpotifyAccessGranted() {
-                        messageDialog.open();
-                        spotifyButton.shouldShowMessage = false;
+                        Layout.topMargin: 10
+                        Layout.fillWidth: AppConfig.isSmallSize(root.width)
+
+                        text: qsTr("Spotify integration")
+                        onClicked: {
+                            shouldShowMessage = true;
+                            root.musicInfoModel.grantSpotifyAccess();
+                        }
+                    }
+
+                    Item {
+                        Layout.preferredHeight: 20
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                    }
+
+                    Connections {
+                        target: root.musicInfoModel
+                        enabled: spotifyButton.shouldShowMessage
+
+                        function onSpotifyAccessGranted() {
+                            messageDialog.open();
+                            spotifyButton.shouldShowMessage = false;
+                        }
                     }
                 }
             }
         }
 
-        ColumnLayout {
-            Label {
-                Layout.topMargin: 20
+        Item {
+            id: fontPage
 
-                text: `${root.translatedFontScaleString}: ${slider.value.toFixed(1)}`
-                font.pointSize: 12
-            }
-
-            RowLayout {
-                Layout.fillWidth: true
-
-                spacing: 12
-
-                Label {
-                    text: qsTr("A")
-                    font.pixelSize: 14
-                    font.weight: 400
+            ColumnLayout {
+                anchors {
+                    fill: parent
+                    leftMargin: 15
+                    topMargin: 15
+                    rightMargin: 15
                 }
 
-                Slider {
-                    id: slider
+                Label {
+                    Layout.topMargin: 20
 
+                    text: `${root.translatedFontScaleString}: ${slider.value.toFixed(1)}`
+                    font.pointSize: 12
+                }
+
+                RowLayout {
                     Layout.fillWidth: true
-                    Accessible.name: root.translatedFontScaleString
 
-                    snapMode: Slider.SnapAlways
-                    stepSize: 0.1
-                    from: 0.7
-                    value: AppSettings.fontScale
-                    to: 1.5
+                    spacing: 12
 
-                    onMoved: AppSettings.fontScale = value
+                    Label {
+                        text: qsTr("A")
+                        font.pixelSize: 14
+                        font.weight: 400
+                    }
+
+                    Slider {
+                        id: slider
+
+                        Layout.fillWidth: true
+                        Accessible.name: root.translatedFontScaleString
+
+                        snapMode: Slider.SnapAlways
+                        stepSize: 0.1
+                        from: 0.7
+                        value: AppSettings.fontScale
+                        to: 1.5
+
+                        onMoved: AppSettings.fontScale = value
+                    }
+
+                    Label {
+                        text: qsTr("A")
+                        font.pixelSize: 21
+                        font.weight: 400
+                    }
                 }
 
-                Label {
-                    text: qsTr("A")
-                    font.pixelSize: 21
-                    font.weight: 400
+                ScalableLabel {
+                    Layout.fillWidth: true
+                    text: qsTr("Sample Text")
                 }
-            }
 
-            ScalableLabel {
-                Layout.fillWidth: true
-                text: qsTr("Sample Text")
-            }
-
-            Item {
-                Layout.fillHeight: true
+                Item {
+                    Layout.fillHeight: true
+                }
             }
         }
     }

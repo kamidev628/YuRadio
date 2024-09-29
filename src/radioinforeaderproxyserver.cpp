@@ -5,6 +5,7 @@ Q_LOGGING_CATEGORY(radioInfoReaderLog, "YuRadio.RadioInfoReaderProxyServer")
 #include <QNetworkReply>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <cstddef>
 
 #include "memoryliterals.h"
 #include "network/networkmanager.h"
@@ -15,11 +16,12 @@ using namespace Qt::StringLiterals;
 using namespace std::chrono_literals;
 
 constexpr int ICY_MULTIPLIER = 16;
-constexpr qint64 MAXIMUM_WRITE_BUFFER_SIZE = 600_KiB;
+constexpr qint64 MAXIMUM_READ_BUFFER_SIZE = 50_KiB;
 
 RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(QObject *parent)
     : QObject(parent), m_server(new QTcpServer(this)),
-      m_networkManager(new NetworkManager(this)), m_parseIcecastInfo(true) {
+      m_networkManager(new NetworkManager(this)), m_parseIcecastInfo(true),
+      m_pauseStream(false) {
   connect(m_server, &QTcpServer::newConnection, this,
           &RadioInfoReaderProxyServer::clientConnected);
 
@@ -89,6 +91,8 @@ void RadioInfoReaderProxyServer::clientConnected() {
     (void)client->readAll();
     makeRequest(client);
   });
+  connect(client, &QTcpSocket::disconnected, this,
+          []() { qCDebug(radioInfoReaderLog) << "CLIENT DISCONNECTED"; });
 }
 
 void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
@@ -96,19 +100,25 @@ void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
   request.setRawHeader("Icy-MetaData"_ba, "1"_ba);
   request.setRawHeader("Connection"_ba, "keep-alive"_ba);
 
-  if (m_previousReply) {
+  if (m_reply) {
     /* NOTE: Avoid emitting loadingChanged */
-    m_previousReply->disconnect(this);
+    m_reply->disconnect(this);
   }
 
   QNetworkReply *reply = m_networkManager->get(request);
   reply->ignoreSslErrors();
+  reply->setReadBufferSize(MAXIMUM_READ_BUFFER_SIZE);
 
-  m_previousReply = reply;
+  m_reply = reply;
 
   connect(client, &QTcpSocket::disconnected, reply, &QNetworkReply::abort);
   connect(client, &QTcpSocket::disconnected, client, &QObject::deleteLater);
   connect(client, &QTcpSocket::readyRead, reply, &QNetworkReply::abort);
+  connect(client, &QTcpSocket::bytesWritten, reply, [this, reply]() {
+    if (!m_pauseStream && reply->bytesAvailable()) {
+      emit reply->readyRead();
+    }
+  });
 
   connect(reply, &QNetworkReply::readyRead, client, [this, reply, client]() {
     replyReadHeaders(reply, client);
@@ -182,8 +192,18 @@ void RadioInfoReaderProxyServer::replyReadHeaders(QNetworkReply *reply,
 
 bool RadioInfoReaderProxyServer::validateNetworkReply(QNetworkReply *reply,
                                                       QTcpSocket *client) {
-  if (client->bytesToWrite() > MAXIMUM_WRITE_BUFFER_SIZE) {
+
+  if (client->bytesToWrite() >
+      MAXIMUM_READ_BUFFER_SIZE + static_cast<int>(50_KiB)) {
+    qCDebug(radioInfoReaderLog) << "Client buffer overflow";
     reply->abort();
+    return false;
+  }
+
+  if (client->bytesToWrite() > 0 && m_pauseStream) {
+    qCDebug(radioInfoReaderLog)
+      << "Bytes to write:" << client->bytesToWrite()
+      << "Bytes available:" << reply->bytesAvailable();
     return false;
   }
 
@@ -272,4 +292,9 @@ void RadioInfoReaderProxyServer::readIcyMetaData(IcecastParserInfo *p) {
   qCInfo(radioInfoReaderLog) << "Icy-MetaData:" << p->icyMetaData;
 
   emit icyMetaDataChanged(p->icyMetaData);
+}
+
+void RadioInfoReaderProxyServer::setPauseStream(bool pause) {
+  QWriteLocker locker(&m_lock);
+  m_pauseStream = pause;
 }

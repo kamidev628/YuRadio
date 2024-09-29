@@ -100,6 +100,7 @@ void BasicRadioController::play() {
     reconnectMediaPlayer();
   }
 
+  m_proxyServer->setPauseStream(false);
   m_mediaPlayer->play();
 }
 
@@ -109,6 +110,7 @@ void BasicRadioController::stop() {
 }
 
 void BasicRadioController::pause() {
+  m_proxyServer->setPauseStream(true);
   m_mediaPlayer->pause();
 }
 

@@ -41,6 +41,8 @@ public:
   void setParseIcecastInfo(bool shouldParse);
   bool parseIcecastInfo() const;
 
+  void setPauseStream(bool pause);
+
   void listen();
 
 signals:
@@ -63,13 +65,14 @@ private slots:
 private:
   mutable QReadWriteLock m_lock;
 
-  QPointer<QNetworkReply> m_previousReply;
+  QPointer<QNetworkReply> m_reply;
 
   QTcpServer *m_server;
   NetworkManager *m_networkManager;
 
   QUrl m_targetSource;
   bool m_parseIcecastInfo;
+  bool m_pauseStream;
 };
 
 #endif /* !RADIOINFOREADERPROXYSERVER_H */

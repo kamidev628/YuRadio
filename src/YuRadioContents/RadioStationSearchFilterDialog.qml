@@ -1,4 +1,4 @@
-pragma ComponentBehavior
+pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls
@@ -22,12 +22,12 @@ Dialog {
 
     function selectedTags(): var {
         let tags = [];
-        for (let i = 0; i < tagsRepeater.count; i++) {
-            let item = tagsRepeater.itemAt(i) as Button;
-            if (item.checked) {
-                tags.push(item.text);
-            }
-        }
+        tagsView.tagsModel.forEach(el => el.sectionData.forEach(tag => {
+                if (tag.checked) {
+                    tags.push(tag.text);
+                }
+            }));
+        console.log("SELECTED TAGS", tags);
         return tags;
     }
 
@@ -63,13 +63,13 @@ Dialog {
     }
 
     onRejected: {
-        for (let i = 0; i < tagsRepeater.count; i++) {
-            let item = tagsRepeater.itemAt(i) as Button;
-            item.checked = internal.prevSelectedTags.includes(item.text);
-        }
         countryCombo.currentIndex = internal.prevSelectedCountry;
         stateCombo.currentIndex = internal.prevSelectedState;
         languageCombo.currentIndex = internal.prevSelectedLanguage;
+        tagsView.tagsModel.forEach(el => el.sectionData.forEach(tag => {
+                tag.checked = internal.prevSelectedTags.includes(tag.text);
+            }));
+        tagsView.tagsModelChanged()
     }
 
     StateGroup {
@@ -78,7 +78,7 @@ Dialog {
                 name: "scrollView"
                 when: columnLayout.implicitHeight > scrollView.height
                 PropertyChanges {
-                    tagsFlickable.Layout.preferredHeight: 300
+                    tagsView.Layout.preferredHeight: 300
                     scrollView.contentHeight: columnLayout.implicitHeight
                     columnLayout.height: undefined
                 }
@@ -217,37 +217,91 @@ Dialog {
                 text: qsTr("Tags")
             }
 
-            ScrollableFlickable {
-                id: tagsFlickable
+            ListView {
+                id: tagsView
 
+                function getSections(words) {
+                    if (words.length === 0) {
+                        return [];
+                    }
+                    return Object.values(words.reduce((acc, word) => {
+                        let firstLetter = word[0].toLocaleUpperCase();
+                        let isNumeric = Utils.isNumericChar(firstLetter);
+                        if (isNumeric) {
+                            firstLetter = "0";
+                        }
+                        let sectionObject = {
+                            text: word,
+                            checked: false
+                        };
+                        if (!acc[firstLetter]) {
+                            acc[firstLetter] = {
+                                title: isNumeric ? "0-9" : firstLetter,
+                                sectionData: [sectionObject]
+                            };
+                        } else {
+                            acc[firstLetter].sectionData.push(sectionObject);
+                        }
+                        return acc;
+                    }, {}));
+                }
+
+                property var tagsModel: getSections(Storage.getTags())
+                model: tagsModel
+
+                spacing: 5
+                clip: true
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Accessible.name: tagsLabel.text
 
-                contentHeight: tagsFlow.implicitHeight
-                contentWidth: tagsFlow.implicitWidth
+                delegate: Flow {
+                    id: tagsDelegate
 
-                boundsBehavior: Flickable.StopAtBounds
-                clip: true
+                    required property int index
+                    required property var modelData
 
-                Flow {
-                    id: tagsFlow
-
-                    width: tagsFlickable.width
+                    width: ListView.view.width
+                    height: implicitHeight
 
                     spacing: 4
+
+                    ScalableLabel {
+                        id: tagLabel
+
+                        text: tagsDelegate.modelData.title
+                        height: tagsRepeater.buttonHeight
+                        fontPointSize: 14
+
+                        verticalAlignment: Text.AlignVCenter
+                        Material.foreground: Material.accent
+                        font.bold: true
+                    }
+
+                    Item {
+                        width: 5
+                        height: tagLabel.height
+                    }
 
                     Repeater {
                         id: tagsRepeater
 
-                        model: Storage.getTags()
+                        property int buttonHeight
+
+                        model: tagsDelegate.modelData.sectionData
 
                         OutlinedButton {
+                            id: outlinedButtonDelegate
+
                             required property int index
-                            required property string modelData
+                            required property var modelData
 
                             focusPolicy: Qt.StrongFocus
                             height: Math.max(implicitHeight, 40 * AppSettings.fontScale)
+
+                            onHeightChanged: {
+                                tagsRepeater.buttonHeight = height;
+                            }
 
                             topPadding: 5
                             bottomPadding: 5
@@ -255,8 +309,14 @@ Dialog {
                             rightPadding: 12
 
                             checkable: true
+                            checked: modelData.checked
 
-                            text: modelData
+                            onCheckedChanged: {
+                                tagsView.tagsModel[tagsDelegate.index].sectionData[index].checked = checked;
+                                checked = Qt.binding(() =>tagsView.tagsModel[tagsDelegate.index].sectionData[index].checked)
+                            }
+
+                            text: modelData.text
                         }
                     }
                 }
@@ -271,7 +331,7 @@ Dialog {
         }
 
         function restore() {
-            editText = textAt(currentIndex)
+            editText = textAt(currentIndex);
         }
 
         editable: true

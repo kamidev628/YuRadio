@@ -34,6 +34,8 @@ QtObject {
         return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
     }
 
+    function isNumericChar(c): bool { return /\d/.test(c); }
+
     function execLater(contextObject, delay, callback, args) {
         let timer = Qt.createQmlObject("import QtQml 2.15; Timer { }", contextObject);
         timer.interval = delay === undefined ? 100 : delay;

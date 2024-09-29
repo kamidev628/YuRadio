@@ -89,11 +89,9 @@ Item {
     }
 
     function radioModelReset(): void {
-        if (!apiTimeoutTimer.running) {
-            radioPagination.offset = 0;
-            radioModel.reset();
-            radioGridView.currentIndex = -1;
-        }
+        radioPagination.offset = 0;
+        radioModel.reset();
+        radioGridView.currentIndex = -1;
     }
 
     focus: true

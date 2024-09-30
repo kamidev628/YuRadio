@@ -15,11 +15,6 @@ import YuRadioContents
 ApplicationWindow {
     id: root
 
-    enum Page {
-        Search,
-        Bookmark
-    }
-
     readonly property bool isDesktopLayout: width >= AppConfig.portraitLayoutWidth
     property list<Item> loadedPages
 
@@ -185,9 +180,9 @@ ApplicationWindow {
 
         focus: true
         Component.onCompleted: {
-            if (AppSettings.initialPage == App.Page.Search) {
+            if (AppSettings.startPage === "search") {
                 root.stackViewPushPage(searchPage, "searchPage");
-            } else if (AppSettings.initialPage == App.Page.Bookmark) {
+            } else if (AppSettings.startPage === "bookmark") {
                 root.stackViewPushPage(bookmarkPage, "bookmarkPage");
             } else {
                 root.stackViewPushPage(searchPage, "searchPage");

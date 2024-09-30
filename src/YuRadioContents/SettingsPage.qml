@@ -166,21 +166,21 @@ Item {
                         model: [
                             {
                                 text: qsTr("Search"),
-                                page: App.Page.Search
+                                page: "search"
                             },
                             {
                                 text: qsTr("Bookmarks"),
-                                page: App.Page.Bookmark
+                                page: "bookmark"
                             }
                         ]
                         textRole: "text"
 
                         Accessible.name: root.translatedStartPageString
                         onActivated: {
-                            AppSettings.initialPage = currentValue.page;
+                            AppSettings.startPage = currentValue.page;
                         }
                         Component.onCompleted: {
-                            currentIndex = model.findIndex(x => x.page == AppSettings.initialPage);
+                            currentIndex = model.findIndex(x => x.page == AppSettings.startPage);
                         }
                     }
 

@@ -5,7 +5,6 @@ Q_LOGGING_CATEGORY(radioInfoReaderLog, "YuRadio.RadioInfoReaderProxyServer")
 #include <QNetworkReply>
 #include <QTcpServer>
 #include <QTcpSocket>
-#include <cstddef>
 
 #include "memoryliterals.h"
 #include "network/networkmanager.h"
@@ -20,8 +19,7 @@ constexpr qint64 MAXIMUM_READ_BUFFER_SIZE = 50_KiB;
 
 RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(QObject *parent)
     : QObject(parent), m_server(new QTcpServer(this)),
-      m_networkManager(new NetworkManager(this)), m_parseIcecastInfo(true),
-      m_pauseStream(false) {
+      m_networkManager(new NetworkManager(this)), m_parseIcecastInfo(true) {
   connect(m_server, &QTcpServer::newConnection, this,
           &RadioInfoReaderProxyServer::clientConnected);
 
@@ -92,7 +90,7 @@ void RadioInfoReaderProxyServer::clientConnected() {
     makeRequest(client);
   });
   connect(client, &QTcpSocket::disconnected, this,
-          []() { qCDebug(radioInfoReaderLog) << "CLIENT DISCONNECTED"; });
+          []() { qCDebug(radioInfoReaderLog) << "Client disconnected"; });
 }
 
 void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
@@ -114,11 +112,6 @@ void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
   connect(client, &QTcpSocket::disconnected, reply, &QNetworkReply::abort);
   connect(client, &QTcpSocket::disconnected, client, &QObject::deleteLater);
   connect(client, &QTcpSocket::readyRead, reply, &QNetworkReply::abort);
-  connect(client, &QTcpSocket::bytesWritten, reply, [this, reply]() {
-    if (!m_pauseStream && reply->bytesAvailable()) {
-      emit reply->readyRead();
-    }
-  });
 
   connect(reply, &QNetworkReply::readyRead, client, [this, reply, client]() {
     replyReadHeaders(reply, client);
@@ -200,7 +193,7 @@ bool RadioInfoReaderProxyServer::validateNetworkReply(QNetworkReply *reply,
     return false;
   }
 
-  if (client->bytesToWrite() > 0 && m_pauseStream) {
+  if (client->bytesToWrite() > 0) {
     qCDebug(radioInfoReaderLog)
       << "Bytes to write:" << client->bytesToWrite()
       << "Bytes available:" << reply->bytesAvailable();
@@ -292,9 +285,4 @@ void RadioInfoReaderProxyServer::readIcyMetaData(IcecastParserInfo *p) {
   qCInfo(radioInfoReaderLog) << "Icy-MetaData:" << p->icyMetaData;
 
   emit icyMetaDataChanged(p->icyMetaData);
-}
-
-void RadioInfoReaderProxyServer::setPauseStream(bool pause) {
-  QWriteLocker locker(&m_lock);
-  m_pauseStream = pause;
 }

@@ -41,8 +41,6 @@ public:
   void setParseIcecastInfo(bool shouldParse);
   bool parseIcecastInfo() const;
 
-  void setPauseStream(bool pause);
-
   void listen();
 
 signals:
@@ -72,7 +70,6 @@ private:
 
   QUrl m_targetSource;
   bool m_parseIcecastInfo;
-  bool m_pauseStream;
 };
 
 #endif /* !RADIOINFOREADERPROXYSERVER_H */

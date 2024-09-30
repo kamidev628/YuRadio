@@ -179,7 +179,7 @@ ApplicationWindow {
         anchors {
             right: parent.right
             top: parent.top
-            bottom: parent.bottom
+            bottom: androidKeyboardRectangleLoader.top
         }
         width: parent.width
 
@@ -238,6 +238,21 @@ ApplicationWindow {
             AboutPage {
                 objectName: "aboutPage"
             }
+        }
+    }
+
+    Loader {
+        id: androidKeyboardRectangleLoader
+
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+
+        active: Qt.platform.os === "android"
+        sourceComponent: Item {
+            height: AndroidKeyboard?.height / Screen.devicePixelRatio
         }
     }
 
@@ -310,7 +325,7 @@ ApplicationWindow {
             return !mediaPlayGlobalShortcut.enabled;
         }
         onActivated: {
-            MainRadioPlayer.toggle();
+            MainRadioPlayer.toggleRadio();
         }
     }
 
@@ -320,7 +335,7 @@ ApplicationWindow {
         enabled: !MainRadioPlayer.canHandleMediaKeys
         sequence: "Media Play"
         onActivated: {
-            MainRadioPlayer.toggle();
+            MainRadioPlayer.toggleRadio();
         }
     }
 

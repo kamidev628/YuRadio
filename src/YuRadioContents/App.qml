@@ -341,8 +341,8 @@ ApplicationWindow {
 
     Loader {
         id: trayIconLoader
-        active: AppSettings.showIconInTray && AppConfig.trayIconAvailable
 
+        active: AppSettings.showIconInTray && AppConfig.trayIconAvailable
         sourceComponent: TrayIcon {
             window: root
         }

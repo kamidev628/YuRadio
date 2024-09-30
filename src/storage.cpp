@@ -41,15 +41,15 @@ Storage::Storage(QObject *parent) : QObject(parent) {
                   stationuuid TEXT PRIMARY KEY,
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 ))");
-  query.exec(R"(CREATE TABLE IF NOT EXISTS language(
+  query.exec(R"(CREATE TABLE IF NOT EXISTS language (
                   language_id INTEGER PRIMARY KEY,
                   name TEXT UNIQUE
                 ))");
-  query.exec(R"(CREATE TABLE IF NOT EXISTS country(
+  query.exec(R"(CREATE TABLE IF NOT EXISTS country (
                   country_id INTEGER PRIMARY KEY,
                   name TEXT UNIQUE
                 ))");
-  query.exec(R"(CREATE TABLE IF NOT EXISTS tag(
+  query.exec(R"(CREATE TABLE IF NOT EXISTS tag (
                   tag_id INTEGER PRIMARY KEY, 
                   name TEXT UNIQUE,
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

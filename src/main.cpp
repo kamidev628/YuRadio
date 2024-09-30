@@ -4,7 +4,7 @@ int main(int argc, char *argv[]) {
   if (qEnvironmentVariableIsEmpty("QT_LOGGING_RULES")) {
     qputenv("QT_LOGGING_RULES",
             "YuRadio.*.debug=true\nHotreloader.*.info=false\nYuRadio."
-            "RadioInfoReaderProxyServer.info=false\nYuRadio.GlobalKeyListener."
+            "RadioInfoReaderProxyServer.*=true\nYuRadio.GlobalKeyListener."
             "info=false\nYuRest.NetworkManager.info=false");
   }
 

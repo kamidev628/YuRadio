@@ -23,9 +23,8 @@ RadioBottomBarDrawer {
         blur: 0.95
         saturation: -0.3
 
-        Rectangle {
+        NormalBackground {
             anchors.fill: parent
-            color: AppConfig.isDarkTheme ? root.Material.background.lighter(1.4) : root.Material.background.darker(1.05)
         }
     }
 

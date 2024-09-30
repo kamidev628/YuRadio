@@ -20,13 +20,23 @@ Dialog {
 
     signal filtersChanged(var country, var state, var language, var tags)
 
+    function forEachTag(callback: var): void {
+        for (var i = 0; i < tagsModel.count; ++i) {
+            let section = tagsModel.get(i).sectionData;
+            for (var j = 0; j < section.count; ++j) {
+                let tag = section.get(j);
+                callback(tag);
+            }
+        }
+    }
+
     function selectedTags(): var {
         let tags = [];
-        tagsView.tagsModel.forEach(el => el.sectionData.forEach(tag => {
-                if (tag.checked) {
-                    tags.push(tag.text);
-                }
-            }));
+        forEachTag(tag => {
+            if (tag.selected) {
+                tags.push(tag.tagName);
+            }
+        });
         console.log("SELECTED TAGS", tags);
         return tags;
     }
@@ -45,11 +55,7 @@ Dialog {
         }
     }
 
-    onAboutToShow: {
-        countryCombo.restore();
-        stateCombo.restore();
-        languageCombo.restore();
-    }
+    onAboutToShow: {}
 
     onAccepted: {
         let tags = selectedTags();
@@ -63,13 +69,10 @@ Dialog {
     }
 
     onRejected: {
-        countryCombo.currentIndex = internal.prevSelectedCountry;
-        stateCombo.currentIndex = internal.prevSelectedState;
-        languageCombo.currentIndex = internal.prevSelectedLanguage;
-        tagsView.tagsModel.forEach(el => el.sectionData.forEach(tag => {
-                tag.checked = internal.prevSelectedTags.includes(tag.text);
-            }));
-        tagsView.tagsModelChanged()
+        countryCombo.restore(internal.prevSelectedCountry);
+        stateCombo.restore(internal.prevSelectedState);
+        languageCombo.restore(internal.prevSelectedLanguage);
+        forEachTag(tag => tag.selected = internal.prevSelectedTags.includes(tag.tagName));
     }
 
     StateGroup {
@@ -221,33 +224,37 @@ Dialog {
                 id: tagsView
 
                 function getSections(words) {
-                    if (words.length === 0) {
-                        return [];
-                    }
                     return Object.values(words.reduce((acc, word) => {
-                        let firstLetter = word[0].toLocaleUpperCase();
-                        let isNumeric = Utils.isNumericChar(firstLetter);
+                        let c = word[0].toLocaleUpperCase();
+                        let isNumeric = Utils.isNumericChar(c);
                         if (isNumeric) {
-                            firstLetter = "0";
+                            c = "0";
                         }
                         let sectionObject = {
-                            text: word,
-                            checked: false
+                            "tagName": word,
+                            "selected": false
                         };
-                        if (!acc[firstLetter]) {
-                            acc[firstLetter] = {
-                                title: isNumeric ? "0-9" : firstLetter,
-                                sectionData: [sectionObject]
+                        if (acc[c])
+                            acc[c].sectionData.push(sectionObject);
+                        else
+                            acc[c] = {
+                                "title": isNumeric ? "0-9" : c,
+                                "sectionData": [sectionObject]
                             };
-                        } else {
-                            acc[firstLetter].sectionData.push(sectionObject);
-                        }
                         return acc;
                     }, {}));
                 }
 
-                property var tagsModel: getSections(Storage.getTags())
-                model: tagsModel
+                model: ListModel {
+                    id: tagsModel
+
+                    Component.onCompleted: {
+                        let sections = tagsView.getSections(Storage.getTags());
+                        sections.forEach(section => {
+                            tagsModel.append(section);
+                        });
+                    }
+                }
 
                 spacing: 5
                 clip: true
@@ -259,7 +266,8 @@ Dialog {
                     id: tagsDelegate
 
                     required property int index
-                    required property var modelData
+                    required property string title
+                    required property var sectionData
 
                     width: ListView.view.width
                     height: implicitHeight
@@ -269,7 +277,7 @@ Dialog {
                     ScalableLabel {
                         id: tagLabel
 
-                        text: tagsDelegate.modelData.title
+                        text: tagsDelegate.title
                         height: tagsRepeater.buttonHeight
                         fontPointSize: 14
 
@@ -288,13 +296,15 @@ Dialog {
 
                         property int buttonHeight
 
-                        model: tagsDelegate.modelData.sectionData
+                        model: tagsDelegate.sectionData
 
                         OutlinedButton {
                             id: outlinedButtonDelegate
 
                             required property int index
-                            required property var modelData
+                            required property string tagName
+                            required property bool selected
+                            required property var model
 
                             focusPolicy: Qt.StrongFocus
                             height: Math.max(implicitHeight, 40 * AppSettings.fontScale)
@@ -309,14 +319,13 @@ Dialog {
                             rightPadding: 12
 
                             checkable: true
-                            checked: modelData.checked
+                            checked: selected
 
-                            onCheckedChanged: {
-                                tagsView.tagsModel[tagsDelegate.index].sectionData[index].checked = checked;
-                                checked = Qt.binding(() =>tagsView.tagsModel[tagsDelegate.index].sectionData[index].checked)
+                            onClicked: {
+                                model.selected = checked;
                             }
 
-                            text: modelData.text
+                            text: tagName
                         }
                     }
                 }
@@ -330,7 +339,8 @@ Dialog {
             editText = "";
         }
 
-        function restore() {
+        function restore(index) {
+            currentIndex = index;
             editText = textAt(currentIndex);
         }
 

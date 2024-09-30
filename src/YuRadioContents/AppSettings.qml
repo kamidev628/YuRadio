@@ -23,6 +23,7 @@ Settings {
 
     property string stationUuid
     property string locale
+    property string pauseButtonBehaviour: "pause"
     property string radioBrowserBaseUrl
     property string theme: Qt.styleHints.colorScheme === Qt.Dark ? "Dark" : "Light"
 }

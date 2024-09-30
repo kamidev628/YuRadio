@@ -21,6 +21,9 @@ public:
   virtual void pause() = 0;
   virtual void stop() = 0;
 
+  virtual void toggle(
+    RadioPlayer::ToggleBehaviour behaviour = RadioPlayer::PlayPauseBehaviour);
+
   virtual void setVolume(float volume);
   virtual float volume() const;
 

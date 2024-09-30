@@ -101,3 +101,15 @@ bool PlatformRadioController::canPlay() const {
 bool PlatformRadioController::canHandleMediaKeys() const {
   return false;
 }
+
+void PlatformRadioController::toggle(RadioPlayer::ToggleBehaviour behaviour) {
+  if (m_playbackState != RadioPlayer::PlayingState) {
+    play();
+  } else if (behaviour == RadioPlayer::PlayPauseBehaviour) {
+    pause();
+  } else if (behaviour == RadioPlayer::PlayStopBehaviour) {
+    stop();
+  } else {
+    Q_UNREACHABLE();
+  }
+}

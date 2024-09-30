@@ -63,9 +63,15 @@ public:
   };
   Q_ENUM(Error)
 
+  enum ToggleBehaviour {
+    PlayPauseBehaviour,
+    PlayStopBehaviour,
+  };
+  Q_ENUM(ToggleBehaviour)
+
 public slots:
   void play();
-  void toggle();
+  void toggle(ToggleBehaviour behaviour = PlayPauseBehaviour);
   void pause();
   void stop();
 

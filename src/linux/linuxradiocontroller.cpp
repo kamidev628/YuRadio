@@ -57,14 +57,6 @@ LinuxRadioController::LinuxRadioController(QObject *parent)
   });
 }
 
-void LinuxRadioController::toggle() {
-  if (playbackState() == RadioPlayer::PlayingState) {
-    pause();
-  } else {
-    play();
-  }
-}
-
 void LinuxRadioController::setMediaItem(const MediaItem &mediaItem) {
   QVariantMap mprisMetadata;
 

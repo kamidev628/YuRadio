@@ -213,6 +213,39 @@ Item {
                         }
                     }
 
+                    ScalableLabel {
+                        id: pauseButtonBehaviourLabel
+
+                        Layout.topMargin: 20
+                        Layout.fillWidth: true
+
+                        text: qsTr("Pause button behaviour")
+                    }
+
+                    ScalableComboBox {
+                        implicitWidth: AppConfig.isSmallSize(root.width) ? parent.width : parent.width * 2 / 3
+
+                        model: [
+                            {
+                                text: qsTr("Pause"),
+                                role: "pause"
+                            },
+                            {
+                                text: qsTr("Stop"),
+                                role: "stop"
+                            }
+                        ]
+                        textRole: "text"
+
+                        Accessible.name: pauseButtonBehaviourLabel.text
+                        Component.onCompleted: {
+                            currentIndex = model.findIndex(x => x.role === AppSettings.pauseButtonBehaviour);
+                        }
+                        onActivated: {
+                            AppSettings.pauseButtonBehaviour = currentValue.role;
+                        }
+                    }
+
                     ScalableCheckBox {
                         Layout.topMargin: 10
                         Layout.fillWidth: true

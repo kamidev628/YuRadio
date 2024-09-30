@@ -50,12 +50,8 @@ void RadioPlayer::stop() {
   m_controller->stop();
 }
 
-void RadioPlayer::toggle() {
-  if (isPlaying()) {
-    pause();
-  } else {
-    play();
-  }
+void RadioPlayer::toggle(ToggleBehaviour behaviour) {
+  m_controller->toggle(behaviour);
 }
 
 RadioPlayer::PlaybackState RadioPlayer::playbackState() const {

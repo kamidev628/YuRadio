@@ -14,8 +14,6 @@ public:
   void setMediaItem(const MediaItem &mediaItem) override;
   bool canHandleMediaKeys() const override;
 
-  void toggle();
-
 private:
   MprisPlayer *m_mprisPlayer;
 };

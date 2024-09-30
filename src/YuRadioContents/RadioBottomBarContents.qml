@@ -253,7 +253,7 @@ FocusScope {
                         icon.color: Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade400 : Material.Shade800)
 
                         onClicked: {
-                            MainRadioPlayer.toggle();
+                            MainRadioPlayer.toggleRadio();
                         }
                     }
                 }

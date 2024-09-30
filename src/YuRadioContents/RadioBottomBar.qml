@@ -124,7 +124,7 @@ RadioBottomBarDrawer {
 
         visible: !bottomBarContents.playerButtonVisible
         onClicked: {
-            MainRadioPlayer.toggle();
+            MainRadioPlayer.toggleRadio();
         }
     }
 }

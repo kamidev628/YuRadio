@@ -276,7 +276,7 @@ FocusScope {
                     IconButton {
                         id: closeButton
 
-                        text: qsTr("Stop media and hide bottom bar")
+                        text: qsTr("Stop audio and hide bottom bar")
 
                         icon.source: "images/close.svg"
                         icon.width: height

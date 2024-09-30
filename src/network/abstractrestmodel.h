@@ -66,8 +66,6 @@ public:
   };
   Q_ENUM(Status)
 
-  virtual void handleRequestData(const QByteArray &data) = 0;
-
   Q_INVOKABLE virtual void reset() = 0;
   Q_INVOKABLE void loadPage();
   Q_INVOKABLE void reload();
@@ -98,11 +96,16 @@ public:
   void setPreprocessItem(const QJSValue &newPreprocessItem);
 
 protected:
+  virtual void handleRequestData(const QByteArray &data) = 0;
+  void endHandleRequestData(Status status);
+
+  void beginResetRestModel();
+  void endResetRestModel();
+
   bool canFetchMore(const QModelIndex &parent) const override;
   void fetchMore(const QModelIndex &parent) override;
 
   void setStatus(Status newStatus);
-  void resetRestModel();
 
 private:
   QUrlQuery composeQuery() const;
@@ -115,6 +118,8 @@ private:
                RestListModelSortFilter *filter);
   static void
   clearFilter(QQmlListProperty<RestListModelSortFilter> *propertyList);
+
+  void resetRestModel();
 
 signals:
   void restManagerChanged();
@@ -139,6 +144,8 @@ protected:
 
   mutable QJSValue m_fetchMoreHandler;
   mutable QJSValue m_preprocessItem;
+
+  int m_previousCount = 0;
 
   Status m_status;
 };

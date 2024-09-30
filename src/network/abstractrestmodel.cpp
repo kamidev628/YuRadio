@@ -21,11 +21,20 @@ void AbstractRestListModel::loadPage() {
 
   m_response
     .then(this, [this](const QByteArray &data) {
+    m_previousCount = rowCount({});
     handleRequestData(data);
   }).onFailed(this, [this](const NetworkError &err) {
     m_errorString = err.message();
     setStatus(Error);
   });
+}
+
+void AbstractRestListModel::endHandleRequestData(Status status) {
+  if (m_previousCount != rowCount({})) {
+    emit countChanged();
+  }
+
+  setStatus(status);
 }
 
 NetworkManager *AbstractRestListModel::restManager() const {
@@ -311,4 +320,14 @@ void AbstractRestListModel::clearFilter(
   if (object) {
     object->clearFilter();
   }
+}
+
+void AbstractRestListModel::beginResetRestModel() {
+  beginResetModel();
+}
+
+void AbstractRestListModel::endResetRestModel() {
+  resetRestModel();
+
+  endResetModel();
 }

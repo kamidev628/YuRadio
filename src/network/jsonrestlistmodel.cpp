@@ -49,6 +49,11 @@ JsonRestListModel::parseJson(const QByteArray &data, const QString &dataPath) {
 
   } else if (document->isArray()) {
     dataArray = document->array();
+
+    if (!dataPath.isNull()) {
+      qCWarning(yuRestLog)
+        << "Received valid JSON array. `dataPath` is redundant";
+    }
   } else {
     qCWarning(yuRestLog) << "Invalid Json";
     return {};
@@ -63,7 +68,6 @@ bool JsonRestListModel::tryParseJsonData(const QByteArray &data) {
     return false;
   }
 
-  qsizetype sizeBefore = m_items.size();
   QQmlEngine *engine = qmlEngine(this);
   Q_ASSERT(engine != nullptr);
 
@@ -83,18 +87,15 @@ bool JsonRestListModel::tryParseJsonData(const QByteArray &data) {
       endInsertRows();
     }
   }
-  if (sizeBefore != m_items.size()) {
-    emit countChanged();
-  }
 
   return true;
 }
 
 void JsonRestListModel::handleRequestData(const QByteArray &data) {
   if (tryParseJsonData(data)) {
-    setStatus(Ready);
+    endHandleRequestData(Ready);
   } else {
-    setStatus(Error);
+    endHandleRequestData(Error);
   }
 }
 
@@ -125,14 +126,12 @@ int JsonRestListModel::rowCount(const QModelIndex &parent) const {
 }
 
 void JsonRestListModel::reset() {
-  beginResetModel();
+  beginResetRestModel();
 
   m_items.clear();
   m_roleNames.clear();
 
-  resetRestModel();
-
-  endResetModel();
+  endResetRestModel();
 }
 
 QVariantMap JsonRestListModel::get(int row) {

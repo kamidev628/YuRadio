@@ -14,13 +14,8 @@ RadioStationModel::RadioStationModel(QObject *parent)
 void RadioStationModel::handleRequestData(const QByteArray &data) {
   auto maybeJsonArray = JsonRestListModel::parseJson(data);
   if (!maybeJsonArray) {
-    setStatus(Error);
+    endHandleRequestData(Error);
   }
-
-  QQmlEngine *engine = qmlEngine(this);
-  Q_ASSERT(engine != nullptr);
-
-  qsizetype sizeBefore = m_stations.size();
 
   for (const auto &dataObj : std::as_const(*maybeJsonArray)) {
     QJsonObject obj = dataObj.toObject();
@@ -40,11 +35,7 @@ void RadioStationModel::handleRequestData(const QByteArray &data) {
     endInsertRows();
   }
 
-  if (sizeBefore != m_stations.size()) {
-    emit countChanged();
-  }
-
-  setStatus(Ready);
+  endHandleRequestData(Ready);
 }
 
 int RadioStationModel::rowCount(const QModelIndex &parent) const {
@@ -118,10 +109,9 @@ RadioStation RadioStationModel::get(int row) {
 }
 
 void RadioStationModel::reset() {
-  beginResetModel();
+  beginResetRestModel();
 
   m_stations.clear();
-  resetRestModel();
 
-  endResetModel();
+  endResetRestModel();
 }

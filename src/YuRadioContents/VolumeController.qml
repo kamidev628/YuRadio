@@ -6,18 +6,49 @@ FocusScope {
     id: root
 
     property alias volume: volumeSlider.value
+    property int orientation: Qt.Horizontal
 
     implicitWidth: volumeController.implicitWidth
     implicitHeight: volumeController.implicitHeight
 
-    RowLayout {
+    GridLayout {
         id: volumeController
 
         anchors.fill: parent
-        spacing: 0
+
+        rowSpacing: 0
+        columnSpacing: 0
+        flow: root.orientation == Qt.Horizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
 
         property bool muted: false
         property real lastVolume: volumeSlider.value
+
+        states: [
+            State {
+                name: "vertical"
+                when: root.orientation == Qt.Vertical
+
+                PropertyChanges {
+                    volumeButton.Layout.row: 1
+                    volumeButton.Layout.column: 0
+
+                    volumeSlider.Layout.row: 0
+                    volumeSlider.Layout.column: 0
+                }
+            },
+            State {
+                name: "horizontal"
+                when: root.orientation == Qt.Horizontal
+
+                PropertyChanges {
+                    volumeButton.Layout.row: 0
+                    volumeButton.Layout.column: 0
+
+                    volumeSlider.Layout.row: 0
+                    volumeSlider.Layout.column: 1
+                }
+            }
+        ]
 
         Button {
             id: volumeButton
@@ -25,6 +56,10 @@ FocusScope {
             text: volumeController.muted ? qsTr("Unmute") : qsTr("Mute")
             display: AbstractButton.IconOnly
             flat: true
+
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.minimumHeight: implicitHeight
 
             onClicked: {
                 volumeController.muted = !volumeController.muted;
@@ -46,6 +81,9 @@ FocusScope {
             id: volumeSlider
 
             Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            orientation: root.orientation
             Accessible.name: qsTr("Volume")
 
             from: 0

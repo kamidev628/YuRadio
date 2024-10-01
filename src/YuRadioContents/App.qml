@@ -291,11 +291,7 @@ ApplicationWindow {
             if (mainStackView.depth > 1) {
                 mainStackView.popCurrentItem();
             } else {
-                if (drawer.opened) {
-                    drawer.close();
-                } else {
-                    drawer.open();
-                }
+                drawer.toggle()
             }
         }
     }

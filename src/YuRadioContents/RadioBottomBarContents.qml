@@ -79,7 +79,7 @@ FocusScope {
                 RadioImage {
                     id: stationImage
 
-                    Layout.minimumHeight: Math.min(root.width / 3, root.height - 8, 300)
+                    Layout.minimumHeight: Math.min(root.width / 3, root.height, 300)
                     Layout.minimumWidth: Layout.minimumHeight
                     Layout.maximumHeight: Layout.minimumHeight
                     Layout.maximumWidth: Layout.minimumHeight

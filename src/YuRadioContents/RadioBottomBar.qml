@@ -15,16 +15,42 @@ RadioBottomBarDrawer {
     required property StackView stackView
     required property MusicInfoModel musicInfoModel
 
-    property Component blurBehindBackground: MultiEffect {
-        source: effectSource
-        autoPaddingEnabled: false
-        blurEnabled: true
-        blurMax: 64
-        blur: 0.95
-        saturation: -0.3
+    property real radius
 
-        NormalBackground {
+    readonly property real preferredSideMargins: parent.width / 5
+    readonly property real maximumWidth: 800
+    readonly property real sideMargins: (parent.width - maximumWidth) / 2 > preferredSideMargins ? (parent.width - maximumWidth) / 2 : preferredSideMargins
+
+    detached: gridView.width > AppConfig.detachBottomBarWidth
+
+    Rectangle {
+        id: bottomBarMask
+
+        layer.enabled: true
+        layer.smooth: true
+        visible: false
+        anchors.fill: parent
+        radius: root.radius
+    }
+
+    property Component blurBehindBackground: NormalBackground {
+        MultiEffect {
+            id: blurBehindEffect
+
             anchors.fill: parent
+
+            maskThresholdMin: 0.5
+            maskSpreadAtMin: 1.0
+
+            maskEnabled: true
+            maskSource: bottomBarMask
+
+            source: effectSource
+            autoPaddingEnabled: false
+            blurEnabled: true
+            blurMax: 64
+            blur: 0.95
+            saturation: -0.3
         }
     }
 
@@ -32,20 +58,32 @@ RadioBottomBarDrawer {
 
     component NormalBackground: Rectangle {
         color: AppConfig.isDarkTheme ? root.Material.background.lighter(1.4) : root.Material.background.darker(1.05)
+        radius: root.radius
     }
-
-    anchors {
-        bottom: parent.bottom
-        left: parent.left
-        right: parent.right
-    }
-
-    maximumHeight: parent.height * 2 / 3
-    minimumHeight: 0
-
-    background: AppSettings.enableBottomBarBlur ? blurBehindBackground : normalBackground
 
     states: [
+        State {
+            name: "detached"
+            when: root.detached && MainRadioPlayer.currentItem.isValid()
+            extend: "hasCurrentItem"
+
+            PropertyChanges {
+                root.anchors {
+                    leftMargin: root.sideMargins
+                    rightMargin: root.sideMargins
+                    bottomMargin: 20
+                }
+
+                bottomBarContents.anchors {
+                    leftMargin: 10
+                    rightMargin: 10
+                    topMargin: 6
+                    bottomMargin: 6
+                }
+
+                root.radius: root.backgroundItem.height / 3
+            }
+        },
         State {
             name: "hasCurrentItem"
             when: MainRadioPlayer.currentItem.isValid()
@@ -58,6 +96,21 @@ RadioBottomBarDrawer {
 
     transitions: [
         Transition {
+            to: "detached"
+
+            PropertyAnimation {
+                target: root.anchors
+                properties: "leftMargin,rightMargin,bottomMargin"
+                duration: 100
+                easing.type: Easing.OutExpo
+            }
+            PropertyAnimation {
+                target: root
+                property: "radius"
+                duration: 100
+            }
+        },
+        Transition {
             to: "hasCurrentItem"
 
             PropertyAnimation {
@@ -69,13 +122,24 @@ RadioBottomBarDrawer {
         }
     ]
 
+    anchors {
+        bottom: parent.bottom
+        left: parent.left
+        right: parent.right
+    }
+
+    maximumHeight: parent.height * 2 / 3
+    minimumHeight: 0
+
+    background: AppSettings.enableBottomBarBlur ? blurBehindBackground : normalBackground
+
     ShaderEffectSource {
         id: effectSource
 
         anchors.fill: parent
 
         sourceItem: root.gridView
-        sourceRect: Qt.rect(0, root.gridView.height, root.width, root.height)
+        sourceRect: Qt.rect(root.x, root.y, root.width, root.height)
         visible: false
     }
 
@@ -95,6 +159,7 @@ RadioBottomBarDrawer {
         property real stationLongitude
 
         anchors.fill: parent
+        anchors.bottomMargin: 10
 
         bottomBarDrawer: root
         musicInfoModel: root.musicInfoModel

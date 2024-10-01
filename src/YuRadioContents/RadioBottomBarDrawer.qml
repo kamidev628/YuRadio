@@ -12,11 +12,30 @@ Item {
 
     required property real minimumHeight
     required property real maximumHeight
+    readonly property real handleHeight: bottomBarHandle.height
+
     property bool interactive: true
+    property bool detached: false
+
+    Binding {
+        when: root.detached
+        root.interactive: false
+    }
+
+    onDetachedChanged: {
+        if (detached && root.height != minimumHeight) {
+            openCloseAnimation.to = minimumHeight;
+            let durationBefore = openCloseAnimation.duration;
+            openCloseAnimation.duration = 0;
+            openCloseAnimation.start();
+            openCloseAnimation.duration = durationBefore;
+        }
+    }
 
     property real progress: (root.height - root.minimumHeight) / (root.maximumHeight - root.minimumHeight)
 
     property Component background: Rectangle {}
+    property Item backgroundItem: backgroundLoader.item as Item
 
     function open(): void {
         if (root.height != maximumHeight) {
@@ -118,6 +137,8 @@ Item {
     }
 
     Loader {
+        id: backgroundLoader
+
         anchors.fill: parent
 
         sourceComponent: root.background
@@ -128,6 +149,8 @@ Item {
 
         Rectangle {
             id: bottomBarHandle
+
+            visible: !root.detached
 
             Layout.preferredHeight: 4
             Layout.preferredWidth: Math.min(parent.width / 10, 100)

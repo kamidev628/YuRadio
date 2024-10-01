@@ -24,7 +24,7 @@ FilledGridView {
         top: parent.top
         left: parent.left
         right: parent.right
-        bottom: bottomBar.top
+        bottom: bottomBar.detached ? parent.bottom : bottomBar.top
     }
 
     displayMarginEnd: bottomBar.height

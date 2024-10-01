@@ -10,17 +10,18 @@ QtObject {
     readonly property bool isMobile: Qt.platform.os == "android" || Qt.platform.os == "ios"
     readonly property bool trayIconAvailable: AppConfig_trayIconAvailable
     readonly property int portraitLayoutWidth: 800
+    readonly property int detachBottomBarWidth: 1000
 
     function getScaledFont(desiredFontPointSize: int): int {
         return Math.floor(desiredFontPointSize * AppSettings.fontScale);
     }
 
     function isSmallSize(size: int): bool {
-        return size <= AppSettings.smallSize
+        return size <= AppSettings.smallSize;
     }
 
     function isMediumSize(width: int): bool {
-        return AppSettings.smallSize < width && width <= AppSettings.mediumSize
+        return AppSettings.smallSize < width && width <= AppSettings.mediumSize;
     }
 
     function isLargeSize(width: int): bool {

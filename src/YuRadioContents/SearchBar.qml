@@ -43,7 +43,7 @@ FocusScope {
             PropertyAnimation {
                 target: root
                 properties: "implicitWidth"
-                duration: 350
+                duration: 250
                 easing.type: Easing.InOutQuad
             }
             PropertyAnimation {

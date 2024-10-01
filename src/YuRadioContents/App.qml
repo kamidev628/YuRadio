@@ -17,6 +17,8 @@ ApplicationWindow {
 
     readonly property bool isDesktopLayout: width >= AppConfig.portraitLayoutWidth
     property list<Item> loadedPages
+    property bool isBottomBarDetached: root.width > AppConfig.detachBottomBarWidth
+
 
     function stackViewPushPage(component: Component, objectName: string): void {
         if (mainStackView.currentItem?.objectName == objectName) {
@@ -70,14 +72,17 @@ ApplicationWindow {
     StateGroup {
         states: [
             State {
-                when: root.isDesktopLayout
+                when: MainRadioPlayer.currentItem.isValid() && root.isBottomBarDetached
 
-                PropertyChanges {
-                    mainStackView.width: mainStackView.parent.width - drawer.width * drawer.position
-                    headerSpacer.implicitWidth: drawer.width * drawer.position
+                StateChangeScript {
+                    script: radioStationInfoPanel.open()
+                }
+            },
+            State {
+                when: !MainRadioPlayer.currentItem.isValid() || !root.isBottomBarDetached
 
-                    drawer.closePolicy: Popup.NoAutoClose
-                    drawer.modal: false
+                StateChangeScript {
+                    script: radioStationInfoPanel.close()
                 }
             }
         ]
@@ -168,15 +173,42 @@ ApplicationWindow {
         id: musicInfoModel
     }
 
+    Component {
+        id: locationPage
+
+        RadioStationLocationPage {
+            stationLatitude: radioStationInfoPanel.stationLatitude
+            stationLongitude: radioStationInfoPanel.stationLongitude
+        }
+    }
+
+    RadioStationInfoPanel {
+        id: radioStationInfoPanel
+
+        property real stationLatitude
+        property real stationLongitude
+
+        musicInfoModel: musicInfoModel
+
+        onShowRadioStationLocationRequested: (stationLat, stationLong) => {
+            stationLatitude = stationLat;
+            stationLongitude = stationLong;
+            mainStackView.push(locationPage);
+        }
+    }
+
     StackView {
         id: mainStackView
 
         anchors {
+            left: parent.left
             right: parent.right
+            leftMargin: drawer.modal ? 0 : drawer.width * drawer.position
+            rightMargin: radioStationInfoPanel.width * radioStationInfoPanel.position
+
             top: parent.top
             bottom: androidKeyboardRectangleLoader.top
         }
-        width: parent.width
 
         focus: true
         Component.onCompleted: {
@@ -199,6 +231,7 @@ ApplicationWindow {
                 drawer: drawer
                 networkManager: networkManager
                 musicInfoModel: musicInfoModel
+                stationInfoPanel: radioStationInfoPanel
             }
         }
 
@@ -212,6 +245,7 @@ ApplicationWindow {
                 isDesktopLayout: root.isDesktopLayout
                 networkManager: networkManager
                 musicInfoModel: musicInfoModel
+                stationInfoPanel: radioStationInfoPanel
             }
         }
 
@@ -261,6 +295,8 @@ ApplicationWindow {
 
             Item {
                 id: headerSpacer
+
+                implicitWidth: drawer.width * drawer.position
             }
 
             ToolButton {
@@ -291,7 +327,7 @@ ApplicationWindow {
             if (mainStackView.depth > 1) {
                 mainStackView.popCurrentItem();
             } else {
-                drawer.toggle()
+                drawer.toggle();
             }
         }
     }

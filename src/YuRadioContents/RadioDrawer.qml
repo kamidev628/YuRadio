@@ -31,8 +31,9 @@ Drawer {
         }
     }
 
-    width: Math.min(Math.min(parent.width, parent.height) / 3 * 2, implicitWidth)
+    width: Math.min(Math.min(parent.width, parent.height) * 2 / (modal ? 3 : 6), implicitWidth)
     height: parent.height
+    clip: true
 
     Material.roundedScale: Material.NotRounded
 
@@ -48,6 +49,7 @@ Drawer {
             State {
                 name: "iconOnly"
                 when: !root.expanded && root.isDesktopLayout
+                extend: "desktopLayout"
 
                 PropertyChanges {
                     columnLayout.anchors.margins: 0
@@ -58,6 +60,15 @@ Drawer {
                     themeSwitchController.scale: 0
                     profileImage.opacity: 0
                     root.width: 50
+                }
+            },
+            State {
+                name: "desktopLayout"
+                when: root.isDesktopLayout
+
+                PropertyChanges {
+                    root.closePolicy: Popup.NoAutoClose
+                    root.modal: false
                 }
             }
         ]
@@ -88,9 +99,8 @@ Drawer {
                     duration: 100
                 }
             },
-            Transition {
-                to: ""
 
+            Transition {
                 PropertyAnimation {
                     target: themeSwitchController
                     property: "opacity,scale"
@@ -242,12 +252,14 @@ Drawer {
                     Layout.horizontalStretchFactor: Utils.maxInteger
                     Layout.fillWidth: true
                 }
+
                 ScalableLabel {
                     text: qsTr("Dark")
                     Layout.fillWidth: true
 
                     elide: Text.ElideRight
                 }
+
                 Switch {
                     id: themeSwitch
 
@@ -257,12 +269,14 @@ Drawer {
                         AppSettings.theme = checked ? "Light" : "Dark";
                     }
                 }
+
                 ScalableLabel {
                     text: qsTr("Light")
                     Layout.fillWidth: true
 
                     elide: Text.ElideRight
                 }
+
                 Item {
                     Layout.horizontalStretchFactor: Utils.maxInteger
                     Layout.fillWidth: true

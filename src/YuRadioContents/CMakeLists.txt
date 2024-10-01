@@ -19,6 +19,7 @@ qt_add_qml_module(
   AppStorage.qml
   Utils.qml
   RadioStationDelegate.qml
+  RadioStationInfoPanel.qml
   RadioBottomBarContents.qml
   RadioBottomBarDrawer.qml
   RadioBottomBar.qml

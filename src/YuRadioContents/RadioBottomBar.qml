@@ -21,17 +21,7 @@ RadioBottomBarDrawer {
     readonly property real maximumWidth: 800
     readonly property real sideMargins: (parent.width - maximumWidth) / 2 > preferredSideMargins ? (parent.width - maximumWidth) / 2 : preferredSideMargins
 
-    detached: gridView.width > AppConfig.detachBottomBarWidth
-
-    Rectangle {
-        id: bottomBarMask
-
-        layer.enabled: true
-        layer.smooth: true
-        visible: false
-        anchors.fill: parent
-        radius: root.radius
-    }
+    detached: ApplicationWindow.window.width > AppConfig.detachBottomBarWidth
 
     property Component blurBehindBackground: NormalBackground {
         MultiEffect {
@@ -60,6 +50,17 @@ RadioBottomBarDrawer {
         color: AppConfig.isDarkTheme ? root.Material.background.lighter(1.4) : root.Material.background.darker(1.05)
         radius: root.radius
     }
+
+    anchors {
+        bottom: parent.bottom
+        left: parent.left
+        right: parent.right
+    }
+
+    maximumHeight: parent.height * 2 / 3
+    minimumHeight: 0
+
+    background: AppSettings.enableBottomBarBlur ? blurBehindBackground : normalBackground
 
     states: [
         State {
@@ -101,8 +102,8 @@ RadioBottomBarDrawer {
             PropertyAnimation {
                 target: root.anchors
                 properties: "leftMargin,rightMargin,bottomMargin"
-                duration: 100
-                easing.type: Easing.OutExpo
+                duration: 200
+                easing.type: Easing.InQuad
             }
             PropertyAnimation {
                 target: root
@@ -122,16 +123,15 @@ RadioBottomBarDrawer {
         }
     ]
 
-    anchors {
-        bottom: parent.bottom
-        left: parent.left
-        right: parent.right
+    Rectangle {
+        id: bottomBarMask
+
+        layer.enabled: true
+        layer.smooth: true
+        visible: false
+        anchors.fill: parent
+        radius: root.radius
     }
-
-    maximumHeight: parent.height * 2 / 3
-    minimumHeight: 0
-
-    background: AppSettings.enableBottomBarBlur ? blurBehindBackground : normalBackground
 
     ShaderEffectSource {
         id: effectSource

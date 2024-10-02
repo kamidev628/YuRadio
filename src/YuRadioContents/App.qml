@@ -296,7 +296,7 @@ ApplicationWindow {
             Item {
                 id: headerSpacer
 
-                implicitWidth: drawer.width * drawer.position
+                implicitWidth: drawer.modal ? 0 : drawer.width * drawer.position
             }
 
             ToolButton {

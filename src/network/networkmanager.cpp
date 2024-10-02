@@ -241,12 +241,17 @@ NetworkManager::createRequest(Operation op,
         errorString += reply->peek(qMin(reply->bytesAvailable(), 500));
       }
 
-      qCWarning(networkManagerLog).noquote()
-        << QString("%1[%2] %3: %4")
-             .arg(requestMethodToString(reply->operation()))
-             .arg(httpCode)
-             .arg(reply->request().url().toString())
-             .arg(errorString);
+      QString debugMessage = QString("%1[%2] %3: %4")
+                               .arg(requestMethodToString(reply->operation()))
+                               .arg(httpCode)
+                               .arg(reply->request().url().toString())
+                               .arg(errorString);
+      if (reply->error() == QNetworkReply::OperationCanceledError) {
+        qCInfo(networkManagerLog).noquote() << debugMessage;
+      } else {
+        qCWarning(networkManagerLog).noquote() << debugMessage;
+      }
+
     } else {
       QString debugMessage = QString("%1[%2]%3 %4")
                                .arg(requestMethodToString(reply->operation()))

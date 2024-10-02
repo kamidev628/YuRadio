@@ -147,6 +147,10 @@ void MusicInfoModel::refresh() {
 
 void MusicInfoModel::requestMusicInfo() {
   setStatus(Loading);
+
+  qCDebug(musicInfoModelLog)
+    << "Requesting music information for:" << m_searchTerm;
+
   m_currentBackend->requestMusicInfo(m_searchTerm);
 }
 

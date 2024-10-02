@@ -11,7 +11,7 @@ ScalableButton {
 
     padding: 0
 
-    Material.foreground: checked ? Material.color(Material.Grey, Material.Shade500) : buttonColor
+    Material.foreground: checked ? Material.color(Material.Grey, Material.Shade500) : buttonColor.lighter(AppConfig.isDarkTheme ? 1.7 : 1)
     Material.accent: Material.color(Material.Grey, Material.Shade100)
 
     checkable: true

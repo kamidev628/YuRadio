@@ -185,6 +185,8 @@ Drawer {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     horizontalAlignment: Text.AlignHCenter
+                    wrapMode: Text.WordWrap
+                    maximumLineCount: 3
 
                     text: qsTr("Music Info is not avaialble")
                     fontPointSize: 15

@@ -68,8 +68,8 @@ FocusScope {
         id: background
         anchors {
             fill: parent
-            bottomMargin: 6
-            topMargin: 6
+            bottomMargin: 8
+            topMargin: 8
         }
 
         color: "transparent"

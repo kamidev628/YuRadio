@@ -36,6 +36,12 @@ public slots:
 
   bool addTags(const QStringList &tags);
   QStringList getTags();
+
+  bool
+  addTrackHistory(const QString &trackName, const QString &stationName,
+                  const QUrl &stationImageUrl,
+                  const QDateTime &startedAt = QDateTime::currentDateTime(),
+                  const QDateTime &endedAt = QDateTime::currentDateTime());
 };
 
 #endif /* !STORAGE_H */

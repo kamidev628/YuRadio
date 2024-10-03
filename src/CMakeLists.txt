@@ -72,6 +72,8 @@ qt_add_qml_module(
   languagetranslator.cpp
   globalkeylistener.h
   globalkeylistener.cpp
+  sqlquerymodel.h
+  sqlquerymodel.cpp
   radiostation.h
   radiostation.cpp
   radiostationmodel.h

@@ -17,6 +17,7 @@ Drawer {
     signal showSearchRequested
     signal showSettingsRequested
     signal showAboutRequested
+    signal showHistoryRequested
 
     function toggle() {
         if (isDesktopLayout) {
@@ -170,6 +171,13 @@ Drawer {
                     iconSource: "images/bookmark.svg"
                     triggered: () => {
                         root.showBookmarksRequested();
+                    }
+                }
+                ListElement {
+                    itemText: qsTr("History")
+                    iconSource: "images/history.svg"
+                    triggered: () => {
+                        root.showHistoryRequested();
                     }
                 }
                 ListElement {

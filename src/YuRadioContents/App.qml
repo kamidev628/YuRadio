@@ -19,7 +19,6 @@ ApplicationWindow {
     property list<Item> loadedPages
     property bool isBottomBarDetached: root.width > AppConfig.detachBottomBarWidth
 
-
     function stackViewPushPage(component: Component, objectName: string): void {
         if (mainStackView.currentItem?.objectName == objectName) {
             return;
@@ -138,11 +137,14 @@ ApplicationWindow {
 
         isDesktopLayout: root.isDesktopLayout
 
+        onShowSearchRequested: {
+            root.stackViewPushPage(searchPage, "searchPage");
+        }
         onShowBookmarksRequested: {
             root.stackViewPushPage(bookmarkPage, "bookmarkPage");
         }
-        onShowSearchRequested: {
-            root.stackViewPushPage(searchPage, "searchPage");
+        onShowHistoryRequested: {
+            root.stackViewPushPage(historyPage, "historyPage")
         }
         onShowSettingsRequested: {
             root.stackViewPushPage(settingsPage, "settingsPage");
@@ -246,6 +248,14 @@ ApplicationWindow {
                 networkManager: networkManager
                 musicInfoModel: musicInfoModel
                 stationInfoPanel: radioStationInfoPanel
+            }
+        }
+
+        Component {
+            id: historyPage
+
+            HistoryPage {
+                objectName: "historyPage"
             }
         }
 

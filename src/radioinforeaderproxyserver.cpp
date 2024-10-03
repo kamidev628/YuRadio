@@ -194,9 +194,6 @@ bool RadioInfoReaderProxyServer::validateNetworkReply(QNetworkReply *reply,
   }
 
   if (client->bytesToWrite() > 0) {
-    qCDebug(radioInfoReaderLog)
-      << "Bytes to write:" << client->bytesToWrite()
-      << "Bytes available:" << reply->bytesAvailable();
     return false;
   }
 

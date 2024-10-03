@@ -126,7 +126,7 @@ Loader {
 
                 Timer {
                     id: updateElideTimer
-                    interval: 50
+                    interval: 100
                     repeat: false
 
                     onRunningChanged: {

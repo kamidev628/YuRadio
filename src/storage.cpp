@@ -33,27 +33,47 @@ Storage::Storage(QObject *parent) : QObject(parent) {
   database.transaction();
 
   QSqlQuery query;
-  query.exec(R"(CREATE TABLE IF NOT EXISTS bookmark (
-                  stationuuid TEXT PRIMARY KEY,
-                  object TEXT
-                ))");
-  query.exec(R"(CREATE TABLE IF NOT EXISTS vote (
-                  stationuuid TEXT PRIMARY KEY,
-                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                ))");
-  query.exec(R"(CREATE TABLE IF NOT EXISTS language (
-                  language_id INTEGER PRIMARY KEY,
-                  name TEXT UNIQUE
-                ))");
-  query.exec(R"(CREATE TABLE IF NOT EXISTS country (
-                  country_id INTEGER PRIMARY KEY,
-                  name TEXT UNIQUE
-                ))");
-  query.exec(R"(CREATE TABLE IF NOT EXISTS tag (
-                  tag_id INTEGER PRIMARY KEY, 
-                  name TEXT UNIQUE,
-                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                ))");
+  query.exec(R"(
+CREATE TABLE IF NOT EXISTS bookmark (
+    stationuuid TEXT PRIMARY KEY,
+    object TEXT
+))");
+  query.exec(R"(
+CREATE TABLE IF NOT EXISTS vote (
+    stationuuid TEXT PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+))");
+  query.exec(R"(
+CREATE TABLE IF NOT EXISTS language (
+    language_id INTEGER PRIMARY KEY,
+    name TEXT UNIQUE
+))");
+  query.exec(R"(
+CREATE TABLE IF NOT EXISTS country (
+    country_id INTEGER PRIMARY KEY,
+    name TEXT UNIQUE
+))");
+  query.exec(R"(
+CREATE TABLE IF NOT EXISTS tag (
+    tag_id INTEGER PRIMARY KEY, 
+    name TEXT UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+))");
+  query.exec(R"(
+CREATE TABLE IF NOT EXISTS track_history (
+    track_history_id INTEGER PRIMARY KEY, 
+    track_name TEXT,
+    station_name TEXT,
+    station_image_url TEXT,
+    started_at TIMESTAMP,
+    ended_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+))");
+  query.exec(R"(
+CREATE TRIGGER IF NOT EXISTS track_history_insert_trig AFTER INSERT ON track_history
+BEGIN
+    DELETE FROM track_history WHERE ROWID NOT IN 
+        (SELECT ROWID FROM track_history ORDER BY datetime(started_at) DESC LIMIT 1000);
+END)");
 
   database.commit();
 }
@@ -194,4 +214,22 @@ QStringList Storage::getTags() {
     tags << query.value(0).toString();
   }
   return tags;
+}
+
+bool Storage::addTrackHistory(const QString &trackName,
+                              const QString &stationName,
+                              const QUrl &stationImageUrl,
+                              const QDateTime &startedAt,
+                              const QDateTime &endedAt) {
+  QSqlQuery query;
+  query.prepare("INSERT OR IGNORE INTO track_history (track_name, "
+                "station_name, station_image_url, started_at, ended_at) VALUES "
+                "(?, ?, ?, ?, ?)");
+  query.addBindValue(trackName);
+  query.addBindValue(stationName);
+  query.addBindValue(stationImageUrl.toString());
+  query.addBindValue(startedAt.toString(Qt::ISODate));
+  query.addBindValue(endedAt.toString(Qt::ISODate));
+
+  return query.exec();
 }

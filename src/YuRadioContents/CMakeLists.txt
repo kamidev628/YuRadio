@@ -18,6 +18,7 @@ qt_add_qml_module(
   AppConfig.qml
   AppStorage.qml
   Utils.qml
+  ElidedTextEdit.qml
   RadioStationDelegate.qml
   RadioStationInfoPanel.qml
   RadioBottomBarContents.qml
@@ -50,6 +51,7 @@ qt_add_qml_module(
   TrayIcon.qml
   VolumeController.qml
   HeaderComboBox.qml
+  HistoryPage.qml
   ListViewHighlightBar.qml
   radiobrowser.mjs
   RESOURCES
@@ -82,7 +84,8 @@ qt_add_qml_module(
   images/settings.svg
   images/thumb-up.svg
   images/thumb-up-filled.svg
-  images/close.svg)
+  images/close.svg
+  images/history.svg)
 
 qt_add_shaders(
   YuRadioContents

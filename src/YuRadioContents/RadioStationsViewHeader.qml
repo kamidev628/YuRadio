@@ -24,7 +24,7 @@ FocusScope {
     property string orderByField: "votes"
     property bool descending: true
 
-    height: Math.max(40, 40 * AppSettings.fontScale)
+    height: columnLayout.implicitHeight
     width: GridView.view.width
 
     ButtonGroup {
@@ -35,13 +35,14 @@ FocusScope {
     }
 
     ColumnLayout {
-        anchors.fill: parent
+        id: columnLayout
+
+        width: parent.width
 
         RowLayout {
             id: rowLayout
 
             Layout.fillWidth: true
-            Layout.fillHeight: true
 
             Item {
                 Layout.fillWidth: true
@@ -51,8 +52,8 @@ FocusScope {
             IconButton {
                 id: orderByButton
 
-                Layout.fillHeight: true
-                Layout.preferredWidth: implicitHeight + 5
+                Layout.preferredWidth: Layout.preferredHeight + 8
+                Layout.preferredHeight: listView.implicitHeight
 
                 transform: Scale {
                     id: orderByButtonScale
@@ -81,6 +82,8 @@ FocusScope {
                 Layout.fillWidth: true
                 Layout.maximumWidth: contentWidth
                 Layout.horizontalStretchFactor: Utils.maxInteger
+
+                implicitHeight: contentItem.childrenRect.height
 
                 orientation: Qt.Horizontal
                 spacing: 2
@@ -128,8 +131,13 @@ FocusScope {
                     required property int index
                     required property var modelData
 
-                    anchors.verticalCenter: parent?.verticalCenter
-                    height: ListView.view.height - 6
+                    topInset: 5
+                    bottomInset: 5
+
+                    topPadding: 15
+                    bottomPadding: 15
+                    leftPadding: 14
+                    rightPadding: 14
 
                     focusPolicy: Qt.StrongFocus
                     focus: true

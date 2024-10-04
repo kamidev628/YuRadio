@@ -144,7 +144,7 @@ ApplicationWindow {
             root.stackViewPushPage(bookmarkPage, "bookmarkPage");
         }
         onShowHistoryRequested: {
-            root.stackViewPushPage(historyPage, "historyPage")
+            root.stackViewPushPage(historyPage, "historyPage");
         }
         onShowSettingsRequested: {
             root.stackViewPushPage(settingsPage, "settingsPage");
@@ -218,6 +218,8 @@ ApplicationWindow {
                 root.stackViewPushPage(searchPage, "searchPage");
             } else if (AppSettings.startPage === "bookmark") {
                 root.stackViewPushPage(bookmarkPage, "bookmarkPage");
+            } else if (AppSettings.startPage === "history") {
+                root.stackViewPushPage(historyPage, "historyPage");
             } else {
                 root.stackViewPushPage(searchPage, "searchPage");
             }

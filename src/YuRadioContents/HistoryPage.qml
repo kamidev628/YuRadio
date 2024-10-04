@@ -5,11 +5,88 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Layouts
 
+import Qt.labs.qmlmodels
+
 import YuRadioContents
 import Main
 
 Item {
     id: root
+
+    property string acceptedInputText
+    readonly property HistorySearchFilterDialog searchFilterDialog: searchFilterDialogLoader.item as HistorySearchFilterDialog
+
+    property Component headerContent: RowLayout {
+        id: headerLayout
+
+        anchors.fill: parent
+        spacing: 0
+
+        Item {
+            Layout.fillWidth: true
+        }
+
+        SearchBar {
+            id: searchBar
+
+            availableWidth: Math.min(parent.width * 5 / 9, 300)
+
+            implicitWidth: height
+            searchIcon.color: Material.color(Material.Grey, Material.Shade100)
+
+            Layout.fillHeight: true
+
+            searchInput.onAccepted: {
+                root.acceptedInputText = searchInput.text;
+            }
+        }
+
+        ToolButton {
+            id: filterIcon
+
+            Accessible.name: qsTr("Search Filters")
+            icon.source: 'images/filter.svg'
+            icon.color: Material.color(Material.Grey, Material.Shade100)
+
+            onClicked: {
+                filterIcon.forceActiveFocus();
+                root.openSearchFilterDialog();
+            }
+        }
+
+        Shortcut {
+            sequences: [StandardKey.Find, "Ctrl+E"]
+            onActivated: {
+                searchBar.activate();
+            }
+        }
+    }
+
+    function openSearchFilterDialog(): void {
+        if (searchFilterDialog) {
+            searchFilterDialog.open();
+        } else {
+            searchFilterDialogLoader.active = true;
+        }
+    }
+
+    Loader {
+        id: searchFilterDialogLoader
+
+        anchors.fill: parent
+
+        active: false
+
+        sourceComponent: HistorySearchFilterDialog {
+            id: searchFilterDialog
+
+            implicitWidth: Math.min(Overlay.overlay.width * 3 / 4, 500)
+            implicitHeight: Overlay.overlay.height * 3 / 4
+
+            anchors.centerIn: Overlay.overlay
+        }
+        onLoaded: root.searchFilterDialog.open()
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -24,6 +101,8 @@ Item {
             anchors.top: parent.top
 
             boundsBehavior: Flickable.StopAtBounds
+            resizableColumns: false
+            clip: true
 
             delegate: TableDelegate {
                 color: Material.background.darker(AppConfig.isDarkTheme ? 1.2 : 0.8)
@@ -44,7 +123,6 @@ Item {
             }
 
             syncView: tableView
-            clip: true
         }
 
         TableView {
@@ -66,60 +144,55 @@ Item {
             rowSpacing: 1
             boundsBehavior: Flickable.StopAtBounds
 
-            columnWidthProvider: column => {
+            function largeScreenWidthProvider(column) {
                 if (column == 0) {
                     return width * 3 / 7;
                 }
                 return (width - (width * 3 / 7)) / (columns - 1);
             }
 
+            function smallScreenWidthProvider(column) {
+                if (column === 0) {
+                    return 300;
+                }
+                if (column === 1) {
+                    return 300;
+                }
+                return 150;
+            }
+            columnWidthProvider: (width < AppConfig.portraitLayoutWidth ? smallScreenWidthProvider : largeScreenWidthProvider)
+
             model: SqlQueryModel {
                 id: trackHistoryModel
 
-                queryString: `SELECT track_name, json_object('stationName', station_name,
-                             'stationImageUrl', station_image_url) as station, started_at,
-                             ended_at
-                              FROM track_history
-                              ORDER BY datetime(started_at) DESC`
+                queryString: `SELECT track_name, json_object('stationName', station_name, 'stationImageUrl', station_image_url) as station, started_at, ended_at
+                FROM track_history
+                ${root.acceptedInputText.length > 0 ? `WHERE track_name LIKE '%${Utils.mysql_real_escape_string(root.acceptedInputText).split("").join("%")}%' ESCAPE '\\'` : ""}
+                ORDER BY datetime(started_at) DESC`
             }
 
-            delegate: Loader {
-                id: delegateLoader
-                clip: true
-
-                required property var display
-                required property int column
-                required property int row
-
-                property Component tableDelegate: TableDelegate {
-                    display: delegateLoader.display
-                    row: delegateLoader.row
-                    column: delegateLoader.column
-                }
-                property Component stationDelegate: StationDelegate {
-                    display: delegateLoader.display
-                    row: delegateLoader.row
-                    column: delegateLoader.column
-                }
-                property Component dateTableDelegate: DateTableDelegate {
-                    display: delegateLoader.display
-                    row: delegateLoader.row
-                    column: delegateLoader.column
+            delegate: DelegateChooser {
+                DelegateChoice {
+                    column: 1
+                    StationDelegate {}
                 }
 
-                sourceComponent: {
-                    if (column === 1) {
-                        return stationDelegate;
-                    }
-                    if (column === 2 || column === 3) {
-                        return dateTableDelegate;
-                    }
-                    return tableDelegate;
+                DelegateChoice {
+                    column: 2
+                    DateTableDelegate {}
+                }
+
+                DelegateChoice {
+                    column: 3
+                    DateTableDelegate {}
+                }
+                DelegateChoice {
+                    TableDelegate {}
                 }
             }
 
-            reuseItems: false
             ScrollBar.vertical: ScrollBar {}
+            ScrollBar.horizontal: ScrollBar {}
         }
     }
 
@@ -136,17 +209,14 @@ Item {
         required property var display
         property alias label: delegateLabel
 
-        implicitWidth: delegateLabel.implicitWidth + 50
-        implicitHeight: delegateLabel.implicitHeight + 40
+        implicitWidth: delegateLabel.fullTextImplicitWidth + 20
+        implicitHeight: delegateLabel.fullTextImplicitHeight + 40
 
         ElidedTextEdit {
             id: delegateLabel
 
             fontPointSize: 13
-
             anchors.fill: parent
-            anchors.leftMargin: 4
-            anchors.rightMargin: 4
 
             fullText: tableDelegate.display
 
@@ -184,7 +254,8 @@ Item {
         readonly property string stationName: parsedDisplay.stationName
         readonly property url stationImageUrl: parsedDisplay?.stationImageUrl ?? ""
 
-        implicitWidth: rowLayout.implicitWidth
+        implicitWidth: rowLayout.implicitWidth + 50
+        implicitHeight: rowLayout.implicitHeight
 
         RowLayout {
             id: rowLayout
@@ -198,17 +269,20 @@ Item {
                 sourceSize: Qt.size(height * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
                 smooth: true
 
-                Layout.topMargin: 5
-                Layout.bottomMargin: 5
-                Layout.preferredWidth: height
-                Layout.fillHeight: true
+                Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: parent.height
+                Layout.preferredHeight: parent.height - 10
+                Layout.minimumWidth: height
             }
 
             ElidedTextEdit {
                 fullText: stationDelegateComponent.stationName
                 fontPointSize: 13
 
+                Layout.minimumWidth: fullTextImplicitWidth + 5
+                Layout.preferredWidth: Layout.minimumWidth
                 verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignLeft
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true

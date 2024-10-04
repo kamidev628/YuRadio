@@ -56,8 +56,11 @@ Pane {
 
             PropertyChanges {
                 root.y: minimumThreshold
+                progressIndicatorPathAnimationSweep.running: true
                 progressIndicatorPathAnimation.running: true
-                progressIndicatorPathArc.sweepAngle: 290
+                progressIndicatorPathArc.sweepAngle: {
+                    progressIndicatorPathArc.sweepAngle = progressIndicatorPathArc.sweepAngle;
+                }
                 progressIndicatorPathArc.startAngle: {
                     progressIndicatorPathArc.startAngle = progressIndicatorPathArc.startAngle;
                 }
@@ -130,6 +133,34 @@ Pane {
                     from: progressIndicatorPathArc.startAngle
                     to: from + 360
                     duration: 800
+
+                    running: false
+                    loops: Animation.Infinite
+                }
+
+                property SequentialAnimation anim: SequentialAnimation {
+                    id: progressIndicatorPathAnimationSweep
+
+                    property int sweepDuration: (progressIndicatorPathAnimation.duration * 5 / 2 - pauseAnimation.duration) / 2
+
+                    NumberAnimation {
+                        target: progressIndicatorPathArc
+                        property: "sweepAngle"
+                        from: 290
+                        to: 10
+                        duration: progressIndicatorPathAnimationSweep.sweepDuration
+                    }
+                    PauseAnimation {
+                        id: pauseAnimation
+                        duration: 10
+                    }
+                    NumberAnimation {
+                        target: progressIndicatorPathArc
+                        property: "sweepAngle"
+                        from: 10
+                        to: 290
+                        duration: progressIndicatorPathAnimationSweep.sweepDuration
+                    }
 
                     running: false
                     loops: Animation.Infinite

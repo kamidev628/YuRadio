@@ -101,7 +101,7 @@ Loader {
                 fillMode: Image.PreserveAspectFit
                 smooth: true
                 asynchronous: true
-                sourceSize: Qt.size(width * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
+                sourceSize: Qt.size(height * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
 
                 IconImage {
                     anchors {

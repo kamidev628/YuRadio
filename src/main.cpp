@@ -7,6 +7,13 @@ int main(int argc, char *argv[]) {
             "RadioInfoReaderProxyServer.*=true\nYuRadio.GlobalKeyListener."
             "info=false\nYuRest.NetworkManager.info=false");
   }
+  if (qEnvironmentVariableIsEmpty("QT_QUICK_CONTROLS_MATERIAL_VARIANT")) {
+#if defined(Q_OS_WIN) || (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)) ||    \
+  defined(Q_OS_MACOS)
+    qputenv("QT_QUICK_CONTROLS_MATERIAL_VARIANT", "Dense");
+#endif /* if defined(Q_OS_WIN) || (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)) ||    \
+      defined(Q_OS_MACOS) */
+  }
 
   Application app(argc, argv);
 

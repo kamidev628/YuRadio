@@ -7,6 +7,7 @@ ScalableButton {
 
     property string link
 
+    Material.theme: Material.Dark
     Material.foreground: Material.color(Material.Grey, Material.Shade200)
     Material.background: Material.color(Material.Grey, Material.Shade900)
 

@@ -7,6 +7,9 @@ TextInput {
     property alias fontPointSize: scalableFontPicker.fontPointSize
     property string fullText
 
+    property int fullTextImplicitWidth: metrics.boundingRect.width
+    property int fullTextImplicitHeight: metrics.boundingRect.height
+
     color: Material.foreground
 
     ScalableFontPicker {
@@ -15,6 +18,7 @@ TextInput {
 
     text: activeFocus ? fullText : metrics.elidedText
     readOnly: true
+    clip: true
 
     TextMetrics {
         id: metrics

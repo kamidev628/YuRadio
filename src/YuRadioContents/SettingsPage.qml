@@ -22,6 +22,10 @@ Item {
     property string translatedStartPageString: qsTr("Start Page")
     property string translatedFontScaleString: qsTr("Font scale")
 
+    function desiredWidth(maxWidth: real): real {
+        return AppConfig.isSmallSize(root.width) ? maxWidth : Math.min(500, maxWidth * 2 / 3);
+    }
+
     focus: true
 
     TabBar {
@@ -88,7 +92,7 @@ Item {
                     }
 
                     Rectangle {
-                        implicitWidth: parent.width * 2 / 3
+                        implicitWidth: root.desiredWidth(parent.width)
                         implicitHeight: 1
 
                         color: Material.foreground
@@ -111,7 +115,7 @@ Item {
                             focus: true
                             focusPolicy: Qt.StrongFocus
 
-                            implicitWidth: AppConfig.isSmallSize(root.width) ? ListView.view.width : ListView.view.width * 2 / 3
+                            implicitWidth: root.desiredWidth(ListView.view.width)
                             text: modelData
                             checkable: true
                             checked: modelData == root.networkManager.baseUrl
@@ -161,7 +165,7 @@ Item {
                     }
 
                     ScalableComboBox {
-                        implicitWidth: AppConfig.isSmallSize(root.width) ? parent.width : parent.width * 2 / 3
+                        implicitWidth: root.desiredWidth(parent.width)
 
                         model: [
                             {
@@ -171,6 +175,10 @@ Item {
                             {
                                 text: qsTr("Bookmarks"),
                                 page: "bookmark"
+                            },
+                            {
+                                text: qsTr("History"),
+                                page: "history"
                             }
                         ]
                         textRole: "text"
@@ -192,7 +200,7 @@ Item {
                     }
 
                     ScalableComboBox {
-                        implicitWidth: AppConfig.isSmallSize(root.width) ? parent.width : parent.width * 2 / 3
+                        implicitWidth: root.desiredWidth(parent.width)
 
                         textRole: "text"
                         Accessible.name: root.translatedLanguageString
@@ -223,7 +231,7 @@ Item {
                     }
 
                     ScalableComboBox {
-                        implicitWidth: AppConfig.isSmallSize(root.width) ? parent.width : parent.width * 2 / 3
+                        implicitWidth: root.desiredWidth(parent.width)
 
                         model: [
                             {
@@ -314,7 +322,7 @@ Item {
                         property bool shouldShowMessage: false
 
                         Layout.topMargin: 10
-                        Layout.fillWidth: AppConfig.isSmallSize(root.width)
+                        implicitWidth: root.desiredWidth(parent.width)
 
                         text: qsTr("Spotify integration")
                         onClicked: {

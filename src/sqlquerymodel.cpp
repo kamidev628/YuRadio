@@ -18,8 +18,6 @@ void SqlQueryModel::setQueryString(const QString &newQueryString) {
   if (m_queryString != newQueryString) {
     m_queryString = newQueryString;
 
-    setQuery(m_queryString);
-
     emit queryStringChanged();
   }
 }

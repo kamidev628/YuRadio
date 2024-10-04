@@ -34,7 +34,9 @@ QtObject {
         return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
     }
 
-    function isNumericChar(c): bool { return /\d/.test(c); }
+    function isNumericChar(c): bool {
+        return /\d/.test(c);
+    }
 
     function execLater(contextObject, delay, callback, args) {
         let timer = Qt.createQmlObject("import QtQml 2.15; Timer { }", contextObject);
@@ -45,5 +47,36 @@ QtObject {
             timer.destroy();
         });
         timer.start();
+    }
+
+    function shortDate(d: date, locale: var): string {
+      return d.toLocaleDateString(locale, Locale.ShortFormat) + " " + d.toLocaleTimeString(locale, Locale.ShortFormat)
+    }
+
+    function mysql_real_escape_string(str: string): string {
+        return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (c) {
+            switch (c) {
+            case "\0":
+                return "\\0";
+            case "\x08":
+                return "\\b";
+            case "\x09":
+                return "\\t";
+            case "\x1a":
+                return "\\z";
+            case "\n":
+                return "\\n";
+            case "\r":
+                return "\\r";
+            case "\"":
+            case "'":
+            case "\\":
+            case "%":
+                return "\\" + c; // prepends a backslash to backslash, percent,
+            // and double/single quotes
+            default:
+                return c;
+            }
+        });
     }
 }

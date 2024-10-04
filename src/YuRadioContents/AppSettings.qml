@@ -21,8 +21,10 @@ Settings {
 
     property string stationUuid
     property string locale
-    property string startPage: "search"
-    property string pauseButtonBehaviour: "pause"
+    property string startPage: "search" /* ["search", "bookmark", "history"] */
+    property string pauseButtonBehaviour: "pause" /* ["pause", "stop"] */
     property string radioBrowserBaseUrl
     property string theme: Qt.styleHints.colorScheme === Qt.Dark ? "Dark" : "Light"
+
+    property string historyPageView: "table" /* ["table", "list"] */
 }

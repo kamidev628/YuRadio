@@ -9,16 +9,12 @@ ScalableButton {
 
     property color buttonColor: Material.primary
 
-    padding: 0
-
     Material.foreground: checked ? Material.color(Material.Grey, Material.Shade500) : buttonColor.lighter(AppConfig.isDarkTheme ? 1.7 : 1)
     Material.accent: Material.color(Material.Grey, Material.Shade100)
 
     checkable: true
 
     background: Rectangle {
-        anchors.fill: parent
-
         radius: height / 2
         color: root.checked ? root.buttonColor : (AppConfig.isDarkTheme ? root.buttonColor.lighter(0.3) : "transparent")
         border.width: 1

@@ -13,6 +13,9 @@ Item {
     property string acceptedInputText
     readonly property HistorySearchFilterDialog searchFilterDialog: searchFilterDialogLoader.item as HistorySearchFilterDialog
 
+    property string viewType: AppSettings.historyPageView
+    property bool isTableViewType: viewType === "table"
+
     readonly property string queryFilters: filters.length > 0 ? "WHERE " + filters.join(" AND ") : ""
     onQueryFiltersChanged: {
         console.log("queryFilters", queryFilters);
@@ -52,27 +55,38 @@ Item {
             }
         }
 
+        IconButton {
+            id: changeViewButton
+
+            Layout.fillHeight: true
+            implicitWidth: height
+
+            display: AbstractButton.IconOnly
+
+            icon.source: root.isTableViewType ? 'images/list.svg' : 'images/table.svg'
+            icon.color: Material.color(Material.Grey, Material.Shade100)
+
+            text: root.isTableViewType ? qsTr("Display as list") : qsTr("Display as table")
+
+            onClicked: {
+                if (root.isTableViewType) {
+                    AppSettings.historyPageView = "list";
+                } else {
+                    AppSettings.historyPageView = "table";
+                }
+            }
+        }
+
         ToolButton {
-            id: filterIcon
+            id: filterButton
 
             Accessible.name: qsTr("Search Filters")
             icon.source: 'images/filter.svg'
             icon.color: Material.color(Material.Grey, Material.Shade100)
 
             onClicked: {
-                filterIcon.forceActiveFocus();
+                filterButton.forceActiveFocus();
                 root.openSearchFilterDialog();
-            }
-        }
-
-        CheckBox {
-            text: "switch"
-            onCheckedChanged: {
-                if (checked) {
-                    AppSettings.historyPageView = "table";
-                } else {
-                    AppSettings.historyPageView = "list";
-                }
             }
         }
 
@@ -115,7 +129,7 @@ Item {
 
         anchors.fill: parent
 
-        sourceComponent: AppSettings.historyPageView === "table" ? tableViewComponent : listViewComponent
+        sourceComponent: root.isTableViewType ? tableViewComponent : listViewComponent
     }
 
     Timer {

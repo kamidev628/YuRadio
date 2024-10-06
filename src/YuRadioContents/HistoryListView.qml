@@ -14,28 +14,39 @@ ListView {
     property string orderByField: "datetime(started_at)"
     property bool descending: true
 
+    property bool sortOrderChangedReason: false
+
     function refreshModel() {
         let storedContentY = contentY;
         let yPositionBefore = visibleArea.yPosition;
         let heightRatioBefore = visibleArea.heightRatio;
+
         queryModel.refresh();
-        contentY = yPositionBefore * contentHeight;
+        if (!root.sortOrderChangedReason) {
+            contentY = yPositionBefore * contentHeight;
+        }
+
+        root.sortOrderChangedReason = false
     }
 
     spacing: 10
     reuseItems: true
     currentIndex: -1
 
-    ScrollBar.vertical: ScrollBar {}
+    ScrollBar.vertical: ScrollBar {
+        visible: !AppConfig.isMobile
+    }
 
     header: HistoryListViewHeader {
         id: historyListViewHeader
 
         onOrderByFieldChanged: {
-          root.orderByField = orderByField
+            root.sortOrderChangedReason = true
+            root.orderByField = orderByField
         }
         onDescendingChanged: {
-          root.descending = descending
+            root.sortOrderChangedReason = true
+            root.descending = descending
         }
     }
 
@@ -50,7 +61,6 @@ ListView {
                 ORDER BY ${root.orderByField} ${root.descending ? "DESC" : "ASC"}`
 
         onQueryStringChanged: {
-            console.log("queryString", queryString)
             Qt.callLater(root.refreshModel);
         }
     }

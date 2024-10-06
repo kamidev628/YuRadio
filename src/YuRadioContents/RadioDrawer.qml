@@ -32,7 +32,7 @@ Drawer {
         }
     }
 
-    width: Math.min(Math.min(parent.width, parent.height) * 2 / (modal ? 3 : 6), implicitWidth)
+    width: Math.max(Math.min(parent.width, parent.height) * 2 / (modal ? 3 : 6), AppConfig.minimumWindowWidth - 50)
     height: parent.height
     clip: true
 

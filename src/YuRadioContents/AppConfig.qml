@@ -12,6 +12,8 @@ QtObject {
     readonly property int portraitLayoutWidth: 700
     readonly property int detachBottomBarWidth: 1000
     readonly property int radioStationInfoPanelWidth: 250
+    readonly property int minimumWindowWidth: 300
+    readonly property int minimumWindowHeight: 300
 
     function getScaledFont(desiredFontPointSize: int): int {
         return Math.floor(desiredFontPointSize * AppSettings.fontScale);

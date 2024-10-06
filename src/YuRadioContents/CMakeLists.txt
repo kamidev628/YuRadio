@@ -66,6 +66,7 @@ qt_add_qml_module(
   images/spotify-logo.svg
   images/itunes-logo.svg
   images/map.svg
+  images/list.svg
   images/location.svg
   images/arrow-back.svg
   images/arrow-up.svg
@@ -74,6 +75,7 @@ qt_add_qml_module(
   images/shortwave.svg
   images/shortwave.png
   images/more-vert.svg
+  images/table.svg
   images/search.svg
   images/sync.svg
   images/trash.svg

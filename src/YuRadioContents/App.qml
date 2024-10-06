@@ -48,8 +48,8 @@ ApplicationWindow {
 
     width: 640
     height: 880
-    minimumWidth: 300
-    minimumHeight: 300
+    minimumWidth: AppConfig.minimumWindowWidth
+    minimumHeight: AppConfig.minimumWindowHeight
 
     title: qsTr("YuRadio")
     visible: true

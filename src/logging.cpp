@@ -33,13 +33,19 @@ static void logToFileMessageHandler(QtMsgType type,
 void Logging::initialize() {
   /* Format logging messages */
   qSetMessagePattern(
-    u"%{if-category}%{category} %{endif}[%{time yyyy/MM/dd h:mm:ss.zzz} "
-    "%{if-debug}Debug%{endif}%{if-info}Info%{endif}%{if-warning}Warning%{endif}"
+    u"%{if-info}\033[38;2;251;241;199m\033[48;2;7;102;120m%{endif}%{if-warning}"
+    u"\033[38;2;251;241;199m\033[48;2;181;118;20m%{endif}%{if-critical}\033[38;"
+    u"2;230;198;163m\033[48;2;157;0;6m%{endif}%{if-"
+    u"fatal}\033[38;2;230;198;163m\033[48;2;157;0;6m%{"
+    u"endif}%{if-"
+    u"category}%{category} %{endif}[%{time yyyy/MM/dd h:mm:ss.zzz} "
+    "%{if-debug}Debug%{endif}%{if-info}Info%{endif}%{if-"
+    "warning}Warning%{endif}"
     "%{if-critical}Critical%{endif}%{if-fatal}Fatal%{endif}]"
 #ifdef QT_DEBUG
     " %{file}:%{line}"
 #endif /* QT_DEBUG */
-    " - %{message}"_s);
+    " - %{message}\033[0m"_s);
 
   g_originalHandler = qInstallMessageHandler(logToFileMessageHandler);
 

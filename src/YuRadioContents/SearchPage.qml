@@ -202,7 +202,7 @@ Item {
     component FooterBar: BusyIndicator {
         width: GridView.view.width
         height: visible ? 50 : 0
-        visible: radioModel.status == RadioStationModel.Loading
+        visible: radioModel.status === RadioStationModel.Loading
     }
 
     RadioStationView {
@@ -256,6 +256,21 @@ Item {
             onRefreshed: {
                 apiTimeoutTimer.shouldRun = true;
             }
+        }
+
+        ScalableLabel {
+            width: radioGridView.width
+            height: radioGridView.height
+
+            visible: radioModel.status !== RadioStationModel.Loading && radioGridView.count === 0
+
+            text: radioModel.status === RadioStationModel.Error ? qsTr("Network failure") : qsTr("No results available")
+            font.bold: true
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            wrapMode: Text.WordWrap
+            fontPointSize: 20
+            opacity: 0.6
         }
     }
 

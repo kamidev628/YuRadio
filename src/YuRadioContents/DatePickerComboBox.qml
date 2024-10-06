@@ -208,7 +208,7 @@ ScalableComboBox {
             target: root
 
             function onSelectedDateChanged() {
-                datePopup.updateResetButton()
+                datePopup.updateResetButton();
             }
         }
     }

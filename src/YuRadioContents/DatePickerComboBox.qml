@@ -37,12 +37,14 @@ ScalableComboBox {
         Material.roundedScale: Material.NotRounded
         standardButtons: Dialog.Ok | Dialog.Cancel | Dialog.Reset
 
-        padding: 8
-
-        rightMargin: 2
-        leftMargin: 2
+        rightMargin: 2 - rightInset
+        leftMargin: 2 - leftInset
         bottomMargin: 2
         topMargin: 2
+
+        padding: 0
+        leftInset: -5
+        rightInset: -5
 
         onOpened: {
             /* FIXME: QTBUG-77418. It's marked as closed but it's not actually fixed... */
@@ -143,7 +145,7 @@ ScalableComboBox {
                 }
 
                 Layout.fillWidth: true
-                Layout.preferredWidth: calendarListView.width
+                Layout.maximumWidth: calendarListView.width
             }
 
             ListView {
@@ -215,8 +217,8 @@ ScalableComboBox {
         implicitWidth: contentItem.implicitWidth
         implicitHeight: contentItem.implicitHeight
 
-        delegate: Rectangle {
-            id: monthGridDelegate
+        delegate: RoundButton {
+            id: delegateToolButton
 
             required property var model
             required property int month
@@ -224,30 +226,27 @@ ScalableComboBox {
             required property int year
             required property date date
 
-            implicitWidth: delegateToolButton.implicitWidth
-            implicitHeight: delegateToolButton.implicitHeight
-            radius: height / 2
-            color: delegateToolButton.checked ? Material.primary : "transparent"
+            flat: true
 
-            ToolButton {
-                id: delegateToolButton
+            padding: 0
+            leftInset: 0
+            rightInset: 0
+            topInset: 2
+            bottomInset: 2
+            Material.roundedScale: Material.FullScale
 
-                flat: true
+            opacity: month === monthGrid.month ? 1 : 0.8
+            enabled: month === monthGrid.month
 
-                anchors.fill: parent
+            text: root.locale.toString(date, "d")
+            checked: enabled && internal.selectedDate.getTime() === date.getTime()
 
-                opacity: monthGridDelegate.month === monthGrid.month ? 1 : 0.8
-                enabled: monthGridDelegate.month === monthGrid.month
+            Material.theme: checked ? Material.Dark : root.Material.theme
+            Material.accent: checked ? Material.foreground : root.Material.foreground
+            Material.background: checked ? Material.primary : "transparent"
 
-                text: root.locale.toString(monthGridDelegate.date, "d")
-                checked: enabled && internal.selectedDate.getTime() === monthGridDelegate.date.getTime()
-
-                Material.theme: checked ? Material.Dark : root.Material.theme
-                Material.accent: checked ? Material.foreground : root.Material.foreground
-
-                onClicked: {
-                    internal.selectedDate = monthGridDelegate.date;
-                }
+            onClicked: {
+                internal.selectedDate = date;
             }
         }
     }

@@ -4,8 +4,8 @@ Item {
     id: root
 
     property Flickable target: parent as Flickable
-    property int minimumThreshold: 100
-    property int maximumThreshold: 150
+    property int minimumThreshold: 80
+    property int maximumThreshold: 140
     property bool refreshCondition: false
 
     readonly property bool isPulling: isPullingDown || isPullingUp

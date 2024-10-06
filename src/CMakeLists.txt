@@ -41,6 +41,7 @@ qt_add_qml_module(
   QML_FILES
   Main.qml
   ErrorPage.qml
+  NO_PLUGIN
   SOURCES
   application.h
   application.cpp
@@ -84,8 +85,7 @@ qt_add_qml_module(
   obf.cpp
   memoryliterals.h
   DEPENDENCIES
-  QtCore
-  QtQuick)
+  network)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1. If
 # you are developing for iOS or macOS you should consider setting an explicit,

@@ -187,8 +187,12 @@ Rectangle {
             }
         }
 
-        ScrollBar.vertical: ScrollBar {}
-        ScrollBar.horizontal: ScrollBar {}
+        ScrollBar.vertical: ScrollBar {
+            visible: !AppConfig.isMobile
+        }
+        ScrollBar.horizontal: ScrollBar {
+            visible: !AppConfig.isMobile
+        }
     }
 
     component AlternatingRectangle: Rectangle {

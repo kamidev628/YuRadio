@@ -15,6 +15,8 @@ FocusScope {
         searchInput.forceActiveFocus();
     }
 
+    Accessible.name: qsTr("Search")
+
     states: [
         State {
             name: "searching"

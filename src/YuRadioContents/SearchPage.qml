@@ -37,7 +37,6 @@ Item {
 
             implicitWidth: height
             searchIcon.color: Material.color(Material.Grey, Material.Shade100)
-            Accessible.name: qsTr("Search")
 
             Layout.fillHeight: true
 
@@ -239,7 +238,7 @@ Item {
 
         Timer {
             id: refreshTimer
-            interval: 1500
+            interval: 8500
         }
 
         PullToRefreshHandler {

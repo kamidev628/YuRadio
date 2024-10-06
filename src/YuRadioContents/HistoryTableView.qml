@@ -28,6 +28,10 @@ Rectangle {
     HorizontalHeaderView {
         id: horizontalHeader
 
+        property int selectedIndex: 2
+        property bool descending: true
+        property string orderByField: headerModel.get(selectedIndex).fieldName
+
         visible: tableView.rows > 0
         anchors.left: tableView.left
         anchors.top: parent.top
@@ -36,21 +40,73 @@ Rectangle {
         resizableColumns: false
         clip: true
 
-        delegate: TableDelegate {
-            color: Material.background.darker(AppConfig.isDarkTheme ? 1.2 : 0.8)
+        delegate: Button {
+            id: headerDelegate
+
+            required property var model
+            required property int column
+
+            Material.roundedScale: Material.NotRounded
+            leftInset: 0
+            bottomInset: 0
+            rightInset: 0
+            topInset: 0
+
+            implicitHeight: 60
+
+            flat: true
+
+            Binding {
+                target: headerDelegate.background
+                property: "color"
+                value: root.Material.background.darker(AppConfig.isDarkTheme ? 1.2 : 0.8)
+            }
+
+            ScalableFontPicker {
+                fontPointSize: 14
+            }
+
+            font.bold: true
+            text: model.display
+
+            icon.source: {
+                if (horizontalHeader.selectedIndex === column) {
+                    if (horizontalHeader.descending) {
+                        return "images/arrow-down.svg";
+                    } else {
+                        return "images/arrow-up.svg";
+                    }
+                }
+                return "";
+            }
+
+            onClicked: {
+                if (horizontalHeader.selectedIndex === column) {
+                    horizontalHeader.descending = !horizontalHeader.descending;
+                } else {
+                    horizontalHeader.selectedIndex = column;
+                }
+            }
         }
+
         model: ListModel {
+            id: headerModel
+
             ListElement {
                 display: qsTr("Track Name")
+                fieldName: "track_name"
             }
             ListElement {
                 display: qsTr("Radio Station")
+                fieldName: "station_name"
             }
             ListElement {
                 display: qsTr("Started At")
+                fieldName: "datetime(started_at)"
             }
             ListElement {
                 display: qsTr("Ended At")
+                fieldName: "datetime(ended_at)"
             }
         }
 
@@ -80,7 +136,10 @@ Rectangle {
             if (column == 0) {
                 return width * 3 / 7;
             }
-            return (width - (width * 3 / 7)) / (columns - 1);
+            if (column == 1) {
+                return width * 2 / 7;
+            }
+            return (width - (width * 5 / 7)) / (columns - 2);
         }
 
         function smallScreenWidthProvider(column) {
@@ -92,6 +151,7 @@ Rectangle {
             }
             return 150;
         }
+
         columnWidthProvider: (width < AppConfig.portraitLayoutWidth ? smallScreenWidthProvider : largeScreenWidthProvider)
 
         model: SqlQueryModel {
@@ -100,7 +160,7 @@ Rectangle {
             queryString: `SELECT track_name, json_object('stationName', station_name, 'stationImageUrl', station_image_url) as station, started_at, ended_at
                   FROM track_history
                   ${root.queryFilters}
-                  ORDER BY datetime(started_at) DESC`
+                  ORDER BY ${horizontalHeader.orderByField} ${horizontalHeader.descending ? "DESC" : "ASC"}`
 
             onQueryStringChanged: {
                 Qt.callLater(root.refreshModel);
@@ -144,16 +204,17 @@ Rectangle {
         required property var display
         property alias label: delegateLabel
 
-        implicitWidth: delegateLabel.fullTextImplicitWidth + 20
-        implicitHeight: delegateLabel.fullTextImplicitHeight + 40
+        implicitWidth: delegateLabel.implicitWidth + 20
+        implicitHeight: delegateLabel.implicitHeight + 40
 
-        ElidedTextEdit {
+        SelectableText {
             id: delegateLabel
 
             fontPointSize: 13
             anchors.fill: parent
+            anchors.margins: 4
 
-            fullText: tableDelegate.display
+            text: tableDelegate.display
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -164,7 +225,7 @@ Rectangle {
         readonly property date currentDate: new Date(display)
         readonly property string displayDate: currentDate.toLocaleDateString(Qt.locale(AppSettings.locale), Locale.ShortFormat) + " " + currentDate.toLocaleTimeString(Qt.locale(AppSettings.locale), Locale.ShortFormat)
 
-        label.fullText: displayDate
+        label.text: displayDate
     }
 
     component StationDelegate: AlternatingRectangle {
@@ -183,30 +244,30 @@ Rectangle {
             id: rowLayout
 
             anchors.fill: parent
+            anchors.margins: 4
 
             Image {
+                Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: parent.height
+                Layout.preferredHeight: parent.height - 10
+                Layout.minimumWidth: height
+
                 source: stationDelegateComponent.stationImageUrl
 
                 fillMode: Image.PreserveAspectFit
                 sourceSize: Qt.size(height * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
                 smooth: true
-
-                Layout.alignment: Qt.AlignCenter
-                Layout.preferredWidth: parent.height
-                Layout.preferredHeight: parent.height - 10
-                Layout.minimumWidth: height
             }
 
-            ElidedTextEdit {
-                fullText: stationDelegateComponent.stationName
-                fontPointSize: 13
-
-                Layout.preferredWidth: Math.max(fullTextImplicitWidth, 200)
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignLeft
-
+            SelectableText {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.preferredWidth: Math.max(implicitWidth, 200)
+
+                text: stationDelegateComponent.stationName
+                fontPointSize: 13
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignLeft
             }
         }
     }

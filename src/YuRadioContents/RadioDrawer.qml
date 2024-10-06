@@ -100,7 +100,6 @@ Drawer {
                     duration: 100
                 }
             },
-
             Transition {
                 PropertyAnimation {
                     target: themeSwitchController
@@ -137,6 +136,7 @@ Drawer {
             Layout.minimumHeight: 50
             Layout.alignment: Qt.AlignHCenter
 
+            fillMode: Image.PreserveAspectFit
             source: "images/shortwave.svg"
             asynchronous: true
             smooth: true

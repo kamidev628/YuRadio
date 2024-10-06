@@ -110,6 +110,7 @@ Dialog {
 
                 font.bold: true
                 fontPointSize: 18
+                wrapMode: Text.WordWrap
             }
 
             GridLayout {
@@ -120,7 +121,9 @@ Dialog {
                     id: countryLabel
 
                     Layout.fillWidth: true
+
                     text: qsTr("Country")
+                    elide: Text.ElideRight
                 }
 
                 CustomHeaderComboBox {
@@ -139,6 +142,7 @@ Dialog {
                     Layout.fillWidth: true
 
                     text: qsTr("State")
+                    elide: Text.ElideRight
                 }
 
                 CustomHeaderComboBox {
@@ -198,6 +202,7 @@ Dialog {
                     Layout.fillWidth: true
 
                     text: qsTr("Language")
+                    elide: Text.ElideRight
                 }
 
                 CustomHeaderComboBox {
@@ -313,10 +318,10 @@ Dialog {
                                 tagsRepeater.buttonHeight = height;
                             }
 
-                            topPadding: 5
-                            bottomPadding: 5
                             leftPadding: 12
                             rightPadding: 12
+                            topInset: 3
+                            bottomInset: 3
 
                             checkable: true
                             checked: selected

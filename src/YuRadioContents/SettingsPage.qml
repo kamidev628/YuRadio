@@ -61,6 +61,7 @@ Item {
 
         ScrollView {
             id: scroll
+
             contentWidth: -1
             contentHeight: generalPage.implicitHeight
 

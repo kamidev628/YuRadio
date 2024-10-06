@@ -6,14 +6,26 @@ import QtQuick.Controls.Material
 import QtQuick.Layouts
 
 import YuRadioContents
-import Main
 
 Item {
     id: root
 
     property string acceptedInputText
     readonly property HistorySearchFilterDialog searchFilterDialog: searchFilterDialogLoader.item as HistorySearchFilterDialog
-    readonly property string queryFilters: acceptedInputText.length > 0 ? `WHERE track_name LIKE '%${Utils.mysql_real_escape_string(root.acceptedInputText).split("").join("%")}%' ESCAPE '\\'` : ""
+
+    readonly property string queryFilters: filters.length > 0 ? "WHERE " + filters.join(" AND ") : ""
+    onQueryFiltersChanged: {
+        console.log("queryFilters", queryFilters);
+    }
+
+    property string searchByField: "station_name"
+    property date startDate
+    property date endDate
+
+    readonly property list<string> filters: [
+        /* Input      */ acceptedInputText.length > 0 ? `${searchByField} LIKE '%${Utils.mysql_real_escape_string(root.acceptedInputText).split("").join("%")}%' ESCAPE '\\'` : "",
+        /* Start Date */ Utils.isDateValid(startDate) ? `started_at > '${Utils.dateToISOString(startDate)}'` : "",
+        /* End Date   */ Utils.isDateValid(endDate) ? `ended_at < '${Utils.dateToISOString(endDate)}'` : ""].filter(x => x)
 
     property Component headerContent: RowLayout {
         id: headerLayout
@@ -106,6 +118,29 @@ Item {
         sourceComponent: AppSettings.historyPageView === "table" ? tableViewComponent : listViewComponent
     }
 
+    Timer {
+        id: refreshModelTimer
+
+        interval: 500
+        running: root.visible && AppStorage.streamTitleHistoryDirty
+        repeat: false
+
+        onTriggered: {
+            AppStorage.streamTitleHistoryDirty = false;
+            mainContentsLoader.item?.refreshModel();
+        }
+    }
+
+    Connections {
+        target: root.searchFilterDialog
+
+        function onFiltersChanged(searchByField: string, startDate: date, endDate: date) {
+            root.searchByField = searchByField;
+            root.startDate = startDate;
+            root.endDate = endDate;
+        }
+    }
+
     Component {
         id: listViewComponent
 
@@ -119,19 +154,6 @@ Item {
 
         HistoryTableView {
             queryFilters: root.queryFilters
-        }
-    }
-
-    Timer {
-        id: refreshModelTimer
-
-        interval: 500
-        running: root.visible && AppStorage.streamTitleHistoryDirty
-        repeat: false
-
-        onTriggered: {
-            AppStorage.streamTitleHistoryDirty = false;
-            mainContentsLoader.item?.refreshModel();
         }
     }
 }

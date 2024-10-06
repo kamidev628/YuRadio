@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -9,6 +11,8 @@ ListView {
     id: root
 
     property string queryFilters
+    property string orderByField: "datetime(started_at)"
+    property bool descending: true
 
     function refreshModel() {
         let storedContentY = contentY;
@@ -24,15 +28,29 @@ ListView {
 
     ScrollBar.vertical: ScrollBar {}
 
+    header: HistoryListViewHeader {
+        id: historyListViewHeader
+
+        onOrderByFieldChanged: {
+          root.orderByField = orderByField
+        }
+        onDescendingChanged: {
+          root.descending = descending
+        }
+    }
+
+    headerPositioning: ListView.PullBackHeader
+
     model: SqlQueryModel {
         id: queryModel
 
         queryString: `SELECT json_object('trackName', track_name, 'stationName', station_name, 'stationImageUrl', station_image_url, 'startedAt', started_at, 'endedAt', ended_at) as track
                 FROM track_history
                 ${root.queryFilters}
-                ORDER BY datetime(started_at) DESC`
+                ORDER BY ${root.orderByField} ${root.descending ? "DESC" : "ASC"}`
 
         onQueryStringChanged: {
+            console.log("queryString", queryString)
             Qt.callLater(root.refreshModel);
         }
     }
@@ -74,29 +92,30 @@ ListView {
             spacing: 0
             Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
             Layout.fillWidth: true
+            Layout.rightMargin: 10
 
-            ElidedTextEdit {
+            SelectableText {
                 Layout.fillWidth: true
 
-                fullText: trackDelegate.trackName
+                text: trackDelegate.trackName
 
                 fontPointSize: 14
                 font.bold: true
             }
-            ElidedTextEdit {
+            SelectableText {
                 Layout.fillWidth: true
 
-                fullText: trackDelegate.stationName
+                text: trackDelegate.stationName
 
                 fontPointSize: 13
                 opacity: 0.7
             }
-            ElidedTextEdit {
+            SelectableText {
                 Layout.fillWidth: true
                 Layout.topMargin: 5
 
                 opacity: 0.9
-                fullText: trackDelegate.displayDate
+                text: trackDelegate.displayDate
             }
         }
     }

@@ -18,7 +18,8 @@ qt_add_qml_module(
   AppConfig.qml
   AppStorage.qml
   Utils.qml
-  ElidedTextEdit.qml
+  ListViewSortHeader.qml
+  SelectableText.qml
   RadioStationDelegate.qml
   RadioStationInfoPanel.qml
   RadioBottomBarContents.qml
@@ -32,6 +33,7 @@ qt_add_qml_module(
   ScalableFontPicker.qml
   ScalableItemDelegate.qml
   ScalableButton.qml
+  DatePickerComboBox.qml
   AboutPage.qml
   FilledGridView.qml
   MoreOptionsMenu.qml
@@ -52,6 +54,10 @@ qt_add_qml_module(
   VolumeController.qml
   HeaderComboBox.qml
   HistoryPage.qml
+  HistorySearchFilterDialog.qml
+  HistoryTableView.qml
+  HistoryListView.qml
+  HistoryListViewHeader.qml
   ListViewHighlightBar.qml
   radiobrowser.mjs
   RESOURCES
@@ -62,6 +68,8 @@ qt_add_qml_module(
   images/map.svg
   images/location.svg
   images/arrow-back.svg
+  images/arrow-up.svg
+  images/arrow-down.svg
   images/refresh.svg
   images/shortwave.svg
   images/shortwave.png

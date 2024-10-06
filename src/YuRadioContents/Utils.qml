@@ -50,7 +50,15 @@ QtObject {
     }
 
     function shortDate(d: date, locale: var): string {
-      return d.toLocaleDateString(locale, Locale.ShortFormat) + " " + d.toLocaleTimeString(locale, Locale.ShortFormat)
+        return d.toLocaleDateString(locale, Locale.ShortFormat) + " " + d.toLocaleTimeString(locale, Locale.ShortFormat);
+    }
+
+    function isDateValid(d: date): bool {
+        return !Number.isNaN(d.valueOf());
+    }
+
+    function dateToISOString(d: date): string {
+        return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
     }
 
     function mysql_real_escape_string(str: string): string {

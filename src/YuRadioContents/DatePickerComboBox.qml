@@ -30,21 +30,22 @@ ScalableComboBox {
     popup: Dialog {
         id: datePopup
 
-        width: Math.max(root.width, contentItem.implicitWidth)
-        implicitHeight: contentItem.implicitHeight
-        implicitWidth: contentItem.implicitWidth
+        function updateResetButton() {
+            let resetButton = datePopup.standardButton(Dialog.Reset);
+            resetButton.enabled = Utils.isDateValid(root.selectedDate);
+        }
+
+        leftMargin: 2
+        rightMargin: 2
+        topMargin: 2
+        bottomMargin: 2
 
         Material.roundedScale: Material.NotRounded
         standardButtons: Dialog.Ok | Dialog.Cancel | Dialog.Reset
 
-        rightMargin: 2 - rightInset
-        leftMargin: 2 - leftInset
-        bottomMargin: 2
-        topMargin: 2
-
-        padding: 0
-        leftInset: -5
-        rightInset: -5
+        onAboutToShow: {
+            updateResetButton();
+        }
 
         onOpened: {
             /* FIXME: QTBUG-77418. It's marked as closed but it's not actually fixed... */
@@ -134,6 +135,11 @@ ScalableComboBox {
             }
 
             DayOfWeekRow {
+                id: weekRow
+
+                Layout.alignment: Qt.AlignHCenter
+                implicitWidth: calendarListView.width
+
                 locale: root.locale
 
                 delegate: ScalableLabel {
@@ -143,9 +149,6 @@ ScalableComboBox {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
-
-                Layout.fillWidth: true
-                Layout.maximumWidth: calendarListView.width
             }
 
             ListView {
@@ -157,13 +160,18 @@ ScalableComboBox {
                 }
 
                 function setCurrentIndex(index) {
-                    positionViewAtIndex(index, ListView.SnapPosition);
                     currentIndex = index;
+                    positionViewAtIndex(index, ListView.SnapPosition);
                 }
+
+                implicitHeight: contentItem.childrenRect.height
+                Layout.alignment: Qt.AlignHCenter
 
                 snapMode: ListView.SnapOneItem
                 orientation: ListView.Horizontal
                 clip: true
+
+                reuseItems: true
 
                 // highlightRangeMode: ListView.StrictlyEnforceRange
                 model: CalendarModel {
@@ -174,9 +182,8 @@ ScalableComboBox {
                 }
 
                 delegate: CalendarDelegate {
-                    Component.onCompleted: {
+                    onImplicitWidthChanged: {
                         ListView.view.implicitWidth = implicitWidth;
-                        ListView.view.implicitHeight = implicitHeight;
                     }
                 }
 
@@ -194,6 +201,14 @@ ScalableComboBox {
 
             Item {
                 Layout.minimumHeight: 20
+            }
+        }
+
+        Connections {
+            target: root
+
+            function onSelectedDateChanged() {
+                datePopup.updateResetButton()
             }
         }
     }
@@ -246,7 +261,11 @@ ScalableComboBox {
             Material.background: checked ? Material.primary : "transparent"
 
             onClicked: {
-                internal.selectedDate = date;
+                if (checked) {
+                    internal.selectedDate = new Date(NaN);
+                } else {
+                    internal.selectedDate = date;
+                }
             }
         }
     }

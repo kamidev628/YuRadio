@@ -198,7 +198,7 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <location filename="../src/YuRadioContents/HistoryTableView.qml" line="104"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryTableView.qml" line="104"/>
         <source>Started At</source>
-        <translation>Begonnen am&quot;</translation>
+        <translation>Begonnen am</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/HistoryTableView.qml" line="108"/>

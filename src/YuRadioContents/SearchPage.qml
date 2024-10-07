@@ -107,7 +107,7 @@ Item {
             id: searchFilterDialog
 
             implicitWidth: Math.min(Overlay.overlay.width * 3 / 4, 500)
-            implicitHeight: Overlay.overlay.height * 3 / 4
+            implicitHeight: Overlay.overlay.height * 5 / 6
 
             anchors.centerIn: Overlay.overlay
 

@@ -14,9 +14,9 @@ Dialog {
 
     required property NetworkManager networkManager
 
-    readonly property var selectedCountry: countryCombo.currentIndex !== -1 ? countryCombo.model[countryCombo.currentIndex] : undefined
-    readonly property var selectedState: stateCombo.currentIndex !== -1 ? stateModel.get(stateCombo.currentIndex).name : undefined
-    readonly property var selectedLanguage: languageCombo.currentIndex !== -1 ? languageCombo.model[languageCombo.currentIndex] : undefined
+    readonly property var selectedCountry: countryCombo.currentValue
+    readonly property var selectedState: stateCombo.currentValue
+    readonly property var selectedLanguage: languageCombo.currentValue
 
     signal filtersChanged(var country, var state, var language, var tags)
 

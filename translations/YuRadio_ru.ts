@@ -54,22 +54,166 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>App</name>
     <message>
-        <location filename="../src/YuRadioContents/App.qml" line="55"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/App.qml" line="55"/>
+        <location filename="../src/YuRadioContents/App.qml" line="54"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/App.qml" line="54"/>
         <source>YuRadio</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/App.qml" line="305"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/App.qml" line="305"/>
+        <location filename="../src/YuRadioContents/App.qml" line="317"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/App.qml" line="317"/>
         <source>Back</source>
         <translation>Назад</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/App.qml" line="305"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/App.qml" line="305"/>
+        <location filename="../src/YuRadioContents/App.qml" line="317"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/App.qml" line="317"/>
         <source>Menu</source>
         <translation>Меню</translation>
+    </message>
+</context>
+<context>
+    <name>HistoryListView</name>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryListView.qml" line="79"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryListView.qml" line="79"/>
+        <source>%1 - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HistoryListViewHeader</name>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryListViewHeader.qml" line="15"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryListViewHeader.qml" line="15"/>
+        <source>track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryListViewHeader.qml" line="19"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryListViewHeader.qml" line="19"/>
+        <source>station</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryListViewHeader.qml" line="23"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryListViewHeader.qml" line="23"/>
+        <source>start date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryListViewHeader.qml" line="27"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryListViewHeader.qml" line="27"/>
+        <source>end date</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HistoryPage</name>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryPage.qml" line="69"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryPage.qml" line="69"/>
+        <source>Display as list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryPage.qml" line="69"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryPage.qml" line="69"/>
+        <source>Display as table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryPage.qml" line="83"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryPage.qml" line="83"/>
+        <source>Search Filters</source>
+        <translation type="unfinished">Настройки поиска</translation>
+    </message>
+</context>
+<context>
+    <name>HistorySearchFilterDialog</name>
+    <message>
+        <location filename="../src/YuRadioContents/HistorySearchFilterDialog.qml" line="64"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistorySearchFilterDialog.qml" line="64"/>
+        <source>Search Filters</source>
+        <translation type="unfinished">Настройки поиска</translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistorySearchFilterDialog.qml" line="101"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistorySearchFilterDialog.qml" line="101"/>
+        <source>Search by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistorySearchFilterDialog.qml" line="119"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistorySearchFilterDialog.qml" line="119"/>
+        <source>Station name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistorySearchFilterDialog.qml" line="123"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistorySearchFilterDialog.qml" line="123"/>
+        <source>Track name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistorySearchFilterDialog.qml" line="134"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistorySearchFilterDialog.qml" line="134"/>
+        <source>Start date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistorySearchFilterDialog.qml" line="153"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistorySearchFilterDialog.qml" line="153"/>
+        <source>End date</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HistoryTableView</name>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryTableView.qml" line="96"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryTableView.qml" line="96"/>
+        <source>Track Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryTableView.qml" line="100"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryTableView.qml" line="100"/>
+        <source>Radio Station</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryTableView.qml" line="104"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryTableView.qml" line="104"/>
+        <source>Started At</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/HistoryTableView.qml" line="108"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryTableView.qml" line="108"/>
+        <source>Ended At</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ListViewSortHeader</name>
+    <message>
+        <location filename="../src/YuRadioContents/ListViewSortHeader.qml" line="56"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/ListViewSortHeader.qml" line="56"/>
+        <source>Sort in ascending order</source>
+        <translation type="unfinished">Отсортировать в порядке возрастания</translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/ListViewSortHeader.qml" line="56"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/ListViewSortHeader.qml" line="56"/>
+        <source>Sort in descending order</source>
+        <translation type="unfinished">Отсортировать в порядке убывания</translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/ListViewSortHeader.qml" line="102"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/ListViewSortHeader.qml" line="102"/>
+        <source>Sort by %1</source>
+        <translation type="unfinished">Отсортировать по %1</translation>
     </message>
 </context>
 <context>
@@ -201,44 +345,50 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>RadioDrawer</name>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="162"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="162"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="163"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="163"/>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="169"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="169"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="170"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="170"/>
         <source>Bookmarks</source>
         <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="176"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="176"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="177"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="177"/>
+        <source>History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="184"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="184"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="183"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="183"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="191"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="191"/>
         <source>About</source>
         <translation>О приложении</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="257"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="257"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="265"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="265"/>
         <source>Dark</source>
         <translation>Темная</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="266"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="266"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="274"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="274"/>
         <source>Theme</source>
         <translation>Тема</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="274"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="274"/>
+        <location filename="../src/YuRadioContents/RadioDrawer.qml" line="282"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioDrawer.qml" line="282"/>
         <source>Light</source>
         <translation>Светлая</translation>
     </message>
@@ -303,38 +453,38 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>Показать на карте</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="189"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="189"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="191"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="191"/>
         <source>Music Info is not avaialble</source>
         <translation>Информация о песне недоступна</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="231"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="231"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="233"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="233"/>
         <source>&lt;b&gt;Album&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Альбом&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="240"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="240"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="242"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="242"/>
         <source>&lt;b&gt;Song&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Песня&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="249"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="249"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="251"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="251"/>
         <source>&lt;b&gt;Artist&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Исполнитель&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="278"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="278"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="280"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="280"/>
         <source>Show track</source>
         <translation>Показать трэк</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="296"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="296"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="298"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationInfoPanel.qml" line="298"/>
         <source>Provided for: %1</source>
         <translation>Предоставлен для: %1</translation>
     </message>
@@ -348,26 +498,26 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>Настройки поиска</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="123"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="123"/>
+        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="144"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="144"/>
         <source>Country</source>
         <translation>Страна</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="141"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="141"/>
+        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="163"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="163"/>
         <source>State</source>
         <translation>Штат</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="200"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="200"/>
+        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="226"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="226"/>
         <source>Language</source>
         <translation>Язык</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="220"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="220"/>
+        <location filename="../src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="247"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationSearchFilterDialog.qml" line="247"/>
         <source>Tags</source>
         <translation>Тэги</translation>
     </message>
@@ -375,104 +525,101 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>RadioStationsViewHeader</name>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="65"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="65"/>
-        <source>Sort in ascending order</source>
-        <translation>Отсортировать в порядке возрастания</translation>
-    </message>
-    <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="65"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="65"/>
-        <source>Sort in descending order</source>
-        <translation>Отсортировать в порядке убывания</translation>
-    </message>
-    <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="94"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="94"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="25"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="25"/>
         <source>votes</source>
         <translation>голоса</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="98"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="98"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="29"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="29"/>
         <source>popularity</source>
         <translation>популярность</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="102"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="102"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="33"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="33"/>
         <source>bitrate</source>
         <translation>битрейт</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="106"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="106"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="37"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="37"/>
         <source>name</source>
         <translation>название</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="110"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="110"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="41"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="41"/>
         <source>country</source>
         <translation>страна</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="114"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="114"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="45"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="45"/>
         <source>state</source>
         <translation>штат</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="118"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="118"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="49"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="49"/>
         <source>language</source>
         <translation>язык</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="122"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="122"/>
+        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="53"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="53"/>
         <source>tags</source>
         <translation>тэги</translation>
     </message>
+</context>
+<context>
+    <name>SearchBar</name>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="140"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="140"/>
-        <source>Sort by %1</source>
-        <translation>Отсортировать по %1</translation>
+        <location filename="../src/YuRadioContents/SearchBar.qml" line="18"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SearchBar.qml" line="18"/>
+        <source>Search</source>
+        <translation type="unfinished">Поиск</translation>
     </message>
 </context>
 <context>
     <name>SearchPage</name>
     <message>
-        <location filename="../src/YuRadioContents/SearchPage.qml" line="40"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SearchPage.qml" line="40"/>
-        <source>Search</source>
-        <translation>Поиск</translation>
-    </message>
-    <message>
-        <location filename="../src/YuRadioContents/SearchPage.qml" line="55"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SearchPage.qml" line="55"/>
+        <location filename="../src/YuRadioContents/SearchPage.qml" line="54"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SearchPage.qml" line="54"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SearchPage.qml" line="66"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SearchPage.qml" line="66"/>
+        <location filename="../src/YuRadioContents/SearchPage.qml" line="65"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SearchPage.qml" line="65"/>
         <source>Search Filters</source>
         <translation>Настройки поиска</translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/SearchPage.qml" line="267"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SearchPage.qml" line="267"/>
+        <source>Network failure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/SearchPage.qml" line="267"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SearchPage.qml" line="267"/>
+        <source>No results available</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SettingsPage</name>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="137"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="137"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="142"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="142"/>
         <source>Could not fetch available servers</source>
         <translation>Не получается получить список доступных серверов</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="86"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="86"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="91"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="91"/>
         <source>Available Servers</source>
         <translation>Доступные сервера</translation>
     </message>
@@ -483,14 +630,14 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>Начальная Страница</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="168"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="168"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="173"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="173"/>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="172"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="172"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="177"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="177"/>
         <source>Bookmarks</source>
         <translation>Закладки</translation>
     </message>
@@ -507,88 +654,94 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>Масштаб шрифта</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="37"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="37"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="41"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="41"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="40"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="40"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="44"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="44"/>
         <source>Font</source>
         <translation>Шрифт</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="222"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="222"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="181"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="181"/>
+        <source>History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="231"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="231"/>
         <source>Pause button behaviour</source>
         <translation>Поведение кнопки паузы</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="230"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="230"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="239"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="239"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="234"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="234"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="243"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="243"/>
         <source>Stop</source>
         <translation>Остановить</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="253"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="253"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="262"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="262"/>
         <source>Animate selection changes</source>
         <translation>Анимировать изменения выделения</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="264"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="264"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="273"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="273"/>
         <source>Enable bottom bar blur</source>
         <translation>Включить размытие нижней панели</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="277"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="277"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="286"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="286"/>
         <source>Show icon in tray</source>
         <translation>Отображать иконку в трее</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="291"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="291"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="300"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="300"/>
         <source>Show messages in tray</source>
         <translation>Отображать сообщения в трее</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="304"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="304"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="313"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="313"/>
         <source>Resume playback when back online</source>
         <translation>Возобновить воспроизведение после восстановления соединения</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="369"/>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="390"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="369"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="390"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="378"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="399"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="378"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="399"/>
         <source>A</source>
         <translation>А</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="398"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="398"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="407"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="407"/>
         <source>Sample Text</source>
         <translation>Образец</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="416"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="416"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="425"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="425"/>
         <source>Successfully Authorized</source>
         <translation>Вы успешно авторизованы</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsPage.qml" line="319"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="319"/>
+        <location filename="../src/YuRadioContents/SettingsPage.qml" line="328"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="328"/>
         <source>Spotify integration</source>
         <translation>Интеграция с Spotify</translation>
     </message>

@@ -28,7 +28,15 @@ find_package(
              WebSockets
              NetworkAuth)
 
-qt_standard_project_setup(REQUIRES 6.5 I18N_TRANSLATED_LANGUAGES en ru)
+qt_standard_project_setup(
+  REQUIRES
+  6.5
+  I18N_TRANSLATED_LANGUAGES
+  en
+  de
+  fr
+  ja
+  ru)
 
 cmake_dependent_option(
   BUILD_UIOHOOK

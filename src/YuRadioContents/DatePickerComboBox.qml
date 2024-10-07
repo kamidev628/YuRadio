@@ -155,18 +155,13 @@ ScalableComboBox {
                 id: calendarListView
 
                 function updateCurrentIndex() {
-                    let index = calendarModel.indexOf(yearSpinBox.value, monthCombo.month);
-                    setCurrentIndex(index);
-                }
-
-                function setCurrentIndex(index) {
-                    currentIndex = index;
-                    positionViewAtIndex(index, ListView.SnapPosition);
+                    currentIndex = calendarModel.indexOf(yearSpinBox.value, monthCombo.month);
                 }
 
                 implicitHeight: contentItem.childrenRect.height
                 Layout.alignment: Qt.AlignHCenter
 
+                highlightMoveDuration: 0
                 snapMode: ListView.SnapOneItem
                 orientation: ListView.Horizontal
                 clip: true

@@ -228,7 +228,7 @@ Item {
                         Layout.topMargin: 20
                         Layout.fillWidth: true
 
-                        text: qsTr("Pause button behaviour")
+                        text: qsTr("Pause button behavior")
                     }
 
                     ScalableComboBox {

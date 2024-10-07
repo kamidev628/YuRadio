@@ -80,27 +80,43 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>HistoryListViewHeader</name>
     <message>
+        <source>track</source>
+        <translation type="vanished">曲名</translation>
+    </message>
+    <message>
+        <source>station</source>
+        <translation type="vanished">ラジオ局</translation>
+    </message>
+    <message>
+        <source>start date</source>
+        <translation type="vanished">開始日</translation>
+    </message>
+    <message>
+        <source>end date</source>
+        <translation type="vanished">終了日</translation>
+    </message>
+    <message>
         <location filename="../src/YuRadioContents/HistoryListViewHeader.qml" line="15"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryListViewHeader.qml" line="15"/>
-        <source>track</source>
+        <source>Track</source>
         <translation>曲名</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/HistoryListViewHeader.qml" line="19"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryListViewHeader.qml" line="19"/>
-        <source>station</source>
+        <source>Station</source>
         <translation>ラジオ局</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/HistoryListViewHeader.qml" line="23"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryListViewHeader.qml" line="23"/>
-        <source>start date</source>
+        <source>Start date</source>
         <translation>開始日</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/HistoryListViewHeader.qml" line="27"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/HistoryListViewHeader.qml" line="27"/>
-        <source>end date</source>
+        <source>End date</source>
         <translation>終了日</translation>
     </message>
 </context>
@@ -521,51 +537,83 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>RadioStationsViewHeader</name>
     <message>
+        <source>votes</source>
+        <translation type="vanished">投票数</translation>
+    </message>
+    <message>
+        <source>popularity</source>
+        <translation type="vanished">人気</translation>
+    </message>
+    <message>
+        <source>bitrate</source>
+        <translation type="vanished">ビットレート</translation>
+    </message>
+    <message>
+        <source>name</source>
+        <translation type="vanished">ラジオ局名</translation>
+    </message>
+    <message>
+        <source>country</source>
+        <translation type="vanished">国</translation>
+    </message>
+    <message>
+        <source>state</source>
+        <translation type="vanished">都市</translation>
+    </message>
+    <message>
+        <source>language</source>
+        <translation type="vanished">言語</translation>
+    </message>
+    <message>
+        <source>tags</source>
+        <translation type="vanished">タグ</translation>
+    </message>
+    <message>
         <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="25"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="25"/>
-        <source>votes</source>
+        <source>Votes</source>
         <translation>投票数</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="29"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="29"/>
-        <source>popularity</source>
+        <source>Popularity</source>
         <translation>人気</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="33"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="33"/>
-        <source>bitrate</source>
+        <source>Bitrate</source>
         <translation>ビットレート</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="37"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="37"/>
-        <source>name</source>
+        <source>Name</source>
         <translation>ラジオ局名</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="41"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="41"/>
-        <source>country</source>
+        <source>Country</source>
         <translation>国</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="45"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="45"/>
-        <source>state</source>
+        <source>State</source>
         <translation>都市</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="49"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="49"/>
-        <source>language</source>
+        <source>Language</source>
         <translation>言語</translation>
     </message>
     <message>
         <location filename="../src/YuRadioContents/RadioStationsViewHeader.qml" line="53"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/RadioStationsViewHeader.qml" line="53"/>
-        <source>tags</source>
+        <source>Tags</source>
         <translation>タグ</translation>
     </message>
 </context>
@@ -668,9 +716,13 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>履歴</translation>
     </message>
     <message>
+        <source>Pause button behaviour</source>
+        <translation type="vanished">再生停止ボタンの挙動</translation>
+    </message>
+    <message>
         <location filename="../src/YuRadioContents/SettingsPage.qml" line="231"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Release/src/YuRadioContents/SettingsPage.qml" line="231"/>
-        <source>Pause button behaviour</source>
+        <source>Pause button behavior</source>
         <translation>再生停止ボタンの挙動</translation>
     </message>
     <message>

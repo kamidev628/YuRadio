@@ -67,9 +67,7 @@ qt_add_translations(
   TS_FILE_BASE
   YuRadio
   TS_FILE_DIR
-  translations
-  LUPDATE_OPTIONS
-  -no-obsolete)
+  translations)
 # NOTE: Don't forget to run `update_translations` target when ts files are
 # changed
 

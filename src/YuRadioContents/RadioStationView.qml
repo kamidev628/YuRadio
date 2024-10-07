@@ -39,6 +39,10 @@ FilledGridView {
 
     boundsMovement: Flickable.StopAtBounds
     boundsBehavior: AppConfig.isMobile ? Flickable.DragOverBounds : Flickable.StopAtBounds
+
+    /* NOTE: QTBUG-117035 Uncomment when supported */
+    // headerPositioning: AppConfig.isMobile ? GridView.PullBackHeader : GridView.InlineHeader
+
     highlight: ListViewHighlightBar {}
 
     Binding {

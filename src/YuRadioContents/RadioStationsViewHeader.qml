@@ -22,35 +22,35 @@ ListViewSortHeader {
 
     model: ListModel {
         ListElement {
-            name: qsTr("votes")
+            name: qsTr("Votes")
             field: RadioStationsViewHeader.SortField.Votes
         }
         ListElement {
-            name: qsTr("popularity")
+            name: qsTr("Popularity")
             field: RadioStationsViewHeader.SortField.Popularity
         }
         ListElement {
-            name: qsTr("bitrate")
+            name: qsTr("Bitrate")
             field: RadioStationsViewHeader.SortField.Bitrate
         }
         ListElement {
-            name: qsTr("name")
+            name: qsTr("Name")
             field: RadioStationsViewHeader.SortField.Name
         }
         ListElement {
-            name: qsTr("country")
+            name: qsTr("Country")
             field: RadioStationsViewHeader.SortField.Country
         }
         ListElement {
-            name: qsTr("state")
+            name: qsTr("State")
             field: RadioStationsViewHeader.SortField.State
         }
         ListElement {
-            name: qsTr("language")
+            name: qsTr("Language")
             field: RadioStationsViewHeader.SortField.Language
         }
         ListElement {
-            name: qsTr("tags")
+            name: qsTr("Tags")
             field: RadioStationsViewHeader.SortField.Tags
         }
     }

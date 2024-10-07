@@ -12,19 +12,19 @@ ListViewSortHeader {
 
     model: ListModel {
         ListElement {
-            name: qsTr("track")
+            name: qsTr("Track")
             field: "track_name"
         }
         ListElement {
-            name: qsTr("station")
+            name: qsTr("Station")
             field: "station_name"
         }
         ListElement {
-            name: qsTr("start date")
+            name: qsTr("Start date")
             field: "datetime(started_at)"
         }
         ListElement {
-            name: qsTr("end date")
+            name: qsTr("End date")
             field: "datetime(ended_at)"
         }
     }

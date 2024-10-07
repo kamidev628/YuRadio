@@ -24,6 +24,7 @@ ScalableComboBox {
     signal acceptedDate(date d)
 
     locale: Qt.locale(AppSettings.locale)
+    displayText: Utils.isDateValid(root.selectedDate) ? selectedDate.toLocaleDateString(root.locale, Locale.ShortFormat) : ""
     inputMethodHints: Qt.ImhDate
     editable: false
 
@@ -58,7 +59,6 @@ ScalableComboBox {
         onAccepted: {
             root.acceptedDate(root.selectedDate);
             internal.prevSelectedDate = internal.selectedDate;
-            root.displayText = root.selectedDate.toLocaleDateString(root.locale, Locale.ShortFormat);
         }
 
         onRejected: {

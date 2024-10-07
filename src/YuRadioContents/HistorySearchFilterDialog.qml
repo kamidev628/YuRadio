@@ -176,7 +176,7 @@ Dialog {
         id: internal
 
         property int prevSelectedSearchBy
-        property date prevSelectedStartDate
-        property date prevSelectedEndDate
+        property date prevSelectedStartDate: new Date(NaN)
+        property date prevSelectedEndDate: new Date(NaN)
     }
 }

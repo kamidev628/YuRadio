@@ -114,8 +114,27 @@ Dialog {
             }
 
             GridLayout {
+                id: gridLayout
+
                 Layout.topMargin: 20
                 columns: 2
+
+                states: [
+                    State {
+                        when: columnLayout.width < 400
+
+                        PropertyChanges {
+                            gridLayout.columns: 1
+
+                            stateLabel.Layout.topMargin: 8
+                            languageLabel.Layout.topMargin: 8
+
+                            countryCombo.Layout.leftMargin: 0
+                            stateCombo.Layout.leftMargin: 0
+                            languageCombo.Layout.leftMargin: 0
+                        }
+                    }
+                ]
 
                 ScalableLabel {
                     id: countryLabel
@@ -133,11 +152,11 @@ Dialog {
                     Layout.leftMargin: 10
                     Accessible.name: countryLabel.text
 
-                    model: Storage.getCountries()
+                    stringModel: Storage.getCountries()
                 }
 
                 ScalableLabel {
-                    id: stateText
+                    id: stateLabel
 
                     Layout.fillWidth: true
 
@@ -150,11 +169,9 @@ Dialog {
 
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
-                    Accessible.name: stateText.text
+                    Accessible.name: stateLabel.text
 
-                    implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
                     textRole: "name"
-
                     model: JsonRestListModel {
                         id: stateModel
 
@@ -186,6 +203,11 @@ Dialog {
                         onStatusChanged: {
                             if (status == JsonRestListModel.Ready) {
                                 pagination.nextPage();
+                                let listOfStates = [];
+                                for (let i = 0; i < count; ++i) {
+                                    listOfStates.push(get(i).name);
+                                }
+                                stateCombo.stringModel = listOfStates;
                             }
                         }
 
@@ -212,7 +234,7 @@ Dialog {
                     Layout.leftMargin: 10
                     Accessible.name: languageLabel.text
 
-                    model: Storage.getLanguages()
+                    stringModel: Storage.getLanguages()
                 }
             }
 
@@ -250,6 +272,9 @@ Dialog {
                     }, {}));
                 }
 
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
                 model: ListModel {
                     id: tagsModel
 
@@ -263,8 +288,8 @@ Dialog {
 
                 spacing: 5
                 clip: true
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                reuseItems: true
+
                 Accessible.name: tagsLabel.text
 
                 delegate: Flow {
@@ -338,12 +363,7 @@ Dialog {
         }
     }
 
-    component CustomHeaderComboBox: HeaderComboBox {
-        function resetInput() {
-            currentIndex = -1;
-            editText = "";
-        }
-
+    component CustomHeaderComboBox: CompletionComboBox {
         function restore(index) {
             currentIndex = index;
             editText = textAt(currentIndex);
@@ -351,14 +371,6 @@ Dialog {
 
         editable: true
         currentIndex: -1
-
-        fontPointSize: 13
-
-        onAccepted: {
-            if (find(editText) === -1) {
-                resetInput();
-            }
-        }
     }
 
     QtObject {

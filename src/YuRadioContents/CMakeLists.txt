@@ -17,6 +17,7 @@ qt_add_qml_module(
   AppSettings.qml
   AppConfig.qml
   AppStorage.qml
+  CompletionComboBox.qml
   Utils.qml
   ListViewSortHeader.qml
   SelectableText.qml

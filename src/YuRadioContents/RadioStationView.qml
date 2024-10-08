@@ -50,6 +50,9 @@ FilledGridView {
         root.highlightMoveDuration: 0
     }
 
+    ScrollIndicator.vertical: ScrollIndicator { 
+        visible: AppConfig.isMobile
+    }
     ScrollBar.vertical: ScrollBar {
         visible: !AppConfig.isMobile
     }

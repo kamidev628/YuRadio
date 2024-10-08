@@ -15,7 +15,7 @@ Dialog {
     required property NetworkManager networkManager
 
     readonly property var selectedCountry: countryCombo.currentValue
-    readonly property var selectedState: stateCombo.currentValue
+    readonly property var selectedState: stateCombo.currentValue?.name
     readonly property var selectedLanguage: languageCombo.currentValue
 
     signal filtersChanged(var country, var state, var language, var tags)

@@ -106,7 +106,7 @@ Item {
         sourceComponent: RadioStationSearchFilterDialog {
             id: searchFilterDialog
 
-            implicitWidth: Math.min(Overlay.overlay.width * 3 / 4, 500)
+            implicitWidth: Math.min(Overlay.overlay.width * 5 / 6, 500)
             implicitHeight: Overlay.overlay.height * 5 / 6
 
             anchors.centerIn: Overlay.overlay

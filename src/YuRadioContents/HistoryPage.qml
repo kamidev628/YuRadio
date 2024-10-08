@@ -17,9 +17,6 @@ Item {
     property bool isTableViewType: viewType === "table"
 
     readonly property string queryFilters: filters.length > 0 ? "WHERE " + filters.join(" AND ") : ""
-    onQueryFiltersChanged: {
-        console.log("queryFilters", queryFilters);
-    }
 
     property string searchByField: "station_name"
     property date startDate
@@ -116,8 +113,8 @@ Item {
         sourceComponent: HistorySearchFilterDialog {
             id: searchFilterDialog
 
-            implicitWidth: Math.min(Overlay.overlay.width * 3 / 4, 500)
-            implicitHeight: Overlay.overlay.height * 3 / 4
+            implicitWidth: Math.min(Overlay.overlay.width * 5 / 6, 500)
+            implicitHeight: Overlay.overlay.height * 5 / 6
 
             anchors.centerIn: Overlay.overlay
         }

@@ -268,7 +268,7 @@ Item {
             font.bold: true
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            wrapMode: Text.WordWrap
+            wrapMode: Text.Wrap
             fontPointSize: 20
             opacity: 0.6
         }

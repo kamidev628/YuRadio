@@ -110,7 +110,7 @@ Dialog {
 
                 font.bold: true
                 fontPointSize: 18
-                wrapMode: Text.WordWrap
+                wrapMode: Text.Wrap
             }
 
             GridLayout {

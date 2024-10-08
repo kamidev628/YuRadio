@@ -67,7 +67,7 @@ In Android, it uses built-in _**ExoPlayer**_ for audio playback.
 All other platforms will use Qt's _**QMediaPlayer**_
 `)
 
-                    wrapMode: Text.WordWrap
+                    wrapMode: Text.Wrap
                     background: Item {}
 
                     ScalableFontPicker {}

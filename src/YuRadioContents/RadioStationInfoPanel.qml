@@ -78,7 +78,7 @@ Drawer {
                 Layout.leftMargin: 15
                 Layout.rightMargin: 15
 
-                wrapMode: Text.WordWrap
+                wrapMode: Text.Wrap
                 text: root.radioStation.name
                 font.bold: true
                 fontPointSize: 16
@@ -93,7 +93,7 @@ Drawer {
                 Layout.leftMargin: 15
                 Layout.rightMargin: 15
 
-                wrapMode: Text.WordWrap
+                wrapMode: Text.Wrap
                 maximumLineCount: 3
                 text: root.radioStation.tags.join(", ")
                 fontPointSize: 13
@@ -122,7 +122,7 @@ Drawer {
 
                     text: qsTr("Country: %1").arg(root.radioStation.country)
                     fontPointSize: 12
-                    wrapMode: Text.WordWrap
+                    wrapMode: Text.Wrap
                 }
 
                 ScalableLabel {
@@ -133,7 +133,7 @@ Drawer {
 
                     text: root.radioStation.language.includes(",") ? qsTr("Languages: %1").arg(root.radioStation.language) : qsTr("Language: %1").arg(root.radioStation.language)
                     fontPointSize: 12
-                    wrapMode: Text.WordWrap
+                    wrapMode: Text.Wrap
                 }
 
                 ScalableLabel {
@@ -185,7 +185,7 @@ Drawer {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     horizontalAlignment: Text.AlignHCenter
-                    wrapMode: Text.WordWrap
+                    wrapMode: Text.Wrap
                     maximumLineCount: 3
 
                     text: qsTr("Music Info is not avaialble")
@@ -232,7 +232,7 @@ Drawer {
 
                         text: qsTr("<b>Album</b>: %1").arg(root.musicInfo?.albumName)
                         fontPointSize: 13
-                        wrapMode: Text.WordWrap
+                        wrapMode: Text.Wrap
                         textFormat: Text.RichText
                     }
 
@@ -241,7 +241,7 @@ Drawer {
 
                         text: qsTr("<b>Song</b>: %1").arg(root.musicInfo?.songName)
                         fontPointSize: 13
-                        wrapMode: Text.WordWrap
+                        wrapMode: Text.Wrap
                         textFormat: Text.RichText
                     }
 
@@ -250,7 +250,7 @@ Drawer {
 
                         text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo?.artistNames.join(", "))
                         fontPointSize: 13
-                        wrapMode: Text.WordWrap
+                        wrapMode: Text.Wrap
                         textFormat: Text.RichText
                     }
 
@@ -296,7 +296,7 @@ Drawer {
                     opacity: 0.7
 
                     text: qsTr("Provided for: %1").arg(root.streamTitle)
-                    wrapMode: Text.WordWrap
+                    wrapMode: Text.Wrap
                 }
 
                 Item {

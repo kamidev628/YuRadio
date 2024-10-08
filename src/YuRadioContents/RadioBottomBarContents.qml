@@ -44,8 +44,8 @@ FocusScope {
 
                 bottomBarTextColumn.anchors.rightMargin: 10
 
-                stationName.wrapMode: Text.WordWrap
-                stationTags.wrapMode: Text.WordWrap
+                stationName.wrapMode: Text.Wrap
+                stationTags.wrapMode: Text.Wrap
             }
         }
     ]
@@ -174,7 +174,7 @@ FocusScope {
 
                                 text: qsTr("Country: %1").arg(root.radioStation.country)
                                 fontPointSize: 14
-                                wrapMode: Text.WordWrap
+                                wrapMode: Text.Wrap
                             }
 
                             ScalableLabel {
@@ -185,7 +185,7 @@ FocusScope {
 
                                 text: root.radioStation.language.includes(",") ? qsTr("Languages: %1").arg(root.radioStation.language) : qsTr("Language: %1").arg(root.radioStation.language)
                                 fontPointSize: 14
-                                wrapMode: Text.WordWrap
+                                wrapMode: Text.Wrap
                             }
 
                             ScalableLabel {
@@ -375,7 +375,7 @@ FocusScope {
 
                                 text: qsTr("<b>Album</b>: %1").arg(root.musicInfo?.albumName)
                                 fontPointSize: 14
-                                wrapMode: Text.WordWrap
+                                wrapMode: Text.Wrap
                                 textFormat: Text.RichText
                             }
                             ScalableLabel {
@@ -383,7 +383,7 @@ FocusScope {
 
                                 text: qsTr("<b>Song</b>: %1").arg(root.musicInfo?.songName)
                                 fontPointSize: 14
-                                wrapMode: Text.WordWrap
+                                wrapMode: Text.Wrap
                                 textFormat: Text.RichText
                             }
                             ScalableLabel {
@@ -391,7 +391,7 @@ FocusScope {
 
                                 text: qsTr("<b>Artist</b>: %1").arg(root.musicInfo?.artistNames.join(", "))
                                 fontPointSize: 14
-                                wrapMode: Text.WordWrap
+                                wrapMode: Text.Wrap
                                 textFormat: Text.RichText
                             }
 
@@ -436,7 +436,7 @@ FocusScope {
                         opacity: 0.7
 
                         text: qsTr("Provided for: %1").arg(root.streamTitle)
-                        wrapMode: Text.WordWrap
+                        wrapMode: Text.Wrap
                     }
 
                     Item {

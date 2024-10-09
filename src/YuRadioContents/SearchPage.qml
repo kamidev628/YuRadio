@@ -33,7 +33,7 @@ Item {
         SearchBar {
             id: searchBar
 
-            availableWidth: Math.min(parent.width * 5 / 9, 300)
+            maximumWidth: Math.min(parent.width * 6 / 9, AppConfig.searchBarMaximumWidth)
 
             implicitWidth: height
             searchIcon.color: Material.color(Material.Grey, Material.Shade100)
@@ -46,11 +46,16 @@ Item {
             }
         }
 
+        Item {
+            visible: searchBar.isDesktopLayout
+            Layout.fillWidth: true
+        }
+
         ToolButton {
             id: refreshButton
 
             icon.source: "images/refresh.svg"
-            icon.color: enabled ? Material.color(Material.Grey, Material.Shade100) : ApplicationWindow.header.Material.background.darker(1.2)
+            icon.color: enabled ? Material.color(Material.Grey, Material.Shade100) : ApplicationWindow.header.Material.background.darker(1.4)
             Accessible.name: qsTr("Refresh")
 
             enabled: !pullToRefreshHandler.isProcessing && !apiTimeoutTimer.running

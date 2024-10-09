@@ -40,7 +40,7 @@ Item {
         SearchBar {
             id: searchBar
 
-            availableWidth: Math.min(parent.width * 5 / 9, 300)
+            maximumWidth: Math.min(parent.width * 6 / 9, AppConfig.searchBarMaximumWidth)
 
             implicitWidth: height
             searchIcon.color: Material.color(Material.Grey, Material.Shade100)
@@ -50,6 +50,11 @@ Item {
             searchInput.onAccepted: {
                 root.acceptedInputText = searchInput.text;
             }
+        }
+
+        Item {
+            visible: searchBar.isDesktopLayout
+            Layout.fillWidth: true
         }
 
         IconButton {

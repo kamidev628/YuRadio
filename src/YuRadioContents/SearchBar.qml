@@ -1,11 +1,15 @@
 import QtQuick
+import QtQuick.Layouts
 import QtQuick.Controls.Material
 
-FocusScope {
+import YuRadioContents
+
+Control {
     id: root
 
     readonly property bool isSearching: searchInput.activeFocus
-    required property real availableWidth
+    readonly property bool isDesktopLayout: Window.width >= AppConfig.portraitLayoutWidth
+    required property real maximumWidth
 
     property alias searchInput: searchInput
     property alias searchIcon: searchButton.icon
@@ -16,23 +20,29 @@ FocusScope {
     }
 
     Accessible.name: qsTr("Search")
+    Material.foreground: Material.primaryTextColor
+
+    bottomInset: 8
+    topInset: 8
+    topPadding: -8
+    bottomPadding: -8
 
     states: [
+        State {
+            name: "desktopLayout"
+            extend: "searching"
+            when: root.isDesktopLayout
+        },
         State {
             name: "searching"
             when: root.isSearching
 
             PropertyChanges {
-                background.color: root.Material.color(Material.Grey, Material.Shade100)
-            }
-            PropertyChanges {
-                root.implicitWidth: root.availableWidth
-            }
-            PropertyChanges {
+                background.color: root.Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade700 : Material.Shade200)
                 searchInput.opacity: 1.0
-            }
-            PropertyChanges {
-                searchButton.icon.color: root.Material.color(Material.Grey, Material.Shade800)
+                root.implicitWidth: root.maximumWidth
+                searchButton.icon.color: root.Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade100 : Material.Shade800)
+                removeTextButton.opacity: 1.0
             }
         }
     ]
@@ -66,51 +76,75 @@ FocusScope {
         }
     ]
 
-    Rectangle {
+    background: Rectangle {
         id: background
-        anchors {
-            fill: parent
-            bottomMargin: 8
-            topMargin: 8
-        }
 
         color: "transparent"
         radius: height / 2
     }
 
-    ToolButton {
-        id: searchButton
+    contentItem: RowLayout {
+        id: rowLayout
 
-        anchors {
-            verticalCenter: parent.verticalCenter
-            left: parent.left
-        }
+        ToolButton {
+            id: searchButton
 
-        icon.source: 'images/search.svg'
+            Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+            icon.source: 'images/search.svg'
 
-        focus: true
-        focusPolicy: Qt.TabFocus
+            focus: true
+            focusPolicy: Qt.TabFocus
 
-        onClicked: {
-            if (!searchInput.activeFocus) {
-                searchInput.forceActiveFocus();
+            onClicked: {
+                if (!searchInput.activeFocus) {
+                    searchInput.forceActiveFocus();
+                }
             }
         }
-    }
 
-    TextInput {
-        id: searchInput
+        TextField {
+            id: searchInput
 
-        anchors {
-            verticalCenter: parent.verticalCenter
-            leftMargin: -10
-            left: searchButton.right
-            right: parent.right
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.leftMargin: -6
+            Layout.rightMargin: -6
+
+            leftPadding: 0
+            rightPadding: 0
+
+            leftInset: 0
+            rightInset: 0
+            bottomInset: 0
+            topInset: 0
+
+            Accessible.searchEdit: true
+            background.opacity: 0
+
+            Material.foreground: root.Material.foreground
+
+            clip: true
+            opacity: 0
+            visible: opacity > 0
         }
-        width: parent.width
-        Accessible.searchEdit: true
 
-        clip: true
-        opacity: 0
+        ToolButton {
+            id: removeTextButton
+
+            Layout.alignment: Qt.AlignVCenter
+
+            icon.source: 'images/close.svg'
+            icon.color: searchButton.icon.color
+
+            opacity: 0
+            visible: opacity > 0
+            enabled: searchInput.text.length > 0
+            focus: true
+            focusPolicy: Qt.TabFocus
+
+            onClicked: {
+                searchInput.clear();
+            }
+        }
     }
 }

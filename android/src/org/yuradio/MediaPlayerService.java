@@ -5,9 +5,12 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.media3.common.Player;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.analytics.AnalyticsListener;
 import androidx.media3.session.MediaSession;
 import androidx.media3.session.MediaSessionService;
+import androidx.media3.common.MediaMetadata;
 
 public class MediaPlayerService extends MediaSessionService {
     private static final String TAG = MediaPlayerService.class.getSimpleName();
@@ -24,6 +27,25 @@ public class MediaPlayerService extends MediaSessionService {
         super.onCreate();
 
         ExoPlayer player = new ExoPlayer.Builder(this).build();
+
+        player.addAnalyticsListener(new AnalyticsListener() {
+            @UnstableApi
+            @Override
+            public void onMediaMetadataChanged(EventTime eventTime, MediaMetadata mediaMetadata) {
+                if (mediaMetadata.title != null) {
+                    Log.i(TAG, "StreamTitle: " + mediaMetadata.title);
+
+                    Intent intent = new Intent();
+
+                    intent.setAction("org.yuradio.streamtitle");
+                    intent.putExtra("streamTitle", mediaMetadata.title);
+
+                    sendBroadcast(intent);
+                }
+                AnalyticsListener.super.onMediaMetadataChanged(eventTime, mediaMetadata);
+            }
+        });
+
         mediaSession = new MediaSession.Builder(this, player).build();
 
         Log.i(TAG, "Created Service");

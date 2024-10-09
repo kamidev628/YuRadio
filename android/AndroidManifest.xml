@@ -28,7 +28,6 @@
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             android:name=".MediaPlayerService"
-            android:process=":qt_activity"
             android:stopWithTask="true">
             <!-- Background running -->
             <meta-data

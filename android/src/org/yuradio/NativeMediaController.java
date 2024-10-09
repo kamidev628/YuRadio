@@ -38,8 +38,6 @@ public class NativeMediaController {
 
     native public void onPlaybackStateChangedNative(int playbackState);
 
-    native public void onMediaTitleChangedNative(String title);
-
     native public void onPlayerErrorChangedNative(int errorCode, String message);
 
     private void setPlaybackStateNative() {
@@ -64,10 +62,6 @@ public class NativeMediaController {
             @Override
             public void run() {
                 MediaMetadata mediaMetadata = controller.getMediaMetadata();
-                if (mediaMetadata.title != null) {
-                    onMediaTitleChangedNative((String) mediaMetadata.title);
-                }
-
                 setPlaybackStateNative();
                 onIsPlayingChangedNative(controller.isPlaying());
                 onIsLoadingChangedNative(controller.isLoading());
@@ -80,15 +74,6 @@ public class NativeMediaController {
         });
 
         controller.addListener(new Listener() {
-            @Override
-            public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
-                if (mediaMetadata.title != null) {
-                    Log.i(TAG, "StreamTitle: " + mediaMetadata.title);
-                    onMediaTitleChangedNative((String) mediaMetadata.title);
-                }
-                Listener.super.onMediaMetadataChanged(mediaMetadata);
-            }
-
             @Override
             public void onIsLoadingChanged(boolean isLoading) {
                 Log.i(TAG, "Loading? " + isLoading);

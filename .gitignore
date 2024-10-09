@@ -97,3 +97,4 @@ Session.vim
 local.properties
 
 CMakeUserPresets.json
+compile_commands.json

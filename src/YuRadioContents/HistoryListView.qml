@@ -84,7 +84,6 @@ ListView {
             id: stationImage
 
             Layout.leftMargin: 10
-            Layout.fillHeight: true
 
             Layout.preferredWidth: Layout.preferredHeight
             Layout.preferredHeight: columnLayout.height
@@ -92,6 +91,8 @@ ListView {
             fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
             targetSource: trackDelegate.stationImageUrl
             fillMode: Image.PreserveAspectFit
+
+            sourceSize: Qt.size(height * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
 
             smooth: true
         }

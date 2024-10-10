@@ -9,10 +9,20 @@ import YuRadioContents
 Dialog {
     id: root
 
+    property int hours: hoursTumbler.currentIndex
+    property int minutes: minutesTumbler.currentIndex
+    property int milliseconds: (hours * 60 + minutes) * 60 * 1000
+
+    onMillisecondsChanged: {
+        if (milliseconds > 0) {
+            AppSettings.sleepInterval = milliseconds;
+        }
+    }
+
     margins: 5
     modal: AppConfig.isSmallSize(ApplicationWindow.window.width)
 
-    anchors.centerIn: AppConfig.isSmallSize(ApplicationWindow.window.width) ? Overlay.overlay : undefined
+    anchors.centerIn: Overlay.overlay
 
     standardButtons: Dialog.Ok
 
@@ -23,53 +33,50 @@ Dialog {
 
             enabled: AppSettings.enableSleepTimer
 
-            property string timeTemplateString: intervalPickerPopup.acceptedHours > 0 ? qsTr("%1 hrs %2 min").arg(intervalPickerPopup.acceptedHours).arg(intervalPickerPopup.acceptedMinutes) : qsTr("%1 min").arg(intervalPickerPopup.acceptedMinutes)
+            property string timeTemplateString: root.hours > 0 ? qsTr("%1 hrs %2 min").arg(root.hours).arg(root.minutes) : qsTr("%1 min").arg(root.minutes)
 
             text: qsTr("Sleep interval: %1").arg(timeTemplateString)
             wrapMode: Text.Wrap
+        }
+
+        RowLayout {
+            Layout.topMargin: 10
+            Layout.fillWidth: true
+            Layout.minimumWidth: 200
+
+            enabled: AppSettings.enableSleepTimer
+
+            Tumbler {
+                id: hoursTumbler
+
+                Layout.fillWidth: true
+                Layout.minimumHeight: 50
+
+                model: 24
+                delegate: tumblerDelegate
+            }
+
+            Tumbler {
+                id: minutesTumbler
+
+                Layout.fillWidth: true
+                Layout.minimumHeight: 50
+
+                model: 60
+                delegate: tumblerDelegate
+            }
         }
 
         ScalableButton {
             Layout.topMargin: 5
             Layout.fillWidth: true
 
-            enabled: AppSettings.enableSleepTimer
+            text: AppSettings.enableSleepTimer ? qsTr("Disable sleep timer") : qsTr("Enable sleep timer")
 
-            text: qsTr("Pick interval")
             onClicked: {
-                intervalPickerPopup.open();
-            }
-
-            IntervalPickerPopup {
-                id: intervalPickerPopup
-
-                property int acceptedIntervalMilliseconds: (acceptedHours * 60 + acceptedMinutes) * 60 * 1000
-
-                acceptedHours: Math.floor(AppSettings.sleepInterval / 1000 / 60 / 60)
-                acceptedMinutes: Math.floor(AppSettings.sleepInterval / 1000 / 60 % 60)
-
-                onAcceptedInterval: (hours, minutes) => {
-                    if (acceptedIntervalMilliseconds > 0) {
-                        AppSettings.sleepInterval = acceptedIntervalMilliseconds;
-                    } else {
-                        AppSettings.enableSleepTimer = false;
-                    }
-                }
+                AppSettings.enableSleepTimer = !AppSettings.enableSleepTimer;
             }
         }
-
-            ScalableButton {
-                Layout.topMargin: 5
-                Layout.fillWidth: true
-
-                checkable: true
-                checked: AppSettings.sleepInterval > 0
-                text: checked ? qsTr("Disable sleep timer") : qsTr("Enable sleep timer")
-
-                onClicked: {
-                    AppSettings.enableSleepTimer = checked;
-                }
-            }
     }
 
     Component {

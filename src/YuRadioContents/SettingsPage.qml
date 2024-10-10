@@ -35,10 +35,6 @@ Item {
             icon.source: AppSettings.enableSleepTimer ? "images/hourglass-on.svg" : "images/hourglass-off.svg"
             Accessible.name: qsTr("Sleep timer configuration")
 
-            SleepTimerPopup {
-                id: sleepTimerPopup
-            }
-
             onClicked: {
                 sleepTimerPopup.open();
             }
@@ -50,6 +46,10 @@ Item {
     }
 
     focus: true
+
+    SleepTimerPopup {
+        id: sleepTimerPopup
+    }
 
     TabBar {
         id: tabBar

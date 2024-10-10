@@ -17,10 +17,10 @@ import java.util.concurrent.ExecutionException;
 
 public class MediaPlayerActivity extends QtActivity {
     private static final String TAG = MediaPlayerActivity.class.getSimpleName();
-    @Nullable
-    MediaController controller = null;
-    ListenableFuture<MediaController> controllerFuture;
-    NativeMediaController nativeMediaController = null;
+
+    private MediaController controller = null;
+    private ListenableFuture<MediaController> controllerFuture;
+    private NativeMediaController nativeMediaController = null;
 
     public void registerNativeMediaController(NativeMediaController mediaController) {
         nativeMediaController = mediaController;
@@ -32,6 +32,7 @@ public class MediaPlayerActivity extends QtActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "Create");
         super.onCreate(savedInstanceState);
     }
 
@@ -58,13 +59,13 @@ public class MediaPlayerActivity extends QtActivity {
     @Override
     public void onStop() {
         Log.i(TAG, "Stop");
-        MediaController.releaseFuture(controllerFuture);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
         Log.i(TAG, "Destroyed");
+        MediaController.releaseFuture(controllerFuture);
         super.onDestroy();
     }
 }

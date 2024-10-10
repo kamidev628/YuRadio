@@ -4,20 +4,12 @@
 
 static const char nativeMediaControllerClassName[] =
   "org/yuradio/NativeMediaController";
-static const char streamTitleBroadcastReceiverClassName[] =
-  "org/yuradio/StreamTitleBroadcastReceiver";
 
 NativeMediaController::NativeMediaController(QObject *parent)
     : QObject(parent), m_controller(nativeMediaControllerClassName) {
   QJniObject activity(QNativeInterface::QAndroidApplication::context());
   m_controller.callMethod<void>("setActivity", "(Lorg/yuradio/AppActivity;)V",
                                 activity);
-
-  QJniObject streamTitleBroadcastReceiver(
-    "org.yuradio.StreamTitleBroadcastReceiver");
-  streamTitleBroadcastReceiver.callMethod<void>(
-    "registerServiceBroadcastReceiver", "(Landroid/content/Context;)V",
-    activity);
 }
 
 void NativeMediaController::setSource(const QUrl &url) {
@@ -100,15 +92,9 @@ void NativeMediaController::registerNativeMethods() {
     Q_JNI_NATIVE_METHOD(onPlaybackStateChangedNative),
     Q_JNI_NATIVE_METHOD(onPlayerErrorChangedNative),
     Q_JNI_NATIVE_METHOD(onIsLoadingChangedNative),
-  };
-
-  std::initializer_list<JNINativeMethod> streamTitleBroadcastReceiverMethods = {
-    Q_JNI_NATIVE_METHOD(onMediaTitleChangedNative),
-  };
+    Q_JNI_NATIVE_METHOD(onMediaTitleChangedNative)};
 
   QJniEnvironment env;
   env.registerNativeMethods(nativeMediaControllerClassName,
                             nativeMediaControllerMethods);
-  env.registerNativeMethods(streamTitleBroadcastReceiverClassName,
-                            streamTitleBroadcastReceiverMethods);
 }

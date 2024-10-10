@@ -17,11 +17,11 @@ import com.google.common.base.Strings;
 public class NativeMediaController {
     private static final String TAG = NativeMediaController.class.getSimpleName();
 
-    AppActivity activity;
-    MediaController controller = null;
-    String mediaSource = "";
-    String mediaAuthor;
-    String artworkUri;
+    private AppActivity activity;
+    private MediaController controller = null;
+    private String mediaSource = "";
+    private String mediaAuthor;
+    private String artworkUri;
 
     private static class PlaybackState {
         final static int Playing = 0;
@@ -31,6 +31,8 @@ public class NativeMediaController {
 
     NativeMediaController() {
     }
+
+    native public void onMediaTitleChangedNative(String title);
 
     native public void onIsLoadingChangedNative(boolean isLoading);
 
@@ -74,6 +76,15 @@ public class NativeMediaController {
         });
 
         controller.addListener(new Listener() {
+            @Override
+            public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
+                if (mediaMetadata.title != null) {
+                    Log.i(TAG, "StreamTitle: " + mediaMetadata.title);
+                    onMediaTitleChangedNative((String) mediaMetadata.title);
+                }
+                Listener.super.onMediaMetadataChanged(mediaMetadata);
+            }
+
             @Override
             public void onIsLoadingChanged(boolean isLoading) {
                 Log.i(TAG, "Loading? " + isLoading);

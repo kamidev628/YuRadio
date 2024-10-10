@@ -153,6 +153,9 @@ Rectangle {
         }
 
         columnWidthProvider: (width < AppConfig.portraitLayoutWidth ? smallScreenWidthProvider : largeScreenWidthProvider)
+        rowHeightProvider: row => {
+            return 60;
+        }
 
         model: SqlQueryModel {
             id: queryModel

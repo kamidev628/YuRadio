@@ -317,6 +317,46 @@ Item {
                         }
                     }
 
+                    ScalableCheckBox {
+                        Layout.topMargin: 5
+                        Layout.fillWidth: true
+
+                        checked: AppSettings.sleepInterval > 0
+                        text: qsTr("Enable sleep timer")
+                        onCheckedChanged: {
+                            if (!checked) {
+                                AppSettings.sleepInterval = -1;
+                            }
+                        }
+                    }
+
+                    ScalableLabel {
+                        Layout.topMargin: 5
+                        Layout.fillWidth: true
+
+                        property string timeTemplateString: Math.floor(sleepIntervalSlider.value / 60) > 0 ? qsTr("%1 hrs %2 min").arg(Math.floor(sleepIntervalSlider.value / 60)).arg(sleepIntervalSlider.value % 60) : qsTr("%1 min").arg(sleepIntervalSlider.value)
+
+                        text: qsTr("Sleep interval: %1").arg(timeTemplateString)
+                        wrapMode: Text.Wrap
+                    }
+
+                    Slider {
+                        id: sleepIntervalSlider
+
+                        Layout.fillWidth: true
+
+                        from: stepSize
+                        to: 60 * 12
+                        value: 1
+                        snapMode: Slider.SnapAlways
+                        stepSize: 10
+
+                        onValueChanged: {
+                            /* Convert to milliseconds */
+                            AppSettings.sleepInterval = value * 1000 * 60;
+                        }
+                    }
+
                     SpotifyButton {
                         id: spotifyButton
 

@@ -387,6 +387,16 @@ ApplicationWindow {
         }
     }
 
+    Timer {
+        id: sleepTimer
+
+        interval: AppSettings.sleepInterval
+        running: AppSettings.sleepInterval > 0
+        onTriggered: {
+            MainRadioPlayer.stop()
+        }
+    }
+
     Connections {
         target: NetworkInformation
 

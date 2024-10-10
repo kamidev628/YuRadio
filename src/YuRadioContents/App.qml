@@ -393,7 +393,7 @@ ApplicationWindow {
         interval: AppSettings.sleepInterval
         running: AppSettings.sleepInterval > 0
         onTriggered: {
-            MainRadioPlayer.stop()
+            MainRadioPlayer.stop();
         }
     }
 

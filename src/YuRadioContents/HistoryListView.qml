@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Controls.Material
 import QtQuick.Layouts
 
 import YuRadioContents
@@ -20,13 +21,11 @@ ListView {
         let storedContentY = contentY;
         let yPositionBefore = visibleArea.yPosition;
         let heightRatioBefore = visibleArea.heightRatio;
-
         queryModel.refresh();
         if (!root.sortOrderChangedReason) {
             contentY = yPositionBefore * contentHeight;
         }
-
-        root.sortOrderChangedReason = false
+        root.sortOrderChangedReason = false;
     }
 
     spacing: 10
@@ -41,12 +40,12 @@ ListView {
         id: historyListViewHeader
 
         onOrderByFieldChanged: {
-            root.sortOrderChangedReason = true
-            root.orderByField = orderByField
+            root.sortOrderChangedReason = true;
+            root.orderByField = orderByField;
         }
         onDescendingChanged: {
-            root.sortOrderChangedReason = true
-            root.descending = descending
+            root.sortOrderChangedReason = true;
+            root.descending = descending;
         }
     }
 
@@ -65,11 +64,11 @@ ListView {
         }
     }
 
-    delegate: RowLayout {
+    delegate: ItemDelegate {
         id: trackDelegate
 
-        required property var display
-        readonly property var parsedDisplay: JSON.parse(display)
+        required property var model
+        readonly property var parsedDisplay: JSON.parse(model.display)
 
         readonly property string trackName: parsedDisplay.trackName
         readonly property string stationName: parsedDisplay.stationName
@@ -78,55 +77,117 @@ ListView {
         readonly property date endedAt: new Date(parsedDisplay.endedAt)
         readonly property string displayDate: qsTr("%1 - %2").arg(Utils.shortDate(startedAt, Qt.locale(AppSettings.locale))).arg(Utils.shortDate(endedAt, Qt.locale(AppSettings.locale)))
 
-        width: ListView.view.width
+        property bool expanded: false
 
-        RadioImage {
-            id: stationImage
+        states: [
+            State {
+                name: "expanded"
+                when: trackDelegate.expanded
 
-            Layout.leftMargin: 10
+                PropertyChanges {
+                    trackText.wrapMode: TextInput.Wrap
+                    stationNameText.wrapMode: TextInput.Wrap
+                    dateRangeText.wrapMode: TextInput.Wrap
+                }
+            }
+        ]
 
-            Layout.preferredWidth: Layout.preferredHeight
-            Layout.preferredHeight: columnLayout.height
-
-            fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
-            targetSource: trackDelegate.stationImageUrl
-            fillMode: Image.PreserveAspectFit
-
-            sourceSize: Qt.size(height * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
-
-            smooth: true
+        Behavior on height {
+            NumberAnimation {
+                duration: 150
+                easing.type: Easing.OutCubic
+            }
         }
 
-        ColumnLayout {
-            id: columnLayout
+        height: implicitHeight
+        width: ListView.view.width
 
-            spacing: 0
-            Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-            Layout.fillWidth: true
-            Layout.rightMargin: 10
+        topPadding: 5
+        bottomPadding: 5
 
-            SelectableText {
-                Layout.fillWidth: true
+        onClicked: {
+            trackDelegate.expanded = !trackDelegate.expanded;
+        }
 
-                text: trackDelegate.trackName
+        contentItem: RowLayout {
+            id: rowLayout
 
-                fontPointSize: 14
-                font.bold: true
+            RadioImage {
+                id: stationImage
+
+                Layout.leftMargin: 10
+
+                Layout.maximumWidth: 100
+                Layout.maximumHeight: 100
+
+                Layout.preferredWidth: Layout.preferredHeight
+                Layout.preferredHeight: columnLayout.height
+
+                fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
+                targetSource: trackDelegate.stationImageUrl
+                fillMode: Image.PreserveAspectFit
+
+                sourceSize: Qt.size(height * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
+
+                smooth: true
             }
-            SelectableText {
+
+            ColumnLayout {
+                id: columnLayout
+
+                spacing: 0
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                 Layout.fillWidth: true
+                Layout.rightMargin: 10
 
-                text: trackDelegate.stationName
+                SelectableText {
+                    id: trackText
 
-                fontPointSize: 13
-                opacity: 0.7
+                    Layout.fillWidth: true
+
+                    text: trackDelegate.trackName
+
+                    fontPointSize: 14
+                    font.bold: true
+                }
+
+                SelectableText {
+                    id: stationNameText
+
+                    Layout.fillWidth: true
+
+                    text: trackDelegate.stationName
+
+                    fontPointSize: 13
+                    opacity: 0.7
+                }
+
+                SelectableText {
+                    id: dateRangeText
+
+                    Layout.fillWidth: true
+                    Layout.topMargin: 5
+
+                    fontPointSize: 12
+
+                    opacity: 0.8
+                    text: trackDelegate.displayDate
+                }
             }
-            SelectableText {
-                Layout.fillWidth: true
-                Layout.topMargin: 5
 
-                opacity: 0.9
-                text: trackDelegate.displayDate
+            Image {
+                id: expandArrow
+
+                Layout.alignment: Qt.AlignVCenter
+                Layout.fillHeight: true
+
+                Layout.preferredWidth: 32
+                Layout.preferredHeight: 32
+                fillMode: Image.PreserveAspectFit
+
+                source: trackDelegate.expanded ? "images/keyboard-arrow-up.svg" : "images/keyboard-arrow-down"
+                sourceSize: Qt.size(width, height)
+                opacity: 0.6
             }
         }
     }

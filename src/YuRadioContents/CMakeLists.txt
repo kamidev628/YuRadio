@@ -63,6 +63,8 @@ qt_add_qml_module(
   ListViewHighlightBar.qml
   radiobrowser.mjs
   RESOURCES
+  images/keyboard-arrow-down.svg
+  images/keyboard-arrow-up.svg
   images/volume.svg
   images/volume-mute.svg
   images/spotify-logo.svg

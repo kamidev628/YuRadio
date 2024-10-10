@@ -18,6 +18,7 @@ qt_add_qml_module(
   AppConfig.qml
   AppStorage.qml
   CompletionComboBox.qml
+  IntervalPickerPopup.qml
   Utils.qml
   ListViewSortHeader.qml
   SelectableText.qml
@@ -29,6 +30,7 @@ qt_add_qml_module(
   ScrollableFlickable.qml
   SearchPage.qml
   SettingsPage.qml
+  SleepTimerPopup.qml
   ScalableLabel.qml
   ScalableComboBox.qml
   ScalableFontPicker.qml
@@ -96,6 +98,8 @@ qt_add_qml_module(
   images/thumb-up.svg
   images/thumb-up-filled.svg
   images/close.svg
+  images/hourglass-on.svg
+  images/hourglass-off.svg
   images/history.svg)
 
 qt_add_shaders(

@@ -11,11 +11,13 @@ Settings {
     property bool showIconInTray: true
     property bool resumePlaybackWhenNetworkRestored: true
     property bool enableBottomBarBlur: true
+    property bool enableSleepTimer: false
 
     property real fontScale: 1.0
     property real volume: 1.0
 
-    property int sleepInterval: -1 /* -1 means no sleep */
+    property int sleepInterval: 10 * 60 * 1000 /* 10 minutes */
+
     property int smallSize: 480
     property int mediumSize: 768
     property int largeSize: 1024

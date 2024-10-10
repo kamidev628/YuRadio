@@ -391,7 +391,7 @@ ApplicationWindow {
         id: sleepTimer
 
         interval: AppSettings.sleepInterval
-        running: AppSettings.sleepInterval > 0
+        running: AppSettings.enableSleepTimer && MainRadioPlayer.playing
         onTriggered: {
             MainRadioPlayer.stop();
         }

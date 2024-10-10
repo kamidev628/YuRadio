@@ -22,6 +22,29 @@ Item {
     property string translatedStartPageString: qsTr("Start Page")
     property string translatedFontScaleString: qsTr("Font scale")
 
+    property Component headerContent: RowLayout {
+        spacing: 0
+
+        Item {
+            Layout.fillWidth: true
+        }
+
+        ToolButton {
+            id: sleepTimerButton
+
+            icon.source: AppSettings.enableSleepTimer ? "images/hourglass-on.svg" : "images/hourglass-off.svg"
+            Accessible.name: qsTr("Sleep timer configuration")
+
+            SleepTimerPopup {
+                id: sleepTimerPopup
+            }
+
+            onClicked: {
+                sleepTimerPopup.open();
+            }
+        }
+    }
+
     function desiredWidth(maxWidth: real): real {
         return AppConfig.isSmallSize(root.width) ? maxWidth : Math.min(500, maxWidth * 2 / 3);
     }
@@ -318,42 +341,28 @@ Item {
                     }
 
                     ScalableCheckBox {
+                        id: sleepTimerCheckBox
+
                         Layout.topMargin: 5
                         Layout.fillWidth: true
 
                         checked: AppSettings.sleepInterval > 0
                         text: qsTr("Enable sleep timer")
-                        onCheckedChanged: {
+
+                        onClicked: {
                             if (!checked) {
                                 AppSettings.sleepInterval = -1;
-                            }
+                            } else {}
                         }
-                    }
 
-                    ScalableLabel {
-                        Layout.topMargin: 5
-                        Layout.fillWidth: true
+                        Connections {
+                            target: AppSettings
 
-                        property string timeTemplateString: Math.floor(sleepIntervalSlider.value / 60) > 0 ? qsTr("%1 hrs %2 min").arg(Math.floor(sleepIntervalSlider.value / 60)).arg(sleepIntervalSlider.value % 60) : qsTr("%1 min").arg(sleepIntervalSlider.value)
-
-                        text: qsTr("Sleep interval: %1").arg(timeTemplateString)
-                        wrapMode: Text.Wrap
-                    }
-
-                    Slider {
-                        id: sleepIntervalSlider
-
-                        Layout.fillWidth: true
-
-                        from: stepSize
-                        to: 60 * 12
-                        value: 1
-                        snapMode: Slider.SnapAlways
-                        stepSize: 10
-
-                        onValueChanged: {
-                            /* Convert to milliseconds */
-                            AppSettings.sleepInterval = value * 1000 * 60;
+                            function onSleepIntervalChanged() {
+                                if (AppSettings.sleepInterval === -1) {
+                                    sleepTimerCheckBox.checked = false;
+                                }
+                            }
                         }
                     }
 

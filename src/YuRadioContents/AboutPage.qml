@@ -44,6 +44,10 @@ Item {
                     Layout.fillWidth: true
                     Layout.topMargin: 10
                     Layout.bottomMargin: 10
+
+                    Layout.preferredWidth: 150
+                    Layout.preferredHeight: 150
+
                     fillMode: Image.PreserveAspectFit
                     source: "images/shortwave.svg"
                 }

@@ -29,6 +29,6 @@ QtObject {
     }
 
     function isLargeSize(width: int): bool {
-        return AppSettings.mediumSize < width && width <= AppSettings.largeSize;
+        return AppSettings.mediumSize < width;
     }
 }

@@ -214,7 +214,6 @@ void SpotifyBackend::updateRefreshTimer(const QDateTime &expiration) {
   QDateTime currentDate = QDateTime::currentDateTime();
   auto refreshInterval =
     std::chrono::milliseconds(currentDate.msecsTo(expiration)) - 1min;
-  Q_ASSERT(refreshInterval > 0ms);
 
   if (refreshInterval < 1min) {
     m_refreshTokenTimer.setInterval(0);

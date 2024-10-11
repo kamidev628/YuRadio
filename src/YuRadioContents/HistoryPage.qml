@@ -114,6 +114,7 @@ Item {
         anchors.fill: parent
 
         active: false
+        asynchronous: true
 
         sourceComponent: HistorySearchFilterDialog {
             id: searchFilterDialog
@@ -130,6 +131,8 @@ Item {
         id: mainContentsLoader
 
         anchors.fill: parent
+
+        asynchronous: true
 
         sourceComponent: root.isTableViewType ? tableViewComponent : listViewComponent
     }

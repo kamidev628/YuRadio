@@ -267,6 +267,7 @@ ApplicationWindow {
             SettingsPage {
                 objectName: "settingsPage"
 
+                audioRecorder: audioRecorder
                 networkManager: networkManager
                 languageTranslator: languageTranslator
                 musicInfoModel: musicInfoModel
@@ -365,6 +366,17 @@ ApplicationWindow {
         }
         onActivated: {
             MainRadioPlayer.toggleRadio();
+        }
+    }
+
+    AudioStreamRecorder {
+        id: audioRecorder
+
+        recordingPolicy: AudioStreamRecorder.SaveRecordingWhenStreamTitleChanges
+        recordingNamePolicy: AudioStreamRecorder.StationTrackNameDateTime
+
+        Component.onCompleted: {
+            MainRadioPlayer.audioStreamRecorder = audioRecorder;
         }
     }
 

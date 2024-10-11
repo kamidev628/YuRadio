@@ -307,6 +307,8 @@ FocusScope {
                 visible: active
 
                 active: false
+                asynchronous: true
+
                 sourceComponent: secondaryColumnLayoutComponent
             }
 

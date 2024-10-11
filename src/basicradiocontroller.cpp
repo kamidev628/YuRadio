@@ -7,6 +7,9 @@ Q_LOGGING_CATEGORY(basicRadioControllerLog, "YuRadio.BasicRadioController")
 #include <QMediaPlayer>
 #include <QNetworkInformation>
 
+#include <QMediaFormat>
+#include <QMediaMetaData>
+
 #include "basicradiocontroller.h"
 #include "radioinforeaderproxyserver.h"
 
@@ -58,6 +61,9 @@ BasicRadioController::BasicRadioController(QObject *parent)
   m_mediaPlayer->setAudioOutput(audioOutput);
   connect(audioOutput, &QAudioOutput::volumeChanged, this,
           [this](float volume) { PlatformRadioController::setVolume(volume); });
+
+  connect(this, &PlatformRadioController::audioStreamRecorderChanged, this,
+          &BasicRadioController::onAudioStreamRecorderChanged);
 
   connect(m_proxyServer, &RadioInfoReaderProxyServer::icyMetaDataChanged, this,
           [this](const QVariantMap &icyMetaData) {
@@ -144,4 +150,26 @@ void BasicRadioController::mediaStatusChanged(
 
     m_mediaPlayer->play();
   }
+}
+
+void BasicRadioController::onAudioStreamRecorderChanged() {
+  connect(m_recorder, &AudioStreamRecorder::recordingChanged, this, [this]() {
+    m_proxyServer->enableCapturing(m_recorder->recording());
+  });
+  connect(m_proxyServer, &RadioInfoReaderProxyServer::bufferCaptured,
+          m_recorder,
+          [this](const QByteArray &buffer, const QString &streamTitle) {
+    m_recorder->processBuffer(buffer, m_mediaItem.source, streamTitle);
+  });
+  connect(m_mediaPlayer, &QMediaPlayer::metaDataChanged, m_recorder, [this]() {
+    QMediaMetaData metaData = m_mediaPlayer->metaData();
+
+    if (metaData.value(QMediaMetaData::FileFormat).isValid()) {
+      auto fileFormat = metaData.value(QMediaMetaData::FileFormat)
+                          .value<QMediaFormat::FileFormat>();
+
+      QMediaFormat format(fileFormat);
+      m_recorder->setPreferredSuffix(format.mimeType().preferredSuffix());
+    }
+  });
 }

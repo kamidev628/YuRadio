@@ -33,6 +33,9 @@ public:
 
   virtual bool canHandleMediaKeys() const;
 
+  virtual void setAudioStreamRecorder(AudioStreamRecorder *recorder);
+  virtual AudioStreamRecorder *audioStreamRecorder() const;
+
   void clearErrors();
 
 signals:
@@ -43,6 +46,7 @@ signals:
   void isLoadingChanged();
   void streamTitleChanged();
   void volumeChanged();
+  void audioStreamRecorderChanged();
 
 protected:
   void setError(RadioPlayer::Error error, const QString &errorString);
@@ -51,8 +55,11 @@ protected:
   void setIsLoading(bool isLoading);
 
 protected:
+  QPointer<AudioStreamRecorder> m_recorder = nullptr;
+
   RadioPlayer::PlaybackState m_playbackState;
   RadioPlayer::Error m_error;
+
   MediaItem m_mediaItem;
   QString m_errorString;
   QString m_streamTitle;

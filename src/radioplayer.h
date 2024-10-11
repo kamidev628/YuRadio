@@ -3,6 +3,8 @@
 
 #include <QtQml>
 
+#include "audiostreamrecorder.h"
+
 class PlatformRadioController;
 
 struct MediaItem {
@@ -42,6 +44,8 @@ class RadioPlayer : public QObject {
   Q_PROPERTY(Error error READ error NOTIFY errorChanged)
   Q_PROPERTY(QString errorString READ errorString NOTIFY errorChanged)
   Q_PROPERTY(bool canHandleMediaKeys READ canHandleMediaKeys CONSTANT)
+  Q_PROPERTY(AudioStreamRecorder *audioStreamRecorder READ audioStreamRecorder
+               WRITE setAudioStreamRecorder NOTIFY audioStreamRecorderChanged)
   QML_ELEMENT
 
 public:
@@ -81,7 +85,6 @@ public slots:
   void setMediaItem(const MediaItem &mediaItem);
 
   QString streamTitle() const;
-
   bool isLoading() const;
 
   PlaybackState playbackState() const;
@@ -94,7 +97,11 @@ public slots:
 
   bool canHandleMediaKeys() const;
 
+  AudioStreamRecorder *audioStreamRecorder() const;
+  void setAudioStreamRecorder(AudioStreamRecorder *recorder);
+
 signals:
+  void audioStreamRecorderChanged();
   void streamTitleChanged();
   void icecastHintChanged();
   void loadingChanged();

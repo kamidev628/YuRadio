@@ -29,13 +29,18 @@ qt_add_qml_module(
   ScrollableFlickable.qml
   SearchPage.qml
   SettingsPage.qml
+  SettingsGeneralPage.qml
+  SettingsFontPage.qml
+  SettingsRecordingPage.qml
   SleepTimerPopup.qml
   ScalableLabel.qml
   ScalableComboBox.qml
+  ScalableCheckBox.qml
   ScalableFontPicker.qml
   ScalableItemDelegate.qml
   ScalableButton.qml
   DatePickerComboBox.qml
+  DirectoryPicker.qml
   AboutPage.qml
   FilledGridView.qml
   MoreOptionsMenu.qml
@@ -101,7 +106,8 @@ qt_add_qml_module(
   images/close.svg
   images/hourglass-on.svg
   images/hourglass-off.svg
-  images/history.svg)
+  images/history.svg
+  images/folder.svg)
 
 qt_add_shaders(
   YuRadioContents

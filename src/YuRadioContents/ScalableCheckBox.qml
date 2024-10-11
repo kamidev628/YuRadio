@@ -1,6 +1,6 @@
 import QtQuick.Controls
 
-Button {
+CheckBox {
     property alias fontPointSize: scalableFontPicker.fontPointSize
 
     ScalableFontPicker {

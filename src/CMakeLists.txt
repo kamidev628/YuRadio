@@ -47,6 +47,8 @@ qt_add_qml_module(
   application.cpp
   algorithm.h
   algorithm.cpp
+  audiostreamrecorder.h
+  audiostreamrecorder.cpp
   downloadspeedmeasurer.h
   downloadspeedmeasurer.cpp
   radioinforeaderproxyserver.h

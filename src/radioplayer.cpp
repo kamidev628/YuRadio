@@ -19,6 +19,8 @@ RadioPlayer::RadioPlayer(QObject *parent) : QObject(parent) {
   m_controller = new BasicRadioController(this);
 #endif
 
+  connect(m_controller, &PlatformRadioController::audioStreamRecorderChanged,
+          this, &RadioPlayer::audioStreamRecorderChanged);
   connect(m_controller, &PlatformRadioController::volumeChanged, this,
           &RadioPlayer::volumeChanged);
   connect(m_controller, &PlatformRadioController::mediaItemChanged, this,
@@ -100,4 +102,12 @@ bool RadioPlayer::canHandleMediaKeys() const {
 
 MediaItem RadioPlayer::constructMediaItem() {
   return {};
+}
+
+AudioStreamRecorder *RadioPlayer::audioStreamRecorder() const {
+  return m_controller->audioStreamRecorder();
+}
+
+void RadioPlayer::setAudioStreamRecorder(AudioStreamRecorder *recorder) {
+  m_controller->setAudioStreamRecorder(recorder);
 }

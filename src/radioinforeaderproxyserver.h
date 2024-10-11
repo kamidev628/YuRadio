@@ -12,6 +12,7 @@ class QTcpSocket;
 class QNetworkReply;
 class NetworkManager;
 class DownloadSpeedMeasurer;
+class QBuffer;
 
 class IcecastParserInfo : public QObject {
   Q_OBJECT
@@ -43,10 +44,13 @@ public:
 
   void listen();
 
+  void enableCapturing(bool enableCapture);
+
 signals:
   void icyMetaDataChanged(const QVariantMap &icyMetaData);
   void loadingChanged(bool loading);
   void bitrateChanged(int bitrate);
+  void bufferCaptured(const QByteArray &buffer, const QString &streamTitle);
 
 private slots:
   void start();
@@ -59,6 +63,7 @@ private slots:
   void replyReadHeaders(QNetworkReply *reply, QTcpSocket *client);
 
   void readIcyMetaData(IcecastParserInfo *p);
+  void captureBuffer(const QByteArray &buffer, const IcecastParserInfo *p);
 
 private:
   mutable QReadWriteLock m_lock;
@@ -69,6 +74,7 @@ private:
   NetworkManager *m_networkManager;
 
   QUrl m_targetSource;
+  bool m_capturingEnabled;
   bool m_parseIcecastInfo;
 };
 

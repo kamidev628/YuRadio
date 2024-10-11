@@ -24,6 +24,7 @@ public:
 
 private slots:
   void mediaStatusChanged(QMediaPlayer::MediaStatus status);
+  void onAudioStreamRecorderChanged();
 
 private:
   void processMediaItem(const MediaItem &mediaItem);
@@ -33,6 +34,7 @@ protected:
   RadioInfoReaderProxyServer *m_proxyServer;
   QThread m_proxyServerThread;
 
+  QString m_lastStreamTitle;
   QMediaPlayer *m_mediaPlayer;
   QMediaDevices *m_mediaDevices;
 };

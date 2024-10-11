@@ -113,3 +113,15 @@ void PlatformRadioController::toggle(RadioPlayer::ToggleBehaviour behaviour) {
     Q_UNREACHABLE();
   }
 }
+
+void PlatformRadioController::setAudioStreamRecorder(
+  AudioStreamRecorder *recorder) {
+  if (m_recorder != recorder) {
+    m_recorder = recorder;
+    emit audioStreamRecorderChanged();
+  }
+}
+
+AudioStreamRecorder *PlatformRadioController::audioStreamRecorder() const {
+  return m_recorder;
+}

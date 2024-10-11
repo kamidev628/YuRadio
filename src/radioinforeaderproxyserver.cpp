@@ -1,6 +1,7 @@
 #include <QLoggingCategory>
 Q_LOGGING_CATEGORY(radioInfoReaderLog, "YuRadio.RadioInfoReaderProxyServer")
 
+#include <QBuffer>
 #include <QNetworkInformation>
 #include <QNetworkReply>
 #include <QTcpServer>
@@ -19,7 +20,8 @@ constexpr qint64 MAXIMUM_READ_BUFFER_SIZE = 50_KiB;
 
 RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(QObject *parent)
     : QObject(parent), m_server(new QTcpServer(this)),
-      m_networkManager(new NetworkManager(this)), m_parseIcecastInfo(true) {
+      m_networkManager(new NetworkManager(this)), m_capturingEnabled(false),
+      m_parseIcecastInfo(true) {
   connect(m_server, &QTcpServer::newConnection, this,
           &RadioInfoReaderProxyServer::clientConnected);
 
@@ -61,6 +63,11 @@ void RadioInfoReaderProxyServer::setParseIcecastInfo(bool shouldParse) {
 bool RadioInfoReaderProxyServer::parseIcecastInfo() const {
   QReadLocker locker(&m_lock);
   return m_parseIcecastInfo;
+}
+
+void RadioInfoReaderProxyServer::enableCapturing(bool enableCapture) {
+  QWriteLocker locker(&m_lock);
+  m_capturingEnabled = enableCapture;
 }
 
 QUrl RadioInfoReaderProxyServer::sourceUrl() const {
@@ -138,6 +145,7 @@ void RadioInfoReaderProxyServer::replyReadHeaders(QNetworkReply *reply,
   int icyMetaInt = reply->hasRawHeader("icy-metaint"_L1)
                      ? reply->rawHeader("icy-metaint"_L1).toInt(&metaIntParsed)
                      : 0;
+  bool parseIcecastMetadata = parseIcecastInfo();
 
   if (client) {
     int statusCode =
@@ -154,7 +162,7 @@ void RadioInfoReaderProxyServer::replyReadHeaders(QNetworkReply *reply,
     }
 
     QStringList dropHeaders = {u"Transfer-Encoding"_s};
-    if (m_parseIcecastInfo) {
+    if (parseIcecastMetadata) {
       dropHeaders << u"icy-metaint"_s;
     }
 
@@ -169,7 +177,7 @@ void RadioInfoReaderProxyServer::replyReadHeaders(QNetworkReply *reply,
     client->write("\r\n"_ba);
   }
 
-  if (m_parseIcecastInfo && icyMetaInt && metaIntParsed) {
+  if (parseIcecastMetadata && icyMetaInt && metaIntParsed) {
     auto *parserInfo = new IcecastParserInfo(client);
     parserInfo->icyMetaInt = icyMetaInt;
 
@@ -231,6 +239,7 @@ void RadioInfoReaderProxyServer::processNetworkReply(QNetworkReply *reply,
   p->songBytesRead += songData.length();
 
   client->write(songData);
+  captureBuffer(songData, p);
 
   while (reply->bytesAvailable()) {
     p->songBytesRead = 0;
@@ -254,12 +263,18 @@ void RadioInfoReaderProxyServer::processNetworkReply(QNetworkReply *reply,
     songData = reply->read(p->icyMetaInt);
     p->songBytesRead = songData.length();
     client->write(songData);
+    captureBuffer(songData, p);
+  }
+}
+
+void RadioInfoReaderProxyServer::captureBuffer(const QByteArray &buffer,
+                                               const IcecastParserInfo *p) {
+  if (m_capturingEnabled) {
+    emit bufferCaptured(buffer, p->icyMetaData["StreamTitle"].toString());
   }
 }
 
 void RadioInfoReaderProxyServer::readIcyMetaData(IcecastParserInfo *p) {
-  p->icyMetaData.clear();
-
   /*
    * NOTE: Icecast metadata structured in the following way:
    * StreamTitle='...';StreamUrl='...';\0\0\0

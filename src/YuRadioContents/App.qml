@@ -5,6 +5,7 @@ import QtQuick
 import QtNetwork
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import QtQuick.Controls.Material
 
 import "radiobrowser.mjs" as RadioBrowser
@@ -378,6 +379,17 @@ ApplicationWindow {
         Component.onCompleted: {
             MainRadioPlayer.audioStreamRecorder = audioRecorder;
         }
+
+        onErrorOccurred: {
+            messageDialog.text = errorString;
+            messageDialog.open();
+        }
+    }
+
+    MessageDialog {
+        id: messageDialog
+
+        buttons: MessageDialog.Ok
     }
 
     GlobalShortcut {

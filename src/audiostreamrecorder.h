@@ -13,6 +13,7 @@ class AudioStreamRecorder : public QObject {
                setRecordingPolicy NOTIFY recordingPolicyChanged)
   Q_PROPERTY(RecordingNamePolicy recordingNamePolicy READ recordingNamePolicy
                WRITE setRecordingNamePolicy NOTIFY recordingNamePolicyChanged)
+  Q_PROPERTY(QString errorString READ errorString NOTIFY errorOccurred)
   QML_ELEMENT
 
 public:
@@ -42,6 +43,8 @@ public:
   RecordingNamePolicy recordingNamePolicy() const;
   void setRecordingNamePolicy(RecordingNamePolicy policy);
 
+  QString errorString() const;
+
   Q_INVOKABLE void record();
   Q_INVOKABLE void stop();
 
@@ -57,17 +60,21 @@ signals:
   void recordingChanged();
   void recordingPolicyChanged();
   void recordingNamePolicyChanged();
+  void errorOccurred();
 
 protected:
+  void setError(const QString &errorString);
   void setRecording(bool recording);
   void saveRecording();
   QString recordingName();
+  QDir outputLocationToDir();
 
 private:
   QUrl m_outputLocation;
   QUrl m_streamUrl;
   QString m_streamTitle;
   QString m_preferredSuffix;
+  QString m_errorString;
   RecordingPolicy m_recordingPolicy;
   RecordingNamePolicy m_recordingNamePolicy;
 

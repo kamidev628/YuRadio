@@ -21,7 +21,7 @@ Item {
 
         readOnly: true
         rightPadding: folderImage.width
-        text: root.recorder.outputLocation.toString()
+        text: decodeURIComponent(root.recorder.outputLocation.toString())
 
         onReleased: {
             folderDialog.open();

@@ -1,6 +1,7 @@
 #ifndef RADIOINFOREADERPROXYSERVER_H
 #define RADIOINFOREADERPROXYSERVER_H
 
+#include <QMimeType>
 #include <QObject>
 #include <QPointer>
 #include <QReadWriteLock>
@@ -32,16 +33,14 @@ class RadioInfoReaderProxyServer : public QObject {
   Q_OBJECT
 
 public:
-  explicit RadioInfoReaderProxyServer(QObject *parent = nullptr);
+  explicit RadioInfoReaderProxyServer(bool streamIcecastMetadata = false,
+                                      QObject *parent = nullptr);
   ~RadioInfoReaderProxyServer() override;
 
   void setTargetSource(const QUrl &targetSource);
   QUrl targetSource() const;
 
   QUrl sourceUrl() const;
-  void setParseIcecastInfo(bool shouldParse);
-  bool parseIcecastInfo() const;
-
   void listen();
 
   void enableCapturing(bool enableCapture);
@@ -51,6 +50,7 @@ signals:
   void loadingChanged(bool loading);
   void bitrateChanged(int bitrate);
   void bufferCaptured(const QByteArray &buffer, const QString &streamTitle);
+  void mimeTypeChanged(const QMimeType &mimeType);
 
 private slots:
   void start();
@@ -75,7 +75,7 @@ private:
 
   QUrl m_targetSource;
   bool m_capturingEnabled;
-  bool m_parseIcecastInfo;
+  bool m_streamIcecastMetadata;
 };
 
 #endif /* !RADIOINFOREADERPROXYSERVER_H */

@@ -2,11 +2,24 @@
 
 #include "androidmediasessionimageprovider.h"
 #include "nativemediacontroller.h"
+#include "radioinforeaderproxyserver.h"
+
+using namespace Qt::StringLiterals;
 
 AndroidRadioController::AndroidRadioController(QObject *parent)
     : PlatformRadioController(parent),
       m_nativeController(NativeMediaController::instance()),
-      m_mediaSessionImageProvider(new AndroidMediaSessionImageProvider(this)) {
+      m_mediaSessionImageProvider(new AndroidMediaSessionImageProvider(this)),
+      m_proxyServer(new RadioInfoReaderProxyServer(true)) {
+
+  connect(&m_proxyServerThread, &QThread::started, m_proxyServer,
+          &RadioInfoReaderProxyServer::listen);
+  connect(&m_proxyServerThread, &QThread::finished, m_proxyServer,
+          &QObject::deleteLater);
+
+  connect(this, &PlatformRadioController::audioStreamRecorderChanged, this,
+          &AndroidRadioController::onAudioStreamRecorderChanged);
+
   connect(m_nativeController, &NativeMediaController::isLoadingChanged, this,
           [this](bool loading) { setIsLoading(loading); });
   connect(m_nativeController, &NativeMediaController::streamTitleChanged, this,
@@ -16,6 +29,15 @@ AndroidRadioController::AndroidRadioController(QObject *parent)
           this, &AndroidRadioController::playbackStateChanged);
   connect(m_nativeController, &NativeMediaController::playerErrorChanged, this,
           &AndroidRadioController::playerError);
+
+  m_proxyServerThread.setObjectName("RadioInfoReaderProxyServer Thread"_L1);
+  m_proxyServer->moveToThread(&m_proxyServerThread);
+  m_proxyServerThread.start();
+}
+
+AndroidRadioController::~AndroidRadioController() {
+  m_proxyServerThread.quit();
+  m_proxyServerThread.wait();
 }
 
 void AndroidRadioController::play() {
@@ -177,9 +199,27 @@ void AndroidRadioController::processMediaItem(const MediaItem &mediaItem) {
   m_nativeController->setArtworkUri(m_mediaSessionImageProvider->imageUrl());
 
   /* NOTE: Set source lastly */
-  m_nativeController->setSource(mediaItem.source);
+  m_proxyServer->setTargetSource(mediaItem.source);
+  m_nativeController->setSource(m_proxyServer->sourceUrl());
 }
 
 bool AndroidRadioController::canHandleMediaKeys() const {
   return true;
+}
+
+void AndroidRadioController::onAudioStreamRecorderChanged() {
+  connect(m_recorder, &AudioStreamRecorder::recordingChanged, this, [this]() {
+    m_proxyServer->enableCapturing(m_recorder->recording());
+  });
+  connect(m_proxyServer, &RadioInfoReaderProxyServer::bufferCaptured,
+          m_recorder,
+          [this](const QByteArray &buffer, const QString &streamTitle) {
+    m_recorder->processBuffer(buffer, m_mediaItem.source, streamTitle);
+  });
+  connect(m_proxyServer, &RadioInfoReaderProxyServer::mimeTypeChanged,
+          m_recorder, [this](const QMimeType &mimeType) {
+    if (mimeType.isValid() && !mimeType.preferredSuffix().isEmpty()) {
+      m_recorder->setPreferredSuffix(mimeType.preferredSuffix());
+    }
+  });
 }

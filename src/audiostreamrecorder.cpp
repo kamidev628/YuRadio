@@ -1,6 +1,12 @@
 #include <QLoggingCategory>
 Q_LOGGING_CATEGORY(audioStreamRecorderLog, "YuRadio.AudioStreamRecorder")
 
+#ifdef Q_OS_ANDROID
+#include <QtCore/private/qandroidextras_p.h>
+#endif /* Q_OS_ANDROID */
+
+#include <QFileInfo>
+
 #include "audiostreamrecorder.h"
 
 using namespace Qt::StringLiterals;
@@ -43,6 +49,30 @@ bool AudioStreamRecorder::recording() const {
 void AudioStreamRecorder::record() {
   qCDebug(audioStreamRecorderLog) << "Record";
 
+#ifdef Q_OS_ANDROID
+  static std::once_flag checkPermissionFlag;
+  std::call_once(checkPermissionFlag, []() {
+    QList<QString> permissions = {
+      u"android.permission.WRITE_EXTERNAL_STORAGE"_s,
+      u"android.permission.READ_EXTERNAL_STORAGE"_s,
+      u"android.permission.READ_MEDIA_AUDIO"_s};
+
+    for (const auto &permission : permissions) {
+      if (QtAndroidPrivate::checkPermission(permission).result() !=
+          QtAndroidPrivate::Authorized) {
+        auto result = QtAndroidPrivate::requestPermission(permission).result();
+        if (result != QtAndroidPrivate::Authorized) {
+          qCWarning(audioStreamRecorderLog)
+            << "Permission is not granted:" << permission;
+          /* NOTE: I'm not calling return here intentionally. 
+           * These permissions might be not required by some devices
+           */
+        }
+      }
+    }
+  });
+#endif /* Q_OS_ANDROID */
+
   reset();
 
   m_startTime = QDateTime::currentDateTime();
@@ -79,7 +109,7 @@ void AudioStreamRecorder::setRecordingPolicy(RecordingPolicy policy) {
 }
 
 static QString dateTimePath() {
-  return QDateTime::currentDateTime().toString("ddMMyyyy-hhmmss");
+  return QDateTime::currentDateTime().toString("yyyy-MM-dd-hhmmss");
 }
 
 void AudioStreamRecorder::processBuffer(const QByteArray &buffer,
@@ -100,15 +130,18 @@ void AudioStreamRecorder::processBuffer(const QByteArray &buffer,
 
   if (!m_file->isOpen()) {
     QString dateTimeString = dateTimePath();
-    QDir outputDir(m_outputLocation.toLocalFile());
 
-    m_file->setFileName(outputDir.filePath(u"YuRadio_"_s + dateTimeString));
+    m_file->setFileName(
+      outputLocationToDir().filePath(u"YuRadio_"_s + dateTimeString));
+
     if (!m_file->open(QFile::ReadWrite)) {
+      QString errorString = QString("Failed to open file for recording: %1 %2")
+                              .arg(m_file->fileName())
+                              .arg(m_file->errorString());
+      setError(errorString);
       stop();
 
-      qCWarning(audioStreamRecorderLog)
-        << "Failed to open file for recording:" << m_file->fileName()
-        << m_file->errorString();
+      qCWarning(audioStreamRecorderLog).noquote() << errorString;
       return;
     }
   }
@@ -120,17 +153,27 @@ void AudioStreamRecorder::processBuffer(const QByteArray &buffer,
 }
 
 void AudioStreamRecorder::setPreferredSuffix(const QString &preferredSuffix) {
+  qCDebug(audioStreamRecorderLog) << "Set preferred suffix:" << preferredSuffix;
   m_preferredSuffix = preferredSuffix;
 }
 
 QString AudioStreamRecorder::recordingName() {
+  QString streamTitle = m_streamTitle;
+  if (streamTitle.isEmpty()) {
+    streamTitle = u"UnknownTrack"_s;
+  } else {
+    static QRegularExpression re(u"[/\\?%*:|\"<>\\s]"_s);
+
+    streamTitle.replace(re, "_");
+  }
+
   switch (m_recordingNamePolicy) {
     case StationDateTime:
       return "YuRadio_" + dateTimePath();
     case StationTrackNameDateTime:
-      return "YuRadio_" + m_streamTitle + '_' + dateTimePath();
+      return "YuRadio_" + streamTitle + '_' + dateTimePath();
     case StationTrackName:
-      return "YuRadio_" + m_streamTitle;
+      return "YuRadio_" + streamTitle;
   }
 }
 
@@ -146,25 +189,35 @@ void AudioStreamRecorder::saveRecording() {
     }
 
     QString finalName = QFile::encodeName(recordingName()) + '.' + suffix;
-    qCDebug(audioStreamRecorderLog) << "Rename to:" << finalName;
 
     m_file->close();
 
-    QDir outputDir(m_outputLocation.toLocalFile());
+    QString finalPath = outputLocationToDir().filePath(finalName);
 
-    if (!m_file->rename(outputDir.filePath(finalName))) {
-      qCWarning(audioStreamRecorderLog)
-        << "Cannot rename recording:" << m_file->errorString();
+    qCDebug(audioStreamRecorderLog)
+      << QString("Rename %1 to %2").arg(m_file->fileName()).arg(finalPath);
+
+    if (!m_file->rename(finalPath)) {
+      QString errorString =
+        QString("Failed to rename recording file from %1 to %2. Reason: %3")
+          .arg(m_file->fileName())
+          .arg(finalPath)
+          .arg(m_file->errorString());
+
+      setError(errorString);
+
+      qCWarning(audioStreamRecorderLog).noquote() << errorString;
     }
   } else {
-    qCWarning(audioStreamRecorderLog)
-      << "Cannot save recording:" << m_file->errorString();
+    QString errorString = "Failed to save recording. File is closed";
+    setError(errorString);
+
+    qCWarning(audioStreamRecorderLog).noquote() << errorString;
   }
 }
 
 void AudioStreamRecorder::reset() {
   m_streamTitle = QString();
-  m_preferredSuffix = QString();
 
   if (m_file->isOpen()) {
     /* Remove temporary recording file */
@@ -189,4 +242,21 @@ void AudioStreamRecorder::setRecordingNamePolicy(RecordingNamePolicy policy) {
     m_recordingNamePolicy = policy;
     emit recordingNamePolicyChanged();
   }
+}
+
+void AudioStreamRecorder::setError(const QString &errorString) {
+  m_errorString = errorString;
+  emit errorOccurred();
+}
+
+QString AudioStreamRecorder::errorString() const {
+  return m_errorString;
+}
+
+QDir AudioStreamRecorder::outputLocationToDir() {
+  QString filePath = m_outputLocation.isLocalFile()
+                       ? m_outputLocation.toLocalFile()
+                       : m_outputLocation.toString();
+
+  return {filePath};
 }

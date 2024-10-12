@@ -53,6 +53,8 @@ Item {
             right: parent.right
         }
 
+        currentIndex: swipeView.currentIndex
+
         ScalableTabButton {
             text: qsTr("General")
         }
@@ -68,7 +70,9 @@ Item {
         ScalableFontPicker {}
     }
 
-    StackLayout {
+    SwipeView {
+        id: swipeView
+
         anchors {
             left: parent.left
             right: parent.right

@@ -5,7 +5,7 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Controls.Material.impl
 
-ScalableComboBox {
+HeaderComboBox {
     id: root
 
     property list<string> stringModel

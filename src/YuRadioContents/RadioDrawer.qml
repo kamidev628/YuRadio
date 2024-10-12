@@ -70,6 +70,7 @@ Drawer {
                 PropertyChanges {
                     root.closePolicy: Popup.NoAutoClose
                     root.modal: false
+                    root.interactive: false
                 }
             }
         ]

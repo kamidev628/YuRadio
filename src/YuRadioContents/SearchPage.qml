@@ -107,7 +107,6 @@ Item {
         anchors.fill: parent
 
         active: false
-        asynchronous: true
 
         sourceComponent: RadioStationSearchFilterDialog {
             id: searchFilterDialog

@@ -132,8 +132,6 @@ Item {
 
         anchors.fill: parent
 
-        asynchronous: true
-
         sourceComponent: root.isTableViewType ? tableViewComponent : listViewComponent
     }
 

@@ -18,10 +18,6 @@ ScrollView {
     required property LanguageTranslator languageTranslator
     required property MusicInfoModel musicInfoModel
 
-    function desiredWidth(maxWidth: real): real {
-        return AppConfig.isSmallSize(root.width) ? maxWidth : Math.min(500, maxWidth * 2 / 3);
-    }
-
     contentWidth: -1
     contentHeight: generalPage.implicitHeight
 
@@ -35,7 +31,7 @@ ScrollView {
         id: generalPage
 
         implicitHeight: columnLayout.implicitHeight
-        implicitWidth: parent.width
+        implicitWidth: Math.max(columnLayout.implicitWidth, Math.min(parent.width, 500))
 
         ColumnLayout {
             id: columnLayout
@@ -48,12 +44,15 @@ ScrollView {
             }
 
             ScalableLabel {
-                text: qsTr("Available Servers")
                 Layout.fillWidth: true
+
+                text: qsTr("Available Servers")
+
+                wrapMode: Text.Wrap
             }
 
             Rectangle {
-                implicitWidth: root.desiredWidth(parent.width)
+                Layout.fillWidth: true
                 implicitHeight: 1
 
                 color: Material.foreground
@@ -64,6 +63,7 @@ ScrollView {
 
                 Layout.fillWidth: true
                 Layout.preferredHeight: 150
+                implicitWidth: contentItem.childrenRect.width
 
                 clip: true
                 focus: true
@@ -76,7 +76,8 @@ ScrollView {
                     focus: true
                     focusPolicy: Qt.StrongFocus
 
-                    implicitWidth: root.desiredWidth(ListView.view.width)
+                    width: ListView.view.width
+
                     text: modelData
                     checkable: true
                     checked: modelData == root.networkManager.baseUrl
@@ -100,6 +101,7 @@ ScrollView {
                     }
 
                     text: qsTr("Could not fetch available servers")
+                    wrapMode: Text.Wrap
 
                     Material.foreground: Material.color(Material.Grey, Material.Shade500)
                     opacity: 0.5
@@ -125,10 +127,12 @@ ScrollView {
                 Layout.fillWidth: true
 
                 text: qsTr("Start Page")
+                wrapMode: Text.Wrap
             }
 
             ScalableComboBox {
-                implicitWidth: root.desiredWidth(parent.width)
+                Layout.fillWidth: true
+                implicitContentWidthPolicy: ComboBox.WidestText
 
                 model: [
                     {
@@ -162,10 +166,11 @@ ScrollView {
                 Layout.fillWidth: true
 
                 text: qsTr("Language")
+                wrapMode: Text.Wrap
             }
 
             ScalableComboBox {
-                implicitWidth: root.desiredWidth(parent.width)
+                Layout.fillWidth: true
 
                 textRole: "text"
                 Accessible.name: languageLabel.text
@@ -193,10 +198,11 @@ ScrollView {
                 Layout.fillWidth: true
 
                 text: qsTr("Pause button behavior")
+                wrapMode: Text.Wrap
             }
 
             ScalableComboBox {
-                implicitWidth: root.desiredWidth(parent.width)
+                Layout.fillWidth: true
 
                 model: [
                     {
@@ -287,7 +293,7 @@ ScrollView {
                 property bool shouldShowMessage: false
 
                 Layout.topMargin: 10
-                implicitWidth: root.desiredWidth(parent.width)
+                Layout.fillWidth: true
 
                 text: qsTr("Spotify integration")
                 onClicked: {
@@ -319,6 +325,7 @@ ScrollView {
 
         ScalableLabel {
             text: qsTr("Successfully Authorized")
+            wrapMode: Text.Wrap
         }
         anchors.centerIn: Overlay.overlay
         standardButtons: Dialog.Ok

@@ -23,7 +23,7 @@ ScrollView {
         id: recordingsPageContents
 
         implicitHeight: columnLayout.implicitHeight
-        implicitWidth: parent.width
+        implicitWidth: Math.max(columnLayout.implicitWidth, Math.min(parent.width, 500))
 
         ColumnLayout {
             id: columnLayout
@@ -54,6 +54,7 @@ ScrollView {
                 id: recordingNameCombo
 
                 implicitContentWidthPolicy: ComboBox.WidestText
+                Layout.fillWidth: true
                 textRole: "text"
 
                 model: [
@@ -99,6 +100,8 @@ ScrollView {
                 id: recordingPolicyCombo
 
                 implicitContentWidthPolicy: ComboBox.WidestText
+                Layout.fillWidth: true
+
                 textRole: "text"
                 model: [
                     {

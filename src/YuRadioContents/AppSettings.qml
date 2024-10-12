@@ -3,6 +3,8 @@ pragma Singleton
 import QtQuick
 import QtCore
 
+import Main
+
 Settings {
     id: settings
 
@@ -30,4 +32,8 @@ Settings {
     property string theme: Qt.styleHints.colorScheme === Qt.Dark ? "Dark" : "Light"
 
     property string historyPageView: "table" /* ["table", "list"] */
+
+    property url recordingsDirectory: StandardPaths.standardLocations(StandardPaths.MusicLocation)[0]
+    property int recordingNamePolicy: AudioStreamRecorder.StationDateTime
+    property int recordingPolicy: AudioStreamRecorder.NoRecordingPolicy
 }

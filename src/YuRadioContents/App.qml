@@ -347,16 +347,24 @@ ApplicationWindow {
     AudioStreamRecorder {
         id: audioRecorder
 
-        recordingPolicy: AudioStreamRecorder.SaveRecordingWhenStreamTitleChanges
-        recordingNamePolicy: AudioStreamRecorder.StationTrackNameDateTime
+        recordingPolicy: AppSettings.recordingPolicy
+        recordingNamePolicy: AppSettings.recordingNamePolicy
+        stationName: MainRadioPlayer.currentItem.name
 
+        outputLocation: AppSettings.recordingsDirectory
         Component.onCompleted: {
             MainRadioPlayer.audioStreamRecorder = audioRecorder;
         }
 
         onErrorOccurred: {
-            messageDialog.text = errorString;
+            messageDialog.text = "Recording error";
+            messageDialog.informativeText = errorString;
+
             messageDialog.open();
+        }
+
+        onOutputLocationChanged: {
+            AppSettings.recordingsDirectory = outputLocation;
         }
     }
 

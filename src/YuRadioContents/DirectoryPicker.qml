@@ -23,10 +23,6 @@ Item {
         rightPadding: folderImage.width
         text: decodeURIComponent(root.recorder.outputLocation.toString())
 
-        onReleased: {
-            folderDialog.open();
-        }
-
         Image {
             id: folderImage
 
@@ -45,12 +41,19 @@ Item {
                 topMargin: 5
                 bottomMargin: 5
             }
+
+            TapHandler {
+                onTapped: {
+                    folderDialog.open();
+                }
+            }
         }
     }
 
     FolderDialog {
         id: folderDialog
-        currentFolder: StandardPaths.standardLocations(StandardPaths.MusicLocation)[0]
+
+        currentFolder: root.recorder.outputLocation
         selectedFolder: root.recorder.outputLocation
 
         onSelectedFolderChanged: {

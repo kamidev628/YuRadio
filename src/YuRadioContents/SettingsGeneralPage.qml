@@ -281,32 +281,6 @@ ScrollView {
                 }
             }
 
-            ScalableCheckBox {
-                id: sleepTimerCheckBox
-
-                Layout.topMargin: 5
-                Layout.fillWidth: true
-
-                checked: AppSettings.sleepInterval > 0
-                text: qsTr("Enable sleep timer")
-
-                onClicked: {
-                    if (!checked) {
-                        AppSettings.sleepInterval = -1;
-                    } else {}
-                }
-
-                Connections {
-                    target: AppSettings
-
-                    function onSleepIntervalChanged() {
-                        if (AppSettings.sleepInterval === -1) {
-                            sleepTimerCheckBox.checked = false;
-                        }
-                    }
-                }
-            }
-
             SpotifyButton {
                 id: spotifyButton
 

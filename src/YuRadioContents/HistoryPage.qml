@@ -114,7 +114,6 @@ Item {
         anchors.fill: parent
 
         active: false
-        asynchronous: true
 
         sourceComponent: HistorySearchFilterDialog {
             id: searchFilterDialog

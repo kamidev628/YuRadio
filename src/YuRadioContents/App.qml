@@ -105,32 +105,6 @@ ApplicationWindow {
                 });
             }
         }
-
-        onBaseUrlChanged: {
-            if (baseUrl) {
-                if (!Storage.getCountries().length) {
-                    console.log("Caching countries...");
-                    RadioBrowser.getCountries(baseUrl).then(countries => {
-                        Storage.addCountries(countries.filter(country => country.name && country.iso_3166_1).map(country => country.name));
-                        console.log("Countries Cached!");
-                    });
-                }
-                if (!Storage.getLanguages().length) {
-                    console.log("Caching languages...");
-                    RadioBrowser.getLanguages(baseUrl).then(languages => {
-                        Storage.addLanguages(languages.filter(language => language.name && language.iso_639).map(language => language.name));
-                        console.log("Languages Cached!");
-                    });
-                }
-                if (!Storage.getTags().length) {
-                    console.log("Caching tags...");
-                    RadioBrowser.getTopUsedTags(baseUrl, 100).then(tags => {
-                        Storage.addTags(tags.filter(tag => tag.name).map(tag => tag.name));
-                        console.log("Tags Cached!");
-                    });
-                }
-            }
-        }
     }
 
     RadioDrawer {

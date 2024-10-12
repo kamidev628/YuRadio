@@ -9,6 +9,8 @@ import network
 import YuRadioContents
 import Main
 
+import "radiobrowser.mjs" as RadioBrowser
+
 Dialog {
     id: root
 
@@ -153,6 +155,16 @@ Dialog {
                     Accessible.name: countryLabel.text
 
                     stringModel: Storage.getCountries()
+                    onActiveFocusChanged: {
+                        if (activeFocus && stringModel.length === 0) {
+                            console.log("Caching countries...");
+                            RadioBrowser.getCountries(root.networkManager.baseUrl).then(countries => {
+                                stringModel = countries.filter(country => country.name && country.iso_3166_1).map(country => country.name);
+                                Storage.addCountries(stringModel);
+                                console.log("Countries Cached!");
+                            });
+                        }
+                    }
                 }
 
                 ScalableLabel {
@@ -235,6 +247,16 @@ Dialog {
                     Accessible.name: languageLabel.text
 
                     stringModel: Storage.getLanguages()
+                    onActiveFocusChanged: {
+                        if (activeFocus && stringModel.length === 0) {
+                            console.log("Caching languages...");
+                            RadioBrowser.getLanguages(root.networkManager.baseUrl).then(languages => {
+                                stringModel = languages.filter(language => language.name && language.iso_639).map(language => language.name);
+                                Storage.addLanguages(stringModel);
+                                console.log("Languages Cached!");
+                            });
+                        }
+                    }
                 }
             }
 
@@ -278,11 +300,26 @@ Dialog {
                 model: ListModel {
                     id: tagsModel
 
-                    Component.onCompleted: {
-                        let sections = tagsView.getSections(Storage.getTags());
+                    function createModel(tags) {
+                        let sections = tagsView.getSections(tags);
                         sections.forEach(section => {
                             tagsModel.append(section);
                         });
+                    }
+
+                    Component.onCompleted: {
+                        let storedTags = Storage.getTags();
+                        if (storedTags.length === 0) {
+                            console.log("Caching tags...");
+                            RadioBrowser.getTopUsedTags(root.networkManager.baseUrl, 100).then(tags => {
+                                let tagsNames = tags.filter(tag => tag.name).map(tag => tag.name);
+                                Storage.addTags(tagsNames);
+                                createModel(tagsNames);
+                                console.log("Tags Cached!");
+                            });
+                        } else {
+                            createModel(storedTags);
+                        }
                     }
                 }
 

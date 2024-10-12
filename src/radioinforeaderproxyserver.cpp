@@ -19,7 +19,7 @@ using namespace Qt::StringLiterals;
 using namespace std::chrono_literals;
 
 constexpr int ICY_MULTIPLIER = 16;
-constexpr qint64 MAXIMUM_READ_BUFFER_SIZE = 50_KiB;
+constexpr qint64 MAXIMUM_READ_BUFFER_SIZE = 200_KiB;
 
 RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(
   bool streamIcecastMetadata, QObject *parent)
@@ -28,8 +28,6 @@ RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(
       m_streamIcecastMetadata(streamIcecastMetadata) {
   connect(m_server, &QTcpServer::newConnection, this,
           &RadioInfoReaderProxyServer::clientConnected);
-
-  m_networkManager->setTransferTimeout(10s);
 }
 
 RadioInfoReaderProxyServer::~RadioInfoReaderProxyServer() = default;
@@ -191,10 +189,6 @@ bool RadioInfoReaderProxyServer::validateNetworkReply(QNetworkReply *reply,
       MAXIMUM_READ_BUFFER_SIZE + static_cast<int>(50_KiB)) {
     qCDebug(radioInfoReaderLog) << "Client buffer overflow";
     reply->abort();
-    return false;
-  }
-
-  if (client->bytesToWrite() > 0) {
     return false;
   }
 

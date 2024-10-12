@@ -75,12 +75,12 @@ ScrollView {
                 ].filter(x => x.visible)
 
                 Component.onCompleted: {
-                    currentIndex = model.findIndex(x => x.field === root.audioRecorder.recordingNamePolicy);
+                    currentIndex = model.findIndex(x => x.field === root.audioRecorder.recordingNameFormat);
                 }
 
                 onCurrentValueChanged: {
                     if (currentValue) {
-                        AppSettings.recordingNamePolicy = currentValue.field;
+                        AppSettings.recordingNameFormat = currentValue.field;
                     }
                 }
             }

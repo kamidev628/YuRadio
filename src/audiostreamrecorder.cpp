@@ -24,7 +24,7 @@ AudioStreamRecorder::AudioStreamRecorder(QObject *parent)
     << "Default music location:" << m_outputLocation;
 
   m_recordingPolicy = NoRecordingPolicy;
-  m_recordingNamePolicy = StationDateTime;
+  m_recordingNameFormat = StationDateTime;
 }
 
 AudioStreamRecorder::~AudioStreamRecorder() {
@@ -189,7 +189,7 @@ QString AudioStreamRecorder::recordingName() const {
     qCWarning(audioStreamRecorderLog) << "Station name is empty string";
   }
 
-  switch (m_recordingNamePolicy) {
+  switch (m_recordingNameFormat) {
     case StationDateTime:
       return stationName + '_' + dateTimePath();
     case StationTrackNameDateTime:
@@ -258,15 +258,15 @@ void AudioStreamRecorder::reset() {
   m_file->close();
 }
 
-AudioStreamRecorder::RecordingNamePolicy
-AudioStreamRecorder::recordingNamePolicy() const {
-  return m_recordingNamePolicy;
+AudioStreamRecorder::RecordingNameFormat
+AudioStreamRecorder::recordingNameFormat() const {
+  return m_recordingNameFormat;
 }
 
-void AudioStreamRecorder::setRecordingNamePolicy(RecordingNamePolicy policy) {
-  if (m_recordingNamePolicy != policy) {
-    m_recordingNamePolicy = policy;
-    emit recordingNamePolicyChanged();
+void AudioStreamRecorder::setRecordingNameFormat(RecordingNameFormat format) {
+  if (m_recordingNameFormat != format) {
+    m_recordingNameFormat = format;
+    emit recordingNameFormatChanged();
   }
 }
 

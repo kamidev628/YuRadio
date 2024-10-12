@@ -11,8 +11,8 @@ class AudioStreamRecorder : public QObject {
   Q_PROPERTY(bool recording READ recording NOTIFY recordingChanged)
   Q_PROPERTY(RecordingPolicy recordingPolicy READ recordingPolicy WRITE
                setRecordingPolicy NOTIFY recordingPolicyChanged)
-  Q_PROPERTY(RecordingNamePolicy recordingNamePolicy READ recordingNamePolicy
-               WRITE setRecordingNamePolicy NOTIFY recordingNamePolicyChanged)
+  Q_PROPERTY(RecordingNameFormat recordingNameFormat READ recordingNameFormat
+               WRITE setRecordingNameFormat NOTIFY recordingNameFormatChanged)
   Q_PROPERTY(QString errorString READ errorString NOTIFY errorOccurred)
   Q_PROPERTY(QString stationName READ stationName WRITE setStationName NOTIFY
                stationNameChanged)
@@ -22,12 +22,12 @@ public:
   explicit AudioStreamRecorder(QObject *parent = nullptr);
   ~AudioStreamRecorder() override;
 
-  enum RecordingNamePolicy {
+  enum RecordingNameFormat {
     StationDateTime = 0,
     StationTrackNameDateTime,
     TrackNameDateTime,
   };
-  Q_ENUM(RecordingNamePolicy)
+  Q_ENUM(RecordingNameFormat)
 
   enum RecordingPolicy {
     NoRecordingPolicy = 0,
@@ -42,8 +42,8 @@ public:
   RecordingPolicy recordingPolicy() const;
   void setRecordingPolicy(RecordingPolicy policy);
 
-  RecordingNamePolicy recordingNamePolicy() const;
-  void setRecordingNamePolicy(RecordingNamePolicy policy);
+  RecordingNameFormat recordingNameFormat() const;
+  void setRecordingNameFormat(RecordingNameFormat format);
 
   QString errorString() const;
 
@@ -64,7 +64,7 @@ signals:
   void outputLocationChanged();
   void recordingChanged();
   void recordingPolicyChanged();
-  void recordingNamePolicyChanged();
+  void recordingNameFormatChanged();
   void stationNameChanged();
   void errorOccurred();
 
@@ -84,7 +84,7 @@ private:
   QString m_errorString;
   QString m_stationName;
   RecordingPolicy m_recordingPolicy;
-  RecordingNamePolicy m_recordingNamePolicy;
+  RecordingNameFormat m_recordingNameFormat;
 
   QDateTime m_startTime;
 

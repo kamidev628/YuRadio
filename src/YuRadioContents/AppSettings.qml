@@ -34,6 +34,6 @@ Settings {
     property string historyPageView: "table" /* ["table", "list"] */
 
     property url recordingsDirectory: StandardPaths.standardLocations(StandardPaths.MusicLocation)[0]
-    property int recordingNamePolicy: AudioStreamRecorder.StationDateTime
+    property int recordingNameFormat: AudioStreamRecorder.StationDateTime
     property int recordingPolicy: AudioStreamRecorder.NoRecordingPolicy
 }

@@ -348,7 +348,7 @@ ApplicationWindow {
         id: audioRecorder
 
         recordingPolicy: AppSettings.recordingPolicy
-        recordingNamePolicy: AppSettings.recordingNamePolicy
+        recordingNameFormat: AppSettings.recordingNameFormat
         stationName: MainRadioPlayer.currentItem.name
 
         outputLocation: AppSettings.recordingsDirectory

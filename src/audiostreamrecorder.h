@@ -14,6 +14,8 @@ class AudioStreamRecorder : public QObject {
   Q_PROPERTY(RecordingNamePolicy recordingNamePolicy READ recordingNamePolicy
                WRITE setRecordingNamePolicy NOTIFY recordingNamePolicyChanged)
   Q_PROPERTY(QString errorString READ errorString NOTIFY errorOccurred)
+  Q_PROPERTY(QString stationName READ stationName WRITE setStationName NOTIFY
+               stationNameChanged)
   QML_ELEMENT
 
 public:
@@ -23,7 +25,7 @@ public:
   enum RecordingNamePolicy {
     StationDateTime = 0,
     StationTrackNameDateTime,
-    StationTrackName,
+    TrackNameDateTime,
   };
   Q_ENUM(RecordingNamePolicy)
 
@@ -45,6 +47,9 @@ public:
 
   QString errorString() const;
 
+  QString stationName() const;
+  void setStationName(const QString &stationName);
+
   Q_INVOKABLE void record();
   Q_INVOKABLE void stop();
 
@@ -60,14 +65,16 @@ signals:
   void recordingChanged();
   void recordingPolicyChanged();
   void recordingNamePolicyChanged();
+  void stationNameChanged();
   void errorOccurred();
 
 protected:
   void setError(const QString &errorString);
   void setRecording(bool recording);
   void saveRecording();
-  QString recordingName();
-  QDir outputLocationToDir();
+  QString recordingName() const;
+  QString dateTimePath() const;
+  QDir outputLocationToDir() const;
 
 private:
   QUrl m_outputLocation;
@@ -75,6 +82,7 @@ private:
   QString m_streamTitle;
   QString m_preferredSuffix;
   QString m_errorString;
+  QString m_stationName;
   RecordingPolicy m_recordingPolicy;
   RecordingNamePolicy m_recordingNamePolicy;
 

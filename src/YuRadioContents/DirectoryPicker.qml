@@ -41,11 +41,14 @@ Item {
                 topMargin: 5
                 bottomMargin: 5
             }
+        }
 
-            TapHandler {
-                onTapped: {
-                    folderDialog.open();
-                }
+        MouseArea {
+            anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
+
+            onClicked: {
+                folderDialog.open();
             }
         }
     }
@@ -60,4 +63,5 @@ Item {
             root.recorder.outputLocation = selectedFolder;
         }
     }
+
 }

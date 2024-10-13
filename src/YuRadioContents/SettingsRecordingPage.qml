@@ -23,7 +23,7 @@ ScrollView {
         id: recordingsPageContents
 
         implicitHeight: columnLayout.implicitHeight
-        implicitWidth: Math.max(columnLayout.implicitWidth, Math.min(parent.width, 500))
+        implicitWidth: Math.min(parent.width, Math.max(columnLayout.implicitWidth, 500))
 
         ColumnLayout {
             id: columnLayout

@@ -12,7 +12,8 @@ Q_LOGGING_CATEGORY(audioStreamRecorderLog, "YuRadio.AudioStreamRecorder")
 using namespace Qt::StringLiterals;
 
 AudioStreamRecorder::AudioStreamRecorder(QObject *parent)
-    : QObject(parent), m_file(new QFile(this)) {
+    : QObject(parent), m_recordingPolicy(NoRecordingPolicy),
+      m_recordingNameFormat(StationDateTime), m_recording(false) {
   QString musicLocation =
     QStandardPaths::writableLocation(QStandardPaths::MusicLocation) +
     u"/YuRadio"_s;
@@ -22,9 +23,6 @@ AudioStreamRecorder::AudioStreamRecorder(QObject *parent)
   m_outputLocation = QUrl::fromLocalFile(musicLocation);
   qCDebug(audioStreamRecorderLog)
     << "Default music location:" << m_outputLocation;
-
-  m_recordingPolicy = NoRecordingPolicy;
-  m_recordingNameFormat = StationDateTime;
 }
 
 AudioStreamRecorder::~AudioStreamRecorder() {
@@ -74,18 +72,17 @@ void AudioStreamRecorder::record() {
 #endif /* Q_OS_ANDROID */
 
   reset();
-
-  m_startTime = QDateTime::currentDateTime();
   setRecording(true);
 }
 
 void AudioStreamRecorder::stop() {
   qCDebug(audioStreamRecorderLog) << "Stop";
 
-  if (m_file->isOpen()) {
+  if (canSaveRecording()) {
     saveRecording();
   }
 
+  reset();
   setRecording(false);
 }
 
@@ -119,38 +116,22 @@ void AudioStreamRecorder::processBuffer(const QByteArray &buffer,
     return;
   }
 
+  if (m_streamUrl.isValid() && m_streamUrl != streamUrl) {
+    reset();
+  }
+
   if (m_recordingPolicy == SaveRecordingWhenStreamTitleChanges &&
-      m_streamTitle != id && !m_streamTitle.isEmpty() && m_file->isOpen()) {
+      !id.isEmpty() && !m_streamTitle.isEmpty() && m_streamUrl.isValid() &&
+      m_streamTitle != id && m_streamUrl == streamUrl && canSaveRecording()) {
     saveRecording();
-
-    m_startTime = QDateTime::currentDateTime();
   }
 
-  if (m_streamUrl != streamUrl && m_file->isOpen()) {
-    saveRecording();
+  if (!m_file || !m_file->isOpen()) {
+    m_file.reset(new QTemporaryFile);
 
-    m_startTime = QDateTime::currentDateTime();
-  }
-
-  if (!m_file->isOpen()) {
-    QString dateTimeString =
-      QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz");
-
-    QString fileName =
-      outputLocationToDir().filePath(u"YuRadio_"_s + dateTimeString);
-
-    if (QFile::exists(fileName)) {
-      /* NOTE: should not happen */
-      qCWarning(audioStreamRecorderLog) << "Temporary file already exists";
-      QFile::remove(fileName);
-    }
-
-    m_file->setFileName(fileName);
-
-    if (!m_file->open(QFile::ReadWrite)) {
+    if (!m_file->open()) {
       QString errorString = QString("Failed to open file for recording: %1 %2")
-                              .arg(m_file->fileName())
-                              .arg(m_file->errorString());
+                              .arg(m_file->fileName(), m_file->errorString());
       setError(errorString);
       stop();
 
@@ -171,7 +152,7 @@ void AudioStreamRecorder::setPreferredSuffix(const QString &preferredSuffix) {
 }
 
 static const QString &removeSpecialCharacters(QString &path) {
-  static QRegularExpression re(u"[/\\?%*:|\"<>\\s]"_s);
+  static QRegularExpression re(u"[/\\?%*:|\"<>\\s]+"_s);
 
   return path.replace(re, "_");
 }
@@ -202,7 +183,7 @@ QString AudioStreamRecorder::recordingName() const {
 void AudioStreamRecorder::saveRecording() {
   qCDebug(audioStreamRecorderLog) << "Save Recording";
 
-  if (m_file->isOpen()) {
+  if (m_file && m_file->isOpen()) {
     QString suffix = m_preferredSuffix;
     if (suffix.isEmpty()) {
       qCWarning(audioStreamRecorderLog())
@@ -210,29 +191,40 @@ void AudioStreamRecorder::saveRecording() {
       suffix = u"mp3"_s;
     }
 
-    QString finalName = QFile::encodeName(recordingName()) + '.' + suffix;
+    QString finalName = recordingName() + '.' + suffix;
 
-    m_file->close();
-
-    QString finalPath = outputLocationToDir().filePath(finalName);
+    QString recordingPath = outputLocationToDir().filePath(finalName);
 
     qCDebug(audioStreamRecorderLog)
-      << QString("Rename %1 to %2").arg(m_file->fileName()).arg(finalPath);
+      << QString("Rename %1 to %2").arg(m_file->fileName(), recordingPath);
 
-    if (QFile::exists(finalPath)) {
-      QFile::remove(finalPath);
-    }
-
-    if (!m_file->rename(finalPath)) {
+    if (m_file->rename(recordingPath)) {
+      /* Successfully renamed file. No need to remove it */
+      m_file->setAutoRemove(false);
+    } else if (!m_file->copy(recordingPath)) {
+      /* NOTE: QTemporaryFile needs to be copied when destination resides in
+       * different partition
+       */
       QString errorString =
-        QString("Failed to rename recording file from %1 to %2. Reason: %3")
-          .arg(m_file->fileName())
-          .arg(finalPath)
-          .arg(m_file->errorString());
-
-      setError(errorString);
+        QString("Failed to copy recording file from %1 to %2. Reason: %3")
+          .arg(m_file->fileName(), recordingPath, m_file->errorString());
 
       qCWarning(audioStreamRecorderLog).noquote() << errorString;
+
+      QFile recordingFile(recordingPath);
+
+      /* NOTE: Final try. Especially useful for Android */
+      if (recordingFile.open(QIODeviceBase::ReadWrite)) {
+        /* File already closed by either `rename` or `copy` */
+        m_file->open();
+        m_file->seek(0);
+        recordingFile.write(m_file->readAll());
+      } else {
+        setError(errorString);
+
+        qCWarning(audioStreamRecorderLog).noquote()
+          << "Failed to open file:" << recordingFile.errorString();
+      }
     }
   } else {
     QString errorString = "Failed to save recording. File is closed";
@@ -240,22 +232,16 @@ void AudioStreamRecorder::saveRecording() {
 
     qCWarning(audioStreamRecorderLog).noquote() << errorString;
   }
+
+  m_file.reset(nullptr);
+  m_startTime = QDateTime::currentDateTime();
 }
 
 void AudioStreamRecorder::reset() {
   m_streamTitle = QString();
-
-  if (m_file->isOpen()) {
-    /* Remove temporary recording file */
-    if (!m_file->remove()) {
-      qCWarning(audioStreamRecorderLog)
-        << "Cannot remove file:" << m_file->fileName() << m_file->errorString();
-    }
-  }
-
   m_streamUrl = QUrl();
-  m_startTime = QDateTime();
-  m_file->close();
+  m_startTime = QDateTime::currentDateTime();
+  m_file.reset(nullptr);
 }
 
 AudioStreamRecorder::RecordingNameFormat
@@ -298,4 +284,8 @@ void AudioStreamRecorder::setStationName(const QString &stationName) {
 
     emit stationNameChanged();
   }
+}
+
+bool AudioStreamRecorder::canSaveRecording() const {
+  return !m_file.isNull() && m_file->isOpen();
 }

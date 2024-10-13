@@ -52,8 +52,8 @@ public:
 
   Q_INVOKABLE void record();
   Q_INVOKABLE void stop();
-
-  void reset();
+  Q_INVOKABLE bool canSaveRecording() const;
+  Q_INVOKABLE void saveRecording();
 
 public slots:
   void processBuffer(const QByteArray &buffer, const QUrl &streamUrl,
@@ -69,9 +69,9 @@ signals:
   void errorOccurred();
 
 protected:
+  void reset();
   void setError(const QString &errorString);
   void setRecording(bool recording);
-  void saveRecording();
   QString recordingName() const;
   QString dateTimePath() const;
   QDir outputLocationToDir() const;
@@ -88,7 +88,7 @@ private:
 
   QDateTime m_startTime;
 
-  QFile *m_file;
+  QScopedPointer<QTemporaryFile> m_file;
 
   bool m_recording;
 };

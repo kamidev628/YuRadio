@@ -18,13 +18,13 @@ ScrollView {
     required property LanguageTranslator languageTranslator
     required property MusicInfoModel musicInfoModel
 
+    property Flickable flickable: contentItem as Flickable
+
     contentWidth: -1
     contentHeight: generalPage.implicitHeight
 
     Binding {
-        target: root.contentItem
-        property: "boundsBehavior"
-        value: Flickable.StopAtBounds
+        root.flickable.boundsBehavior: Flickable.StopAtBounds
     }
 
     Item {
@@ -73,10 +73,12 @@ ScrollView {
                 delegate: ScalableItemDelegate {
                     required property string modelData
 
+                    width: ListView.view.width
+
                     focus: true
                     focusPolicy: Qt.StrongFocus
 
-                    width: ListView.view.width
+                    Material.foreground: checked ? Material.accent : undefined
 
                     text: modelData
                     checkable: true

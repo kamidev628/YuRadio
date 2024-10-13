@@ -10,13 +10,13 @@ ScrollView {
 
     required property AudioStreamRecorder audioRecorder
 
+    property Flickable flickable: contentItem as Flickable
+
     contentWidth: -1
-    contentHeight: root.implicitHeight
+    contentHeight: recordingsPageContents.implicitHeight
 
     Binding {
-        target: root.contentItem
-        property: "boundsBehavior"
-        value: Flickable.StopAtBounds
+        root.flickable.boundsBehavior: Flickable.StopAtBounds
     }
 
     Item {
@@ -35,6 +35,15 @@ ScrollView {
                 topMargin: 20
             }
 
+            ScalableLabel {
+                id: outputLocationLabel
+
+                Layout.fillWidth: true
+
+                text: qsTr("Output directory")
+                wrapMode: Text.Wrap
+            }
+
             DirectoryPicker {
                 recorder: root.audioRecorder
                 Layout.fillWidth: true
@@ -43,7 +52,7 @@ ScrollView {
             ScalableLabel {
                 id: recordingNameLabel
 
-                Layout.topMargin: 5
+                Layout.topMargin: 10
                 Layout.fillWidth: true
 
                 text: qsTr("Name format")

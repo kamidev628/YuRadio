@@ -107,6 +107,7 @@ QList<RadioStation> Storage::getBookmarks() {
     }
     result.append(RadioStation::fromJson(doc->object()));
   }
+
   return result;
 }
 
@@ -148,15 +149,17 @@ bool Storage::removeExpiredTags(int interval) {
 }
 
 bool Storage::addCountries(const QStringList &countries) {
+  QSqlDatabase::database().transaction();
+
   QSqlQuery query;
   query.prepare("INSERT OR IGNORE INTO country (name) VALUES (?)");
 
-  QVariantList list;
   for (const QString &country : countries) {
-    list << country;
+    query.bindValue(0, country);
+    query.exec();
   }
-  query.addBindValue(list);
-  return query.execBatch();
+
+  return QSqlDatabase::database().commit();
 }
 
 QStringList Storage::getCountries() {
@@ -171,15 +174,17 @@ QStringList Storage::getCountries() {
 }
 
 bool Storage::addLanguages(const QStringList &languages) {
+  QSqlDatabase::database().transaction();
+
   QSqlQuery query;
   query.prepare("INSERT OR IGNORE INTO language (name) VALUES (?)");
 
-  QVariantList list;
   for (const QString &language : languages) {
-    list << language;
+    query.bindValue(0, language);
+    query.exec();
   }
-  query.addBindValue(list);
-  return query.execBatch();
+
+  return QSqlDatabase::database().commit();
 }
 
 QStringList Storage::getLanguages() {
@@ -194,15 +199,17 @@ QStringList Storage::getLanguages() {
 }
 
 bool Storage::addTags(const QStringList &tags) {
+  QSqlDatabase::database().transaction();
+
   QSqlQuery query;
   query.prepare("INSERT OR IGNORE INTO tag (name) VALUES (?)");
 
-  QVariantList list;
   for (const QString &tag : tags) {
-    list << tag;
+    query.bindValue(0, tag);
+    query.exec();
   }
-  query.addBindValue(list);
-  return query.execBatch();
+
+  return QSqlDatabase::database().commit();
 }
 
 QStringList Storage::getTags() {

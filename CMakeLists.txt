@@ -78,19 +78,20 @@ if(LINUX
     TARGETS YuRadio
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT YuRadioInstaller)
-  # Deployment script for LINUX, MAC, WINDOWS
-  qt_generate_deploy_qml_app_script(
-    TARGET
-    YuRadio
-    OUTPUT_SCRIPT
-    deploy_script
-    MACOS_BUNDLE_POST_BUILD
-    NO_UNSUPPORTED_PLATFORM_ERROR
-    DEPLOY_USER_QML_MODULES_ON_UNSUPPORTED_PLATFORM
-    DEPLOY_TOOL_OPTIONS
-    ${deploy_tool_options_arg})
-  install(SCRIPT ${deploy_script} COMPONENT YuRadioInstaller)
 endif()
+
+# Deployment script for LINUX, MAC, WINDOWS
+qt_generate_deploy_qml_app_script(
+  TARGET
+  YuRadio
+  OUTPUT_SCRIPT
+  deploy_script
+  MACOS_BUNDLE_POST_BUILD
+  NO_UNSUPPORTED_PLATFORM_ERROR
+  DEPLOY_USER_QML_MODULES_ON_UNSUPPORTED_PLATFORM
+  DEPLOY_TOOL_OPTIONS
+  ${deploy_tool_options_arg})
+install(SCRIPT ${deploy_script} COMPONENT YuRadioInstaller)
 
 include(CPackConfig OPTIONAL)
 include(CPack)

@@ -31,7 +31,7 @@ Item {
             id: sleepTimerButton
 
             icon.source: AppSettings.enableSleepTimer ? "images/hourglass-on.svg" : "images/hourglass-off.svg"
-            Accessible.name: qsTr("Sleep timer configuration")
+            Accessible.name: qsTr("Sleep timer configurations")
 
             onClicked: {
                 sleepTimerPopup.open();

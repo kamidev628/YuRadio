@@ -9,6 +9,11 @@ import YuRadioContents
 Dialog {
     id: root
 
+    required property int sleepTimerLeftInterval
+
+    property int leftSleepHours: Math.floor(sleepTimerLeftInterval / 1000 / 60 / 60)
+    property int leftSleepMinutes: sleepTimerLeftInterval / 1000 / 60 % 60
+
     property int hours: hoursTumbler.currentIndex
     property int minutes: minutesTumbler.currentIndex
     property int milliseconds: (hours * 60 + minutes) * 60 * 1000
@@ -27,24 +32,10 @@ Dialog {
     standardButtons: Dialog.Ok
 
     contentItem: ColumnLayout {
-        ScalableLabel {
-            Layout.topMargin: 5
-            Layout.fillWidth: true
-
-            enabled: AppSettings.enableSleepTimer
-
-            property string timeTemplateString: root.hours > 0 ? qsTr("%1 hrs %2 min").arg(root.hours).arg(root.minutes) : qsTr("%1 min").arg(root.minutes)
-
-            text: qsTr("Sleep interval: %1").arg(timeTemplateString)
-            wrapMode: Text.Wrap
-        }
-
         RowLayout {
             Layout.topMargin: 10
             Layout.fillWidth: true
             Layout.minimumWidth: 200
-
-            enabled: AppSettings.enableSleepTimer
 
             Tumbler {
                 id: hoursTumbler
@@ -65,6 +56,19 @@ Dialog {
                 model: 60
                 delegate: tumblerDelegate
             }
+        }
+
+        ScalableLabel {
+            Layout.topMargin: 5
+            Layout.fillWidth: true
+
+            horizontalAlignment: Text.AlignHCenter
+
+            enabled: AppSettings.enableSleepTimer
+            /* NOTE: Is it possible to internationalize? */
+            text: `${root.leftSleepHours < 10 ? "0" : ""}${root.leftSleepHours}:${root.leftSleepMinutes < 10 ? "0" : ""}${root.leftSleepMinutes}`
+
+            wrapMode: Text.Wrap
         }
 
         ScalableButton {

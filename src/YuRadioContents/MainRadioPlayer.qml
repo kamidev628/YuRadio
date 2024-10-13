@@ -8,6 +8,7 @@ RadioPlayer {
     id: root
 
     property radiostation currentItem
+    property string stationName
 
     function toggleRadio() {
         if (AppSettings.pauseButtonBehaviour === "pause") {
@@ -24,7 +25,27 @@ RadioPlayer {
         AppSettings.volume = volume;
     }
 
+    audioStreamRecorder: AudioStreamRecorder {
+        stationName: root.stationName
+
+        recordingPolicy: AppSettings.recordingPolicy
+        recordingNameFormat: AppSettings.recordingNameFormat
+
+        outputLocation: AppSettings.recordingsDirectory
+
+        onOutputLocationChanged: {
+            AppSettings.recordingsDirectory = outputLocation;
+        }
+    }
+
     onCurrentItemChanged: {
+        if (audioStreamRecorder.recording) {
+            audioStreamRecorder.stop();
+            if (currentItem.isValid()) {
+                audioStreamRecorder.record();
+            }
+        }
+        stationName = currentItem.name;
         if (currentItem.isValid()) {
             const newMediaItem = constructMediaItem();
             newMediaItem.artworkUri = currentItem.favicon;

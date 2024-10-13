@@ -16,6 +16,7 @@ Item {
     required property NetworkManager networkManager
     required property LanguageTranslator languageTranslator
     required property MusicInfoModel musicInfoModel
+    required property int sleepTimerLeftInterval
 
     property string translatedFontScaleString: qsTr("Font scale")
 
@@ -42,6 +43,8 @@ Item {
 
     SleepTimerPopup {
         id: sleepTimerPopup
+
+        sleepTimerLeftInterval: root.sleepTimerLeftInterval
     }
 
     TabBar {

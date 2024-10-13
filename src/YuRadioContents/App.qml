@@ -242,7 +242,8 @@ ApplicationWindow {
             SettingsPage {
                 objectName: "settingsPage"
 
-                audioRecorder: audioRecorder
+                sleepTimerLeftInterval: sleepTimerUpdateInterval.sleepTimerLeftInterval
+                audioRecorder: MainRadioPlayer.audioStreamRecorder
                 networkManager: networkManager
                 languageTranslator: languageTranslator
                 musicInfoModel: musicInfoModel
@@ -344,30 +345,6 @@ ApplicationWindow {
         }
     }
 
-    AudioStreamRecorder {
-        id: audioRecorder
-
-        recordingPolicy: AppSettings.recordingPolicy
-        recordingNameFormat: AppSettings.recordingNameFormat
-        stationName: MainRadioPlayer.currentItem.name
-
-        outputLocation: AppSettings.recordingsDirectory
-        Component.onCompleted: {
-            MainRadioPlayer.audioStreamRecorder = audioRecorder;
-        }
-
-        onErrorOccurred: {
-            messageDialog.text = "Recording error";
-            messageDialog.informativeText = errorString;
-
-            messageDialog.open();
-        }
-
-        onOutputLocationChanged: {
-            AppSettings.recordingsDirectory = outputLocation;
-        }
-    }
-
     MessageDialog {
         id: messageDialog
 
@@ -400,6 +377,41 @@ ApplicationWindow {
         running: AppSettings.enableSleepTimer && AppSettings.sleepInterval > 0 && MainRadioPlayer.playing
         onTriggered: {
             MainRadioPlayer.stop();
+        }
+    }
+
+    Timer {
+        id: sleepTimerUpdateInterval
+
+        property int sleepTimerLeftInterval: Math.max(0, sleepTimer.interval - sleepTimerElapsed)
+        property int sleepTimerElapsed: 0
+        property date dateBefore: new Date()
+
+        interval: 1000 /* Update every minute */
+        running: sleepTimer.running
+        repeat: sleepTimerLeftInterval > 0
+
+        onRunningChanged: {
+            if (running) {
+                sleepTimerElapsed = 0;
+                dateBefore = new Date();
+            }
+        }
+
+        onTriggered: {
+            const currentDate = new Date();
+            sleepTimerElapsed += currentDate.getTime() - dateBefore.getTime();
+            dateBefore = currentDate;
+        }
+    }
+
+    Connections {
+        target: MainRadioPlayer.audioStreamRecorder
+
+        function onErrorOccurred() {
+            messageDialog.text = "Recording error";
+            messageDialog.informativeText = MainRadioPlayer.audioStreamRecorder.errorString;
+            messageDialog.open();
         }
     }
 

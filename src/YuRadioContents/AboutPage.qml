@@ -50,6 +50,7 @@ Item {
 
                     fillMode: Image.PreserveAspectFit
                     source: "images/shortwave.svg"
+                    smooth: true
                 }
 
                 TextArea {

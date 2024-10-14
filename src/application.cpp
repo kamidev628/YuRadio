@@ -4,12 +4,13 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
-#include <QSystemTrayIcon>
 
 #ifdef Q_OS_ANDROID
 #include "android/nativemediacontroller.h"
 #include "android/notificationclient.h"
 #include "android/virtualkeyboardlistener.h"
+#else
+#include <QSystemTrayIcon>
 #endif /* Q_OS_ANDROID */
 
 #ifdef HOTRELOADER_SUPPORTED
@@ -30,7 +31,8 @@ Q_LOGGING_CATEGORY(applicationLog, "YuRadio.Application")
 
 using namespace Qt::StringLiterals;
 
-Application::Application(int argc, char **argv) : QApplication(argc, argv) {
+Application::Application(int argc, char **argv)
+    : BaseApplicationClass(argc, argv) {
 #if !defined(Q_OS_LINUX) || defined(Q_OS_ANDROID)
   QString packageVersion = QCoreApplication::applicationVersion();
   Q_ASSERT(packageVersion.startsWith(YURADIO_VERSION) ||
@@ -58,10 +60,18 @@ Application::Application(int argc, char **argv) : QApplication(argc, argv) {
 #else
   qCInfo(applicationLog) << "Uiohook is disabled";
 #endif
-  qCInfo(applicationLog) << "System tray available:"
-                         << QSystemTrayIcon::isSystemTrayAvailable();
 
-  if (!QNetworkInformation::loadDefaultBackend()) {
+#ifdef Q_OS_ANDROID
+  bool systemTrayIconAvailable = false;
+#else
+  bool systemTrayIconAvailable = QSystemTrayIcon::isSystemTrayAvailable();
+#endif /* Q_OS_ANDROID */
+
+  qCInfo(applicationLog) << "System tray available:" << systemTrayIconAvailable;
+
+  bool networkInformationBackendAvailable =
+    QNetworkInformation::loadDefaultBackend();
+  if (!networkInformationBackendAvailable) {
     qCWarning(applicationLog) << "Failed to load QNetworkInformation default "
                                  "backend (Reconnections might not work)";
   }
@@ -72,8 +82,11 @@ Application::Application(int argc, char **argv) : QApplication(argc, argv) {
 
   m_engine->setNetworkAccessManagerFactory(
     new NetworkManagerFactory(m_engine.get()));
+  m_engine->rootContext()->setContextProperty("AppConfig_trayIconAvailable",
+                                              systemTrayIconAvailable);
   m_engine->rootContext()->setContextProperty(
-    "AppConfig_trayIconAvailable", QSystemTrayIcon::isSystemTrayAvailable());
+    "AppConfig_networkInformationBackendAvailable",
+    networkInformationBackendAvailable);
 
   initializePlatform();
 

@@ -1,12 +1,22 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <QApplication>
-
 class QQmlApplicationEngine;
 class GlobalKeyListener;
 
-class Application : public QApplication {
+#include <QtSystemDetection>
+
+#ifdef Q_OS_ANDROID
+#include <QGuiApplication>
+
+using BaseApplicationClass = QGuiApplication;
+#else
+#include <QApplication>
+
+using BaseApplicationClass = QApplication;
+#endif /* Q_OS_ANDROID */
+
+class Application : public BaseApplicationClass {
   Q_OBJECT
 
 public:

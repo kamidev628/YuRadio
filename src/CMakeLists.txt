@@ -32,6 +32,8 @@ configure_file(applicationconfig.h.in
 target_include_directories(
   YuRadio PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/config>")
 
+set(basic_controller_sources basicradiocontroller.cpp basicradiocontroller.h)
+
 qt_add_qml_module(
   YuRadio
   URI
@@ -67,8 +69,6 @@ qt_add_qml_module(
   spotifybackend.cpp
   imageloader.h
   imageloader.cpp
-  basicradiocontroller.cpp
-  basicradiocontroller.h
   platformradiocontroller.cpp
   platformradiocontroller.h
   languagetranslator.h
@@ -86,6 +86,7 @@ qt_add_qml_module(
   obf.h
   obf.cpp
   memoryliterals.h
+  "$<$<NOT:$<PLATFORM_ID:Android>>:${basic_controller_sources}>"
   DEPENDENCIES
   network)
 
@@ -109,15 +110,15 @@ target_link_libraries(
           Qt6::Qml
           Qt6::Quick
           Qt6::QuickControls2
-          Qt6::Multimedia
           Qt6::Sql
           Qt6::Positioning
           Qt6::Location
           Qt6::NetworkAuth
           Qt6::Svg
-          Qt6::Widgets
           YuRadioNetworkplugin
           YuRadioContentsplugin
+          "$<$<NOT:$<PLATFORM_ID:Android>>:Qt6::Widgets>"
+          "$<$<NOT:$<PLATFORM_ID:Android>>:Qt6::Multimedia>"
           "$<TARGET_NAME_IF_EXISTS:uiohook>"
           "$<TARGET_NAME_IF_EXISTS:HotReloader>")
 

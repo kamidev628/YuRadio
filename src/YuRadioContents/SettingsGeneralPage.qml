@@ -282,6 +282,8 @@ ScrollView {
                 Layout.topMargin: 5
                 Layout.fillWidth: true
 
+                enabled: AppConfig.networkInformationBackendAvailable
+
                 text: qsTr("Resume playback when back online")
                 checked: AppSettings.resumePlaybackWhenNetworkRestored
                 onCheckedChanged: {

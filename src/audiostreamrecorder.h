@@ -69,6 +69,8 @@ signals:
   void errorOccurred();
 
 protected:
+  void performCopy(std::unique_ptr<QTemporaryFile> file,
+                   const QString &destination);
   void reset();
   void setError(const QString &errorString);
   void setRecording(bool recording);
@@ -88,7 +90,7 @@ private:
 
   QDateTime m_startTime;
 
-  QScopedPointer<QTemporaryFile> m_file;
+  std::unique_ptr<QTemporaryFile> m_file;
 
   bool m_recording;
 };

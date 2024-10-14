@@ -127,7 +127,7 @@ void AudioStreamRecorder::processBuffer(const QByteArray &buffer,
   }
 
   if (!m_file || !m_file->isOpen()) {
-    m_file.reset(new QTemporaryFile);
+    m_file = std::make_unique<QTemporaryFile>();
 
     if (!m_file->open()) {
       QString errorString = QString("Failed to open file for recording: %1 %2")
@@ -180,6 +180,40 @@ QString AudioStreamRecorder::recordingName() const {
   }
 }
 
+void AudioStreamRecorder::performCopy(std::unique_ptr<QTemporaryFile> file,
+                                      const QString &destination) {
+  QThreadPool::globalInstance()->start(
+    [this, file = std::move(file), destination]() {
+    QFile saveFile(destination);
+
+    if (!saveFile.open(QIODeviceBase::ReadWrite)) {
+      QString errorString = QString("Failed to open destination file: %1")
+                              .arg(saveFile.errorString());
+
+      QMetaObject::invokeMethod(
+        this, [this, errorString]() { setError(errorString); });
+
+      qCWarning(audioStreamRecorderLog).noquote() << errorString;
+    }
+
+    if (file->open()) {
+      file->seek(0);
+
+      while (!file->atEnd() && saveFile.write(file->read(16384)) != -1) {
+        ;
+      }
+    } else {
+      QString errorString =
+        QString("Failed to open temporary file: %1").arg(file->errorString());
+
+      QMetaObject::invokeMethod(
+        this, [this, errorString]() { setError(errorString); });
+
+      qCWarning(audioStreamRecorderLog).noquote() << errorString;
+    }
+  });
+}
+
 void AudioStreamRecorder::saveRecording() {
   qCDebug(audioStreamRecorderLog) << "Save Recording";
 
@@ -211,20 +245,8 @@ void AudioStreamRecorder::saveRecording() {
 
       qCWarning(audioStreamRecorderLog).noquote() << errorString;
 
-      QFile recordingFile(recordingPath);
-
       /* NOTE: Final try. Especially useful for Android */
-      if (recordingFile.open(QIODeviceBase::ReadWrite)) {
-        /* File already closed by either `rename` or `copy` */
-        m_file->open();
-        m_file->seek(0);
-        recordingFile.write(m_file->readAll());
-      } else {
-        setError(errorString);
-
-        qCWarning(audioStreamRecorderLog).noquote()
-          << "Failed to open file:" << recordingFile.errorString();
-      }
+      performCopy(std::move(m_file), recordingPath);
     }
   } else {
     QString errorString = "Failed to save recording. File is closed";
@@ -287,5 +309,5 @@ void AudioStreamRecorder::setStationName(const QString &stationName) {
 }
 
 bool AudioStreamRecorder::canSaveRecording() const {
-  return !m_file.isNull() && m_file->isOpen();
+  return m_file && m_file->isOpen();
 }

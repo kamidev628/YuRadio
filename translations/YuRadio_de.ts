@@ -798,9 +798,13 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>Schriftgröße</translation>
     </message>
     <message>
+        <source>Sleep timer configuration</source>
+        <translation type="vanished">Schlaf-Timer Einstellungen</translation>
+    </message>
+    <message>
         <location filename="../src/YuRadioContents/SettingsPage.qml" line="34"/>
         <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsPage.qml" line="34"/>
-        <source>Sleep timer configuration</source>
+        <source>Sleep timer configurations</source>
         <translation>Schlaf-Timer Einstellungen</translation>
     </message>
     <message>

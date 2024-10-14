@@ -24,7 +24,8 @@ constexpr qint64 MAXIMUM_READ_BUFFER_SIZE = 200_KiB;
 RadioInfoReaderProxyServer::RadioInfoReaderProxyServer(
   bool streamIcecastMetadata, QObject *parent)
     : QObject(parent), m_server(new QTcpServer(this)),
-      m_networkManager(new NetworkManager(this)), m_capturingEnabled(false),
+      m_networkManager(new NetworkManager(this)), m_numberActiveReplies(0),
+      m_capturingEnabled(false),
       m_streamIcecastMetadata(streamIcecastMetadata) {
   connect(m_server, &QTcpServer::newConnection, this,
           &RadioInfoReaderProxyServer::clientConnected);
@@ -79,49 +80,77 @@ void RadioInfoReaderProxyServer::clientConnected() {
   QTcpSocket *client = m_server->nextPendingConnection();
   qCDebug(radioInfoReaderLog) << "Client connected";
 
-  connect(client, &QTcpSocket::readyRead, this, [this, client]() {
-    (void)client->readAll();
-    makeRequest(client);
-  });
+  makeRequest(client);
+
   connect(client, &QTcpSocket::disconnected, this,
           []() { qCDebug(radioInfoReaderLog) << "Client disconnected"; });
+  connect(client, &QTcpSocket::disconnected, client, &QObject::deleteLater);
 }
 
 void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
-  QNetworkRequest request(targetSource());
+  QUrl streamSource = targetSource();
+
+  QNetworkRequest request(streamSource);
   request.setRawHeader("Icy-MetaData"_ba, "1"_ba);
   request.setRawHeader("Connection"_ba, "keep-alive"_ba);
-
-  if (m_reply) {
-    /* NOTE: Avoid emitting loadingChanged */
-    m_reply->disconnect(this);
-  }
+  request.setRawHeader("Accept-Encoding"_ba, "identity"_ba);
 
   QNetworkReply *reply = m_networkManager->get(request);
+  onRequestCreated(reply);
+
   reply->ignoreSslErrors();
   reply->setReadBufferSize(MAXIMUM_READ_BUFFER_SIZE);
 
-  m_reply = reply;
-
-  connect(client, &QTcpSocket::disconnected, reply, &QNetworkReply::abort);
-  connect(client, &QTcpSocket::disconnected, client, &QObject::deleteLater);
-  connect(client, &QTcpSocket::readyRead, reply, &QNetworkReply::abort);
-
-  connect(reply, &QNetworkReply::readyRead, client, [this, reply, client]() {
+  connect(reply, &QNetworkReply::readyRead, this, [this, reply, client]() {
     replyReadHeaders(reply, client);
   }, Qt::SingleShotConnection);
-  connect(reply, &QNetworkReply::requestSent, this,
-          [this]() { emit loadingChanged(true); });
-  connect(reply, &QNetworkReply::errorOccurred, client,
-          [client](QNetworkReply::NetworkError err) {
-    if (err != QNetworkReply::OperationCanceledError) {
-      client->disconnectFromHost();
-    }
-  });
-
   connect(reply, &QNetworkReply::finished, reply, &QObject::deleteLater);
-  connect(reply, &QNetworkReply::finished, this,
-          [this]() { emit loadingChanged(false); });
+  connect(reply, &QNetworkReply::finished, client, &QTcpSocket::deleteLater);
+  connect(client, &QTcpSocket::disconnected, reply, &QObject::deleteLater);
+}
+
+void RadioInfoReaderProxyServer::proxyUnsupportedFormat(
+  QTcpSocket *client, const QUrl &streamSource) {
+  auto *sock = new QSslSocket(client);
+  onRequestCreated(sock);
+
+  sock->setReadBufferSize(MAXIMUM_READ_BUFFER_SIZE);
+
+  connect(sock, &QSslSocket::readyRead, client,
+          [client, sock]() { client->write(sock->readAll()); });
+  connect(sock, &QSslSocket::errorOccurred, client,
+          [client, sock](QAbstractSocket::SocketError) {
+    client->deleteLater();
+    sock->deleteLater();
+  });
+  connect(client, &QTcpSocket::disconnected, sock, &QObject::deleteLater);
+
+  if (streamSource.scheme() == u"https"_s) {
+    sock->connectToHostEncrypted(streamSource.host(),
+                                 static_cast<quint16>(streamSource.port(443)));
+    sock->waitForEncrypted(3000);
+  } else {
+    sock->connectToHost(streamSource.host(),
+                        static_cast<quint16>(streamSource.port(80)));
+    sock->waitForConnected(3000);
+  }
+
+  sock->write(u"GET %1 HTTP/1.1\r\n"_s.arg(streamSource.path()).toLocal8Bit());
+  sock->write("Icy-MetaData: 1\r\n");
+  sock->write("Accept-Encoding: identity\r\n");
+  sock->write(u"Host: %1\r\n"_s.arg(streamSource.host()).toLocal8Bit());
+  sock->write("\r\n");
+}
+
+void RadioInfoReaderProxyServer::onRequestCreated(QObject *obj) {
+  m_numberActiveReplies += 1;
+
+  emit loadingChanged(m_numberActiveReplies > 0);
+  connect(obj, &QObject::destroyed, this, [this]() {
+    m_numberActiveReplies -= 1;
+
+    emit loadingChanged(m_numberActiveReplies > 0);
+  });
 }
 
 void RadioInfoReaderProxyServer::replyReadHeaders(QNetworkReply *reply,
@@ -129,9 +158,16 @@ void RadioInfoReaderProxyServer::replyReadHeaders(QNetworkReply *reply,
   qCDebug(radioInfoReaderLog) << "Headers:" << reply->rawHeaderPairs();
 
   QMimeDatabase mimeDatabase;
-  QMimeType mimeType = mimeDatabase.mimeTypeForName(
-    reply->header(QNetworkRequest::ContentTypeHeader).toString());
+  QString contentTypeHeader =
+    reply->header(QNetworkRequest::ContentTypeHeader).toString();
+  QMimeType mimeType = mimeDatabase.mimeTypeForName(contentTypeHeader);
   emit mimeTypeChanged(mimeType);
+
+  if (QStringList{u"video/ogg"_s, u"audio/ogg"_s, u"application/ogg"_s}
+        .contains(contentTypeHeader, Qt::CaseInsensitive)) {
+    proxyUnsupportedFormat(client, reply->request().url());
+    return;
+  }
 
   bool metaIntParsed;
   int icyMetaInt = reply->hasRawHeader("icy-metaint"_L1)
@@ -152,7 +188,7 @@ void RadioInfoReaderProxyServer::replyReadHeaders(QNetworkReply *reply,
       reasonPhrase = reply->error() ? "Internal Server Error"_ba : "OK"_ba;
     }
 
-    QStringList dropHeaders = {u"Transfer-Encoding"_s};
+    QStringList dropHeaders = {u"Transfer-Encoding"_s, u"Connection"_s};
     if (!m_streamIcecastMetadata) {
       dropHeaders << u"icy-metaint"_s;
     }
@@ -165,6 +201,7 @@ void RadioInfoReaderProxyServer::replyReadHeaders(QNetworkReply *reply,
         client->write(header + ": "_ba + reply->rawHeader(header) + "\r\n"_ba);
       }
     }
+    client->write("Connection: keep-alive\r\n");
     client->write("\r\n"_ba);
   }
 
@@ -199,7 +236,7 @@ void RadioInfoReaderProxyServer::forwardNetworkReply(QNetworkReply *reply,
                                                      QTcpSocket *client) {
   if (validateNetworkReply(reply, client)) {
     QByteArray songData = reply->readAll();
-    client->write(reply->readAll());
+    client->write(songData);
 
     emit bufferCaptured(songData, {});
   }
@@ -270,6 +307,7 @@ void RadioInfoReaderProxyServer::processNetworkReply(QNetworkReply *reply,
 
 void RadioInfoReaderProxyServer::captureBuffer(const QByteArray &buffer,
                                                const IcecastParserInfo *p) {
+  QReadLocker lock(&m_lock);
   if (m_capturingEnabled) {
     emit bufferCaptured(buffer, p->icyMetaData[u"StreamTitle"_s].toString());
   }

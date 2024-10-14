@@ -61,6 +61,9 @@ private slots:
                            QTcpSocket *client);
   void forwardNetworkReply(QNetworkReply *reply, QTcpSocket *client);
   void replyReadHeaders(QNetworkReply *reply, QTcpSocket *client);
+  void proxyUnsupportedFormat(QTcpSocket *client, const QUrl &streamSource);
+
+  void onRequestCreated(QObject *obj);
 
   void readIcyMetaData(IcecastParserInfo *p);
   void captureBuffer(const QByteArray &buffer, const IcecastParserInfo *p);
@@ -68,10 +71,10 @@ private slots:
 private:
   mutable QReadWriteLock m_lock;
 
-  QPointer<QNetworkReply> m_reply;
-
   QTcpServer *m_server;
   NetworkManager *m_networkManager;
+
+  int m_numberActiveReplies;
 
   QUrl m_targetSource;
   bool m_capturingEnabled;

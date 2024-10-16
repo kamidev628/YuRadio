@@ -80,7 +80,10 @@ void RadioInfoReaderProxyServer::clientConnected() {
   QTcpSocket *client = m_server->nextPendingConnection();
   qCDebug(radioInfoReaderLog) << "Client connected";
 
-  makeRequest(client);
+  connect(client, &QTcpSocket::readyRead, this, [this, client]() {
+    qCDebug(radioInfoReaderLog) << "Client message:" << client->readAll();
+    makeRequest(client);
+  });
 
   connect(client, &QTcpSocket::disconnected, this,
           []() { qCDebug(radioInfoReaderLog) << "Client disconnected"; });
@@ -105,7 +108,6 @@ void RadioInfoReaderProxyServer::makeRequest(QTcpSocket *client) {
     replyReadHeaders(reply, client);
   }, Qt::SingleShotConnection);
   connect(reply, &QNetworkReply::finished, reply, &QObject::deleteLater);
-  connect(reply, &QNetworkReply::finished, client, &QTcpSocket::deleteLater);
   connect(client, &QTcpSocket::disconnected, reply, &QObject::deleteLater);
 }
 
@@ -174,36 +176,33 @@ void RadioInfoReaderProxyServer::replyReadHeaders(QNetworkReply *reply,
                      ? reply->rawHeader("icy-metaint"_L1).toInt(&metaIntParsed)
                      : 0;
 
-  if (client) {
-    int statusCode =
-      reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    if (!statusCode) {
-      statusCode = reply->error() ? 500 : 200;
-    }
-
-    QByteArray reasonPhrase =
-      reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute)
-        .toByteArray();
-    if (reasonPhrase.isEmpty()) {
-      reasonPhrase = reply->error() ? "Internal Server Error"_ba : "OK"_ba;
-    }
-
-    QStringList dropHeaders = {u"Transfer-Encoding"_s, u"Connection"_s};
-    if (!m_streamIcecastMetadata) {
-      dropHeaders << u"icy-metaint"_s;
-    }
-
-    /* We are ready to send data */
-    client->write(
-      u"HTTP/1.1 %1 %2\r\n"_s.arg(statusCode).arg(reasonPhrase).toLocal8Bit());
-    for (const auto &header : reply->rawHeaderList()) {
-      if (!dropHeaders.contains(header, Qt::CaseInsensitive)) {
-        client->write(header + ": "_ba + reply->rawHeader(header) + "\r\n"_ba);
-      }
-    }
-    client->write("Connection: keep-alive\r\n");
-    client->write("\r\n"_ba);
+  int statusCode =
+    reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+  if (!statusCode) {
+    statusCode = reply->error() ? 500 : 200;
   }
+
+  QByteArray reasonPhrase =
+    reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
+  if (reasonPhrase.isEmpty()) {
+    reasonPhrase = reply->error() ? "Internal Server Error"_ba : "OK"_ba;
+  }
+
+  QStringList dropHeaders = {u"Transfer-Encoding"_s, u"Connection"_s};
+  if (!m_streamIcecastMetadata) {
+    dropHeaders << u"icy-metaint"_s;
+  }
+
+  /* We are ready to send data */
+  client->write(
+    u"HTTP/1.1 %1 %2\r\n"_s.arg(statusCode).arg(reasonPhrase).toLocal8Bit());
+  for (const auto &header : reply->rawHeaderList()) {
+    if (!dropHeaders.contains(header, Qt::CaseInsensitive)) {
+      client->write(header + ": "_ba + reply->rawHeader(header) + "\r\n"_ba);
+    }
+  }
+  client->write("Connection: keep-alive\r\n");
+  client->write("\r\n"_ba);
 
   if (icyMetaInt && metaIntParsed) {
     auto *parserInfo = new IcecastParserInfo(client);

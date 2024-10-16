@@ -53,7 +53,7 @@ void AudioStreamRecorder::record() {
     QList<QString> permissions = {
       u"android.permission.WRITE_EXTERNAL_STORAGE"_s,
       u"android.permission.READ_EXTERNAL_STORAGE"_s,
-      u"android.permission.READ_MEDIA_AUDIO"_s};
+    };
 
     for (const auto &permission : permissions) {
       if (QtAndroidPrivate::checkPermission(permission).result() !=
@@ -105,10 +105,6 @@ void AudioStreamRecorder::setRecordingPolicy(RecordingPolicy policy) {
   }
 }
 
-QString AudioStreamRecorder::dateTimePath() const {
-  return m_startTime.toString("yyyy-MM-dd-hhmmss");
-}
-
 void AudioStreamRecorder::processBuffer(const QByteArray &buffer,
                                         const QUrl &streamUrl,
                                         const QString &id) {
@@ -126,7 +122,7 @@ void AudioStreamRecorder::processBuffer(const QByteArray &buffer,
     saveRecording();
   }
 
-  if (!m_file || !m_file->isOpen()) {
+  if (!m_file) {
     m_file = std::make_unique<QTemporaryFile>();
 
     if (!m_file->open()) {
@@ -157,6 +153,22 @@ static const QString &removeSpecialCharacters(QString &path) {
   return path.replace(re, "_");
 }
 
+static QString
+formatRecordingName(AudioStreamRecorder::RecordingNameFormat format,
+                    const QString &stationName, const QString &streamTitle,
+                    const QDateTime &date) {
+  QString dateTimePath = date.toString(u"yyyy-MM-dd-hhmmss"_s);
+
+  switch (format) {
+    case AudioStreamRecorder::StationDateTime:
+      return stationName + '_' + dateTimePath;
+    case AudioStreamRecorder::StationTrackNameDateTime:
+      return stationName + '_' + streamTitle + '_' + dateTimePath;
+    case AudioStreamRecorder::TrackNameDateTime:
+      return streamTitle + '_' + dateTimePath;
+  }
+}
+
 QString AudioStreamRecorder::recordingName() const {
   QString streamTitle = m_streamTitle;
   if (streamTitle.isEmpty() || m_recordingPolicy == NoRecordingPolicy) {
@@ -170,14 +182,13 @@ QString AudioStreamRecorder::recordingName() const {
     qCWarning(audioStreamRecorderLog) << "Station name is empty string";
   }
 
-  switch (m_recordingNameFormat) {
-    case StationDateTime:
-      return stationName + '_' + dateTimePath();
-    case StationTrackNameDateTime:
-      return stationName + '_' + streamTitle + '_' + dateTimePath();
-    case TrackNameDateTime:
-      return streamTitle + '_' + dateTimePath();
-  }
+  return formatRecordingName(m_recordingNameFormat, stationName, streamTitle,
+                             m_startTime)
+    .trimmed()
+    .removeIf([](QChar c) {
+    return c != QLatin1Char('_') && c != QLatin1Char('-') &&
+           (!c.isLetterOrNumber() || !c.isPrint());
+  }).mid(0, 240);
 }
 
 void AudioStreamRecorder::performCopy(std::unique_ptr<QTemporaryFile> file,
@@ -217,7 +228,7 @@ void AudioStreamRecorder::performCopy(std::unique_ptr<QTemporaryFile> file,
 void AudioStreamRecorder::saveRecording() {
   qCDebug(audioStreamRecorderLog) << "Save Recording";
 
-  if (m_file && m_file->isOpen()) {
+  if (canSaveRecording()) {
     QString suffix = m_preferredSuffix;
     if (suffix.isEmpty()) {
       qCWarning(audioStreamRecorderLog())
@@ -309,5 +320,5 @@ void AudioStreamRecorder::setStationName(const QString &stationName) {
 }
 
 bool AudioStreamRecorder::canSaveRecording() const {
-  return m_file && m_file->isOpen();
+  return m_recording && m_file && m_file->isOpen();
 }

@@ -44,6 +44,7 @@ FocusScope {
 
                 bottomBarTextColumn.anchors.rightMargin: 10
 
+                stationName.enableMarqueeEffect: false
                 stationName.wrapMode: Text.Wrap
                 stationTags.wrapMode: Text.Wrap
             }
@@ -103,13 +104,14 @@ FocusScope {
 
                         width: parent.width
 
-                        ScalableLabel {
+                        MarqueeText {
                             id: stationName
 
                             width: parent.width
 
-                            text: root.radioStation.name
+                            text: root.radioStation.name + "           "
                             elide: Text.ElideRight
+
                             font.bold: true
                             fontPointSize: 16
                         }

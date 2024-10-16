@@ -763,20 +763,20 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>Afficher les messages dans la barre des tâches</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="285"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="285"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="287"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="287"/>
         <source>Resume playback when back online</source>
         <translation>Reprendre la lecture lorsqu&apos;on est de nouveau en ligne</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="300"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="300"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="302"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="302"/>
         <source>Spotify integration</source>
         <translation>Activer l&apos;intégration Spotify</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="329"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="329"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="331"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="331"/>
         <source>Successfully Authorized</source>
         <translation>Autorisation réussie</translation>
     </message>

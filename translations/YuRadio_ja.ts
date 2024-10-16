@@ -763,20 +763,20 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>トレイにメッセージを表示</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="285"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="285"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="287"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="287"/>
         <source>Resume playback when back online</source>
         <translation>オンラインに戻ったときに再生を再開</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="300"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="300"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="302"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="302"/>
         <source>Spotify integration</source>
         <translation>Spotify統合を有効にする</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="329"/>
-        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="329"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="331"/>
+        <location filename="../build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/src/YuRadioContents/SettingsGeneralPage.qml" line="331"/>
         <source>Successfully Authorized</source>
         <translation>認証に成功しました</translation>
     </message>

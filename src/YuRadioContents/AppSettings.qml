@@ -14,6 +14,7 @@ Settings {
     property bool resumePlaybackWhenNetworkRestored: true
     property bool enableBottomBarBlur: true
     property bool enableSleepTimer: false
+    property bool enableTextScrolling: true
 
     property real fontScale: 1.0
     property real volume: 1.0

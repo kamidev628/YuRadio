@@ -109,8 +109,9 @@ FocusScope {
 
                             width: parent.width
 
-                            text: root.radioStation.name + "           "
+                            text: root.radioStation.name + " ".repeat(12)
                             elide: Text.ElideRight
+                            enableMarqueeEffect: AppSettings.enableTextScrolling
 
                             font.bold: true
                             fontPointSize: 16

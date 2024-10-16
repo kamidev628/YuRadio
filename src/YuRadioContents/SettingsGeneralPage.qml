@@ -250,6 +250,18 @@ ScrollView {
             }
 
             ScalableCheckBox {
+                Layout.topMargin: 5
+                Layout.fillWidth: true
+
+                text: qsTr("Enable infinite text scrolling")
+
+                checked: AppSettings.enableTextScrolling
+                onCheckedChanged: {
+                    AppSettings.enableTextScrolling = checked;
+                }
+            }
+
+            ScalableCheckBox {
                 id: showTrayIconCheckbox
 
                 Layout.topMargin: 5

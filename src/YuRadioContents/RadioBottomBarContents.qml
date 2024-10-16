@@ -110,7 +110,7 @@ FocusScope {
                             width: parent.width
 
                             text: root.radioStation.name + " ".repeat(12)
-                            elide: Text.ElideRight
+                            elide: enableMarqueeEffect ? Text.ElideNone : Text.ElideRight
                             enableMarqueeEffect: AppSettings.enableTextScrolling
 
                             font.bold: true

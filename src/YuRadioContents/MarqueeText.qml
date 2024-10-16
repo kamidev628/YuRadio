@@ -7,12 +7,18 @@ Item {
     property alias font: textLabel.font
     property alias fontPointSize: textLabel.fontPointSize
 
-    property int wrapMode: textLabel.wrapMode
-    property int elide: textLabel.elide
+    property alias wrapMode: textLabel.wrapMode
+    property alias elide: textLabel.elide
 
     property int averageReadingSpeedCPM: 1000 // 200 wpm -> 1000 cpm
 
     property bool enableMarqueeEffect: true
+
+    QtObject {
+        id: internal
+
+        property bool enableMarqueeEffect: textLabel.contentWidth <= root.width ? false : root.enableMarqueeEffect
+    }
 
     clip: true
 
@@ -25,30 +31,16 @@ Item {
         }
     }
 
-    states: [
-        State {
-            when: textLabel.contentWidth <= root.width || !root.enableMarqueeEffect
-
-            PropertyChanges {
-                slidingAnimation.running: false
-                textLabel.x: 0
-            }
-        }
-    ]
-
     ScalableLabel {
         id: textLabel
 
         width: parent.width
         height: parent.height
 
-        elide: root.enableMarqueeEffect ? Text.ElideNone : root.elide
-        wrapMode: root.enableMarqueeEffect ? Text.NoWrap : root.wrapMode
-
         SequentialAnimation {
             id: slidingAnimation
 
-            running: root.visible
+            running: root.visible && internal.enableMarqueeEffect
             loops: Animation.Infinite
 
             onRunningChanged: {
@@ -72,7 +64,7 @@ Item {
     ShaderEffectSource {
         id: shaderEffectSource
 
-        visible:  root.enableMarqueeEffect
+        visible: internal.enableMarqueeEffect
         sourceItem: textLabel
 
         x: textLabel.x + textLabel.contentWidth

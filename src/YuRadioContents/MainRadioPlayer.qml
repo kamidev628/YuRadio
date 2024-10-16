@@ -41,9 +41,7 @@ RadioPlayer {
     onCurrentItemChanged: {
         if (audioStreamRecorder.recording) {
             audioStreamRecorder.stop();
-            if (currentItem.isValid()) {
-                audioStreamRecorder.record();
-            }
+            audioStreamRecorder.record();
         }
         stationName = currentItem.name;
         if (currentItem.isValid()) {

@@ -381,6 +381,7 @@ ApplicationWindow {
         }
         onTriggered: {
             MainRadioPlayer.stop();
+            MainRadioPlayer.audioStreamRecorder.stop();
         }
     }
 
@@ -409,6 +410,29 @@ ApplicationWindow {
         }
     }
 
+    Timer {
+        id: resumePlaybackTimer
+
+        property int maximumNumberRetries: 10
+        property int currentRetry: 0
+
+        interval: 3000
+        running: AppSettings.resumePlaybackWhenNetworkRestored && !MainRadioPlayer.playing && MainRadioPlayer.currentItem.isValid() && MainRadioPlayer.error !== RadioPlayer.NoError && NetworkInformation.reachability === NetworkInformation.Reachability.Online
+        repeat: currentRetry < maximumNumberRetries
+
+        onRunningChanged: {
+            if (running) {
+                currentRetry = 0;
+            }
+        }
+
+        onTriggered: {
+            MainRadioPlayer.play();
+            currentRetry += 1;
+            console.log("Reconnection retry:", currentRetry);
+        }
+    }
+
     Connections {
         target: MainRadioPlayer.audioStreamRecorder
 
@@ -416,18 +440,6 @@ ApplicationWindow {
             messageDialog.text = "Recording error";
             messageDialog.informativeText = MainRadioPlayer.audioStreamRecorder.errorString;
             messageDialog.open();
-        }
-    }
-
-    Connections {
-        target: NetworkInformation
-
-        enabled: MainRadioPlayer.currentItem.isValid() && AppSettings.resumePlaybackWhenNetworkRestored && MainRadioPlayer.playbackState !== RadioPlayer.PausedState
-
-        function onReachabilityChanged() {
-            if (NetworkInformation.reachability === NetworkInformation.Reachability.Online) {
-                Qt.callLater(MainRadioPlayer.play);
-            }
         }
     }
 }

@@ -44,6 +44,7 @@ qt_add_qml_module(
   AboutPage.qml
   FilledGridView.qml
   MoreOptionsMenu.qml
+  MarqueeText.qml
   RadioImage.qml
   RadioStationLocationPage.qml
   RadioStationView.qml

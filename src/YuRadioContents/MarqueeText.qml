@@ -31,14 +31,6 @@ Item {
 
             PropertyChanges {
                 slidingAnimation.running: false
-                shaderEffectSource.visible: false
-                textLabel.x: 0
-            }
-        },
-        State {
-            when: true
-
-            PropertyChanges {
                 textLabel.x: 0
             }
         }
@@ -59,6 +51,10 @@ Item {
             running: root.visible
             loops: Animation.Infinite
 
+            onRunningChanged: {
+                textLabel.x = 0;
+            }
+
             PauseAnimation {
                 duration: 2000
             }
@@ -76,8 +72,8 @@ Item {
     ShaderEffectSource {
         id: shaderEffectSource
 
+        visible:  root.enableMarqueeEffect
         sourceItem: textLabel
-        visible: true
 
         x: textLabel.x + textLabel.contentWidth
 

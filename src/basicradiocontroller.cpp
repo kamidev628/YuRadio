@@ -99,10 +99,19 @@ BasicRadioController::~BasicRadioController() {
 }
 
 void BasicRadioController::play() {
+  const bool mediaLoading =
+    QList<QMediaPlayer::MediaStatus>{
+      QMediaPlayer::LoadingMedia,
+      QMediaPlayer::LoadedMedia,
+      QMediaPlayer::BufferingMedia,
+      QMediaPlayer::BufferedMedia,
+    }
+      .contains(m_mediaPlayer->mediaStatus());
+
   if (m_mediaItem.source.isValid() &&
       m_mediaPlayer->source() != m_proxyServer->sourceUrl()) {
     m_mediaPlayer->setSource(m_proxyServer->sourceUrl());
-  } else if (m_mediaPlayer->error()) {
+  } else if (m_mediaPlayer->error() && !mediaLoading) {
     reconnectMediaPlayer();
   }
 

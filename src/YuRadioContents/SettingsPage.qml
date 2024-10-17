@@ -57,6 +57,11 @@ Item {
             /* Restore indeces */
             swipeView.setCurrentIndex(indexBefore);
             tabBar.setCurrentIndex(indexBefore);
+
+            let highlightMoveDurationBefore = swipeView.internalListView.highlightMoveDuration
+            swipeView.internalListView.highlightMoveDuration = 0
+            swipeView.internalListView.positionViewAtIndex(indexBefore, ListView.SnapPosition)
+            swipeView.internalListView.highlightMoveDuration = highlightMoveDurationBefore
         }
     }
 
@@ -94,6 +99,8 @@ Item {
 
     SwipeView {
         id: swipeView
+
+        property ListView internalListView: contentItem as ListView
 
         anchors {
             left: parent.left

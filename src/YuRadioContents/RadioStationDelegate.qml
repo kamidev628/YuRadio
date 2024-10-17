@@ -103,7 +103,7 @@ Loader {
                 asynchronous: true
                 sourceSize: Qt.size(height * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
 
-                IconImage {
+                Image {
                     anchors {
                         left: parent.left
                         top: parent.top

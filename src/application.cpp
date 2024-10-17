@@ -78,8 +78,6 @@ Application::Application(int argc, char **argv)
 
   m_engine = std::make_unique<QQmlApplicationEngine>();
 
-  QQuickStyle::setStyle(u"Material"_s);
-
   m_engine->setNetworkAccessManagerFactory(
     new NetworkManagerFactory(m_engine.get()));
   m_engine->rootContext()->setContextProperty("AppConfig_trayIconAvailable",

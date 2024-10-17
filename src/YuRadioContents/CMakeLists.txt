@@ -1,6 +1,6 @@
 set_source_files_properties(
-  AppSettings.qml AppConfig.qml Utils.qml MainRadioPlayer.qml AppStorage.qml
-  PROPERTIES QT_QML_SINGLETON_TYPE true)
+  AppSettings.qml AppConfig.qml AppColors.qml Utils.qml MainRadioPlayer.qml
+  AppStorage.qml PROPERTIES QT_QML_SINGLETON_TYPE true)
 
 qt_add_library(YuRadioContents STATIC)
 qt_add_qml_module(
@@ -11,6 +11,7 @@ qt_add_qml_module(
   1.0
   QML_FILES
   App.qml
+  AppColors.qml
   RadioDrawer.qml
   MainRadioPlayer.qml
   BookmarkPage.qml
@@ -109,6 +110,9 @@ qt_add_qml_module(
   images/hourglass-off.svg
   images/history.svg
   images/folder.svg)
+
+qt_add_resources(YuRadioContents "qtquickcontrols2_configuration" PREFIX "/"
+                 FILES qtquickcontrols2.conf)
 
 qt_add_shaders(
   YuRadioContents

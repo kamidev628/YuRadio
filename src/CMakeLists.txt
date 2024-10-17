@@ -3,8 +3,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 qt_add_executable(YuRadio main.cpp)
 
-set_target_properties(YuRadio PROPERTIES AUTOMOC ON AUTORCC ON)
-
 add_subdirectory(network)
 add_subdirectory(YuRadioContents)
 

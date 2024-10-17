@@ -10,6 +10,8 @@ import Main
 Item {
     id: root
 
+    property bool morphBackground: !bookmarkGridView.atYBeginning
+
     required property bool isDesktopLayout
     required property RadioDrawer drawer
     required property NetworkManager networkManager

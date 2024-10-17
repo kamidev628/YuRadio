@@ -21,6 +21,7 @@ Control {
 
     Accessible.name: qsTr("Search")
     Material.foreground: Material.primaryTextColor
+    Material.background: "transparent"
 
     bottomInset: 8
     topInset: 8
@@ -38,10 +39,9 @@ Control {
             when: root.isSearching
 
             PropertyChanges {
-                background.color: root.Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade700 : Material.Shade200)
                 searchInput.opacity: 1.0
                 root.implicitWidth: root.maximumWidth
-                searchButton.icon.color: root.Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade100 : Material.Shade800)
+                background.color: AppColors.searchBarColor
                 removeTextButton.opacity: 1.0
             }
         }
@@ -79,7 +79,7 @@ Control {
     background: Rectangle {
         id: background
 
-        color: "transparent"
+        color: root.Material.background
         radius: height / 2
     }
 
@@ -91,6 +91,7 @@ Control {
 
             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
             icon.source: 'images/search.svg'
+            icon.color: AppColors.toolButtonColor
 
             focus: true
             focusPolicy: Qt.TabFocus

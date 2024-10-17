@@ -12,6 +12,8 @@ import Main
 Item {
     id: root
 
+    property bool morphBackground: !radioGridView.atYBeginning
+
     required property bool isDesktopLayout
     required property RadioDrawer drawer
     required property NetworkManager networkManager
@@ -30,13 +32,18 @@ Item {
             Layout.fillWidth: true
         }
 
+        Item {
+            Layout.minimumWidth: 0
+            Layout.maximumWidth: refreshButton.width
+            Layout.fillWidth: true
+        }
+
         SearchBar {
             id: searchBar
 
             maximumWidth: Math.min(parent.width * 6 / 9, AppConfig.searchBarMaximumWidth)
 
             implicitWidth: height
-            searchIcon.color: Material.color(Material.Grey, Material.Shade100)
 
             Layout.fillHeight: true
 
@@ -54,9 +61,10 @@ Item {
         ToolButton {
             id: refreshButton
 
+            text: qsTr("Refresh")
             icon.source: "images/refresh.svg"
-            icon.color: enabled ? Material.color(Material.Grey, Material.Shade100) : ApplicationWindow.header.Material.background.darker(1.4)
-            Accessible.name: qsTr("Refresh")
+            icon.color: enabled ? AppColors.toolButtonColor : root.Material.background.darker(AppConfig.isDarkTheme ? 0.7 : 1.3)
+            display: AbstractButton.IconOnly
 
             enabled: !pullToRefreshHandler.isProcessing && !apiTimeoutTimer.running
             onClicked: {
@@ -67,9 +75,10 @@ Item {
         ToolButton {
             id: filterIcon
 
-            Accessible.name: qsTr("Search Filters")
+            text: qsTr("Search Filters")
             icon.source: 'images/filter.svg'
-            icon.color: Material.color(Material.Grey, Material.Shade100)
+            icon.color: AppColors.toolButtonColor
+            display: AbstractButton.IconOnly
 
             onClicked: {
                 filterIcon.forceActiveFocus();

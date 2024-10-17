@@ -30,9 +30,8 @@ Drawer {
     Material.roundedScale: Material.NotRounded
 
     edge: Qt.RightEdge
-    y: window.header.height
     width: Math.min(AppConfig.radioStationInfoPanelWidth, implicitWidth)
-    height: window.height - window.header.height
+    height: window.height
 
     Flickable {
         id: flickable

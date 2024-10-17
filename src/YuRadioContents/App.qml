@@ -277,10 +277,42 @@ ApplicationWindow {
     header: ToolBar {
         id: headerToolBar
 
-        Material.background: AppConfig.isDarkTheme ? root.Material.background.lighter(1.5) : root.Material.primary
+        property color backgroundColor: root.Material.background
+        property bool morphBackground: mainStackView.currentItem?.morphBackground ?? false
+
+        Material.background: backgroundColor
+
+        onBackgroundColorChanged: {
+            AppColors.headerColor = backgroundColor
+        }
+
+        states: [
+            State {
+                name: "morphBackground"
+                when: headerToolBar.morphBackground
+
+                PropertyChanges {
+                    headerToolBar.backgroundColor: AppConfig.isDarkTheme ? root.Material.background.lighter(1.1) : "#f1ebf4"
+                }
+            }
+        ]
+        transitions: [
+            Transition {
+                to: "morphBackground"
+                reversible: true
+
+                ColorAnimation {
+                    target: headerToolBar
+                    property: "backgroundColor"
+                    duration: 500
+                }
+            }
+        ]
 
         RowLayout {
             anchors.fill: parent
+
+            Material.theme: root.Material.theme
 
             Item {
                 id: headerSpacer
@@ -291,10 +323,11 @@ ApplicationWindow {
             ToolButton {
                 id: backButton
 
-                Accessible.name: mainStackView.depth > 1 ? qsTr("Back") : qsTr("Menu")
+                text: mainStackView.depth > 1 ? qsTr("Back") : qsTr("Menu")
+                icon.color: AppColors.toolButtonColor
+                display: AbstractButton.IconOnly
 
                 action: navigateAction
-                Material.foreground: Material.color(Material.Grey, Material.Shade100)
             }
 
             Loader {
@@ -302,6 +335,12 @@ ApplicationWindow {
                 Layout.fillHeight: true
 
                 sourceComponent: mainStackView.currentItem?.headerContent
+            }
+
+            Item {
+                id: headerSpacerRight
+
+                implicitWidth: radioStationInfoPanel.width * radioStationInfoPanel.position
             }
         }
 

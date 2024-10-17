@@ -11,6 +11,7 @@ Item {
     id: root
 
     property string acceptedInputText
+    property bool morphBackground: mainContentsLoader.item?.morphBackground ?? false
     readonly property HistorySearchFilterDialog searchFilterDialog: searchFilterDialogLoader.item as HistorySearchFilterDialog
 
     property string viewType: AppSettings.historyPageView
@@ -37,13 +38,18 @@ Item {
             Layout.fillWidth: true
         }
 
+        Item {
+            Layout.minimumWidth: 0
+            Layout.maximumWidth: changeViewButton.width
+            Layout.fillWidth: true
+        }
+
         SearchBar {
             id: searchBar
 
             maximumWidth: Math.min(parent.width * 6 / 9, AppConfig.searchBarMaximumWidth)
 
             implicitWidth: height
-            searchIcon.color: Material.color(Material.Grey, Material.Shade100)
 
             Layout.fillHeight: true
 
@@ -66,7 +72,7 @@ Item {
             display: AbstractButton.IconOnly
 
             icon.source: root.isTableViewType ? 'images/list.svg' : 'images/table.svg'
-            icon.color: Material.color(Material.Grey, Material.Shade100)
+            icon.color: AppColors.toolButtonColor
 
             text: root.isTableViewType ? qsTr("Display as list") : qsTr("Display as table")
 
@@ -82,9 +88,10 @@ Item {
         ToolButton {
             id: filterButton
 
-            Accessible.name: qsTr("Search Filters")
             icon.source: 'images/filter.svg'
-            icon.color: Material.color(Material.Grey, Material.Shade100)
+            icon.color: AppColors.toolButtonColor
+            display: AbstractButton.IconOnly
+            text: qsTr("Search Filters")
 
             onClicked: {
                 filterButton.forceActiveFocus();

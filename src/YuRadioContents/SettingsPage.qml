@@ -19,6 +19,7 @@ Item {
     required property int sleepTimerLeftInterval
 
     property string translatedFontScaleString: qsTr("Font scale")
+    property int currentPageIndex: 0
 
     property Component headerContent: RowLayout {
         spacing: 0
@@ -31,7 +32,10 @@ Item {
             id: sleepTimerButton
 
             icon.source: AppSettings.enableSleepTimer ? "images/hourglass-on.svg" : "images/hourglass-off.svg"
-            Accessible.name: qsTr("Sleep timer configurations")
+            icon.color: AppColors.toolButtonColor
+            display: AbstractButton.IconOnly
+
+            text: qsTr("Sleep timer configurations")
 
             onClicked: {
                 sleepTimerPopup.open();
@@ -40,6 +44,21 @@ Item {
     }
 
     focus: true
+
+    onVisibleChanged: {
+        if (visible) {
+            /* FIX: workaround for QTBUG-54260 */
+            let indexBefore = tabBar.currentIndex;
+
+            /* Reset indeces */
+            swipeView.setCurrentIndex(-1);
+            tabBar.setCurrentIndex(-1);
+
+            /* Restore indeces */
+            swipeView.setCurrentIndex(indexBefore);
+            tabBar.setCurrentIndex(indexBefore);
+        }
+    }
 
     SleepTimerPopup {
         id: sleepTimerPopup

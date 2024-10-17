@@ -144,7 +144,19 @@ void AudioStreamRecorder::processBuffer(const QByteArray &buffer,
 
 void AudioStreamRecorder::setPreferredSuffix(const QString &preferredSuffix) {
   qCDebug(audioStreamRecorderLog) << "Set preferred suffix:" << preferredSuffix;
-  m_preferredSuffix = preferredSuffix;
+
+  static const QStringList mpegFormats = {
+    u"mpga"_s,
+    u"mpega"_s,
+    u"mp1"_s,
+    u"mp2"_s,
+  };
+
+  if (mpegFormats.contains(preferredSuffix)) {
+    m_preferredSuffix = u"mp3"_s;
+  } else {
+    m_preferredSuffix = preferredSuffix;
+  }
 }
 
 static const QString &removeSpecialCharacters(QString &path) {

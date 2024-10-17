@@ -59,7 +59,7 @@ Rectangle {
             Binding {
                 target: headerDelegate.background
                 property: "color"
-                value: root.Material.background.darker(AppConfig.isDarkTheme ? 1.2 : 0.8)
+                value: root.Material.background
             }
 
             ScalableFontPicker {

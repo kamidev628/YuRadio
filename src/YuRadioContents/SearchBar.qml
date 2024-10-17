@@ -19,14 +19,23 @@ Control {
         searchInput.forceActiveFocus();
     }
 
+    property color backgroundColor: isDesktopLayout || isSearching ? AppColors.searchBarColor : "transparent"
+
     Accessible.name: qsTr("Search")
+
     Material.foreground: Material.primaryTextColor
-    Material.background: "transparent"
+    Material.background: backgroundColor
 
     bottomInset: 8
     topInset: 8
     topPadding: -8
     bottomPadding: -8
+
+    Behavior on backgroundColor {
+        ColorAnimation {
+            duration: 500
+        }
+    }
 
     states: [
         State {
@@ -41,7 +50,6 @@ Control {
             PropertyChanges {
                 searchInput.opacity: 1.0
                 root.implicitWidth: root.maximumWidth
-                background.color: AppColors.searchBarColor
                 removeTextButton.opacity: 1.0
             }
         }
@@ -57,11 +65,6 @@ Control {
                 properties: "implicitWidth"
                 duration: 250
                 easing.type: Easing.InOutQuad
-            }
-            PropertyAnimation {
-                target: background
-                properties: "color"
-                duration: 200
             }
             PropertyAnimation {
                 target: searchButton
@@ -85,6 +88,8 @@ Control {
 
     contentItem: RowLayout {
         id: rowLayout
+
+        clip: true
 
         ToolButton {
             id: searchButton

@@ -23,7 +23,6 @@ find_package(
              Positioning
              Location
              LinguistTools
-             HttpServer
              Widgets
              WebSockets
              NetworkAuth)

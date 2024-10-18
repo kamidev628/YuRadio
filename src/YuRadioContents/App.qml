@@ -5,7 +5,6 @@ import QtQuick
 import QtNetwork
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
 import QtQuick.Controls.Material
 
 import "radiobrowser.mjs" as RadioBrowser
@@ -276,14 +275,14 @@ ApplicationWindow {
 
     header: ToolBar {
         id: headerToolBar
-
+        
         property color backgroundColor: root.Material.background
         property bool morphBackground: mainStackView.currentItem?.morphBackground ?? false
 
         Material.background: backgroundColor
 
         onBackgroundColorChanged: {
-            AppColors.headerColor = backgroundColor
+            AppColors.headerColor = backgroundColor;
         }
 
         states: [
@@ -384,10 +383,29 @@ ApplicationWindow {
         }
     }
 
-    MessageDialog {
+    Dialog {
         id: messageDialog
 
-        buttons: MessageDialog.Ok
+        property alias text: messageDialogText.text
+        property alias informativeText: messageDialogInformation.text
+
+        ColumnLayout {
+            anchors.fill: parent
+
+            ScalableLabel {
+                id: messageDialogText
+                wrapMode: Text.Wrap
+            }
+
+            ScalableLabel {
+                id: messageDialogInformation
+
+                Layout.topMargin: 10
+                wrapMode: Text.Wrap
+            }
+        }
+        anchors.centerIn: Overlay.overlay
+        standardButtons: Dialog.Ok
     }
 
     GlobalShortcut {

@@ -25,7 +25,7 @@ Item {
         let heightRatioBefore = listView.visibleArea.heightRatio;
         queryModel.refresh();
         if (!root.sortOrderChangedReason) {
-            contentY = yPositionBefore * listView.contentHeight;
+            listView.contentY = yPositionBefore * listView.contentHeight;
         }
         root.sortOrderChangedReason = false;
     }
@@ -65,9 +65,9 @@ Item {
             id: queryModel
 
             queryString: `SELECT json_object('trackName', track_name, 'stationName', station_name, 'stationImageUrl', station_image_url, 'startedAt', started_at, 'endedAt', ended_at) as track
-                FROM track_history
-                ${root.queryFilters}
-                ORDER BY ${root.orderByField} ${root.descending ? "DESC" : "ASC"}`
+            FROM track_history
+            ${root.queryFilters}
+            ORDER BY ${root.orderByField} ${root.descending ? "DESC" : "ASC"}`
 
             onQueryStringChanged: {
                 Qt.callLater(root.refreshModel);

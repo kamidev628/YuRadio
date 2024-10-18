@@ -63,5 +63,4 @@ Item {
             root.recorder.outputLocation = selectedFolder;
         }
     }
-
 }

@@ -57,11 +57,10 @@ Item {
             /* Restore indeces */
             swipeView.setCurrentIndex(indexBefore);
             tabBar.setCurrentIndex(indexBefore);
-
-            let highlightMoveDurationBefore = swipeView.internalListView.highlightMoveDuration
-            swipeView.internalListView.highlightMoveDuration = 0
-            swipeView.internalListView.positionViewAtIndex(indexBefore, ListView.SnapPosition)
-            swipeView.internalListView.highlightMoveDuration = highlightMoveDurationBefore
+            let highlightMoveDurationBefore = swipeView.internalListView.highlightMoveDuration;
+            swipeView.internalListView.highlightMoveDuration = 0;
+            swipeView.internalListView.positionViewAtIndex(indexBefore, ListView.SnapPosition);
+            swipeView.internalListView.highlightMoveDuration = highlightMoveDurationBefore;
         }
     }
 

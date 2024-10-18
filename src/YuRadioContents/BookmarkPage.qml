@@ -12,7 +12,6 @@ Item {
 
     property bool morphBackground: !bookmarkGridView.atYBeginning
 
-    required property bool isDesktopLayout
     required property RadioDrawer drawer
     required property NetworkManager networkManager
     required property MusicInfoModel musicInfoModel
@@ -34,7 +33,7 @@ Item {
     RadioBottomBar {
         id: bottomBarDrawer
 
-        interactive: !root.drawer.opened || root.isDesktopLayout
+        interactive: !root.drawer.opened || AppConfig.isPortraitLayout
         gridView: bookmarkGridView
         stackView: root.StackView.view
         musicInfoModel: root.musicInfoModel

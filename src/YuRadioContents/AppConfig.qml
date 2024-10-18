@@ -17,6 +17,8 @@ QtObject {
     readonly property int minimumWindowHeight: 300
     readonly property int searchBarMaximumWidth: 300
 
+    property bool isPortraitLayout
+
     function getScaledFont(desiredFontPointSize: int): int {
         return Math.floor(desiredFontPointSize * AppSettings.fontScale);
     }

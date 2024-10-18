@@ -59,7 +59,7 @@ Item {
         }
 
         Item {
-            visible: searchBar.isDesktopLayout
+            visible: AppConfig.isPortraitLayout
             Layout.fillWidth: true
         }
 

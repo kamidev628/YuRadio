@@ -12,7 +12,7 @@ Item {
 
     states: [
         State {
-            name: "desktopLayout"
+            name: "portraitLayout"
             when: root.width > 600
             PropertyChanges {
                 columnLayout.width: contents.width * 3 / 5

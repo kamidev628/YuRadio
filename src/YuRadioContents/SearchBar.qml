@@ -8,7 +8,6 @@ Control {
     id: root
 
     readonly property bool isSearching: searchInput.activeFocus
-    readonly property bool isDesktopLayout: Window.width >= AppConfig.portraitLayoutWidth
     required property real maximumWidth
 
     property alias searchInput: searchInput
@@ -19,7 +18,7 @@ Control {
         searchInput.forceActiveFocus();
     }
 
-    property color backgroundColor: isDesktopLayout || isSearching ? AppColors.searchBarColor : "transparent"
+    property color backgroundColor: AppConfig.isPortraitLayout || isSearching ? AppColors.searchBarColor : "transparent"
 
     Accessible.name: qsTr("Search")
 
@@ -39,9 +38,9 @@ Control {
 
     states: [
         State {
-            name: "desktopLayout"
+            name: "portraitLayout"
             extend: "searching"
-            when: root.isDesktopLayout
+            when: AppConfig.isPortraitLayout
         },
         State {
             name: "searching"

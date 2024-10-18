@@ -15,7 +15,6 @@ import YuRadioContents
 ApplicationWindow {
     id: root
 
-    readonly property bool isDesktopLayout: width >= AppConfig.portraitLayoutWidth
     property list<Item> loadedPages
     property bool isBottomBarDetached: root.width > AppConfig.detachBottomBarWidth
 
@@ -44,6 +43,10 @@ ApplicationWindow {
         } else {
             Qt.quit();
         }
+    }
+
+    onWidthChanged: {
+        AppConfig.isPortraitLayout = width >= AppConfig.portraitLayoutWidth;
     }
 
     width: 640
@@ -108,8 +111,6 @@ ApplicationWindow {
 
     RadioDrawer {
         id: drawer
-
-        isDesktopLayout: root.isDesktopLayout
 
         onShowSearchRequested: {
             root.stackViewPushPage(searchPage, "searchPage");
@@ -205,7 +206,6 @@ ApplicationWindow {
             SearchPage {
                 objectName: "searchPage"
 
-                isDesktopLayout: root.isDesktopLayout
                 drawer: drawer
                 networkManager: networkManager
                 musicInfoModel: musicInfoModel
@@ -220,7 +220,6 @@ ApplicationWindow {
                 objectName: "bookmarkPage"
 
                 drawer: drawer
-                isDesktopLayout: root.isDesktopLayout
                 networkManager: networkManager
                 musicInfoModel: musicInfoModel
                 stationInfoPanel: radioStationInfoPanel
@@ -275,7 +274,7 @@ ApplicationWindow {
 
     header: ToolBar {
         id: headerToolBar
-        
+
         property color backgroundColor: root.Material.background
         property bool morphBackground: mainStackView.currentItem?.morphBackground ?? false
 
@@ -474,19 +473,23 @@ ApplicationWindow {
         property int currentRetry: 0
 
         interval: 3000
-        running: AppSettings.resumePlaybackWhenNetworkRestored && !MainRadioPlayer.playing && MainRadioPlayer.currentItem.isValid() && MainRadioPlayer.error !== RadioPlayer.NoError && NetworkInformation.reachability === NetworkInformation.Reachability.Online
+        running: repeat && AppSettings.resumePlaybackWhenNetworkRestored && !MainRadioPlayer.playing && MainRadioPlayer.currentItem.isValid() && MainRadioPlayer.error !== RadioPlayer.NoError && NetworkInformation.reachability === NetworkInformation.Reachability.Online
         repeat: currentRetry < maximumNumberRetries
-
-        onRunningChanged: {
-            if (running) {
-                currentRetry = 0;
-            }
-        }
 
         onTriggered: {
             MainRadioPlayer.play();
             currentRetry += 1;
             console.log("Reconnection retry:", currentRetry);
+        }
+    }
+
+    Connections {
+        target: MainRadioPlayer
+
+        function onPlayingChanged() {
+            if (MainRadioPlayer.playing) {
+                resumePlaybackTimer.currentRetry = 0;
+            }
         }
     }
 

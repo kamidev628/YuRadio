@@ -10,7 +10,6 @@ import YuRadioContents
 Drawer {
     id: root
 
-    property bool isDesktopLayout: true
     property bool expanded: false
 
     signal showBookmarksRequested
@@ -20,7 +19,7 @@ Drawer {
     signal showHistoryRequested
 
     function toggle() {
-        if (isDesktopLayout) {
+        if (AppConfig.isPortraitLayout) {
             if (!opened) {
                 open();
             }
@@ -38,10 +37,14 @@ Drawer {
 
     Material.roundedScale: Material.NotRounded
 
-    onIsDesktopLayoutChanged: {
-        if (isDesktopLayout && !opened) {
-            expanded = false;
-            open();
+    Connections {
+        target: AppConfig
+
+        function onIsPortraitLayoutChanged() {
+            if (AppConfig.isPortraitLayout && !root.opened) {
+                root.expanded = false;
+                root.open();
+            }
         }
     }
 
@@ -49,8 +52,8 @@ Drawer {
         states: [
             State {
                 name: "iconOnly"
-                when: !root.expanded && root.isDesktopLayout
-                extend: "desktopLayout"
+                when: !root.expanded && AppConfig.isPortraitLayout
+                extend: "portraitLayout"
 
                 PropertyChanges {
                     columnLayout.anchors.margins: 0
@@ -64,8 +67,8 @@ Drawer {
                 }
             },
             State {
-                name: "desktopLayout"
-                when: root.isDesktopLayout
+                name: "portraitLayout"
+                when: AppConfig.isPortraitLayout
 
                 PropertyChanges {
                     root.closePolicy: Popup.NoAutoClose
@@ -221,7 +224,7 @@ Drawer {
                 focus: true
 
                 onClicked: {
-                    if (!root.isDesktopLayout) {
+                    if (!AppConfig.isPortraitLayout) {
                         root.close();
                     }
                     triggered();

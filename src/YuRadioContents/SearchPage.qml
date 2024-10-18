@@ -14,7 +14,6 @@ Item {
 
     property bool morphBackground: !radioGridView.atYBeginning
 
-    required property bool isDesktopLayout
     required property RadioDrawer drawer
     required property NetworkManager networkManager
     required property MusicInfoModel musicInfoModel
@@ -54,7 +53,7 @@ Item {
         }
 
         Item {
-            visible: searchBar.isDesktopLayout
+            visible: AppConfig.isPortraitLayout
             Layout.fillWidth: true
         }
 
@@ -295,7 +294,7 @@ Item {
             if (!root.searchFilterDialog) {
                 return true;
             }
-            if (root.searchFilterDialog.opened || (root.drawer.opened && !root.isDesktopLayout)) {
+            if (root.searchFilterDialog.opened || (root.drawer.opened && !AppConfig.isPortraitLayout)) {
                 return false;
             }
             return true;

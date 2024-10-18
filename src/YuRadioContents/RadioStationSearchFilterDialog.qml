@@ -159,9 +159,12 @@ Dialog {
                         if (activeFocus && stringModel.length === 0) {
                             console.log("Caching countries...");
                             RadioBrowser.getCountries(root.networkManager.baseUrl).then(countries => {
-                                stringModel = countries.filter(country => country.name && country.iso_3166_1).map(country => country.name);
-                                Storage.addCountries(stringModel);
-                                console.log("Countries Cached!");
+                                if (stringModel.length === 0) {
+                                    stringModel = countries.filter(country => country.name && country.iso_3166_1).map(country => country.name);
+                                    Storage.addCountries(stringModel);
+                                    countryCombo.currentIndex = -1
+                                    console.log("Countries Cached!");
+                                }
                             });
                         }
                     }
@@ -251,9 +254,12 @@ Dialog {
                         if (activeFocus && stringModel.length === 0) {
                             console.log("Caching languages...");
                             RadioBrowser.getLanguages(root.networkManager.baseUrl).then(languages => {
-                                stringModel = languages.filter(language => language.name && language.iso_639).map(language => language.name);
-                                Storage.addLanguages(stringModel);
-                                console.log("Languages Cached!");
+                                if (stringModel.length === 0) {
+                                    stringModel = languages.filter(language => language.name && language.iso_639).map(language => language.name);
+                                    Storage.addLanguages(stringModel);
+                                    languageCombo.currentIndex = -1
+                                    console.log("Languages Cached!");
+                                }
                             });
                         }
                     }
@@ -345,6 +351,8 @@ Dialog {
                         id: tagLabel
 
                         text: tagsDelegate.title
+                        textFormat: Text.PlainText
+
                         height: tagsRepeater.buttonHeight
                         fontPointSize: 14
 

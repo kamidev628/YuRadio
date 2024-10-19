@@ -125,8 +125,6 @@ Item {
                 RadioImage {
                     id: stationImage
 
-                    Layout.leftMargin: 10
-
                     Layout.maximumWidth: 100
                     Layout.maximumHeight: 100
 

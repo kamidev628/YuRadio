@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Controls.Material
 
 import "radiobrowser.mjs" as RadioBrowser
 
@@ -13,10 +14,13 @@ FilledGridView {
 
     required property RadioBottomBar bottomBar
     required property NetworkManager networkManager
-
     required property var stationAtIndex
 
     property alias moreOptionsMenu: moreOptionsMenu
+    property alias sortHeader: radioListViewHeader
+
+    property real prevContentY: -1
+    property real headerHeight: radioListViewHeader.height
 
     signal moreOptionsMenuRequested(int index, Item context)
 
@@ -25,6 +29,30 @@ FilledGridView {
         left: parent.left
         right: parent.right
         bottom: bottomBar.detached ? parent.bottom : bottomBar.top
+    }
+
+    topMargin: radioListViewHeader.visible ? radioListViewHeader.height : 0
+
+    onContentYChanged: {
+        if (prevContentY !== -1) {
+            const movingDelta = contentY - prevContentY;
+            root.headerHeight = Utils.clamp(root.headerHeight - movingDelta, 0, radioListViewHeader.height);
+        }
+        prevContentY = contentY;
+    }
+
+    RadioStationsViewHeader {
+        id: radioListViewHeader
+
+        anchors {
+            left: parent.left
+            top: parent.top
+            right: parent.right
+            topMargin: root.headerHeight - height
+        }
+        z: 0
+        height: implicitHeight
+        visible: root.headerHeight > 0
     }
 
     displayMarginEnd: bottomBar.height

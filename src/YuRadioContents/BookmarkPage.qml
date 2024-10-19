@@ -26,6 +26,7 @@ Item {
         networkManager: root.networkManager
         moreOptionsMenu.enableSynchronization: true
         stationAtIndex: index => bookmarkGridView.model[index]
+        sortHeader.visible: false
 
         model: AppStorage.bookmarkModel
     }

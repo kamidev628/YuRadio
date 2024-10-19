@@ -228,18 +228,15 @@ Item {
         implicitHeight: 10
         implicitWidth: 10
 
-        header: RadioStationsViewHeader {
-            id: radioListViewHeader
+          function orderChangedHandler() {
+              radioModelOrderBy.value = sortHeader.orderByField;
+              reverseOrderBy.value = sortHeader.descending;
+              root.radioModelReset();
+          }
 
-            function orderChangedHandler() {
-                radioModelOrderBy.value = orderByField;
-                reverseOrderBy.value = descending;
-                root.radioModelReset();
-            }
+        sortHeader.onDescendingChanged: Qt.callLater(orderChangedHandler)
+        sortHeader.onOrderByFieldChanged: Qt.callLater(orderChangedHandler)
 
-            onDescendingChanged: orderChangedHandler()
-            onOrderByFieldChanged: orderChangedHandler()
-        }
         stationAtIndex: index => radioModel.get(index)
 
         footer: FooterBar {}

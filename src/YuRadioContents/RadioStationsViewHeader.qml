@@ -7,8 +7,6 @@ ListViewSortHeader {
 
     readonly property string orderByField: model.get(selectedIndex).field
 
-    width: GridView.view.width
-
     model: ListModel {
         ListElement {
             name: qsTr("Votes")

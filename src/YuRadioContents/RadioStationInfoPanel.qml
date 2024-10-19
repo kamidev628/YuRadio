@@ -319,7 +319,7 @@ Drawer {
         interval: 500
         repeat: false
 
-        running: root.streamTitle && root.streamTitle !== root.lastStreamTitle && Application.state == Qt.ApplicationActive && root.opened
+        running: root.streamTitle.length > 0 && root.streamTitle !== root.lastStreamTitle && Application.state == Qt.ApplicationActive && root.opened
 
         onTriggered: {
             root.lastStreamTitle = root.streamTitle;

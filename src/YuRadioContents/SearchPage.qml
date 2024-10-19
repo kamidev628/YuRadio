@@ -115,6 +115,7 @@ Item {
         anchors.fill: parent
 
         active: false
+        asynchronous: true
 
         sourceComponent: RadioStationSearchFilterDialog {
             id: searchFilterDialog
@@ -223,6 +224,9 @@ Item {
 
         bottomBar: bottomBarDrawer
         networkManager: root.networkManager
+
+        implicitHeight: 10
+        implicitWidth: 10
 
         header: RadioStationsViewHeader {
             id: radioListViewHeader

@@ -93,6 +93,8 @@ Dialog {
             }
 
             text: formatText(Tumbler.tumbler.count, modelData)
+            textFormat: Text.PlainText
+
             opacity: 1.0 - Math.abs(Tumbler.displacement) / (Tumbler.tumbler.visibleItemCount / 2)
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter

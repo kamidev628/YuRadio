@@ -31,9 +31,22 @@ ApplicationWindow {
                 mainStackView.replaceCurrentItem(loadedPage);
             }
         } else {
-            loadedPage = component.createObject(root);
-            loadedPages.push(loadedPage);
-            mainStackView.replaceCurrentItem(loadedPage);
+            /* Asynchronously load page */
+            const incubator = component.incubateObject(root);
+
+            /* If not ready wait incubation */
+            if (incubator.status !== Component.Ready) {
+                incubator.onStatusChanged = status => {
+                    if (status === Component.Ready) {
+                        loadedPages.push(incubator.object);
+                        mainStackView.replaceCurrentItem(incubator.object);
+                    }
+                };
+            } else {
+                /* If it ready push immediately */
+                loadedPages.push(incubator.object);
+                mainStackView.replaceCurrentItem(incubator.object);
+            }
         }
     }
 

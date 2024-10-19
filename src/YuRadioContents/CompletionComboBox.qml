@@ -81,6 +81,8 @@ HeaderComboBox {
                 }
             }
 
+            EnterKey.type: Qt.EnterKeyDone
+
             Keys.onBacktabPressed: event => tabPressed(event, false)
             Keys.onTabPressed: event => tabPressed(event, true)
         }

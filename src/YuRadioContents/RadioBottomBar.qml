@@ -82,7 +82,7 @@ RadioBottomBarDrawer {
                     bottomMargin: 6
                 }
 
-                root.radius: root.backgroundItem.height / 3
+                root.radius: root.height / 3
             }
         },
         State {

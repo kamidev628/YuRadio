@@ -147,7 +147,7 @@ Dialog {
                     elide: Text.ElideRight
                 }
 
-                CustomHeaderComboBox {
+                CustomCompletionComboBox {
                     id: countryCombo
 
                     Layout.fillWidth: true
@@ -160,10 +160,10 @@ Dialog {
                             console.log("Caching countries...");
                             RadioBrowser.getCountries(root.networkManager.baseUrl).then(countries => {
                                 if (stringModel.length === 0) {
-                                    stringModel = countries.filter(country => country.name && country.iso_3166_1).map(country => country.name);
+                                    stringModel = [...new Set(countries.filter(country => country.name && country.iso_3166_1).map(country => country.name))];
                                     Storage.addCountries(stringModel);
-                                    countryCombo.currentIndex = -1
-                                    console.log("Countries Cached!");
+                                    countryCombo.currentIndex = -1;
+                                    console.log("Countries Cached!", stringModel);
                                 }
                             });
                         }
@@ -179,7 +179,7 @@ Dialog {
                     elide: Text.ElideRight
                 }
 
-                CustomHeaderComboBox {
+                CustomCompletionComboBox {
                     id: stateCombo
 
                     Layout.fillWidth: true
@@ -242,7 +242,7 @@ Dialog {
                     elide: Text.ElideRight
                 }
 
-                CustomHeaderComboBox {
+                CustomCompletionComboBox {
                     id: languageCombo
 
                     Layout.fillWidth: true
@@ -255,10 +255,10 @@ Dialog {
                             console.log("Caching languages...");
                             RadioBrowser.getLanguages(root.networkManager.baseUrl).then(languages => {
                                 if (stringModel.length === 0) {
-                                    stringModel = languages.filter(language => language.name && language.iso_639).map(language => language.name);
+                                    stringModel = [...new Set(languages.filter(language => language.name && language.iso_639).map(language => language.name))];
                                     Storage.addLanguages(stringModel);
-                                    languageCombo.currentIndex = -1
-                                    console.log("Languages Cached!");
+                                    languageCombo.currentIndex = -1;
+                                    console.log("Languages Cached!", stringModel);
                                 }
                             });
                         }
@@ -408,7 +408,7 @@ Dialog {
         }
     }
 
-    component CustomHeaderComboBox: CompletionComboBox {
+    component CustomCompletionComboBox: CompletionComboBox {
         function restore(index) {
             currentIndex = index;
             editText = textAt(currentIndex);

@@ -130,6 +130,9 @@ Loader {
                     repeat: false
 
                     onRunningChanged: {
+                        stationName.clip = running;
+                        stationTags.clip = running;
+
                         if (running) {
                             stationName.elide = Text.ElideNone;
                             stationTags.elide = Text.ElideNone;
@@ -144,23 +147,27 @@ Loader {
 
                 ScalableLabel {
                     id: stationName
+
                     Layout.fillWidth: true
 
                     text: root.name ? root.name : "Unknown Station"
+                    textFormat: Text.PlainText
+
                     font.bold: true
                     fontPointSize: 15
-                    clip: true
 
                     onWidthChanged: updateElideTimer.restart()
                 }
 
                 ScalableLabel {
                     id: stationTags
+
                     Layout.fillWidth: true
 
                     text: root.tags.join(", ")
+                    textFormat: Text.PlainText
+
                     fontPointSize: 14
-                    clip: true
 
                     onWidthChanged: updateElideTimer.restart()
                 }
@@ -195,6 +202,8 @@ Loader {
             }
 
             text: qsTr("%1 kbps").arg(root.bitrate ? root.bitrate : "-")
+            textFormat: Text.PlainText
+
             fontPointSize: 8
             opacity: 0.8
         }

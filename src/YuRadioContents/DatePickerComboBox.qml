@@ -146,6 +146,7 @@ ScalableComboBox {
                     required property string shortName
 
                     text: shortName
+                    textFormat: Text.PlainText
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }

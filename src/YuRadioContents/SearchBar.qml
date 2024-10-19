@@ -94,6 +94,7 @@ Control {
             id: searchButton
 
             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+
             icon.source: 'images/search.svg'
             icon.color: AppColors.toolButtonColor
 
@@ -115,6 +116,9 @@ Control {
             Layout.leftMargin: -6
             Layout.rightMargin: -6
 
+            focus: true
+            focusPolicy: Qt.StrongFocus
+
             leftPadding: 0
             rightPadding: 0
 
@@ -127,8 +131,8 @@ Control {
             background.opacity: 0
 
             Material.foreground: root.Material.foreground
+            EnterKey.type: Qt.EnterKeySearch
 
-            clip: true
             opacity: 0
             visible: opacity > 0
         }

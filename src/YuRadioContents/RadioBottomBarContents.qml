@@ -458,7 +458,7 @@ FocusScope {
         interval: 500
         repeat: false
 
-        running: root.streamTitle && root.streamTitle !== root.lastStreamTitle && Application.state == Qt.ApplicationActive && secondaryColumnLayoutLoader.active
+        running: root.streamTitle.length > 0 && root.streamTitle !== root.lastStreamTitle && Application.state == Qt.ApplicationActive && secondaryColumnLayoutLoader.active
 
         onTriggered: {
             root.lastStreamTitle = root.streamTitle;

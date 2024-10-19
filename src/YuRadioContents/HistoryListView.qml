@@ -161,27 +161,30 @@ Item {
                         font.bold: true
                     }
 
-                    SelectableText {
+                    ScalableLabel {
                         id: stationNameText
 
                         Layout.fillWidth: true
 
                         text: trackDelegate.stationName
+                        textFormat: Text.PlainText
 
                         fontPointSize: 13
                         opacity: 0.7
                     }
 
-                    SelectableText {
+                    ScalableLabel {
                         id: dateRangeText
 
                         Layout.fillWidth: true
                         Layout.topMargin: 5
 
+                        text: trackDelegate.displayDate
+                        textFormat: Text.PlainText
+
                         fontPointSize: 12
 
                         opacity: 0.8
-                        text: trackDelegate.displayDate
                     }
                 }
 

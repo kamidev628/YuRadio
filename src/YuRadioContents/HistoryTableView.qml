@@ -272,6 +272,7 @@ Rectangle {
                 Layout.preferredWidth: Math.max(implicitWidth, 200)
 
                 text: stationDelegateComponent.stationName
+
                 fontPointSize: 13
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignLeft

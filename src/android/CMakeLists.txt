@@ -15,6 +15,8 @@ target_sources(
           androidmediasessionimageprovider.cpp
           androidradiocontroller.cpp
           androidradiocontroller.h
+          androidstatusbar.h
+          androidstatusbar.cpp
           nativemediacontroller.cpp
           nativemediacontroller.h
           notificationclient.cpp

@@ -228,11 +228,11 @@ Item {
         implicitHeight: 10
         implicitWidth: 10
 
-          function orderChangedHandler() {
-              radioModelOrderBy.value = sortHeader.orderByField;
-              reverseOrderBy.value = sortHeader.descending;
-              root.radioModelReset();
-          }
+        function orderChangedHandler() {
+            radioModelOrderBy.value = sortHeader.orderByField;
+            reverseOrderBy.value = sortHeader.descending;
+            root.radioModelReset();
+        }
 
         sortHeader.onDescendingChanged: Qt.callLater(orderChangedHandler)
         sortHeader.onOrderByFieldChanged: Qt.callLater(orderChangedHandler)

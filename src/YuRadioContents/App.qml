@@ -297,16 +297,29 @@ ApplicationWindow {
             AppColors.headerColor = backgroundColor;
         }
 
+        Connections {
+            target: headerToolBar
+            enabled: Qt.platform.os === "android"
+
+            function onBackgroundColorChanged() {
+                AndroidStatusBar.color = headerToolBar.backgroundColor;
+                Qt.callLater(AndroidStatusBar.update);
+            }
+
+            Component.onCompleted: if (enabled) onBackgroundColorChanged();
+        }
+
         states: [
             State {
                 name: "morphBackground"
                 when: headerToolBar.morphBackground
 
                 PropertyChanges {
-                    headerToolBar.backgroundColor: AppConfig.isDarkTheme ? root.Material.background.lighter(1.1) : "#f1ebf4"
+                    headerToolBar.backgroundColor: AppColors.toolBarMorphColor
                 }
             }
         ]
+
         transitions: [
             Transition {
                 to: "morphBackground"
@@ -406,6 +419,9 @@ ApplicationWindow {
 
             ScalableLabel {
                 id: messageDialogText
+
+                Layout.fillWidth: true
+
                 wrapMode: Text.Wrap
             }
 
@@ -413,6 +429,8 @@ ApplicationWindow {
                 id: messageDialogInformation
 
                 Layout.topMargin: 10
+                Layout.fillWidth: true
+
                 wrapMode: Text.Wrap
             }
         }

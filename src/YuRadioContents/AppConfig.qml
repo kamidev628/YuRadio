@@ -15,7 +15,7 @@ QtObject {
     readonly property int radioStationInfoPanelWidth: 250
     readonly property int minimumWindowWidth: 300
     readonly property int minimumWindowHeight: 300
-    readonly property int searchBarMaximumWidth: 300
+    readonly property int searchBarMaximumWidth: 400
 
     property bool isPortraitLayout
 

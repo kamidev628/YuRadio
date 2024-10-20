@@ -62,7 +62,7 @@ Control {
             PropertyAnimation {
                 target: root
                 properties: "implicitWidth"
-                duration: 250
+                duration: 200
                 easing.type: Easing.InOutQuad
             }
             PropertyAnimation {

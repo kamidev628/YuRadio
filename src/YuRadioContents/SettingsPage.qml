@@ -45,25 +45,6 @@ Item {
 
     focus: true
 
-    onVisibleChanged: {
-        if (visible) {
-            /* FIX: workaround for QTBUG-54260 */
-            let indexBefore = tabBar.currentIndex;
-
-            /* Reset indeces */
-            swipeView.setCurrentIndex(-1);
-            tabBar.setCurrentIndex(-1);
-
-            /* Restore indeces */
-            swipeView.setCurrentIndex(indexBefore);
-            tabBar.setCurrentIndex(indexBefore);
-            let highlightMoveDurationBefore = swipeView.internalListView.highlightMoveDuration;
-            swipeView.internalListView.highlightMoveDuration = 0;
-            swipeView.internalListView.positionViewAtIndex(indexBefore, ListView.SnapPosition);
-            swipeView.internalListView.highlightMoveDuration = highlightMoveDurationBefore;
-        }
-    }
-
     SleepTimerPopup {
         id: sleepTimerPopup
 
@@ -100,6 +81,17 @@ Item {
         id: swipeView
 
         property ListView internalListView: contentItem as ListView
+
+        Binding {
+            swipeView.internalListView.highlightMoveDuration: 0
+            swipeView.internalListView.highlightResizeDuration: 0
+        }
+
+        onVisibleChanged: {
+            if (visible) {
+                swipeView.internalListView.positionViewAtIndex(swipeView.currentIndex, ListView.SnapPosition)
+            }
+        }
 
         anchors {
             left: parent.left

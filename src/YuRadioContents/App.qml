@@ -32,7 +32,7 @@ ApplicationWindow {
             }
         } else {
             /* Asynchronously load page */
-            const incubator = component.incubateObject(root);
+            const incubator = component.incubateObject(root, {}, Qt.Synchronous);
 
             /* If not ready wait incubation */
             if (incubator.status !== Component.Ready) {

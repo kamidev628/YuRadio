@@ -227,6 +227,40 @@ ScrollView {
                 }
             }
 
+            ScalableLabel {
+                id: radioStationHeightLabel
+
+                Layout.topMargin: 20
+                Layout.fillWidth: true
+
+                text: qsTr("Radio station height")
+                wrapMode: Text.Wrap
+            }
+
+            ScalableComboBox {
+                Layout.fillWidth: true
+
+                model: [
+                    {
+                        text: qsTr("Small"),
+                        role: "small"
+                    },
+                    {
+                        text: qsTr("Medium"),
+                        role: "medium"
+                    }
+                ]
+                textRole: "text"
+
+                Accessible.name: radioStationHeightLabel.text
+                Component.onCompleted: {
+                    currentIndex = model.findIndex(x => x.role === AppSettings.stationDelegateHeightPolicy);
+                }
+                onActivated: {
+                    AppSettings.stationDelegateHeightPolicy = currentValue.role;
+                }
+            }
+
             ScalableCheckBox {
                 Layout.topMargin: 10
                 Layout.fillWidth: true

@@ -31,7 +31,7 @@ FilledGridView {
         bottom: bottomBar.detached ? parent.bottom : bottomBar.top
     }
 
-    topMargin: radioListViewHeader.visible ? radioListViewHeader.height : 0
+    topMargin: radioListViewHeader.height
 
     onContentYChanged: {
         if (prevContentY !== -1) {
@@ -59,7 +59,7 @@ FilledGridView {
     currentIndex: -1
 
     minimumItemWidth: 400 * AppSettings.fontScale
-    cellHeight: 100 * AppSettings.fontScale
+    cellHeight: (AppSettings.stationDelegateHeightPolicy === "small" ? 80 : 100) * AppSettings.fontScale
 
     clip: true
     highlightFollowsCurrentItem: true

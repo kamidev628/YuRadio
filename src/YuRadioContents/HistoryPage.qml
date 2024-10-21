@@ -7,11 +7,10 @@ import QtQuick.Layouts
 
 import YuRadioContents
 
-Item {
+StackViewPage {
     id: root
 
     property string acceptedInputText
-    property bool morphBackground: mainContentsLoader.item?.morphBackground ?? false
     readonly property HistorySearchFilterDialog searchFilterDialog: searchFilterDialogLoader.item as HistorySearchFilterDialog
 
     property string viewType: AppSettings.historyPageView
@@ -28,7 +27,8 @@ Item {
         /* Start Date */ Utils.isDateValid(startDate) ? `started_at > '${Utils.dateToISOString(startDate)}'` : "",
         /* End Date   */ Utils.isDateValid(endDate) ? `ended_at < '${Utils.dateToISOString(endDate)}'` : ""].filter(x => x)
 
-    property Component headerContent: RowLayout {
+    morphHeaderBackground: (mainContentsLoader.item as HistoryListView)?.morphHeaderBackground ?? false
+    headerContent: RowLayout {
         id: headerLayout
 
         anchors.fill: parent
@@ -168,6 +168,8 @@ Item {
         id: listViewComponent
 
         HistoryListView {
+            id: listView
+
             queryFilters: root.queryFilters
         }
     }

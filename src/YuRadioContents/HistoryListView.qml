@@ -11,8 +11,7 @@ import Main
 Item {
     id: root
 
-    property bool morphBackground: !listView.atYBeginning
-
+    property bool morphHeaderBackground: !listView.atYBeginning
     property string queryFilters
     property string orderByField: "datetime(started_at)"
     property bool descending: true

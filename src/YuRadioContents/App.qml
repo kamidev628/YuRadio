@@ -17,10 +17,19 @@ YuRadioWindow {
     property list<Item> loadedPages
     property bool isBottomBarDetached: root.width > AppConfig.detachBottomBarWidth
 
-    function stackViewPushPage(component: Component, objectName: string, operation: var): void {
+    function stackViewPushPage(objectName: string, operation: var): void {
         if (mainStackView.currentItem?.objectName === objectName) {
             return;
         }
+
+        let component = {
+          "searchPage": searchPage,
+          "bookmarkPage": bookmarkPage,
+          "historyPage": historyPage,
+          "settingsPage" : settingsPage,
+          "aboutPage" : aboutPage
+        }[objectName] ?? searchPage
+
         if (mainStackView.depth > 1) {
             mainStackView.popToIndex(0);
         }
@@ -91,15 +100,7 @@ YuRadioWindow {
 
         /* Initial page */
         const operation = StackView.Immediate;
-        if (AppSettings.startPage === "search") {
-            root.stackViewPushPage(searchPage, "searchPage", operation);
-        } else if (AppSettings.startPage === "bookmark") {
-            root.stackViewPushPage(bookmarkPage, "bookmarkPage", operation);
-        } else if (AppSettings.startPage === "history") {
-            root.stackViewPushPage(historyPage, "historyPage", operation);
-        } else {
-            root.stackViewPushPage(searchPage, "searchPage", operation);
-        }
+        root.stackViewPushPage(AppSettings.startPage, operation)
 
         /* Set current media item */
         if (!AppSettings.radioBrowserBaseUrl) {
@@ -143,19 +144,19 @@ YuRadioWindow {
         id: drawer
 
         onShowSearchRequested: {
-            root.stackViewPushPage(searchPage, "searchPage");
+            root.stackViewPushPage("searchPage");
         }
         onShowBookmarksRequested: {
-            root.stackViewPushPage(bookmarkPage, "bookmarkPage");
+            root.stackViewPushPage("bookmarkPage");
         }
         onShowHistoryRequested: {
-            root.stackViewPushPage(historyPage, "historyPage");
+            root.stackViewPushPage("historyPage");
         }
         onShowSettingsRequested: {
-            root.stackViewPushPage(settingsPage, "settingsPage");
+            root.stackViewPushPage("settingsPage");
         }
         onShowAboutRequested: {
-            root.stackViewPushPage(aboutPage, "aboutPage");
+            root.stackViewPushPage("aboutPage");
         }
     }
 
@@ -205,9 +206,12 @@ YuRadioWindow {
     StackView {
         id: mainStackView
 
+        property StackViewPage page: currentItem as StackViewPage
+
+        anchors.fill: parent
+
         anchors {
-            left: parent.left
-            right: parent.right
+            bottomMargin: root.bottomMargin
             leftMargin: drawer.modal ? 0 : drawer.width * drawer.position
             rightMargin: {
                 if (radioStationInfoPanelLoader.panel) {
@@ -215,10 +219,6 @@ YuRadioWindow {
                 }
                 return 0;
             }
-
-            top: parent.top
-            bottom: parent.bottom
-            bottomMargin: root.bottomMargin
         }
 
         focus: true
@@ -282,7 +282,6 @@ YuRadioWindow {
         id: headerToolBar
 
         property color backgroundColor: root.Material.background
-        property bool morphBackground: mainStackView.currentItem?.morphBackground ?? false
 
         Material.background: backgroundColor
 
@@ -295,7 +294,7 @@ YuRadioWindow {
         states: [
             State {
                 name: "morphBackground"
-                when: headerToolBar.morphBackground
+                when: mainStackView.page.morphHeaderBackground
 
                 PropertyChanges {
                     headerToolBar.backgroundColor: AppColors.toolBarMorphColor
@@ -341,7 +340,7 @@ YuRadioWindow {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                sourceComponent: mainStackView.currentItem?.headerContent
+                sourceComponent: mainStackView.page.headerContent
             }
 
             Item {

@@ -9,10 +9,8 @@ import YuRadioContents
 import network
 import Main
 
-Item {
+StackViewPage {
     id: root
-
-    property bool morphBackground: !radioGridView.atYBeginning
 
     required property RadioDrawer drawer
     required property NetworkManager networkManager
@@ -20,7 +18,8 @@ Item {
 
     readonly property RadioStationSearchFilterDialog searchFilterDialog: searchFilterDialogLoader.item as RadioStationSearchFilterDialog
 
-    property Component headerContent: RowLayout {
+    morphHeaderBackground: !radioGridView.atYBeginning
+    headerContent: RowLayout {
         id: headerLayout
 
         anchors.fill: parent

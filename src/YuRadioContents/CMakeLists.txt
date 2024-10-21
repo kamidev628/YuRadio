@@ -29,6 +29,7 @@ qt_add_qml_module(
   Utils.qml
   ListViewSortHeader.qml
   SelectableText.qml
+  StackViewPage.qml
   RadioStationDelegate.qml
   RadioStationInfoPanel.qml
   RadioBottomBarContents.qml

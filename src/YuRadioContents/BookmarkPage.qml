@@ -7,15 +7,14 @@ import YuRadioContents
 import network
 import Main
 
-Item {
+StackViewPage {
     id: root
-
-    property bool morphBackground: !bookmarkGridView.atYBeginning
 
     required property RadioDrawer drawer
     required property NetworkManager networkManager
     required property MusicInfoModel musicInfoModel
 
+    morphHeaderBackground: !bookmarkGridView.atYBeginning
     focus: true
 
     RadioStationView {

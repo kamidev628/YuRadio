@@ -9,7 +9,7 @@ import YuRadioContents
 import network
 import Main
 
-Item {
+StackViewPage {
     id: root
 
     required property AudioStreamRecorder audioRecorder
@@ -21,7 +21,7 @@ Item {
     property string translatedFontScaleString: qsTr("Font scale")
     property int currentPageIndex: 0
 
-    property Component headerContent: RowLayout {
+    headerContent: RowLayout {
         spacing: 0
 
         Item {

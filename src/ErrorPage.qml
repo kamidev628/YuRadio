@@ -31,10 +31,14 @@ ApplicationWindow {
 
             Flickable {
                 id: flickable
+
                 anchors.fill: parent
-                clip: true
+
                 contentWidth: parent.width
                 contentHeight: warningsText.height
+
+                clip: true
+
                 Text {
                     id: warningsText
                     width: flickable.width

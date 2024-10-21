@@ -233,7 +233,7 @@ ScrollView {
                 Layout.topMargin: 20
                 Layout.fillWidth: true
 
-                text: qsTr("Radio station height")
+                text: qsTr("Radio station size")
                 wrapMode: Text.Wrap
             }
 

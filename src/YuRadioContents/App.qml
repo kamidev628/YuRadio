@@ -18,7 +18,7 @@ ApplicationWindow {
     property list<Item> loadedPages
     property bool isBottomBarDetached: root.width > AppConfig.detachBottomBarWidth
 
-    function stackViewPushPage(component: Component, objectName: string): void {
+    function stackViewPushPage(component: Component, objectName: string, operation: var): void {
         if (mainStackView.currentItem?.objectName == objectName) {
             return;
         }
@@ -28,10 +28,10 @@ ApplicationWindow {
         let loadedPage = loadedPages.find(item => item.objectName == objectName);
         if (loadedPage) {
             if (mainStackView.currentItem.objectName !== loadedPage.objectName) {
-                mainStackView.replaceCurrentItem(loadedPage);
+                mainStackView.replaceCurrentItem(loadedPage, {}, operation);
             }
         } else {
-            /* Asynchronously load page */
+            /* Synchronously load page */
             const incubator = component.incubateObject(root, {}, Qt.Synchronous);
 
             /* If not ready wait incubation */
@@ -39,13 +39,13 @@ ApplicationWindow {
                 incubator.onStatusChanged = status => {
                     if (status === Component.Ready) {
                         loadedPages.push(incubator.object);
-                        mainStackView.replaceCurrentItem(incubator.object);
+                        mainStackView.replaceCurrentItem(incubator.object, {}, operation);
                     }
                 };
             } else {
                 /* If it ready push immediately */
                 loadedPages.push(incubator.object);
-                mainStackView.replaceCurrentItem(incubator.object);
+                mainStackView.replaceCurrentItem(incubator.object, {}, operation);
             }
         }
     }
@@ -74,6 +74,19 @@ ApplicationWindow {
 
     Component.onCompleted: {
         AppStorage.init();
+
+        const operation = StackView.Immediate;
+        if (AppSettings.startPage === "search") {
+            root.stackViewPushPage(searchPage, "searchPage", operation);
+        } else if (AppSettings.startPage === "bookmark") {
+            root.stackViewPushPage(bookmarkPage, "bookmarkPage", operation);
+        } else if (AppSettings.startPage === "history") {
+            root.stackViewPushPage(historyPage, "historyPage", operation);
+        } else {
+            root.stackViewPushPage(searchPage, "searchPage", operation);
+        }
+
+        QmlApplication.applicationLoaded();
     }
 
     Settings {
@@ -202,15 +215,6 @@ ApplicationWindow {
 
         focus: true
         Component.onCompleted: {
-            if (AppSettings.startPage === "search") {
-                root.stackViewPushPage(searchPage, "searchPage");
-            } else if (AppSettings.startPage === "bookmark") {
-                root.stackViewPushPage(bookmarkPage, "bookmarkPage");
-            } else if (AppSettings.startPage === "history") {
-                root.stackViewPushPage(historyPage, "historyPage");
-            } else {
-                root.stackViewPushPage(searchPage, "searchPage");
-            }
         }
 
         Component {
@@ -293,20 +297,15 @@ ApplicationWindow {
 
         Material.background: backgroundColor
 
-        onBackgroundColorChanged: {
-            AppColors.headerColor = backgroundColor;
+        Binding {
+            target: AndroidStatusBar
+            when: Qt.platform.os === "android"
+            property: "color"
+            value: AppColors.headerColor
         }
 
-        Connections {
-            target: headerToolBar
-            enabled: Qt.platform.os === "android"
-
-            function onBackgroundColorChanged() {
-                AndroidStatusBar.color = headerToolBar.backgroundColor;
-                Qt.callLater(AndroidStatusBar.update);
-            }
-
-            Component.onCompleted: if (enabled) onBackgroundColorChanged();
+        onBackgroundColorChanged: {
+            AppColors.headerColor = backgroundColor;
         }
 
         states: [

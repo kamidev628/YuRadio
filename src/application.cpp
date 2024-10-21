@@ -114,3 +114,12 @@ void Application::initializePlatform() {
   VirtualKeyboardListener::registerNativeMethods();
 #endif /* Q_OS_ANDROID */
 }
+
+QmlApplication::QmlApplication(QObject *parent) : QObject(parent) {}
+
+void QmlApplication::applicationLoaded() {
+#ifdef Q_OS_ANDROID
+  QJniObject activity(QNativeInterface::QAndroidApplication::context());
+  activity.callMethod<void>("qmlApplicationStarted");
+#endif /* Q_OS_ANDROID */
+}

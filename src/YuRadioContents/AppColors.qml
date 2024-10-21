@@ -10,7 +10,7 @@ QtObject {
 
     Material.theme: AppConfig.isDarkTheme ? Material.Dark : Material.Light
 
-    property color headerColor
+    property color headerColor: Material.background
 
     property color toolButtonColor: AppConfig.isDarkTheme ? "#e8eaed" : "transparent"
     property color toolBarMorphColor: AppConfig.isDarkTheme ? Material.background.lighter(1.2) : "#f1ebf4"

@@ -426,34 +426,53 @@ ApplicationWindow {
         }
     }
 
-    Dialog {
-        id: messageDialog
+    Loader {
+        id: messageDialogLoader
 
-        property alias text: messageDialogText.text
-        property alias informativeText: messageDialogInformation.text
+        property Dialog messageDialog: item as Dialog
 
-        ColumnLayout {
-            anchors.fill: parent
+        property string text
+        property string informativeText
 
-            ScalableLabel {
-                id: messageDialogText
-
-                Layout.fillWidth: true
-
-                wrapMode: Text.Wrap
-            }
-
-            ScalableLabel {
-                id: messageDialogInformation
-
-                Layout.topMargin: 10
-                Layout.fillWidth: true
-
-                wrapMode: Text.Wrap
-            }
+        function open() {
+            active = true;
         }
-        anchors.centerIn: Overlay.overlay
-        standardButtons: Dialog.Ok
+
+        active: false
+
+        sourceComponent: Dialog {
+            property alias text: messageDialogText.text
+            property alias informativeText: messageDialogInformation.text
+
+            ColumnLayout {
+                anchors.fill: parent
+
+                ScalableLabel {
+                    id: messageDialogText
+
+                    Layout.fillWidth: true
+                    text: messageDialogLoader.text
+
+                    wrapMode: Text.Wrap
+                }
+
+                ScalableLabel {
+                    id: messageDialogInformation
+
+                    Layout.topMargin: 10
+                    Layout.fillWidth: true
+                    text: messageDialogLoader.informativeText
+
+                    wrapMode: Text.Wrap
+                }
+            }
+            anchors.centerIn: Overlay.overlay
+            standardButtons: Dialog.Ok
+
+            onClosed: messageDialogLoader.active = false
+        }
+
+        onLoaded: messageDialog.open()
     }
 
     GlobalShortcut {
@@ -546,9 +565,9 @@ ApplicationWindow {
         target: MainRadioPlayer.audioStreamRecorder
 
         function onErrorOccurred() {
-            messageDialog.text = "Recording error";
-            messageDialog.informativeText = MainRadioPlayer.audioStreamRecorder.errorString;
-            messageDialog.open();
+            messageDialogLoader.text = "Recording error";
+            messageDialogLoader.informativeText = MainRadioPlayer.audioStreamRecorder.errorString;
+            messageDialogLoader.open();
         }
     }
 }

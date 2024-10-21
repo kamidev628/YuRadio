@@ -151,7 +151,9 @@ void MusicInfoModel::requestMusicInfo() {
   qCDebug(musicInfoModelLog)
     << "Requesting music information for:" << m_searchTerm;
 
-  m_currentBackend->requestMusicInfo(m_searchTerm);
+  if (hasValidSearchTerm()) {
+    m_currentBackend->requestMusicInfo(m_searchTerm);
+  }
 }
 
 QString MusicInfoModel::backendName() const {

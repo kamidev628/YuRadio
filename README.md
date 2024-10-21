@@ -1,7 +1,7 @@
 # YuRadio
 
 <img src="src/YuRadioContents/images/shortwave.svg" align="right"
-     alt="YuRadio Logo">
+     alt="YuRadio Logo" width="150" height="150">
 
 A cross-platform application for playing online radio.\
 Application uses RadioBrowser api (see [radiobrowser](https://api.radio-browser.info/))
@@ -16,10 +16,11 @@ You can:
 - Sort (votes, popularity, ...)
 
 \
-<img src="doc/screenshot.png" height="500">
+<img src="doc/screenshot-dark.png" height="500">
 <a id="screenshot-light">
 <img src="doc/screenshot-light.png" height="500">
 </a>
+<img src="doc/screenshot-desktop-dark.png" height="407">
 
 ### Building
 
@@ -38,10 +39,19 @@ listed in the `CMakeLists.txt` files
 
 Spotify is only needed as an additional backend for displaying music information (as in [screenshot](#screenshot-light))
 
+### Supported platforms
+
+`android` `windows` `linux`
+
 ### Dependencies
 
 `Qt6` `uiohook` `qtmpris`
 
-### Supported platforms
+#### Licensing
 
-`android` `windows` `linux`
+| Dependency       | License                    |
+| :--------------- | :------------------------- |
+| `Qt`             | LGPL, GPL                  |
+| `qtmpris`        | LGPL                       |
+| `uiohook`        | GPL                        |
+| `Material Icons` | Apache License Version 2.0 |

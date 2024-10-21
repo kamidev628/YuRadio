@@ -38,7 +38,7 @@ Item {
                 id: columnLayout
 
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: parent.width - 20
+                width: parent.width - 30
 
                 Image {
                     Layout.fillWidth: true
@@ -56,6 +56,9 @@ Item {
                 TextArea {
                     Layout.fillWidth: true
                     Layout.topMargin: 5
+
+                    leftPadding: 0
+                    rightPadding: 0
 
                     readOnly: true
                     textFormat: Text.MarkdownText

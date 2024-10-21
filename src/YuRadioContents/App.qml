@@ -58,8 +58,10 @@ ApplicationWindow {
         }
     }
 
-    onWidthChanged: {
-        AppConfig.isPortraitLayout = width >= AppConfig.portraitLayoutWidth;
+    Binding {
+        target: AppConfig
+        property: "isPortraitLayout"
+        value: root.width >= AppConfig.portraitLayoutWidth
     }
 
     width: 640
@@ -73,8 +75,22 @@ ApplicationWindow {
     Material.theme: AppConfig.isDarkTheme ? Material.Dark : Material.Light
 
     Component.onCompleted: {
+        QmlApplication.applicationLoaded();
         AppStorage.init();
 
+        /* Load translation */
+        if (!AppSettings.locale) {
+            if (languageTranslator.loadSystemLanguage()) {
+                AppSettings.locale = Qt.locale().name;
+            } else {
+                languageTranslator.load("en_US");
+                AppSettings.locale = "en_US";
+            }
+        } else {
+            languageTranslator.load(AppSettings.locale);
+        }
+
+        /* Initial page */
         const operation = StackView.Immediate;
         if (AppSettings.startPage === "search") {
             root.stackViewPushPage(searchPage, "searchPage", operation);
@@ -86,7 +102,17 @@ ApplicationWindow {
             root.stackViewPushPage(searchPage, "searchPage", operation);
         }
 
-        QmlApplication.applicationLoaded();
+        /* Set current media item */
+        if (!AppSettings.radioBrowserBaseUrl) {
+            RadioBrowser.baseUrlRandom().then(url => {
+                AppSettings.radioBrowserBaseUrl = url;
+            });
+        } else {
+            RadioBrowser.getStation(networkManager.baseUrl, AppSettings.stationUuid).then(station => {
+                let parsedItem = RadioStationFactory.fromJson(station);
+                MainRadioPlayer.currentItem = parsedItem;
+            });
+        }
     }
 
     Settings {
@@ -100,17 +126,17 @@ ApplicationWindow {
     StateGroup {
         states: [
             State {
-                when: MainRadioPlayer.currentItem.isValid() && root.isBottomBarDetached
+                when: MainRadioPlayer.currentItem.isValid() && root.isBottomBarDetached && radioStationInfoPanelLoader.panel
 
                 StateChangeScript {
-                    script: radioStationInfoPanel.open()
+                    script: radioStationInfoPanelLoader.panel.open()
                 }
             },
             State {
-                when: !MainRadioPlayer.currentItem.isValid() || !root.isBottomBarDetached
+                when: (!MainRadioPlayer.currentItem.isValid() || !root.isBottomBarDetached) && radioStationInfoPanelLoader.panel
 
                 StateChangeScript {
-                    script: radioStationInfoPanel.close()
+                    script: radioStationInfoPanelLoader.panel.close()
                 }
             }
         ]
@@ -120,19 +146,6 @@ ApplicationWindow {
         id: networkManager
 
         baseUrl: AppSettings.radioBrowserBaseUrl
-
-        Component.onCompleted: {
-            if (!AppSettings.radioBrowserBaseUrl) {
-                RadioBrowser.baseUrlRandom().then(url => {
-                    AppSettings.radioBrowserBaseUrl = url;
-                });
-            } else {
-                RadioBrowser.getStation(baseUrl, AppSettings.stationUuid).then(station => {
-                    let parsedItem = RadioStationFactory.fromJson(station);
-                    MainRadioPlayer.currentItem = parsedItem;
-                });
-            }
-        }
     }
 
     RadioDrawer {
@@ -157,19 +170,6 @@ ApplicationWindow {
 
     LanguageTranslator {
         id: languageTranslator
-
-        Component.onCompleted: {
-            if (!AppSettings.locale) {
-                if (loadSystemLanguage()) {
-                    AppSettings.locale = Qt.locale().name;
-                } else {
-                    load("en_US");
-                    AppSettings.locale = "en_US";
-                }
-            } else {
-                load(AppSettings.locale);
-            }
-        }
     }
 
     MusicInfoModel {
@@ -180,23 +180,34 @@ ApplicationWindow {
         id: locationPage
 
         RadioStationLocationPage {
-            stationLatitude: radioStationInfoPanel.stationLatitude
-            stationLongitude: radioStationInfoPanel.stationLongitude
+            stationLatitude: radioStationInfoPanelLoader.stationLatitude
+            stationLongitude: radioStationInfoPanelLoader.stationLongitude
         }
     }
 
-    RadioStationInfoPanel {
-        id: radioStationInfoPanel
+    Loader {
+        id: radioStationInfoPanelLoader
 
+        property RadioStationInfoPanel panel: item as RadioStationInfoPanel
+
+        property real position
         property real stationLatitude
         property real stationLongitude
 
-        musicInfoModel: musicInfoModel
+        active: root.isBottomBarDetached || position > 0
 
-        onShowRadioStationLocationRequested: (stationLat, stationLong) => {
-            stationLatitude = stationLat;
-            stationLongitude = stationLong;
-            mainStackView.push(locationPage);
+        sourceComponent: RadioStationInfoPanel {
+            musicInfoModel: musicInfoModel
+
+            onPositionChanged: {
+                radioStationInfoPanelLoader.position = position;
+            }
+
+            onShowRadioStationLocationRequested: (stationLat, stationLong) => {
+                radioStationInfoPanelLoader.stationLatitude = stationLat;
+                radioStationInfoPanelLoader.stationLongitude = stationLong;
+                mainStackView.push(locationPage);
+            }
         }
     }
 
@@ -207,15 +218,18 @@ ApplicationWindow {
             left: parent.left
             right: parent.right
             leftMargin: drawer.modal ? 0 : drawer.width * drawer.position
-            rightMargin: radioStationInfoPanel.width * radioStationInfoPanel.position
+            rightMargin: {
+                if (radioStationInfoPanelLoader.panel) {
+                    return radioStationInfoPanelLoader.panel.width * radioStationInfoPanelLoader.panel.position;
+                }
+                return 0;
+            }
 
             top: parent.top
             bottom: androidKeyboardRectangleLoader.top
         }
 
         focus: true
-        Component.onCompleted: {
-        }
 
         Component {
             id: searchPage
@@ -226,7 +240,6 @@ ApplicationWindow {
                 drawer: drawer
                 networkManager: networkManager
                 musicInfoModel: musicInfoModel
-                stationInfoPanel: radioStationInfoPanel
             }
         }
 
@@ -239,7 +252,6 @@ ApplicationWindow {
                 drawer: drawer
                 networkManager: networkManager
                 musicInfoModel: musicInfoModel
-                stationInfoPanel: radioStationInfoPanel
             }
         }
 
@@ -304,8 +316,10 @@ ApplicationWindow {
             value: AppColors.headerColor
         }
 
-        onBackgroundColorChanged: {
-            AppColors.headerColor = backgroundColor;
+        Binding {
+            target: AppColors
+            property: "headerColor"
+            value: headerToolBar.backgroundColor
         }
 
         states: [
@@ -363,7 +377,12 @@ ApplicationWindow {
             Item {
                 id: headerSpacerRight
 
-                implicitWidth: radioStationInfoPanel.width * radioStationInfoPanel.position
+                implicitWidth: {
+                    if (radioStationInfoPanelLoader.panel) {
+                        return radioStationInfoPanelLoader.panel.width * radioStationInfoPanelLoader.panel.position;
+                    }
+                    return 0;
+                }
             }
         }
 

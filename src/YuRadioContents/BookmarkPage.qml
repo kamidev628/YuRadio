@@ -15,7 +15,6 @@ Item {
     required property RadioDrawer drawer
     required property NetworkManager networkManager
     required property MusicInfoModel musicInfoModel
-    required property RadioStationInfoPanel stationInfoPanel
 
     focus: true
 

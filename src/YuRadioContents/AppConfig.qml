@@ -8,6 +8,7 @@ QtObject {
     readonly property bool isLandscape: !isPortrait
     readonly property bool isDarkTheme: AppSettings.theme === "Dark"
     readonly property bool isMobile: Qt.platform.os == "android" || Qt.platform.os == "ios"
+    readonly property bool isAndroid: Qt.platform.os == "android"
     readonly property bool trayIconAvailable: AppConfig_trayIconAvailable
     readonly property bool networkInformationBackendAvailable: AppConfig_networkInformationBackendAvailable
     readonly property int portraitLayoutWidth: 700

@@ -2,14 +2,21 @@ set_source_files_properties(
   AppSettings.qml AppConfig.qml AppColors.qml Utils.qml MainRadioPlayer.qml
   AppStorage.qml PROPERTIES QT_QML_SINGLETON_TYPE true)
 
+if(ANDROID)
+  set(window_sources android/YuRadioWindow.qml)
+else()
+  set(window_sources YuRadioWindow.qml)
+endif()
+
 qt_add_library(YuRadioContents STATIC)
 qt_add_qml_module(
   YuRadioContents
   URI
-  "YuRadioContents"
-  VERSION
-  1.0
+  YuRadioContents
+  IMPORTS
+  QtQuick.Controls.Material
   QML_FILES
+  ${window_sources}
   App.qml
   AppColors.qml
   RadioDrawer.qml
@@ -110,9 +117,6 @@ qt_add_qml_module(
   images/hourglass-off.svg
   images/history.svg
   images/folder.svg)
-
-qt_add_resources(YuRadioContents "qtquickcontrols2_configuration" PREFIX "/"
-                 FILES qtquickcontrols2.conf)
 
 qt_add_shaders(
   YuRadioContents

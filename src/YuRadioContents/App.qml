@@ -1,6 +1,5 @@
 pragma ComponentBehavior: Bound
 
-import QtCore
 import QtQuick
 import QtNetwork
 import QtQuick.Controls
@@ -12,20 +11,20 @@ import network
 import Main
 import YuRadioContents
 
-ApplicationWindow {
+YuRadioWindow {
     id: root
 
     property list<Item> loadedPages
     property bool isBottomBarDetached: root.width > AppConfig.detachBottomBarWidth
 
     function stackViewPushPage(component: Component, objectName: string, operation: var): void {
-        if (mainStackView.currentItem?.objectName == objectName) {
+        if (mainStackView.currentItem?.objectName === objectName) {
             return;
         }
         if (mainStackView.depth > 1) {
             mainStackView.popToIndex(0);
         }
-        let loadedPage = loadedPages.find(item => item.objectName == objectName);
+        let loadedPage = loadedPages.find(item => item.objectName === objectName);
         if (loadedPage) {
             if (mainStackView.currentItem.objectName !== loadedPage.objectName) {
                 mainStackView.replaceCurrentItem(loadedPage, {}, operation);
@@ -113,14 +112,6 @@ ApplicationWindow {
                 MainRadioPlayer.currentItem = parsedItem;
             });
         }
-    }
-
-    Settings {
-        property alias windowX: root.x
-        property alias windowY: root.y
-        property alias windowWidth: root.width
-        property alias windowHeight: root.height
-        property alias windowVisibility: root.visibility
     }
 
     StateGroup {
@@ -226,7 +217,8 @@ ApplicationWindow {
             }
 
             top: parent.top
-            bottom: androidKeyboardRectangleLoader.top
+            bottom: parent.bottom
+            bottomMargin: root.bottomMargin
         }
 
         focus: true
@@ -286,21 +278,6 @@ ApplicationWindow {
         }
     }
 
-    Loader {
-        id: androidKeyboardRectangleLoader
-
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
-
-        active: Qt.platform.os === "android"
-        sourceComponent: Item {
-            height: AndroidKeyboard?.height / Screen.devicePixelRatio
-        }
-    }
-
     header: ToolBar {
         id: headerToolBar
 
@@ -308,13 +285,6 @@ ApplicationWindow {
         property bool morphBackground: mainStackView.currentItem?.morphBackground ?? false
 
         Material.background: backgroundColor
-
-        Binding {
-            target: AndroidStatusBar
-            when: Qt.platform.os === "android"
-            property: "color"
-            value: AppColors.headerColor
-        }
 
         Binding {
             target: AppColors

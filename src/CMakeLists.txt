@@ -35,9 +35,7 @@ set(basic_controller_sources basicradiocontroller.cpp basicradiocontroller.h)
 qt_add_qml_module(
   YuRadio
   URI
-  "Main"
-  VERSION
-  1.0
+  Main
   QML_FILES
   Main.qml
   ErrorPage.qml

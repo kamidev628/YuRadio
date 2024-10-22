@@ -229,6 +229,7 @@ NetworkManager::createRequest(Operation op,
   QNetworkReply *reply =
     QNetworkAccessManager::createRequest(op, request, outgoingData);
 
+#ifdef QT_DEBUG
   connect(reply, &QNetworkReply::finished, this, [reply]() {
     const int httpCode = httpStatusCode(reply);
     const bool isReplyError = reply->error() != QNetworkReply::NoError;
@@ -262,6 +263,7 @@ NetworkManager::createRequest(Operation op,
       qCInfo(networkManagerLog).noquote() << debugMessage;
     }
   });
+#endif /* QT_DEBUG */
 
   return reply;
 }

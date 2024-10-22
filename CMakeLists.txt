@@ -20,7 +20,6 @@ find_package(
              QuickControls2
              Multimedia
              ShaderTools
-             Positioning
              Location
              LinguistTools
              Widgets

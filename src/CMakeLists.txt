@@ -107,7 +107,6 @@ target_link_libraries(
           Qt6::Quick
           Qt6::QuickControls2
           Qt6::Sql
-          Qt6::Positioning
           Qt6::Location
           Qt6::NetworkAuth
           Qt6::Svg

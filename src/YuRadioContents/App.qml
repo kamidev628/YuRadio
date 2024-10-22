@@ -15,21 +15,18 @@ YuRadioWindow {
     id: root
 
     property list<Item> loadedPages
-    property bool isBottomBarDetached: root.width > AppConfig.detachBottomBarWidth
 
     function stackViewPushPage(objectName: string, operation: var): void {
         if (mainStackView.currentItem?.objectName === objectName) {
             return;
         }
-
         let component = {
-          "searchPage": searchPage,
-          "bookmarkPage": bookmarkPage,
-          "historyPage": historyPage,
-          "settingsPage" : settingsPage,
-          "aboutPage" : aboutPage
-        }[objectName] ?? searchPage
-
+            "searchPage": searchPage,
+            "bookmarkPage": bookmarkPage,
+            "historyPage": historyPage,
+            "settingsPage": settingsPage,
+            "aboutPage": aboutPage
+        }[objectName] ?? searchPage;
         if (mainStackView.depth > 1) {
             mainStackView.popToIndex(0);
         }
@@ -55,6 +52,38 @@ YuRadioWindow {
                 loadedPages.push(incubator.object);
                 mainStackView.replaceCurrentItem(incubator.object, {}, operation);
             }
+        }
+    }
+
+    function init() {
+        /* Load translation */
+        if (!AppSettings.locale) {
+            if (languageTranslator.loadSystemLanguage()) {
+                AppSettings.locale = Qt.locale().name;
+            } else {
+                languageTranslator.load("en_US");
+                AppSettings.locale = "en_US";
+            }
+        } else {
+            languageTranslator.load(AppSettings.locale);
+        }
+
+        /* Initial page */
+        const operation = StackView.Immediate;
+        root.stackViewPushPage(AppSettings.startPage, operation);
+
+        /* Initialize storage */
+        AppStorage.init();
+
+        if (!AppSettings.radioBrowserBaseUrl) {
+            RadioBrowser.baseUrlRandom().then(url => {
+                AppSettings.radioBrowserBaseUrl = url;
+            });
+        } else if (AppSettings.stationUuid.length > 0) { /* Set current media item if exists */
+            RadioBrowser.getStation(networkManager.baseUrl, AppSettings.stationUuid).then(station => {
+                let parsedItem = RadioStationFactory.fromJson(station);
+                MainRadioPlayer.currentItem = parsedItem;
+            });
         }
     }
 
@@ -84,54 +113,8 @@ YuRadioWindow {
 
     Component.onCompleted: {
         QmlApplication.applicationLoaded();
-        AppStorage.init();
-
-        /* Load translation */
-        if (!AppSettings.locale) {
-            if (languageTranslator.loadSystemLanguage()) {
-                AppSettings.locale = Qt.locale().name;
-            } else {
-                languageTranslator.load("en_US");
-                AppSettings.locale = "en_US";
-            }
-        } else {
-            languageTranslator.load(AppSettings.locale);
-        }
-
-        /* Initial page */
-        const operation = StackView.Immediate;
-        root.stackViewPushPage(AppSettings.startPage, operation)
-
-        /* Set current media item */
-        if (!AppSettings.radioBrowserBaseUrl) {
-            RadioBrowser.baseUrlRandom().then(url => {
-                AppSettings.radioBrowserBaseUrl = url;
-            });
-        } else {
-            RadioBrowser.getStation(networkManager.baseUrl, AppSettings.stationUuid).then(station => {
-                let parsedItem = RadioStationFactory.fromJson(station);
-                MainRadioPlayer.currentItem = parsedItem;
-            });
-        }
-    }
-
-    StateGroup {
-        states: [
-            State {
-                when: MainRadioPlayer.currentItem.isValid() && root.isBottomBarDetached && radioStationInfoPanelLoader.panel
-
-                StateChangeScript {
-                    script: radioStationInfoPanelLoader.panel.open()
-                }
-            },
-            State {
-                when: (!MainRadioPlayer.currentItem.isValid() || !root.isBottomBarDetached) && radioStationInfoPanelLoader.panel
-
-                StateChangeScript {
-                    script: radioStationInfoPanelLoader.panel.close()
-                }
-            }
-        ]
+        console.log("Application Loaded!");
+        Qt.callLater(init);
     }
 
     NetworkManager {
@@ -182,11 +165,13 @@ YuRadioWindow {
 
         property RadioStationInfoPanel panel: item as RadioStationInfoPanel
 
+        property bool shouldShow: MainRadioPlayer.currentItem.isValid() && root.width > AppConfig.detachBottomBarWidth
+
         property real position
         property real stationLatitude
         property real stationLongitude
 
-        active: root.isBottomBarDetached || position > 0
+        active: shouldShow || position > 0
 
         sourceComponent: RadioStationInfoPanel {
             musicInfoModel: musicInfoModel
@@ -199,6 +184,13 @@ YuRadioWindow {
                 radioStationInfoPanelLoader.stationLatitude = stationLat;
                 radioStationInfoPanelLoader.stationLongitude = stationLong;
                 mainStackView.push(locationPage);
+            }
+        }
+
+        onLoaded: panel.open()
+        onShouldShowChanged: {
+            if (!shouldShow) {
+                panel.close();
             }
         }
     }
@@ -294,7 +286,7 @@ YuRadioWindow {
         states: [
             State {
                 name: "morphBackground"
-                when: mainStackView.page.morphHeaderBackground
+                when: !!mainStackView.page?.morphHeaderBackground
 
                 PropertyChanges {
                     headerToolBar.backgroundColor: AppColors.toolBarMorphColor
@@ -318,8 +310,6 @@ YuRadioWindow {
         RowLayout {
             anchors.fill: parent
 
-            Material.theme: root.Material.theme
-
             Item {
                 id: headerSpacer
 
@@ -340,7 +330,7 @@ YuRadioWindow {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                sourceComponent: mainStackView.page.headerContent
+                sourceComponent: mainStackView.page?.headerContent
             }
 
             Item {

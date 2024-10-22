@@ -44,6 +44,9 @@ Item {
         ScrollBar.vertical: ScrollBar {
             visible: !AppConfig.isMobile
         }
+        ScrollIndicator.vertical: ScrollIndicator {
+            visible: AppConfig.isMobile
+        }
 
         header: HistoryListViewHeader {
             id: historyListViewHeader
@@ -129,14 +132,10 @@ Item {
 
                     Layout.preferredWidth: Layout.preferredHeight
                     Layout.preferredHeight: columnLayout.height
-
-                    fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
-                    targetSource: trackDelegate.stationImageUrl
-                    fillMode: Image.PreserveAspectFit
-
                     sourceSize: Qt.size(height * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
 
-                    smooth: true
+                    targetSource: trackDelegate.stationImageUrl
+                    fillMode: Image.PreserveAspectFit
                 }
 
                 ColumnLayout {

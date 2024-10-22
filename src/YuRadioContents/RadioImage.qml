@@ -1,5 +1,7 @@
 import QtQuick
 
+import YuRadioContents
+
 Image {
     id: root
 
@@ -9,6 +11,7 @@ Image {
 
     source: root.failed ? fallbackSource : targetSource
 
+    fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
     asynchronous: true
 
     onTargetSourceChanged: {

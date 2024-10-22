@@ -29,18 +29,40 @@ RadioBottomBarDrawer {
 
             anchors.fill: parent
 
+            visible: MainRadioPlayer.currentItem.isValid()
+
+            maskEnabled: visible
+            maskSource: bottomBarMask
             maskThresholdMin: 0.5
             maskSpreadAtMin: 1.0
 
-            maskEnabled: true
-            maskSource: bottomBarMask
-
             source: effectSource
             autoPaddingEnabled: false
-            blurEnabled: true
+            blurEnabled: visible
             blurMax: 64
             blur: 0.95
             saturation: -0.3
+        }
+
+        Rectangle {
+            id: bottomBarMask
+
+            anchors.fill: parent
+
+            visible: false
+
+            layer.enabled: true
+            layer.smooth: true
+
+            radius: root.radius
+        }
+
+        ShaderEffectSource {
+            id: effectSource
+
+            sourceItem: root.gridView
+            sourceRect: Qt.rect(root.x, root.y, root.width, root.height)
+            visible: false
         }
     }
 
@@ -122,26 +144,6 @@ RadioBottomBarDrawer {
             }
         }
     ]
-
-    Rectangle {
-        id: bottomBarMask
-
-        layer.enabled: true
-        layer.smooth: true
-        visible: false
-        anchors.fill: parent
-        radius: root.radius
-    }
-
-    ShaderEffectSource {
-        id: effectSource
-
-        anchors.fill: parent
-
-        sourceItem: root.gridView
-        sourceRect: Qt.rect(root.x, root.y, root.width, root.height)
-        visible: false
-    }
 
     Component {
         id: locationPage

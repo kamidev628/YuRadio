@@ -26,7 +26,7 @@ Settings {
     property int largeSize: 1024
 
     property string stationUuid
-    property string stationDelegateHeightPolicy: "medium" /* ["small", "medium"] */
+    property string stationDelegateHeightPolicy: "medium" /* ["small", "medium", "large"] */
     property string locale
     property string startPage: "search" /* ["search", "bookmark", "history"] */
     property string pauseButtonBehaviour: "pause" /* ["pause", "stop"] */

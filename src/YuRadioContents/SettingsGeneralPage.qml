@@ -248,6 +248,10 @@ ScrollView {
                     {
                         text: qsTr("Medium"),
                         role: "medium"
+                    },
+                    {
+                        text: qsTr("Large"),
+                        role: "large"
                     }
                 ]
                 textRole: "text"

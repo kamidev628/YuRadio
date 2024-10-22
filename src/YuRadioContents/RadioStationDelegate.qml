@@ -88,25 +88,22 @@ Loader {
                 value: Qt.color("lightsteelblue").darker(AppConfig.isDarkTheme ? 1.8 : 1.05)
             }
 
-            RowLayout {
-                anchors.fill: parent
+            leftPadding: 5
+            topPadding: 5
+            bottomPadding: 5
+            rightPadding: 0
 
+            contentItem: RowLayout {
                 RadioImage {
                     id: radioImage
 
                     Layout.fillHeight: true
-                    Layout.leftMargin: 5
-                    Layout.topMargin: 5
-                    Layout.bottomMargin: 5
                     Layout.preferredWidth: height
-
-                    fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
                     targetSource: root.favicon
+                    sourceSize: Qt.size(height * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
 
                     fillMode: Image.PreserveAspectFit
-                    smooth: true
-                    asynchronous: true
-                    sourceSize: Qt.size(height * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
+                    smooth: false
 
                     Image {
                         anchors {
@@ -117,6 +114,7 @@ Loader {
                         }
 
                         opacity: 0.8
+                        cache: true
                         source: root.countryCode ? `https://flagsapi.com/${root.countryCode}/flat/24.png` : ''
                         sourceSize: Qt.size(24, 24)
                     }
@@ -172,8 +170,6 @@ Loader {
                         textFormat: Text.PlainText
 
                         fontPointSize: 14
-
-                        onWidthChanged: updateElideTimer.restart()
                     }
                 }
 
@@ -188,8 +184,7 @@ Loader {
                     icon.source: "images/more-vert.svg"
                     icon.width: 32
                     icon.height: 32
-                    icon.color: Material.color(Material.Grey, AppConfig.isDarkTheme ? Material.Shade400 : Material.Shade800)
-                    opacity: 0.5
+                    icon.color: "transparent"
 
                     onClicked: {
                         root.moreOptionsMenuRequested(moreOptions);

@@ -88,7 +88,6 @@ FocusScope {
                     Layout.leftMargin: 10
                     Layout.fillHeight: true
 
-                    fallbackSource: AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png"
                     targetSource: root.radioStation.favicon
                     fillMode: Image.PreserveAspectFit
 

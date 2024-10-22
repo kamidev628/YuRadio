@@ -24,6 +24,16 @@ FilledGridView {
 
     signal moreOptionsMenuRequested(int index, Item context)
 
+    function delegateHeight() {
+        if (AppSettings.stationDelegateHeightPolicy === "small") {
+            return 60;
+        }
+        if (AppSettings.stationDelegateHeightPolicy === "medium") {
+            return 80;
+        }
+        return 100;
+    }
+
     anchors {
         top: parent.top
         left: parent.left
@@ -41,29 +51,19 @@ FilledGridView {
         prevContentY = contentY;
     }
 
-    RadioStationsViewHeader {
-        id: radioListViewHeader
-
-        anchors {
-            left: parent.left
-            top: parent.top
-            right: parent.right
-            topMargin: root.headerHeight - height
-        }
-        z: 0
-        height: implicitHeight
-        visible: root.headerHeight > 0
-    }
-
     displayMarginEnd: bottomBar.height
     currentIndex: -1
 
     minimumItemWidth: 400 * AppSettings.fontScale
-    cellHeight: (AppSettings.stationDelegateHeightPolicy === "small" ? 80 : 100) * AppSettings.fontScale
+
+    cellHeight: delegateHeight() * AppSettings.fontScale
+    maximumFlickVelocity: 8000
+    cacheBuffer: 1000
 
     clip: true
     highlightFollowsCurrentItem: true
     focus: true
+    reuseItems: true
 
     boundsMovement: Flickable.StopAtBounds
     boundsBehavior: AppConfig.isMobile ? Flickable.DragOverBounds : Flickable.StopAtBounds
@@ -105,6 +105,20 @@ FilledGridView {
                 Qt.callLater(MainRadioPlayer.play);
             }
         }
+    }
+
+    RadioStationsViewHeader {
+        id: radioListViewHeader
+
+        anchors {
+            left: parent.left
+            top: parent.top
+            right: parent.right
+            topMargin: root.headerHeight - height
+        }
+        z: 0
+        height: implicitHeight
+        visible: root.headerHeight > 0
     }
 
     MoreOptionsMenu {

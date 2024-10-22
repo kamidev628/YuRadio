@@ -59,12 +59,6 @@ Drawer {
                 Layout.preferredHeight: width
 
                 targetSource: root.radioStation.favicon
-                fallbackSource: {
-                    if (!MainRadioPlayer.currentItem.isValid()) {
-                        return "";
-                    }
-                    return AppConfig.isDarkTheme ? "images/radio-white.png" : "images/radio.png";
-                }
                 fillMode: Image.PreserveAspectFit
 
                 smooth: true

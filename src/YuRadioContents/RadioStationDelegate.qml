@@ -185,6 +185,7 @@ Loader {
                     icon.width: 32
                     icon.height: 32
                     icon.color: "transparent"
+                    opacity: 0.7
 
                     onClicked: {
                         root.moreOptionsMenuRequested(moreOptions);

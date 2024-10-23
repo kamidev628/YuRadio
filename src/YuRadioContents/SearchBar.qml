@@ -153,6 +153,7 @@ Control {
 
             onClicked: {
                 searchInput.clear();
+                searchInput.forceActiveFocus();
             }
         }
     }

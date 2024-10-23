@@ -1,5 +1,7 @@
 package org.yuradio;
 
+import android.content.Context;
+
 import android.app.Activity;
 import android.graphics.Rect;
 import android.view.View;
@@ -7,34 +9,27 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 public class VirtualKeyboardListener {
-    private Activity activity;
+    public native void virtualKeyboardHeightChanged(int height);
 
-    public void install(Activity activity) {
-        this.activity = activity;
-        InstallKeyboardListener();
-    }
+    public void install(Context context) {
+        final View content = ((Activity) context).findViewById(android.R.id.content);
 
-    public native void VirtualKeyboardStateChanged(int VirtualKeyboardHeight);
-
-    private void InstallKeyboardListener() {
-        final View AppRootView = ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
-
-        AppRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                int ScreenHeight, VirtualKeyboardHeight;
-                Rect WindowFrameRect = new Rect();
-                Rect ContentFrameRect = new Rect();
+                int screenHeight, virtualKeyboardHeight;
+                Rect windowFrameRect = new Rect();
+                Rect contentFrameRect = new Rect();
 
-                activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(WindowFrameRect);
-                AppRootView.getWindowVisibleDisplayFrame(ContentFrameRect);
-                ScreenHeight = AppRootView.getRootView().getHeight();
+                ((Activity) context).getWindow().getDecorView().getWindowVisibleDisplayFrame(windowFrameRect);
+                content.getWindowVisibleDisplayFrame(contentFrameRect);
+                screenHeight = content.getRootView().getHeight();
 
-                VirtualKeyboardHeight = (ScreenHeight - (ContentFrameRect.bottom - ContentFrameRect.top) - WindowFrameRect.top);
+                virtualKeyboardHeight = (screenHeight - (contentFrameRect.bottom - contentFrameRect.top) - windowFrameRect.top);
 
-                if (VirtualKeyboardHeight < 100) VirtualKeyboardHeight = 0;
+                if (virtualKeyboardHeight < 100) virtualKeyboardHeight = 0;
 
-                VirtualKeyboardStateChanged(VirtualKeyboardHeight);
+                virtualKeyboardHeightChanged(virtualKeyboardHeight);
             }
         });
     }

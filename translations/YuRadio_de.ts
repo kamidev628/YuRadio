@@ -4,7 +4,7 @@
 <context>
     <name>AboutPage</name>
     <message>
-        <location filename="../src/YuRadioContents/AboutPage.qml" line="62"/>
+        <location filename="../src/YuRadioContents/AboutPage.qml" line="65"/>
         <source>
 ## About
 ---
@@ -49,17 +49,17 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>App</name>
     <message>
-        <location filename="../src/YuRadioContents/App.qml" line="70"/>
+        <location filename="../src/YuRadioContents/App.qml" line="109"/>
         <source>YuRadio</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/App.qml" line="349"/>
+        <location filename="../src/YuRadioContents/App.qml" line="322"/>
         <source>Back</source>
         <translation>Zurück</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/App.qml" line="349"/>
+        <location filename="../src/YuRadioContents/App.qml" line="322"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
@@ -67,7 +67,7 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>HistoryListView</name>
     <message>
-        <location filename="../src/YuRadioContents/HistoryListView.qml" line="88"/>
+        <location filename="../src/YuRadioContents/HistoryListView.qml" line="90"/>
         <source>%1 - %2</source>
         <translation>%1 - %2</translation>
     </message>
@@ -234,77 +234,77 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>RadioBottomBarContents</name>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="178"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="177"/>
         <source>Country: %1</source>
         <translation>Land: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="189"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="188"/>
         <source>Languages: %1</source>
         <translation>Sprachen: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="189"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="188"/>
         <source>Language: %1</source>
         <translation>Sprache: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="200"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="199"/>
         <source>Bitrate: %1</source>
         <translation>Bitrate: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="209"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="208"/>
         <source>Homepage</source>
         <translation>Homepage</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="220"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="219"/>
         <source>Show on the map</source>
         <translation>Auf der Karte anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="248"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="247"/>
         <source>Pause</source>
         <translation>Pause</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="248"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="247"/>
         <source>Play</source>
         <translation>Abspielen</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="282"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="281"/>
         <source>Stop audio and hide bottom bar</source>
         <translation>Audio stoppen und untere Leiste ausblenden</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="328"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="327"/>
         <source>Music Info is not avaialble</source>
         <translation>Musikinformationen sind nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="379"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="378"/>
         <source>&lt;b&gt;Album&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Album&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="387"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="386"/>
         <source>&lt;b&gt;Song&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Titel&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="395"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="394"/>
         <source>&lt;b&gt;Artist&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Künstler&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="422"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="421"/>
         <source>Show track</source>
         <translation>Track anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="441"/>
+        <location filename="../src/YuRadioContents/RadioBottomBarContents.qml" line="440"/>
         <source>Provided for: %1</source>
         <translation>Bereitgestellt für: %1</translation>
     </message>
@@ -355,7 +355,7 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>RadioStationDelegate</name>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationDelegate.qml" line="74"/>
+        <location filename="../src/YuRadioContents/RadioStationDelegate.qml" line="79"/>
         <source>Radio station name: %1, Country: %2, Tags: %3</source>
         <translation>Radio station name: %1, Country: %2, Tags: %3</translation>
     </message>
@@ -365,7 +365,7 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>Weitere Optionen</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationDelegate.qml" line="204"/>
+        <location filename="../src/YuRadioContents/RadioStationDelegate.qml" line="203"/>
         <source>%1 kbps</source>
         <translation>%1 kbps</translation>
     </message>
@@ -373,62 +373,62 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>RadioStationInfoPanel</name>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="122"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="116"/>
         <source>Country: %1</source>
         <translation>Land: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="133"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="127"/>
         <source>Languages: %1</source>
         <translation>Sprachen: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="133"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="127"/>
         <source>Language: %1</source>
         <translation>Sprache: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="144"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="138"/>
         <source>Bitrate: %1</source>
         <translation>Bitrate: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="153"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="147"/>
         <source>Homepage</source>
         <translation>Homepage</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="166"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="160"/>
         <source>Show on the map</source>
         <translation>Auf der Karte anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="190"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="184"/>
         <source>Music Info is not avaialble</source>
         <translation>Musikinformationen sind nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="232"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="226"/>
         <source>&lt;b&gt;Album&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Album&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="241"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="235"/>
         <source>&lt;b&gt;Song&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Titel&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="250"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="244"/>
         <source>&lt;b&gt;Artist&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Künstler&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="279"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="273"/>
         <source>Show track</source>
         <translation>Track anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="297"/>
+        <location filename="../src/YuRadioContents/RadioStationInfoPanel.qml" line="291"/>
         <source>Provided for: %1</source>
         <translation>Bereitgestellt für: %1</translation>
     </message>
@@ -547,22 +547,22 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
 <context>
     <name>SearchPage</name>
     <message>
-        <location filename="../src/YuRadioContents/SearchPage.qml" line="63"/>
+        <location filename="../src/YuRadioContents/SearchPage.qml" line="61"/>
         <source>Refresh</source>
         <translation>Aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SearchPage.qml" line="77"/>
+        <location filename="../src/YuRadioContents/SearchPage.qml" line="75"/>
         <source>Search Filters</source>
         <translation>Suchfilter</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SearchPage.qml" line="281"/>
+        <location filename="../src/YuRadioContents/SearchPage.qml" line="279"/>
         <source>Network failure</source>
         <translation>Netzwerkfehler</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SearchPage.qml" line="281"/>
+        <location filename="../src/YuRadioContents/SearchPage.qml" line="279"/>
         <source>No results available</source>
         <translation>Keine Ergebnisse verfügbar</translation>
     </message>
@@ -658,42 +658,47 @@ Application uses RadioBrowser API (see &lt;a href=&quot;https://api.radio-browse
         <translation>mittel</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="268"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="253"/>
+        <source>Large</source>
+        <translation>groß</translation>
+    </message>
+    <message>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="272"/>
         <source>Animate selection changes</source>
         <translation>Auswahländerungen animieren</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="279"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="283"/>
         <source>Enable bottom bar blur</source>
         <translation>Unteres Leisten-Blur aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="290"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="294"/>
         <source>Enable infinite text scrolling</source>
         <translation>Unendliches Textscrollen aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="304"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="308"/>
         <source>Show icon in tray</source>
         <translation>Symbol im Systemtray anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="318"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="322"/>
         <source>Show messages in tray</source>
         <translation>Nachrichten im Systemtray anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="333"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="337"/>
         <source>Resume playback when back online</source>
         <translation>Wiedergabe fortsetzen, wenn wieder online</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="348"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="352"/>
         <source>Spotify integration</source>
         <translation>Spotify-Integration aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="377"/>
+        <location filename="../src/YuRadioContents/SettingsGeneralPage.qml" line="381"/>
         <source>Successfully Authorized</source>
         <translation>Erfolgreich autorisiert</translation>
     </message>

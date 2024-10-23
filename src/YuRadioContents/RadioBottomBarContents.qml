@@ -327,6 +327,7 @@ FocusScope {
                         text: qsTr("Music Info is not avaialble")
                         fontPointSize: 16
 
+                        wrapMode: Text.Wrap
                         visible: !musicInfoRow.visible && !busyIndicator.visible
                         opacity: 0.5
                     }

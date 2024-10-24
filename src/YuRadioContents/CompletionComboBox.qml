@@ -81,10 +81,22 @@ HeaderComboBox {
                 }
             }
 
+            function escapePopup(event: var): void {
+                if (completionPopup.opened) {
+                    completionPopup.close();
+                    event.accepted = true;
+                } else {
+                    event.accepted = false;
+                }
+            }
+
             EnterKey.type: Qt.EnterKeyDone
 
             Keys.onBacktabPressed: event => tabPressed(event, false)
             Keys.onTabPressed: event => tabPressed(event, true)
+
+            Keys.onEscapePressed: event => escapePopup(event)
+            Keys.onBackPressed: event => escapePopup(event)
         }
     }
 

@@ -103,8 +103,6 @@ Item {
         enabled: root.interactive
         target: root
 
-        dragThreshold: 50
-
         yAxis.onActiveValueChanged: delta => {
             if (delta && Utils.sameSign(heightBoundaryRule.currentOvershoot, delta))
                 root.height -= delta;

@@ -112,7 +112,7 @@ RadioBottomBarDrawer {
             when: MainRadioPlayer.currentItem.isValid()
 
             PropertyChanges {
-                root.minimumHeight: Math.max(parent.height / 12, 70 * AppSettings.fontScale, 70)
+                root.minimumHeight: 70 * Math.max(AppSettings.fontScale, 1.0)
             }
         }
     ]

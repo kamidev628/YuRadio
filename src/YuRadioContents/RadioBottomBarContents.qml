@@ -29,7 +29,7 @@ FocusScope {
     states: [
         State {
             name: "dragStarted"
-            when: root.bottomBarDrawer.progress >= 0.3
+            when: root.bottomBarDrawer.progress >= 0.2
 
             PropertyChanges {
                 stationInfoColumn.visible: true
@@ -43,6 +43,7 @@ FocusScope {
                 mainFlickable.anchors.topMargin: 10
 
                 bottomBarTextColumn.anchors.rightMargin: 10
+                bottomBarTextColumn.Layout.preferredHeight: -1
 
                 stationName.enableMarqueeEffect: false
                 stationName.wrapMode: Text.Wrap
@@ -52,19 +53,19 @@ FocusScope {
     ]
 
     Binding {
-        when: mainFlickable.dragging
-        root.bottomBarDrawer.interactive: false
+        root.bottomBarDrawer.interactive: !mainFlickable.dragging
     }
 
     Flickable {
         id: mainFlickable
 
         anchors.fill: parent
+
         contentHeight: mainColumn.implicitHeight
         contentWidth: width
+        interactive: contentHeight > height
 
         clip: true
-        interactive: contentHeight > height
         boundsBehavior: Flickable.StopAtBounds
 
         ColumnLayout {
@@ -80,7 +81,7 @@ FocusScope {
                 RadioImage {
                     id: stationImage
 
-                    Layout.minimumHeight: Math.min(root.width / 3, root.height, 300)
+                    Layout.minimumHeight: Math.min(root.width / 3, root.height, 200)
                     Layout.minimumWidth: Layout.minimumHeight
                     Layout.maximumHeight: Layout.minimumHeight
                     Layout.maximumWidth: Layout.minimumHeight
@@ -88,7 +89,7 @@ FocusScope {
                     Layout.leftMargin: 10
                     Layout.fillHeight: true
 
-                    sourceSize: Qt.size(2 * 300 * Screen.devicePixelRatio, 2 * 300 * Screen.devicePixelRatio)
+                    sourceSize: Qt.size(2 * 200 * Screen.devicePixelRatio, 2 * 200 * Screen.devicePixelRatio)
 
                     targetSource: root.radioStation.favicon
                     fillMode: Image.PreserveAspectFit
@@ -97,20 +98,29 @@ FocusScope {
                     mipmap: true
                 }
 
-                Item {
+                ColumnLayout {
+                    id: bottomBarTextColumn
+
                     Layout.fillWidth: true
-                    implicitHeight: bottomBarTextColumn.implicitHeight
+                    Layout.fillHeight: true
 
-                    Column {
-                        id: bottomBarTextColumn
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.maximumHeight: root.height
 
-                        width: parent.width
-                        height: root.height
+                        spacing: 0
+
+                        Item {
+                            Layout.fillHeight: true
+                        }
 
                         MarqueeText {
                             id: stationName
 
-                            width: parent.width
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.maximumHeight: implicitHeight
 
                             text: root.radioStation.name + " ".repeat(12)
                             elide: enableMarqueeEffect ? Text.ElideNone : Text.ElideRight
@@ -124,7 +134,9 @@ FocusScope {
                         ScalableLabel {
                             id: stationTags
 
-                            width: parent.width
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.maximumHeight: implicitHeight
 
                             text: {
                                 if (progressBar.visible || errorText.visible) {
@@ -133,8 +145,8 @@ FocusScope {
                                 return root.radioStation.tags.join(", ");
                             }
                             elide: Text.ElideRight
-                            fontSizeMode: Text.VerticalFit
                             fontPointSize: 13
+                            fontSizeMode: Text.VerticalFit
                             maximumLineCount: 3
 
                             ScalableLabel {
@@ -143,7 +155,9 @@ FocusScope {
                                 anchors.fill: parent
 
                                 Material.foreground: Material.Red
+
                                 fontPointSize: 12
+                                fontSizeMode: Text.VerticalFit
 
                                 text: visible ? MainRadioPlayer.errorString : ""
                                 elide: Text.ElideRight
@@ -160,74 +174,78 @@ FocusScope {
                             }
                         }
 
-                        ColumnLayout {
-                            id: stationInfoColumn
+                        Item {
+                            Layout.fillHeight: true
+                        }
+                    }
 
-                            width: parent.width
+                    ColumnLayout {
+                        id: stationInfoColumn
 
-                            visible: false
-                            spacing: 2
+                        Layout.fillWidth: true
 
-                            Item {
-                                id: stationInfoColumnSpacer
+                        visible: false
+                        spacing: 2
 
-                                implicitHeight: 20
-                            }
+                        Item {
+                            id: stationInfoColumnSpacer
 
-                            ScalableLabel {
-                                id: country
+                            implicitHeight: 20
+                        }
 
-                                Layout.fillWidth: true
-                                visible: root.radioStation.country
+                        ScalableLabel {
+                            id: country
 
-                                text: qsTr("Country: %1").arg(root.radioStation.country)
-                                fontPointSize: 14
-                                wrapMode: Text.Wrap
-                            }
+                            Layout.fillWidth: true
+                            visible: root.radioStation.country
 
-                            ScalableLabel {
-                                id: language
+                            text: qsTr("Country: %1").arg(root.radioStation.country)
+                            fontPointSize: 14
+                            wrapMode: Text.Wrap
+                        }
 
-                                Layout.fillWidth: true
-                                visible: root.radioStation.language
+                        ScalableLabel {
+                            id: language
 
-                                text: root.radioStation.language.includes(",") ? qsTr("Languages: %1").arg(root.radioStation.language) : qsTr("Language: %1").arg(root.radioStation.language)
-                                fontPointSize: 14
-                                wrapMode: Text.Wrap
-                            }
+                            Layout.fillWidth: true
+                            visible: root.radioStation.language
 
-                            ScalableLabel {
-                                id: bitrate
+                            text: root.radioStation.language.includes(",") ? qsTr("Languages: %1").arg(root.radioStation.language) : qsTr("Language: %1").arg(root.radioStation.language)
+                            fontPointSize: 14
+                            wrapMode: Text.Wrap
+                        }
 
-                                Layout.fillWidth: true
-                                visible: root.radioStation.bitrate
+                        ScalableLabel {
+                            id: bitrate
 
-                                text: qsTr("Bitrate: %1").arg(root.radioStation.bitrate)
-                                fontPointSize: 14
-                            }
+                            Layout.fillWidth: true
+                            visible: root.radioStation.bitrate
 
-                            ClickableLink {
-                                id: homePage
+                            text: qsTr("Bitrate: %1").arg(root.radioStation.bitrate)
+                            fontPointSize: 14
+                        }
 
-                                visible: root.radioStation.homepage
+                        ClickableLink {
+                            id: homePage
 
-                                linkText: qsTr('Homepage')
-                                link: root.radioStation.homepage
-                                fontPointSize: 14
-                            }
+                            visible: root.radioStation.homepage
 
-                            ScalableButton {
-                                id: mapButton
+                            linkText: qsTr('Homepage')
+                            link: root.radioStation.homepage
+                            fontPointSize: 14
+                        }
 
-                                flat: true
-                                visible: root.radioStation.geoLatitude && root.radioStation.geoLongitude
+                        ScalableButton {
+                            id: mapButton
 
-                                text: qsTr('Show on the map')
-                                icon.source: "images/map.svg"
+                            flat: true
+                            visible: root.radioStation.geoLatitude && root.radioStation.geoLongitude
 
-                                onClicked: {
-                                    root.showRadioStationLocationRequested(root.radioStation.geoLatitude, root.radioStation.geoLongitude);
-                                }
+                            text: qsTr('Show on the map')
+                            icon.source: "images/map.svg"
+
+                            onClicked: {
+                                root.showRadioStationLocationRequested(root.radioStation.geoLatitude, root.radioStation.geoLongitude);
                             }
                         }
                     }
@@ -272,6 +290,7 @@ FocusScope {
                     Layout.rightMargin: 10
                     Layout.preferredWidth: 45
                     Layout.preferredHeight: 40
+
                     visible: active
 
                     active: true
@@ -440,6 +459,7 @@ FocusScope {
 
                     ScalableLabel {
                         Layout.fillWidth: true
+                        Layout.topMargin: 5
 
                         visible: musicInfoRow.visible
                         opacity: 0.7

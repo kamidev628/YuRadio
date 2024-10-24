@@ -88,10 +88,13 @@ FocusScope {
                     Layout.leftMargin: 10
                     Layout.fillHeight: true
 
+                    sourceSize: Qt.size(2 * 300 * Screen.devicePixelRatio, 2 * 300 * Screen.devicePixelRatio)
+
                     targetSource: root.radioStation.favicon
                     fillMode: Image.PreserveAspectFit
 
                     smooth: true
+                    mipmap: true
                 }
 
                 Item {

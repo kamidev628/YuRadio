@@ -62,7 +62,7 @@ Drawer {
                     listView.iconOnly: true
                     themeSwitchController.opacity: 0
                     themeSwitchController.scale: 0
-                    profileImage.opacity: 0
+                    applicationImage.opacity: 0
                     root.width: 50
                 }
             },
@@ -99,7 +99,7 @@ Drawer {
                     easing.type: Easing.OutExpo
                 }
                 PropertyAnimation {
-                    target: profileImage
+                    target: applicationImage
                     properties: "opacity"
                     duration: 100
                 }
@@ -117,7 +117,7 @@ Drawer {
                     easing.type: Easing.OutExpo
                 }
                 PropertyAnimation {
-                    target: profileImage
+                    target: applicationImage
                     properties: "opacity"
                     duration: 100
                 }
@@ -133,7 +133,7 @@ Drawer {
         spacing: 20
 
         Image {
-            id: profileImage
+            id: applicationImage
 
             Layout.preferredWidth: parent.width * 2 / 5
             Layout.preferredHeight: parent.width * 2 / 5
@@ -142,6 +142,8 @@ Drawer {
 
             fillMode: Image.PreserveAspectFit
             source: "images/shortwave.svg"
+
+            mipmap: true
             asynchronous: true
             smooth: true
         }

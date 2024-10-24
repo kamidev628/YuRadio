@@ -38,10 +38,11 @@ QtObject {
         return /\d/.test(c);
     }
 
-    function execLater(contextObject, delay, callback, args) {
-        let timer = Qt.createQmlObject("import QtQml 2.15; Timer { }", contextObject);
-        timer.interval = delay === undefined ? 100 : delay;
-        timer.repeat = false;
+    function execLater(context: QtObject, delay: int, callback: var, args: var) {
+        let timer = timerComponent.createObject(context, {
+            interval: delay,
+            repeat: false
+        });
         timer.triggered.connect(() => {
             callback(args);
             timer.destroy();
@@ -87,4 +88,6 @@ QtObject {
             }
         });
     }
+
+    property Component timerComponent: Timer {}
 }

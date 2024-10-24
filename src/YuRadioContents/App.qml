@@ -74,12 +74,12 @@ YuRadioWindow {
 
         /* Initialize storage */
         AppStorage.init();
-
         if (!AppSettings.radioBrowserBaseUrl) {
             RadioBrowser.baseUrlRandom().then(url => {
                 AppSettings.radioBrowserBaseUrl = url;
             });
-        } else if (AppSettings.stationUuid.length > 0) { /* Set current media item if exists */
+        } else if (AppSettings.stationUuid.length > 0) {
+            /* Set current media item if exists */
             RadioBrowser.getStation(networkManager.baseUrl, AppSettings.stationUuid).then(station => {
                 let parsedItem = RadioStationFactory.fromJson(station);
                 MainRadioPlayer.currentItem = parsedItem;
@@ -113,7 +113,6 @@ YuRadioWindow {
 
     Component.onCompleted: {
         QmlApplication.applicationLoaded();
-        console.log("Application Loaded!");
         Qt.callLater(init);
     }
 

@@ -6,11 +6,10 @@ static const char nativeMediaControllerClassName[] =
   "org/yuradio/NativeMediaController";
 
 NativeMediaController::NativeMediaController(QObject *parent)
-    : QObject(parent), m_controller(nativeMediaControllerClassName) {
-  QJniObject activity(QNativeInterface::QAndroidApplication::context());
-  m_controller.callMethod<void>("setActivity", "(Lorg/yuradio/AppActivity;)V",
-                                activity);
-}
+    : QObject(parent),
+      m_controller(nativeMediaControllerClassName,
+                   "(Lorg/yuradio/MediaPlayerActivity;)V",
+                   QNativeInterface::QAndroidApplication::context().object()) {}
 
 void NativeMediaController::setSource(const QUrl &url) {
   m_controller.callMethod<void>("setSource", url.toString());

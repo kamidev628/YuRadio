@@ -3,9 +3,9 @@
 #include "androidstatusbar.h"
 
 AndroidStatusBar::AndroidStatusBar(QObject *parent) : QObject(parent) {
-  QJniObject activity(QNativeInterface::QAndroidApplication::context());
+  QJniObject context(QNativeInterface::QAndroidApplication::context());
 
-  m_window = activity.callObjectMethod("getWindow", "()Landroid/view/Window;");
+  m_window = context.callObjectMethod("getWindow", "()Landroid/view/Window;");
 }
 
 QColor AndroidStatusBar::color() const {

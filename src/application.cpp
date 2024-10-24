@@ -33,12 +33,6 @@ using namespace Qt::StringLiterals;
 
 Application::Application(int argc, char **argv)
     : BaseApplicationClass(argc, argv) {
-#if !defined(Q_OS_LINUX) || defined(Q_OS_ANDROID)
-  QString packageVersion = QCoreApplication::applicationVersion();
-  Q_ASSERT(packageVersion.startsWith(YURADIO_VERSION) ||
-           QString(YURADIO_VERSION).startsWith(packageVersion));
-#endif
-
   QCoreApplication::setApplicationVersion(YURADIO_VERSION);
   QCoreApplication::setOrganizationName(u"YuRadio"_s);
   QThread::currentThread()->setObjectName("Main Thread"_L1);
@@ -118,8 +112,10 @@ void Application::initializePlatform() {
 QmlApplication::QmlApplication(QObject *parent) : QObject(parent) {}
 
 void QmlApplication::applicationLoaded() {
+  qCInfo(applicationLog) << "Qml application loaded";
+
 #ifdef Q_OS_ANDROID
-  QJniObject activity(QNativeInterface::QAndroidApplication::context());
-  activity.callMethod<void>("qmlApplicationStarted");
+  QJniObject context(QNativeInterface::QAndroidApplication::context());
+  context.callMethod<void>("qmlApplicationStarted");
 #endif /* Q_OS_ANDROID */
 }

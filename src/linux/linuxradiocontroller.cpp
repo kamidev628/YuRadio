@@ -32,7 +32,7 @@ LinuxRadioController::LinuxRadioController(QObject *parent)
   connect(m_mprisPlayer, &MprisPlayer::pauseRequested, this,
           &LinuxRadioController::pause);
   connect(m_mprisPlayer, &MprisPlayer::playPauseRequested, this,
-          &LinuxRadioController::toggle);
+          [this]() { toggle(); });
   connect(m_mprisPlayer, &MprisPlayer::volumeRequested, this,
           [this](double volume) { setVolume(static_cast<float>(volume)); });
 

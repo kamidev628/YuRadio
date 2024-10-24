@@ -303,6 +303,14 @@ Dialog {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
+                spacing: 5
+                clip: true
+                reuseItems: true
+
+                ScrollIndicator.vertical: ScrollIndicator {}
+
+                Accessible.name: tagsLabel.text
+
                 model: ListModel {
                     id: tagsModel
 
@@ -328,12 +336,6 @@ Dialog {
                         }
                     }
                 }
-
-                spacing: 5
-                clip: true
-                reuseItems: true
-
-                Accessible.name: tagsLabel.text
 
                 delegate: Flow {
                     id: tagsDelegate

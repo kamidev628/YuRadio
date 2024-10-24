@@ -9,6 +9,8 @@ Item {
 
     property alias wrapMode: textLabel.wrapMode
     property alias elide: textLabel.elide
+    property alias lineHeight: textLabel.lineHeight
+    property alias fontSizeMode: textLabel.fontSizeMode
 
     property int averageReadingSpeedCPM: 1000 // 200 wpm -> 1000 cpm
 

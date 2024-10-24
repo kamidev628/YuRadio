@@ -105,6 +105,7 @@ FocusScope {
                         id: bottomBarTextColumn
 
                         width: parent.width
+                        height: root.height
 
                         MarqueeText {
                             id: stationName
@@ -114,6 +115,7 @@ FocusScope {
                             text: root.radioStation.name + " ".repeat(12)
                             elide: enableMarqueeEffect ? Text.ElideNone : Text.ElideRight
                             enableMarqueeEffect: AppSettings.enableTextScrolling
+                            fontSizeMode: Text.VerticalFit
 
                             font.bold: true
                             fontPointSize: 16
@@ -131,6 +133,7 @@ FocusScope {
                                 return root.radioStation.tags.join(", ");
                             }
                             elide: Text.ElideRight
+                            fontSizeMode: Text.VerticalFit
                             fontPointSize: 13
                             maximumLineCount: 3
 

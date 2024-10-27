@@ -60,30 +60,26 @@ Item {
             target: null
 
             onActiveChanged: if (active) {
-                map.startCentroid = map.toCoordinate(pinchHandler.centroid.position, false);
+                map.startCentroid = map.toCoordinate(centroid.position, false);
             } else {
                 dragDelayTimer.start();
             }
             onScaleChanged: delta => {
                 map.zoomLevel += Math.log2(delta);
-                map.alignCoordinateToPoint(map.startCentroid, pinchHandler.centroid.position);
+                map.alignCoordinateToPoint(map.startCentroid, centroid.position);
             }
             onRotationChanged: delta => {
                 map.bearing -= delta;
-                map.alignCoordinateToPoint(map.startCentroid, pinchHandler.centroid.position);
+                map.alignCoordinateToPoint(map.startCentroid, centroid.position);
             }
             grabPermissions: PointerHandler.TakeOverForbidden
         }
 
         WheelHandler {
             id: wheelHandler
-            // workaround for QTBUG-87646 / QTBUG-112394 / QTBUG-112432:
-            // Magic Mouse pretends to be a trackpad but doesn't work with PinchHandler
-            // and we don't yet distinguish mice and trackpads on Wayland either
-            acceptedDevices: Qt.platform.pluginName === "cocoa" || Qt.platform.pluginName === "wayland" ? PointerDevice.Mouse | PointerDevice.TouchPad : PointerDevice.Mouse
 
             onWheel: event => {
-                const location = map.toCoordinate(point.position)
+                const location = map.toCoordinate(point.position);
                 map.zoomLevel += Math.cbrt(event.angleDelta.y) / 30;
                 map.alignCoordinateToPoint(location, point.position);
             }
@@ -95,12 +91,12 @@ Item {
 
             target: null
 
+            onActiveChanged: if (active) {
+                map.startCentroid = map.toCoordinate(centroid.position, false);
+            }
+
             onTranslationChanged: delta => {
-                const deltaThreshold = 90;
-                /* HACK: In some cases DragHandler returns incorrect delta */
-                if (delta.x < deltaThreshold && delta.y < deltaThreshold && !dragDelayTimer.running) {
-                    map.pan(-delta.x, -delta.y);
-                }
+                map.alignCoordinateToPoint(map.startCentroid, centroid.position);
             }
         }
 

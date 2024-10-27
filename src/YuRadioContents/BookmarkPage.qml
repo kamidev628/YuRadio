@@ -11,7 +11,6 @@ StackViewPage {
     id: root
 
     required property RadioDrawer drawer
-    required property NetworkManager networkManager
     required property MusicInfoModel musicInfoModel
 
     morphHeaderBackground: !bookmarkGridView.atYBeginning
@@ -21,7 +20,6 @@ StackViewPage {
         id: bookmarkGridView
 
         bottomBar: bottomBarDrawer
-        networkManager: root.networkManager
         moreOptionsMenu.enableSynchronization: true
         stationAtIndex: index => bookmarkGridView.model[index]
         sortHeader.height: 0

@@ -76,7 +76,7 @@ qt_add_qml_module(
   HistoryListView.qml
   HistoryListViewHeader.qml
   ListViewHighlightBar.qml
-  radiobrowser.mjs
+  radiobrowser.js
   RESOURCES
   images/keyboard-arrow-down.svg
   images/keyboard-arrow-up.svg

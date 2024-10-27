@@ -11,7 +11,7 @@ project(YuRadio VERSION ${YURADIO_VERSION_CANONICAL})
 
 # NOTE: Following line required by `qt_generate_deploy_qml_app_script`
 find_package(
-  Qt6 6.5 REQUIRED
+  Qt6 REQUIRED
   COMPONENTS Core
              Svg
              Sql

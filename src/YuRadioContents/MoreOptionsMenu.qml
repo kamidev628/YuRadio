@@ -4,14 +4,12 @@ import QtQuick
 import QtQuick.Controls
 
 import YuRadioContents
-import "radiobrowser.mjs" as RadioBrowser
-import network
 import Main
+
+import "radiobrowser.js" as RadioBrowser
 
 Menu {
     id: root
-
-    required property NetworkManager networkManager
 
     property radiostation station
     property string uuid: station.uuid
@@ -56,7 +54,7 @@ Menu {
         onTriggered: {
             if (root.canVote) {
                 Storage.addVote(root.uuid);
-                RadioBrowser.vote(root.networkManager.baseUrl, root.uuid);
+                RadioBrowser.vote(root.uuid);
             }
         }
     }
@@ -68,7 +66,7 @@ Menu {
         height: visible ? implicitHeight : 0
 
         onTriggered: {
-            RadioBrowser.getStation(root.networkManager.baseUrl, root.uuid).then(newStation => {
+            RadioBrowser.getStation(root.uuid).then(newStation => {
                 let parsedStation = RadioStationFactory.fromJson(newStation);
                 AppStorage.deleteBookmark(root.uuid);
                 AppStorage.addBookmark(parsedStation);

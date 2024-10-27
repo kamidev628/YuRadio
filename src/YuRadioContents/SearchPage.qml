@@ -221,7 +221,6 @@ StackViewPage {
         id: radioGridView
 
         bottomBar: bottomBarDrawer
-        networkManager: root.networkManager
 
         implicitHeight: 10
         implicitWidth: 10

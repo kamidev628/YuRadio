@@ -4,16 +4,14 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
-import "radiobrowser.mjs" as RadioBrowser
+import "radiobrowser.js" as RadioBrowser
 
 import YuRadioContents
-import network
 
 FilledGridView {
     id: root
 
     required property RadioBottomBar bottomBar
-    required property NetworkManager networkManager
     required property var stationAtIndex
 
     property alias moreOptionsMenu: moreOptionsMenu
@@ -99,7 +97,7 @@ FilledGridView {
             if (currentStation) {
                 MainRadioPlayer.toggle();
             } else {
-                RadioBrowser.click(root.networkManager.baseUrl, delegate.uuid);
+                RadioBrowser.click(delegate.uuid);
                 MainRadioPlayer.currentItem = root.stationAtIndex(delegate.index);
                 root.currentIndex = delegate.index;
                 Qt.callLater(MainRadioPlayer.play);
@@ -123,7 +121,5 @@ FilledGridView {
 
     MoreOptionsMenu {
         id: moreOptionsMenu
-
-        networkManager: root.networkManager
     }
 }

@@ -6,10 +6,11 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Material
 
-import "radiobrowser.mjs" as RadioBrowser
 import network
 import Main
 import YuRadioContents
+
+import "radiobrowser.js" as RadioBrowser
 
 YuRadioWindow {
     id: root
@@ -80,7 +81,7 @@ YuRadioWindow {
             });
         } else if (AppSettings.stationUuid.length > 0) {
             /* Set current media item if exists */
-            RadioBrowser.getStation(networkManager.baseUrl, AppSettings.stationUuid).then(station => {
+            RadioBrowser.getStation(AppSettings.stationUuid).then(station => {
                 let parsedItem = RadioStationFactory.fromJson(station);
                 MainRadioPlayer.currentItem = parsedItem;
             });
@@ -120,6 +121,9 @@ YuRadioWindow {
         id: networkManager
 
         baseUrl: AppSettings.radioBrowserBaseUrl
+        onBaseUrlChanged: {
+            RadioBrowser.baseUrl = baseUrl;
+        }
     }
 
     RadioDrawer {
@@ -233,7 +237,6 @@ YuRadioWindow {
                 objectName: "bookmarkPage"
 
                 drawer: drawer
-                networkManager: networkManager
                 musicInfoModel: musicInfoModel
             }
         }

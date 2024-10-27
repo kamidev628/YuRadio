@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
-import "radiobrowser.mjs" as RadioBrowser
+import "radiobrowser.js" as RadioBrowser
 
 import YuRadioContents
 import network

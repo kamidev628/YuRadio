@@ -9,7 +9,7 @@ import network
 import YuRadioContents
 import Main
 
-import "radiobrowser.mjs" as RadioBrowser
+import "radiobrowser.js" as RadioBrowser
 
 Dialog {
     id: root
@@ -158,7 +158,7 @@ Dialog {
                     onActiveFocusChanged: {
                         if (activeFocus && stringModel.length === 0) {
                             console.log("Caching countries...");
-                            RadioBrowser.getCountries(root.networkManager.baseUrl).then(countries => {
+                            RadioBrowser.getCountries().then(countries => {
                                 if (stringModel.length === 0) {
                                     stringModel = [...new Set(countries.filter(country => country.name && country.iso_3166_1).map(country => country.name))];
                                     Storage.addCountries(stringModel);
@@ -253,7 +253,7 @@ Dialog {
                     onActiveFocusChanged: {
                         if (activeFocus && stringModel.length === 0) {
                             console.log("Caching languages...");
-                            RadioBrowser.getLanguages(root.networkManager.baseUrl).then(languages => {
+                            RadioBrowser.getLanguages().then(languages => {
                                 if (stringModel.length === 0) {
                                     stringModel = [...new Set(languages.filter(language => language.name && language.iso_639).map(language => language.name))];
                                     Storage.addLanguages(stringModel);
@@ -325,7 +325,7 @@ Dialog {
                         let storedTags = Storage.getTags();
                         if (storedTags.length === 0) {
                             console.log("Caching tags...");
-                            RadioBrowser.getTopUsedTags(root.networkManager.baseUrl, 100).then(tags => {
+                            RadioBrowser.getTopUsedTags(100).then(tags => {
                                 let tagsNames = tags.filter(tag => tag.name).map(tag => tag.name);
                                 Storage.addTags(tagsNames);
                                 createModel(tagsNames);

@@ -40,9 +40,7 @@ void PlatformRadioController::setPlaybackState(
   RadioPlayer::PlaybackState state) {
 
   if (m_playbackState != state) {
-    RadioPlayer::PlaybackState stateBefore = m_playbackState;
-
-    m_playbackState = state;
+    auto stateBefore = std::exchange(m_playbackState, state);
     emit playbackStateChanged();
 
     if (state == RadioPlayer::PlayingState ||

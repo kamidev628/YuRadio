@@ -18,9 +18,6 @@ StackViewPage {
     required property MusicInfoModel musicInfoModel
     required property int sleepTimerLeftInterval
 
-    property string translatedFontScaleString: qsTr("Font scale")
-    property int currentPageIndex: 0
-
     headerContent: RowLayout {
         spacing: 0
 

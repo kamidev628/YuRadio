@@ -14,6 +14,9 @@ Item {
     required property real maximumHeight
     readonly property real handleHeight: bottomBarHandle.height
 
+    readonly property alias active: dragHandler.active
+    property alias dragThreshold: dragHandler.dragThreshold
+
     property bool interactive: true
     property bool detached: false
 
@@ -102,6 +105,7 @@ Item {
 
         enabled: root.interactive
         target: root
+        dragThreshold: 50
 
         yAxis.onActiveValueChanged: delta => {
             if (delta && Utils.sameSign(heightBoundaryRule.currentOvershoot, delta))

@@ -1,6 +1,6 @@
 #include <QList>
 
-#include "algorithm"
+#include "algorithm.h"
 
 namespace algorithm {
 

@@ -70,8 +70,7 @@ YuRadioWindow {
         }
 
         /* Initial page */
-        const operation = StackView.Immediate;
-        root.stackViewPushPage(AppSettings.startPage, operation);
+        root.stackViewPushPage(AppSettings.startPage, StackView.Immediate);
 
         /* Initialize storage */
         AppStorage.init();

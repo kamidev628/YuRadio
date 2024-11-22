@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  APP_QT_VERSION: 6.7.3
+
+jobs:
+  get-env-vars:
+    name: Get Environment vars
+    runs-on: ubuntu-latest
+    outputs:
+      qt-version: ${{ env.APP_QT_VERSION }}
+    steps:
+      - run: echo "null"
+
+  windows:
+    name: Windows
+    needs: get-env-vars
+    uses: ./.github/workflows/windows.yml
+    secrets: inherit
+    with:
+      qt-version: ${{ needs.get-env-vars.outputs.qt-version }}
+    
+  android:
+    name: Android
+    needs: get-env-vars
+    uses: ./.github/workflows/android.yml
+    secrets: inherit
+    with:
+      qt-version: ${{ needs.get-env-vars.outputs.qt-version }}
+
+  linux:
+    name: Linux
+    needs: get-env-vars
+    uses: ./.github/workflows/linux.yml
+    secrets: inherit
+    with:
+      qt-version: ${{ needs.get-env-vars.outputs.qt-version }}

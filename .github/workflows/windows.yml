@@ -1,0 +1,66 @@
+name: Windows
+
+on:
+  workflow_call:
+    inputs:
+      qt-version:
+        required: true
+        type: string
+
+  workflow_dispatch:
+
+jobs:
+  build-aqtinstall:
+    name: Build (${{ matrix.build-type }}, Qt ${{ matrix.qt-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2019
+            qt-version: ${{ inputs.qt-version }}
+            build-type: Release
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install Qt ${{ matrix.qt-version }} (aqtinstall)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ matrix.qt-version }}
+          arch: win64_msvc2019_64
+          tools: 'tools_ifw'
+          modules: 'qtimageformats qtlocation qtmultimedia qtnetworkauth qtwebsockets qtshadertools qtpositioning'
+          host: windows
+          target: desktop
+
+      - name: Build (${{ matrix.build-type }})
+        env:
+          VERBOSE: 1
+        run: |
+          cmake --warn-uninitialized --warn-unused-vars `
+              -S . `
+              -B build -G Ninja `
+              -DCMAKE_TOOLCHAIN_FILE=${{ env.QT_ROOT_DIR }}/lib/cmake/Qt6/qt.toolchain.cmake `
+              -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+          cmake --build build --config ${{ matrix.build-type }} --target package
+
+      - name: Remove CPack temporary files
+        run: |
+          Remove-Item -Verbose -Recurse -Force build/package/_CPack_Packages
+
+      - name: Upload artifacts (${{ matrix.build-type }})
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: Windows-${{ matrix.build-type }}
+          path: build/package

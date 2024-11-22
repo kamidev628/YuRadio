@@ -1,0 +1,75 @@
+name: Android
+
+on:
+  workflow_call:
+    inputs:
+      qt-version:
+        required: true
+        type: string
+  workflow_dispatch:
+
+jobs:
+  build-aqtinstall:
+    name: Build (${{ matrix.build-type }}, Qt ${{ matrix.qt-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ["android_armv7", "android_arm64_v8a"]
+        include:
+          - os: ubuntu-latest
+            qt-version: ${{ inputs.qt-version }}
+            build-type: Release
+
+    env:
+      APK_OUTPUT_LOCATION: build/android-build/build/outputs/apk/release
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Install Qt ${{ matrix.qt-version }} (aqtinstall)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ matrix.qt-version }}
+          modules: 'qtimageformats qtlocation qtmultimedia qtnetworkauth qtwebsockets qtshadertools qtpositioning'
+          arch: ${{ matrix.arch }}
+          host: linux
+          target: android
+
+      - name: Install build tools
+        run: |
+          sudo apt install ninja-build
+
+      - name: Build (${{ matrix.build-type }})
+        env:
+          QT_HOST_PATH: ${{ env.QT_ROOT_DIR }}/../gcc_64
+          QT_ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android_release.keystore
+          QT_ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
+          QT_ANDROID_KEYSTORE_STORE_PASS: ${{ secrets.ANDROID_KEYSTORE_STORE_PASS }}
+          QT_ANDROID_KEYSTORE_KEY_PASS: ${{ secrets.ANDROID_KEYSTORE_KEY_PASS }}
+
+          VERBOSE: 1
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android_release.keystore
+          cmake --warn-uninitialized --warn-unused-vars \
+              -S . \
+              -B build -G Ninja \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+              -DCMAKE_TOOLCHAIN_FILE=${{ env.QT_ROOT_DIR }}/lib/cmake/Qt6/qt.toolchain.cmake \
+              -DQT_ANDROID_SIGN_APK=ON
+          cmake --build build --config ${{ matrix.build-type }}
+
+      - name: Rename apk
+        run: |
+          mv -v ${{ env.APK_OUTPUT_LOCATION }}/android-build-release-signed.apk ${{ env.APK_OUTPUT_LOCATION }}/YuRadio-${{ github.ref_name }}-${{ matrix.arch }}.apk
+
+      - name: Upload artifacts (${{ matrix.build-type }})
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: Android-${{ matrix.arch }}-${{ matrix.build-type }}
+          path: ${{ env.APK_OUTPUT_LOCATION }}

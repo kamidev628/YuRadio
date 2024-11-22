@@ -1,0 +1,63 @@
+name: Linux
+
+on:
+  workflow_call:
+    inputs:
+      qt-version:
+        required: true
+        type: string
+  workflow_dispatch:
+
+jobs:
+  build-aqtinstall:
+    name: Build (${{ matrix.build-type }}, Qt ${{ matrix.qt-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            qt-version: ${{ inputs.qt-version }}
+            build-type: Release
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Install Qt ${{ matrix.qt-version }} (aqtinstall)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ matrix.qt-version }}
+          arch: linux_gcc_64
+          host: linux
+          modules: 'qtimageformats qtlocation qtmultimedia qtnetworkauth qtwebsockets qtshadertools qtpositioning'
+          target: desktop
+
+      - name: Install build tools
+        run: |
+          sudo apt install ninja-build libx11-dev
+
+      - name: Build (${{ matrix.build-type }})
+        env:
+          VERBOSE: 1
+        run: |
+          cmake --warn-uninitialized --warn-unused-vars \
+              -S . \
+              -B build -G Ninja \
+              -DCMAKE_TOOLCHAIN_FILE=${{ env.QT_ROOT_DIR }}/lib/cmake/Qt6/qt.toolchain.cmake \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+          cmake --build build --config ${{ matrix.build-type }} --target package
+
+      - name: Remove CPack temporary files
+        run: |
+          rm -rf build/package/_CPack_Packages
+
+      - name: Upload artifacts (${{ matrix.build-type }})
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: Linux-${{ matrix.build-type }}
+          path: build/package

@@ -98,6 +98,7 @@ FocusScope {
                     focusPolicy: Qt.StrongFocus
                     focus: true
 
+                    checkable: false
                     checked: index === root.selectedIndex
                     Accessible.name: qsTr("Sort by %1").arg(text)
 

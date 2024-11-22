@@ -37,9 +37,11 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: ${{ matrix.qt-version }}
+          cache: true
           arch: win64_msvc2019_64
           tools: 'tools_ifw'
           modules: 'qtimageformats qtlocation qtmultimedia qtnetworkauth qtwebsockets qtshadertools qtpositioning'
+          aqtsource: 'git+https://github.com/miurahr/aqtinstall.git'
           host: windows
           target: desktop
 
@@ -51,6 +53,10 @@ jobs:
               -S . `
               -B build -G Ninja `
               -DCMAKE_TOOLCHAIN_FILE=${{ env.QT_ROOT_DIR }}/lib/cmake/Qt6/qt.toolchain.cmake `
+              -DSPOTIFY_CLIENTID="${{ secrets.SPOTIFY_CLIENTID }}" `
+              -DSPOTIFY_CLIENTID_HASH="${{ secrets.SPOTIFY_CLIENTID_HASH}}" `
+              -DSPOTIFY_SECRET="${{ secrets.SPOTIFY_SECRET}}" `
+              -DSPOTIFY_SECRET_HASH="${{ secrets.SPOTIFY_SECRET_HASH }}" `
               -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
           cmake --build build --config ${{ matrix.build-type }} --target package
 

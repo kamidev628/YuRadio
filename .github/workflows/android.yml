@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-aqtinstall:
+  build_deploy:
     name: Build (${{ matrix.build-type }}, Qt ${{ matrix.qt-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -22,7 +22,7 @@ jobs:
             build-type: Release
 
     env:
-      APK_OUTPUT_LOCATION: build/android-build/build/outputs/apk/release
+      APK_OUTPUT_LOCATION: build/src/android-build/build/outputs/apk/release
 
     steps:
       - name: Checkout code
@@ -31,22 +31,48 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Install Qt ${{ matrix.qt-version }} (aqtinstall)
+      - name: Install Qt for Android ${{ matrix.qt-version }} (aqtinstall)
         uses: jurplel/install-qt-action@v4
         with:
           version: ${{ matrix.qt-version }}
+          cache: true
           modules: 'qtimageformats qtlocation qtmultimedia qtnetworkauth qtwebsockets qtshadertools qtpositioning'
-          arch: ${{ matrix.arch }}
           host: linux
           target: android
+          aqtsource: 'git+https://github.com/miurahr/aqtinstall.git'
+          arch: ${{ matrix.arch }}
+
+      - name: Install Qt for Desktop ${{ matrix.qt-version }} (aqtinstall)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ matrix.qt-version }}
+          cache: true
+          arch: linux_gcc_64
+          host: linux
+          modules: 'qtimageformats qtlocation qtmultimedia qtnetworkauth qtwebsockets qtshadertools qtpositioning'
+          aqtsource: 'git+https://github.com/miurahr/aqtinstall.git'
+          target: desktop
 
       - name: Install build tools
         run: |
-          sudo apt install ninja-build
+          sudo apt install -y ninja-build
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Qt SDK packages
+        run: |
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          sdkmanager "ndk;26.1.10909125"
 
       - name: Build (${{ matrix.build-type }})
         env:
-          QT_HOST_PATH: ${{ env.QT_ROOT_DIR }}/../gcc_64
           QT_ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android_release.keystore
           QT_ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
           QT_ANDROID_KEYSTORE_STORE_PASS: ${{ secrets.ANDROID_KEYSTORE_STORE_PASS }}
@@ -55,12 +81,22 @@ jobs:
           VERBOSE: 1
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android_release.keystore
+          qt_host_path=$(readlink --canonicalize ${{ env.QT_ROOT_DIR }}/../gcc_64)
           cmake --warn-uninitialized --warn-unused-vars \
               -S . \
               -B build -G Ninja \
               -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
               -DCMAKE_TOOLCHAIN_FILE=${{ env.QT_ROOT_DIR }}/lib/cmake/Qt6/qt.toolchain.cmake \
+              -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }} \
+              -DQT_HOST_PATH=$qt_host_path \
+              -DANDROID_SDK_ROOT=${{ env.ANDROID_SDK_ROOT }} \
+              -DANDROID_NDK_ROOT=${{ env.ANDROID_SDK_ROOT }}/ndk/26.1.10909125 \
+              -DSPOTIFY_CLIENTID="${{ secrets.SPOTIFY_CLIENTID }}" \
+              -DSPOTIFY_CLIENTID_HASH="${{ secrets.SPOTIFY_CLIENTID_HASH}}" \
+              -DSPOTIFY_SECRET="${{ secrets.SPOTIFY_SECRET}}" \
+              -DSPOTIFY_SECRET_HASH="${{ secrets.SPOTIFY_SECRET_HASH }}" \
               -DQT_ANDROID_SIGN_APK=ON
+
           cmake --build build --config ${{ matrix.build-type }}
 
       - name: Rename apk

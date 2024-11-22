@@ -32,10 +32,10 @@ listed in the `CMakeLists.txt` files
 | Option                  | Description                                                      | Default |
 | :---------------------- | :--------------------------------------------------------------- | :-----: |
 | `BUILD_UIOHOOK`         | Builds uiohook (enables media key support for desktop platforms) |   ON    |
-| `SPOTIFY_CLIENTID`      | Spotify app client id                                            |   ---   |
-| `SPOTIFY_SECRET`        | Spotify app secret                                               |   ---   |
-| `SPOTIFY_CLIENTID_HASH` | Hash for app client id                                           |    0    |
-| `SPOTIFY_SECRET_HASH`   | Hash for app secret                                              |    0    |
+| `SPOTIFY_CLIENTID`      | Spotify application client id                                    |   ---   |
+| `SPOTIFY_SECRET`        | Spotify application secret                                       |   ---   |
+| `SPOTIFY_CLIENTID_HASH` | Hash for application client id                                   |    0    |
+| `SPOTIFY_SECRET_HASH`   | Hash for application secret                                      |    0    |
 
 Spotify is only needed as an additional backend for displaying music information (as in [screenshot](#screenshot-light))
 

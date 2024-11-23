@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-2019
+          - os: windows-latest
             qt-version: ${{ inputs.qt-version }}
             build-type: Release
 

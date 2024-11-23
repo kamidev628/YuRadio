@@ -19,6 +19,8 @@ jobs:
         include:
           - os: ubuntu-latest
             qt-version: ${{ inputs.qt-version }}
+            qt-modules: 'qtimageformats qtlocation qtmultimedia qtnetworkauth qtwebsockets qtshadertools qtpositioning'
+            aqtsource: 'git+https://github.com/miurahr/aqtinstall.git'
             build-type: Release
 
     env:
@@ -36,10 +38,10 @@ jobs:
         with:
           version: ${{ matrix.qt-version }}
           cache: true
-          modules: 'qtimageformats qtlocation qtmultimedia qtnetworkauth qtwebsockets qtshadertools qtpositioning'
+          modules: ${{ matrix.qt-modules }}
           host: linux
           target: android
-          aqtsource: 'git+https://github.com/miurahr/aqtinstall.git'
+          aqtsource: ${{ matrix.aqtsource }}
           arch: ${{ matrix.arch }}
 
       - name: Install Qt for Desktop ${{ matrix.qt-version }} (aqtinstall)
@@ -49,8 +51,8 @@ jobs:
           cache: true
           arch: linux_gcc_64
           host: linux
-          modules: 'qtimageformats qtlocation qtmultimedia qtnetworkauth qtwebsockets qtshadertools qtpositioning'
-          aqtsource: 'git+https://github.com/miurahr/aqtinstall.git'
+          modules: ${{ matrix.qt-modules }}
+          aqtsource: ${{ matrix.aqtsource }}
           target: desktop
 
       - name: Install build tools

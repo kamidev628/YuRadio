@@ -15,13 +15,13 @@ RadioPlayer::Error PlatformRadioController::error() const {
 }
 
 void PlatformRadioController::setMediaItem(const MediaItem &mediaItem) {
-  if (m_mediaItem.source != mediaItem.source) {
-    setStreamTitle({});
-  }
-
   if (m_mediaItem != mediaItem) {
     m_mediaItem = mediaItem;
     emit mediaItemChanged();
+
+    if (m_mediaItem.source != mediaItem.source) {
+      setStreamTitle({});
+    }
   }
 }
 

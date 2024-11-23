@@ -44,15 +44,16 @@ RadioPlayer {
             audioStreamRecorder.record();
         }
         stationName = currentItem.name;
+
+        const newMediaItem = constructMediaItem();
         if (currentItem.isValid()) {
-            const newMediaItem = constructMediaItem();
             newMediaItem.artworkUri = currentItem.favicon;
             newMediaItem.author = currentItem.name;
             newMediaItem.source = currentItem.url;
             AppSettings.stationUuid = currentItem.uuid;
-            mediaItem = newMediaItem;
         } else {
             AppSettings.stationUuid = "";
         }
+        mediaItem = newMediaItem;
     }
 }
